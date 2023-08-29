@@ -94,7 +94,7 @@ void StepSequencerWidget::mousePressEvent(QMouseEvent* event)
     float beatsPerStep = 0.25;
 
     int step = event->x() / (StepWidth + StepSpacing);
-    long time = step * beatsPerStep;
+    float time = step * beatsPerStep;
     if (event->button() == Qt::LeftButton) {
         track.addItem(time, Note(12 * 5, beatsPerStep));
     } else {

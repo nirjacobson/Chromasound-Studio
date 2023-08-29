@@ -40,3 +40,9 @@ void StepCursorWidget::paintEvent(QPaintEvent* event)
 
     painter.drawRect(stepRect);
 }
+
+void StepCursorWidget::resizeEvent(QResizeEvent* event)
+{
+    int numSteps = _app->project().beatsPerBar() * 4;
+    setMinimumSize(QSize((numSteps-1) * (StepSequencerWidget::StepWidth + StepSequencerWidget::StepSpacing) + StepSequencerWidget::StepWidth + 3, 8));
+}
