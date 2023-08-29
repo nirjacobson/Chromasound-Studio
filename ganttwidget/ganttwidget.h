@@ -1,0 +1,48 @@
+#ifndef GANTTWIDGET_H
+#define GANTTWIDGET_H
+
+#include <QWidget>
+
+#include "../application.h"
+#include "ganttleftwidget.h"
+#include "ganttitem.h"
+
+namespace Ui {
+    class GanttWidget;
+}
+
+class GanttWidget : public QWidget
+{
+        Q_OBJECT
+
+    public:
+        explicit GanttWidget(QWidget *parent = nullptr, Application* app = nullptr);
+        ~GanttWidget();
+
+        void setLeftWidget(GanttLeftWidget* const widget);
+        void setParameters(int rows, int rowHeight, int cellWidth, float beatsPerCell);
+
+        void setItems(QList<GanttItem*>* items);
+        void setApplication(Application* app);
+
+    private:
+        Ui::GanttWidget *ui;
+        Application* _app;
+
+        GanttLeftWidget* _leftWidget;
+
+        int _rows;
+        int _rowHeight;
+        int _cellWidth;
+        float _cellBeats;
+
+    private slots:
+        void verticalScroll(int amount);
+        void horizontalScroll(int amount);
+        void snapClicked();
+
+    signals:
+        void clicked(Qt::MouseButton button, int row, float time);
+};
+
+#endif // GANTTWIDGET_H
