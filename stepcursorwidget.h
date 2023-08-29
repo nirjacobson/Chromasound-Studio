@@ -21,6 +21,8 @@ class StepCursorWidget : public QWidget
     private:
         Application* _app;
 
+    protected:
+        void resizeEvent(QResizeEvent* event);
 };
 
 #endif // STEPCURSORWIDGET_H
