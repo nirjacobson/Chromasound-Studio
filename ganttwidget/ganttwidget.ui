@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GanttWidget</class>
+ <widget class="QWidget" name="GanttWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>464</width>
+    <height>427</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <item row="0" column="1">
+    <widget class="QScrollBar" name="horizontalScrollBar">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>24</height>
+      </size>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QCheckBox" name="snapCheckBox">
+     <property name="text">
+      <string>Snap</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="GanttHeaderWidget" name="headerWidget" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>24</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>24</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QWidget" name="leftWidget" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>128</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>128</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="GanttEditorWidget" name="editorWidget" native="true"/>
+   </item>
+   <item row="2" column="2">
+    <widget class="QScrollBar" name="verticalScrollBar">
+     <property name="minimumSize">
+      <size>
+       <width>24</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="sliderPosition">
+      <number>0</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GanttEditorWidget</class>
+   <extends>QWidget</extends>
+   <header>ganttwidget/gantteditorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GanttHeaderWidget</class>
+   <extends>QWidget</extends>
+   <header>ganttwidget/ganttheaderwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
