@@ -250,12 +250,12 @@
   <customwidget>
    <class>TimeDisplayWidget</class>
    <extends>QLCDNumber</extends>
-   <header>timedisplaywidget.h</header>
+   <header>topwidget/timedisplaywidget.h</header>
   </customwidget>
   <customwidget>
    <class>SeekWidget</class>
    <extends>QSlider</extends>
-   <header>seekwidget.h</header>
+   <header>topwidget/seekwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

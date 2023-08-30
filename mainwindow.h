@@ -7,7 +7,7 @@
 #include <QRect>
 
 #include "application.h"
-#include "channelswidget.h"
+#include "channelswidget/channelswidget.h"
 #include "playlistwidget/playlistwidget.h"
 
 QT_BEGIN_NAMESPACE

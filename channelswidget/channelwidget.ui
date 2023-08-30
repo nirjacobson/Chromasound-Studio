@@ -108,25 +108,25 @@
   <customwidget>
    <class>RectLED</class>
    <extends>QWidget</extends>
-   <header>rectled.h</header>
+   <header>channelswidget/rectled.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>LED</class>
    <extends>QWidget</extends>
-   <header>led.h</header>
+   <header>channelswidget/led.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>StepSequencerWidget</class>
    <extends>QWidget</extends>
-   <header>stepsequencerwidget.h</header>
+   <header>channelswidget/stepsequencerwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>PRDisplayWidget</class>
    <extends>QWidget</extends>
-   <header>prdisplaywidget.h</header>
+   <header>channelswidget/prdisplaywidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
