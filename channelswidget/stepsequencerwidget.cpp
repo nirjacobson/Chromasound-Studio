@@ -36,7 +36,7 @@ void StepSequencerWidget::paintEvent(QPaintEvent* event)
         Track& track = pattern.getTrack(_index);
 
         for (int i = 0; i < numSteps; i++) {
-            steps[i] = std::find_if(track.items().begin(), track.items().end(), [=](const Track::Item& item){ return item.time() == beatsPerStep * i; }) != track.items().end();
+            steps[i] = std::find_if(track.items().begin(), track.items().end(), [=](Track::Item* const item){ return item->time() == beatsPerStep * i; }) != track.items().end();
         }
     } else {
         for (int i = 0; i < numSteps; i++) {
@@ -98,7 +98,7 @@ void StepSequencerWidget::mousePressEvent(QMouseEvent* event)
     if (event->button() == Qt::LeftButton) {
         track.addItem(time, Note(12 * 5, beatsPerStep));
     } else {
-        track.removeItems(time);
+        track.removeItem(time, 12 * 5);
     }
 
     update();

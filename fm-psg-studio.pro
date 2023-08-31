@@ -9,6 +9,8 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    pianorollwidget/pianorollkeyswidget.cpp \
+    pianorollwidget/pianorollwidget.cpp \
     project/channel.cpp \
     project/track.cpp \
     project/note.cpp \
@@ -37,6 +39,8 @@ SOURCES += \
     topwidget/topwidget.cpp
 
 HEADERS += \
+    pianorollwidget/pianorollkeyswidget.h \
+    pianorollwidget/pianorollwidget.h \
     project/channel.h \
     project/note.h \
     project/pattern.h \
@@ -67,6 +71,7 @@ FORMS += \
     channelswidget/channelswidget.ui \
     channelswidget/channelwidget.ui \
     ganttwidget/ganttwidget.ui \
+    pianorollwidget/pianorollwidget.ui \
     playlistwidget/playlistwidget.ui \
     topwidget/topwidget.ui \
     mainwindow.ui \

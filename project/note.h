@@ -10,6 +10,9 @@ class Note
         int key() const;
         float duration() const;
 
+        void setKey(const int key);
+        void setDuration(const float duration);
+
         bool operator==(const Note& note);
 
     private:

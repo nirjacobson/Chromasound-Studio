@@ -8,6 +8,7 @@ GanttHeaderWidget::GanttHeaderWidget(QWidget *parent)
     , _left(0)
     , _cellWidth(16)
     , _cellBeats(1)
+    , _length(0)
 {
 
 }
@@ -19,7 +20,8 @@ void GanttHeaderWidget::setApplication(Application* app)
 
 void GanttHeaderWidget::setScrollPercentage(const float percent)
 {
-    int totalWidth = _cellWidth * _app->project().getLength() / _cellBeats;
+    int visibleLength = ((int)(_length / 4) + 1) * 4;
+    int totalWidth = _cellWidth * visibleLength / _cellBeats;
     int scrollWidth = qMax(0, totalWidth - width());
     _left = percent * scrollWidth;
 
@@ -36,6 +38,16 @@ void GanttHeaderWidget::setCellBeats(float beats)
     _cellBeats = beats;
 }
 
+float GanttHeaderWidget::length() const
+{
+    return _length;
+}
+
+void GanttHeaderWidget::setLength(const float length)
+{
+    _length = length;
+}
+
 void GanttHeaderWidget::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
@@ -48,7 +60,7 @@ void GanttHeaderWidget::paintEvent(QPaintEvent* event)
     int barWidth = _cellWidth / _cellBeats * beatsPerBar;
     int firstBar = _left / barWidth;
     int firstBarStart = firstBar * barWidth - _left;
-    int numBars = qCeil((float)width()/barWidth);
+    int numBars = qCeil((float)width()/(float)barWidth);
 
     QPoint topLeft = QPoint(firstBarStart, 0);
 
@@ -56,7 +68,7 @@ void GanttHeaderWidget::paintEvent(QPaintEvent* event)
         QPoint thisTopLeft = topLeft + QPoint(i * barWidth, 0);
         QPoint thisBottomRight = thisTopLeft + QPoint(barWidth, height());
 
-        painter.setBrush(((firstBar + i) * beatsPerBar) < _app->project().getLength() ? QColor(BackgroundColor) : QColor(Qt::lightGray));
+        painter.setBrush(((firstBar + i) * beatsPerBar) < _length ? QColor(BackgroundColor) : QColor(Qt::lightGray));
         painter.drawRect(QRect(thisTopLeft, thisBottomRight));
 
         QPoint thisBottomLeft = QPoint(thisTopLeft.x(), thisBottomRight.y());

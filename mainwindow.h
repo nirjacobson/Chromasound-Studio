@@ -9,6 +9,7 @@
 #include "application.h"
 #include "channelswidget/channelswidget.h"
 #include "playlistwidget/playlistwidget.h"
+#include "pianorollwidget/pianorollwidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -41,6 +42,7 @@ private:
 
     ChannelsWidget* _channelsWidget;
     PlaylistWidget* _playlistWidget;
+    PianoRollWidget* _pianoRollWidget;
 
     QMdiSubWindow* _channelsWindow;
     QMdiSubWindow* _playlistWindow;

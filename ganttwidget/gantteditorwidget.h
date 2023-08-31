@@ -21,11 +21,15 @@ class GanttEditorWidget : public QWidget
         void setApplication(Application* app);
 
         void setSnap(const bool snap);
+        void invertRows(const bool invert);
 
         void setCellWidth(int width);
         void setCellBeats(float beats);
         void setRows(int rows);
         void setRowHeight(int height);
+
+        float length() const;
+        void setLength(const float length);
 
     signals:
         void clicked(Qt::MouseButton button, int row, float time);
@@ -33,6 +37,8 @@ class GanttEditorWidget : public QWidget
     protected:
         void paintEvent(QPaintEvent* event);
         void mousePressEvent(QMouseEvent* event);
+        void mouseReleaseEvent(QMouseEvent* event);
+        void mouseMoveEvent(QMouseEvent* event);
 
     private:
         static constexpr QColor CursorColor = QColor(64, 192, 64);
@@ -46,13 +52,19 @@ class GanttEditorWidget : public QWidget
         int _rows;
         int _rowHeight;
 
+        float _length;
+
         int _cellWidth;
         float _cellBeats;
 
         bool _snap;
+        bool _invertRows;
 
         QList<GanttItem*>* _items;
 
+        GanttItem* _itemUnderCursor;
+        int _cursorPositionOverItem;
+        bool _itemUnderCursorSelected;
 };
 
 #endif // GANTTEDITORWIDGET_H
