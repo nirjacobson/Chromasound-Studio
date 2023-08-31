@@ -20,6 +20,9 @@ class GanttHeaderWidget : public ScrollableWidget
         void setCellWidth(int width);
         void setCellBeats(float beats);
 
+        float length() const;
+        void setLength(const float length);
+
     signals:
 
     protected:
@@ -35,6 +38,8 @@ class GanttHeaderWidget : public ScrollableWidget
 
         int _cellWidth;
         float _cellBeats;
+
+        float _length;
 };
 
 #endif // GANTTHEADERWIDGET_H

@@ -146,3 +146,18 @@ float Project::PlaylistItem::duration() const
 {
     return _project->patterns()[_pattern].getLength();
 }
+
+void Project::PlaylistItem::setRow(const long row)
+{
+    _pattern = row;
+}
+
+void Project::PlaylistItem::setTime(const float time)
+{
+    _time = time;
+}
+
+void Project::PlaylistItem::setDuration(const float duration)
+{
+    // Not supported
+}

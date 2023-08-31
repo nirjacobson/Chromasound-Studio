@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _app(app)
     , _channelsWidget(new ChannelsWidget(this, app))
     , _playlistWidget(new PlaylistWidget(this, app))
+    , _pianoRollWidget(nullptr)
 {
     ui->setupUi(this);
 
@@ -40,8 +41,9 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
 
 MainWindow::~MainWindow()
 {
-    delete _channelsWindow;
+    if (_pianoRollWidget) delete _pianoRollWidget;
     delete _playlistWindow;
+    delete _channelsWindow;
     delete ui;
 }
 
@@ -86,6 +88,12 @@ void MainWindow::pianoRollTriggered(const int index)
     _app->project().getPattern(_app->activePattern()).getTrack(index).usePianoRoll();
     _channelsWidget->update();
 
+    _pianoRollWidget = new PianoRollWidget(this, _app);
+    _pianoRollWidget->setTrack(_app->activePattern(), index);
+
+    _pianoRollWindow->setWidget(_pianoRollWidget);
+    _pianoRollWindow->resize(400, 300);
+
     _pianoRollWindow->show();
     _pianoRollWindow->setFocus();
 }
@@ -95,6 +103,7 @@ void MainWindow::doUpdate()
     update();
     _channelsWidget->update();
     _playlistWidget->update();
+    if (_pianoRollWidget) _pianoRollWidget->update();
 }
 
 void MainWindow::showEvent(QShowEvent* event)

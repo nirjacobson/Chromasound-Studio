@@ -9,6 +9,10 @@ class GanttItem
         virtual long row() const = 0;
         virtual float time() const = 0;
         virtual float duration() const = 0;
+
+        virtual void setRow(const long row) = 0;
+        virtual void setTime(const float time) = 0;
+        virtual void setDuration(const float duration) = 0;
 };
 
 #endif // GANTTITEM_H

@@ -11,7 +11,7 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
     ui->ganttWidget->setApplication(_app);
     ui->ganttWidget->setLeftWidget(_patternsWidget);
     ui->ganttWidget->setItems(reinterpret_cast<QList<GanttItem*>*>(&app->project().playlist()));
-    ui->ganttWidget->setParameters(PlaylistWidget::Rows, PlaylistWidget::RowHeight, PlaylistWidget::CellWidth, 1);
+    ui->ganttWidget->setParameters(Rows, RowHeight, CellWidth, 1);
 
     connect(ui->ganttWidget, &GanttWidget::clicked, this, &PlaylistWidget::ganttClicked);
 }
@@ -31,5 +31,6 @@ void PlaylistWidget::ganttClicked(Qt::MouseButton button, int row, float time)
     } else {
         _app->project().removePlaylistItem(time, row);
     }
+    ui->ganttWidget->setLength(_app->project().getLength());
     update();
 }

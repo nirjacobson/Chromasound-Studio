@@ -24,6 +24,9 @@ class GanttWidget : public QWidget
 
         void setItems(QList<GanttItem*>* items);
         void setApplication(Application* app);
+        void invertRows(const bool invert);
+
+        void setLength(const float length);
 
     private:
         Ui::GanttWidget *ui;

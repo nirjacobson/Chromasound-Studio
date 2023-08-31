@@ -29,19 +29,12 @@ Track& Pattern::addTrack(const int idx)
 float Pattern::getLength() const
 {
     float lastEnd = 0;
-    QList<Track> tracks = _tracks.values();
-    for (auto it = tracks.begin(); it != tracks.end(); ++it) {
+    for (auto it = _tracks.begin(); it != _tracks.end(); ++it) {
         if (it->items().isEmpty()) {
             continue;
         }
 
-        float end = 0;
-        for (auto it2 = it->items().begin(); it2 != it->items().end(); ++it2) {
-            float thisEnd = it2->time() + it2->note().duration();
-            if (thisEnd > end) {
-                end = thisEnd;
-            }
-        }
+        float end = it->length();
         if (end > lastEnd) {
             lastEnd = end;
         }

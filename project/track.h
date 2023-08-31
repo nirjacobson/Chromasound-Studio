@@ -5,13 +5,15 @@
 #include <QList>
 
 #include "note.h"
+#include "ganttwidget/ganttitem.h"
 
 class Track
 {
     public:
         Track();
+        ~Track();
 
-        class Item {
+        class Item : public GanttItem {
             public:
                 Item(const float time, const Note& note);
 
@@ -23,19 +25,29 @@ class Track
             private:
                 float _time;
                 Note _note;
+
+                // GanttItem interface
+            public:
+                long row() const;
+                float duration() const;
+                void setRow(const long row);
+                void setTime(const float time);
+                void setDuration(const float duration);
         };
 
-        const QList<Item>& items() const;
+        QList<Item*>& items();
+        const QList<Item*>& items() const;
+
+        float length() const;
 
         void addItem(const float time, const Note& note);
-        void removeNote(const float time, const int key);
-        void removeItems(const float time);
+        void removeItem(const float time, const int key);
 
         void usePianoRoll();
         bool doesUsePianoRoll() const;
 
     private:
-        QList<Item> _items;
+        QList<Item*> _items;
         bool _usePianoRoll;
 };
 

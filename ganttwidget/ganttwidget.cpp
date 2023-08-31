@@ -71,6 +71,17 @@ void GanttWidget::setApplication(Application* app)
     ui->editorWidget->setApplication(_app);
 }
 
+void GanttWidget::invertRows(const bool invert)
+{
+    ui->editorWidget->invertRows(invert);
+}
+
+void GanttWidget::setLength(const float length)
+{
+    ui->headerWidget->setLength(length);
+    ui->editorWidget->setLength(length);
+}
+
 void GanttWidget::verticalScroll(int amount)
 {
     float vscroll = (float)amount / ui->verticalScrollBar->maximum();
