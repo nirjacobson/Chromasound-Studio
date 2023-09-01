@@ -17,11 +17,10 @@ class GanttHeaderWidget : public ScrollableWidget
 
         void setScrollPercentage(const float percent);
 
+        void setItems(QList<GanttItem*>* items);
+
         void setCellWidth(int width);
         void setCellBeats(float beats);
-
-        float length() const;
-        void setLength(const float length);
 
     signals:
 
@@ -34,12 +33,14 @@ class GanttHeaderWidget : public ScrollableWidget
 
         Application* _app;
 
+        QList<GanttItem*>* _items;
+
         int _left;
 
         int _cellWidth;
         float _cellBeats;
 
-        float _length;
+        float length() const;
 };
 
 #endif // GANTTHEADERWIDGET_H

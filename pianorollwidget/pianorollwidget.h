@@ -33,6 +33,7 @@ class PianoRollWidget : public QWidget
 
     private slots:
         void ganttClicked(Qt::MouseButton button, int row, float time);
+        void ganttItemsChanged();
 };
 
 #endif // PIANOROLLWIDGET_H

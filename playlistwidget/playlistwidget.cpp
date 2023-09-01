@@ -15,6 +15,7 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
     ui->ganttWidget->setItemsMovableX(true);
 
     connect(ui->ganttWidget, &GanttWidget::clicked, this, &PlaylistWidget::ganttClicked);
+    connect(ui->ganttWidget, &GanttWidget::itemsChanged, this, &PlaylistWidget::ganttItemsChanged);
 }
 
 PlaylistWidget::~PlaylistWidget()
@@ -32,6 +33,10 @@ void PlaylistWidget::ganttClicked(Qt::MouseButton button, int row, float time)
     } else {
         _app->project().removePlaylistItem(time, row);
     }
-    ui->ganttWidget->setLength(_app->project().getLength());
+    update();
+}
+
+void PlaylistWidget::ganttItemsChanged()
+{
     update();
 }
