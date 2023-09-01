@@ -9,7 +9,6 @@ GanttEditorWidget::GanttEditorWidget(QWidget *parent)
     , _left(0)
     , _rows(0)
     , _rowHeight(16)
-    , _length(0)
     , _cellWidth(16)
     , _cellBeats(1)
     , _snap(true)
@@ -35,7 +34,7 @@ void GanttEditorWidget::setVerticalScrollPercentage(const float percent)
 
 void GanttEditorWidget::setHorizontalScrollPercentage(const float percent)
 {
-    int visibleLength = ((int)(_length / 4) + 1) * 4;
+    int visibleLength = ((int)(length() / 4) + 1) * 4;
     int totalWidth = _cellWidth * visibleLength / _cellBeats;
     int scrollWidth = qMax(0, totalWidth - width());
     _left = percent * scrollWidth;
@@ -85,12 +84,17 @@ void GanttEditorWidget::setRowHeight(int height)
 
 float GanttEditorWidget::length() const
 {
-    return _length;
-}
+    float end = 0;
+    if (_items) {
+        for (const GanttItem* item : *_items) {
+            float thisEnd = item->time() + item->duration();
+            if (thisEnd > end) {
+                end = thisEnd;
+            }
+        }
+    }
 
-void GanttEditorWidget::setLength(const float length)
-{
-    _length = length;
+    return end;
 }
 
 void GanttEditorWidget::setItemsResizable(const bool resizable)
@@ -236,7 +240,7 @@ void GanttEditorWidget::mouseMoveEvent(QMouseEvent* event)
 
     float beatsPerPixel = _cellBeats / _cellWidth;
     float leftPosition = _left * beatsPerPixel;
-    float mousePosition = leftPosition + (event->pos().x() * beatsPerPixel);
+    float mousePosition = qMax(leftPosition + (event->pos().x() * beatsPerPixel), 0.0f);
     float mousePositionSnapped = (int)(mousePosition / _cellBeats) * _cellBeats;
 
     float time;
@@ -249,6 +253,7 @@ void GanttEditorWidget::mouseMoveEvent(QMouseEvent* event)
                 if (_itemsResizable) {
                     _itemUnderCursor->setTime(_snap ? mousePositionSnapped : mousePosition);
                     _itemUnderCursor->setDuration(end - (_snap ? mousePositionSnapped : mousePosition));
+                    emit itemsChanged();
                 }
                 break;
             case 1:
@@ -256,11 +261,14 @@ void GanttEditorWidget::mouseMoveEvent(QMouseEvent* event)
                     _itemUnderCursor->setTime(_snap ? mousePositionSnapped : mousePosition);
                 if (_itemsMovableY)
                     _itemUnderCursor->setRow(row);
+                if (_itemsMovableX || _itemsMovableY)
+                    emit itemsChanged();
                 break;
             case 2:
                 if (_itemsResizable) {
                     time = _itemUnderCursor->time();
                     _itemUnderCursor->setDuration((_snap ? mousePositionSnapped : mousePosition) - time);
+                    emit itemsChanged();
                 }
                 break;
         }

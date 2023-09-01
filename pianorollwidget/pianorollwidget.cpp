@@ -18,6 +18,7 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app) :
     ui->ganttWidget->setItemsMovableY(true);
 
     connect(ui->ganttWidget, &GanttWidget::clicked, this, &PianoRollWidget::ganttClicked);
+    connect(ui->ganttWidget, &GanttWidget::itemsChanged, this, &PianoRollWidget::ganttItemsChanged);
 }
 
 PianoRollWidget::~PianoRollWidget()
@@ -39,6 +40,11 @@ void PianoRollWidget::ganttClicked(Qt::MouseButton button, int row, float time)
     } else {
         _track->removeItem(time, row);
     }
-    ui->ganttWidget->setLength(_track->length());
     update();
 }
+
+void PianoRollWidget::ganttItemsChanged()
+{
+    update();
+}
+

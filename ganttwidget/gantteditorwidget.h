@@ -3,6 +3,7 @@
 
 #include "application.h"
 #include "ganttwidget/ganttitem.h"
+#include <QtMath>
 #include <QWidget>
 #include <QPainter>
 #include <QMouseEvent>
@@ -28,15 +29,13 @@ class GanttEditorWidget : public QWidget
         void setRows(int rows);
         void setRowHeight(int height);
 
-        float length() const;
-        void setLength(const float length);
-
         void setItemsResizable(const bool resizable);
         void setItemsMovableX(const bool movable);
         void setItemsMovableY(const bool movable);
 
     signals:
         void clicked(Qt::MouseButton button, int row, float time);
+        void itemsChanged();
 
     protected:
         void paintEvent(QPaintEvent* event);
@@ -56,8 +55,6 @@ class GanttEditorWidget : public QWidget
         int _rows;
         int _rowHeight;
 
-        float _length;
-
         int _cellWidth;
         float _cellBeats;
 
@@ -73,6 +70,8 @@ class GanttEditorWidget : public QWidget
         bool _itemsResizable;
         bool _itemsMovableX;
         bool _itemsMovableY;
+
+        float length() const;
 };
 
 #endif // GANTTEDITORWIDGET_H

@@ -26,8 +26,6 @@ class GanttWidget : public QWidget
         void setApplication(Application* app);
         void invertRows(const bool invert);
 
-        void setLength(const float length);
-
         void setItemsResizable(const bool resizable);
         void setItemsMovableX(const bool movable);
         void setItemsMovableY(const bool movable);
@@ -50,6 +48,7 @@ class GanttWidget : public QWidget
 
     signals:
         void clicked(Qt::MouseButton button, int row, float time);
+        void itemsChanged();
 };
 
 #endif // GANTTWIDGET_H

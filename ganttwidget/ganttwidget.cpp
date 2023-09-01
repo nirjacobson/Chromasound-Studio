@@ -25,6 +25,7 @@ GanttWidget::GanttWidget(QWidget *parent, Application* app) :
     connect(ui->horizontalScrollBar, &QScrollBar::valueChanged, this, &GanttWidget::horizontalScroll);
     connect(ui->snapCheckBox, &QCheckBox::clicked, this, &GanttWidget::snapClicked);
     connect(ui->editorWidget, &GanttEditorWidget::clicked, this, &GanttWidget::clicked);
+    connect(ui->editorWidget, &GanttEditorWidget::itemsChanged, this, &GanttWidget::itemsChanged);
 }
 
 GanttWidget::~GanttWidget()
@@ -61,6 +62,7 @@ void GanttWidget::setParameters(int rows, int rowHeight, int cellWidth, float be
 
 void GanttWidget::setItems(QList<GanttItem*>* items)
 {
+    ui->headerWidget->setItems(items);
     ui->editorWidget->setItems(items);
 }
 
@@ -74,12 +76,6 @@ void GanttWidget::setApplication(Application* app)
 void GanttWidget::invertRows(const bool invert)
 {
     ui->editorWidget->invertRows(invert);
-}
-
-void GanttWidget::setLength(const float length)
-{
-    ui->headerWidget->setLength(length);
-    ui->editorWidget->setLength(length);
 }
 
 void GanttWidget::setItemsResizable(const bool resizable)

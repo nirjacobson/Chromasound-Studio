@@ -31,6 +31,7 @@ class PlaylistWidget : public QWidget
 
     private slots:
         void ganttClicked(Qt::MouseButton button, int row, float time);
+        void ganttItemsChanged();
 };
 
 #endif // PLAYLISTWIDGET_H
