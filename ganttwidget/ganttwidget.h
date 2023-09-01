@@ -28,6 +28,10 @@ class GanttWidget : public QWidget
 
         void setLength(const float length);
 
+        void setItemsResizable(const bool resizable);
+        void setItemsMovableX(const bool movable);
+        void setItemsMovableY(const bool movable);
+
     private:
         Ui::GanttWidget *ui;
         Application* _app;

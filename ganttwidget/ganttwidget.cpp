@@ -82,6 +82,21 @@ void GanttWidget::setLength(const float length)
     ui->editorWidget->setLength(length);
 }
 
+void GanttWidget::setItemsResizable(const bool resizable)
+{
+    ui->editorWidget->setItemsResizable(resizable);
+}
+
+void GanttWidget::setItemsMovableX(const bool movable)
+{
+    ui->editorWidget->setItemsMovableX(movable);
+}
+
+void GanttWidget::setItemsMovableY(const bool movable)
+{
+    ui->editorWidget->setItemsMovableY(movable);
+}
+
 void GanttWidget::verticalScroll(int amount)
 {
     float vscroll = (float)amount / ui->verticalScrollBar->maximum();

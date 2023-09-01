@@ -13,6 +13,9 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app) :
     ui->ganttWidget->setLeftWidget(_keysWidget);
     ui->ganttWidget->setParameters(Rows, RowHeight, CellWidth, 0.25);
     ui->ganttWidget->invertRows(true);
+    ui->ganttWidget->setItemsResizable(true);
+    ui->ganttWidget->setItemsMovableX(true);
+    ui->ganttWidget->setItemsMovableY(true);
 
     connect(ui->ganttWidget, &GanttWidget::clicked, this, &PianoRollWidget::ganttClicked);
 }
