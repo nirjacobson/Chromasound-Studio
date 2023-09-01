@@ -12,6 +12,7 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
     ui->ganttWidget->setLeftWidget(_patternsWidget);
     ui->ganttWidget->setItems(reinterpret_cast<QList<GanttItem*>*>(&app->project().playlist()));
     ui->ganttWidget->setParameters(Rows, RowHeight, CellWidth, 1);
+    ui->ganttWidget->setItemsMovableX(true);
 
     connect(ui->ganttWidget, &GanttWidget::clicked, this, &PlaylistWidget::ganttClicked);
 }

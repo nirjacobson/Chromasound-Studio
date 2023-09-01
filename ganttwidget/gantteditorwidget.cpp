@@ -17,6 +17,9 @@ GanttEditorWidget::GanttEditorWidget(QWidget *parent)
     , _items(nullptr)
     , _itemUnderCursor(nullptr)
     , _itemUnderCursorSelected(false)
+    , _itemsResizable(false)
+    , _itemsMovableX(false)
+    , _itemsMovableY(false)
 {
     setMouseTracking(true);
 }
@@ -88,6 +91,21 @@ float GanttEditorWidget::length() const
 void GanttEditorWidget::setLength(const float length)
 {
     _length = length;
+}
+
+void GanttEditorWidget::setItemsResizable(const bool resizable)
+{
+    _itemsResizable = resizable;
+}
+
+void GanttEditorWidget::setItemsMovableX(const bool movable)
+{
+    _itemsMovableX = movable;
+}
+
+void GanttEditorWidget::setItemsMovableY(const bool movable)
+{
+    _itemsMovableY = movable;
 }
 
 void GanttEditorWidget::paintEvent(QPaintEvent* event)
@@ -228,16 +246,22 @@ void GanttEditorWidget::mouseMoveEvent(QMouseEvent* event)
             case 0:
                 time = _itemUnderCursor->time();
                 end = time + _itemUnderCursor->duration();
-                _itemUnderCursor->setTime(_snap ? mousePositionSnapped : mousePosition);
-                _itemUnderCursor->setDuration(end - (_snap ? mousePositionSnapped : mousePosition));
+                if (_itemsResizable) {
+                    _itemUnderCursor->setTime(_snap ? mousePositionSnapped : mousePosition);
+                    _itemUnderCursor->setDuration(end - (_snap ? mousePositionSnapped : mousePosition));
+                }
                 break;
             case 1:
-                _itemUnderCursor->setTime(_snap ? mousePositionSnapped : mousePosition);
-                _itemUnderCursor->setRow(row);
+                if (_itemsMovableX)
+                    _itemUnderCursor->setTime(_snap ? mousePositionSnapped : mousePosition);
+                if (_itemsMovableY)
+                    _itemUnderCursor->setRow(row);
                 break;
             case 2:
-                time = _itemUnderCursor->time();
-                _itemUnderCursor->setDuration((_snap ? mousePositionSnapped : mousePosition) - time);
+                if (_itemsResizable) {
+                    time = _itemUnderCursor->time();
+                    _itemUnderCursor->setDuration((_snap ? mousePositionSnapped : mousePosition) - time);
+                }
                 break;
         }
 
@@ -269,10 +293,16 @@ void GanttEditorWidget::mouseMoveEvent(QMouseEvent* event)
             switch (_cursorPositionOverItem) {
                 case 0:
                 case 2:
-                    setCursor(Qt::SizeHorCursor);
+                    if (_itemsResizable)
+                        setCursor(Qt::SizeHorCursor);
                     break;
                 case 1:
-                    setCursor(Qt::SizeAllCursor);
+                    if (_itemsMovableX && _itemsMovableY)
+                        setCursor(Qt::SizeAllCursor);
+                    else if (_itemsMovableX)
+                        setCursor(Qt::SizeHorCursor);
+                    else if (_itemsMovableY)
+                        setCursor(Qt::SizeVerCursor);
                 default:
                     break;
             }

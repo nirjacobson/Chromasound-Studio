@@ -31,6 +31,10 @@ class GanttEditorWidget : public QWidget
         float length() const;
         void setLength(const float length);
 
+        void setItemsResizable(const bool resizable);
+        void setItemsMovableX(const bool movable);
+        void setItemsMovableY(const bool movable);
+
     signals:
         void clicked(Qt::MouseButton button, int row, float time);
 
@@ -65,6 +69,10 @@ class GanttEditorWidget : public QWidget
         GanttItem* _itemUnderCursor;
         int _cursorPositionOverItem;
         bool _itemUnderCursorSelected;
+
+        bool _itemsResizable;
+        bool _itemsMovableX;
+        bool _itemsMovableY;
 };
 
 #endif // GANTTEDITORWIDGET_H
