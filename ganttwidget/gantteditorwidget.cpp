@@ -207,12 +207,12 @@ void GanttEditorWidget::mousePressEvent(QMouseEvent* event)
     float mousePosition = leftPosition + (event->pos().x() * beatsPerPixel);
     float mousePositionSnapped = (int)(mousePosition / _cellBeats) * _cellBeats;
 
-    if (_itemUnderCursor) {
-        _itemUnderCursorSelected = true;
-        return;
-    }
 
     if (event->button() == Qt::LeftButton) {
+        if (_itemUnderCursor) {
+            _itemUnderCursorSelected = true;
+            return;
+        }
         emit clicked(Qt::LeftButton, row, _snap ? mousePositionSnapped : mousePosition);
     } else {
         emit clicked(Qt::RightButton, row, mousePosition);

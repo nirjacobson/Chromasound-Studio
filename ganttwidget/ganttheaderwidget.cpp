@@ -70,7 +70,7 @@ void GanttHeaderWidget::paintEvent(QPaintEvent* event)
     int barWidth = _cellWidth / _cellBeats * beatsPerBar;
     int firstBar = _left / barWidth;
     int firstBarStart = firstBar * barWidth - _left;
-    int numBars = qCeil((float)width()/(float)barWidth);
+    int numBars = qCeil((float)width()/(float)barWidth) + 1;
 
     QPoint topLeft = QPoint(firstBarStart, 0);
 
