@@ -19,6 +19,7 @@ GanttEditorWidget::GanttEditorWidget(QWidget *parent)
     , _itemsResizable(false)
     , _itemsMovableX(false)
     , _itemsMovableY(false)
+    , _positionFunction([](){ return -1; })
 {
     setMouseTracking(true);
 }
@@ -34,7 +35,7 @@ void GanttEditorWidget::setVerticalScrollPercentage(const float percent)
 
 void GanttEditorWidget::setHorizontalScrollPercentage(const float percent)
 {
-    int visibleLength = ((int)(length() / 4) + 1) * 4;
+    int visibleLength = ((int)(length() / _app->project().beatsPerBar()) + 1) * _app->project().beatsPerBar();
     int totalWidth = _cellWidth * visibleLength / _cellBeats;
     int scrollWidth = qMax(0, totalWidth - width());
     _left = percent * scrollWidth;
@@ -112,6 +113,11 @@ void GanttEditorWidget::setItemsMovableY(const bool movable)
     _itemsMovableY = movable;
 }
 
+void GanttEditorWidget::setPositionFunction(std::function<float ()> func)
+{
+    _positionFunction = func;
+}
+
 void GanttEditorWidget::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
@@ -174,12 +180,11 @@ void GanttEditorWidget::paintEvent(QPaintEvent* event)
         }
     }
 
-
     float beatsPerPixel = _cellBeats / _cellWidth;
     float leftPosition = _left * beatsPerPixel;
     float rightPosition = leftPosition + (width() * beatsPerPixel);
 
-    float appPosition = _app->position();
+    float appPosition = _positionFunction();
 
     if (leftPosition <= appPosition && appPosition <= rightPosition) {
         int appPositionPixel = (appPosition - leftPosition) / beatsPerPixel;

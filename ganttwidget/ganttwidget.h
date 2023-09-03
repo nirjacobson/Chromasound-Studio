@@ -30,6 +30,8 @@ class GanttWidget : public QWidget
         void setItemsMovableX(const bool movable);
         void setItemsMovableY(const bool movable);
 
+        void setPositionFunction(std::function<float(void)> func);
+
     private:
         Ui::GanttWidget *ui;
         Application* _app;

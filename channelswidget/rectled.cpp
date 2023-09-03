@@ -5,7 +5,7 @@ RectLED::RectLED(QWidget *parent, const QColor& color, const QColor& selectedCol
     , _color(color)
     , _selectedColor(selectedColor)
     , _selected(false)
-    , _on(false)
+    , _onFunction([](){ return false; })
 {
     setMinimumWidth(8);
     setMaximumWidth(8);
@@ -22,22 +22,18 @@ bool RectLED::selected() const
     return _selected;
 }
 
-void RectLED::setOn(const bool on)
+void RectLED::setOnFunction(std::function<bool ()> func)
 {
-    _on = on;
-    repaint();
-}
-
-bool RectLED::on() const
-{
-    return _on;
+    _onFunction = func;
 }
 
 void RectLED::paintEvent(QPaintEvent* event)
 {
+    bool on = _onFunction();
+
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
-    QColor color = _on ? _selected ? _selectedColor : _color : _color.darker();
+    QColor color = on ? _selected ? _selectedColor : _color : _color.darker();
     painter.setBrush(QBrush(color, Qt::SolidPattern));
     painter.setPen(QPen(_selected ? _selectedColor : color.darker(), _selected ? 2 : 1));
     painter.drawRect(rect());

@@ -22,6 +22,8 @@ class GanttHeaderWidget : public ScrollableWidget
         void setCellWidth(int width);
         void setCellBeats(float beats);
 
+        void setPositionFunction(std::function<float(void)> func);
+
     signals:
 
     protected:
@@ -41,6 +43,8 @@ class GanttHeaderWidget : public ScrollableWidget
         float _cellBeats;
 
         float length() const;
+
+        std::function<float(void)> _positionFunction;
 };
 
 #endif // GANTTHEADERWIDGET_H

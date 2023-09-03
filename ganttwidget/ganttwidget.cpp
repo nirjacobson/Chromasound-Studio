@@ -93,6 +93,12 @@ void GanttWidget::setItemsMovableY(const bool movable)
     ui->editorWidget->setItemsMovableY(movable);
 }
 
+void GanttWidget::setPositionFunction(std::function<float ()> func)
+{
+    ui->headerWidget->setPositionFunction(func);
+    ui->editorWidget->setPositionFunction(func);
+}
+
 void GanttWidget::verticalScroll(int amount)
 {
     float vscroll = (float)amount / ui->verticalScrollBar->maximum();

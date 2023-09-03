@@ -33,6 +33,8 @@ class GanttEditorWidget : public QWidget
         void setItemsMovableX(const bool movable);
         void setItemsMovableY(const bool movable);
 
+        void setPositionFunction(std::function<float(void)> func);
+
     signals:
         void clicked(Qt::MouseButton button, int row, float time);
         void itemsChanged();
@@ -70,6 +72,8 @@ class GanttEditorWidget : public QWidget
         bool _itemsResizable;
         bool _itemsMovableX;
         bool _itemsMovableY;
+
+        std::function<float(void)> _positionFunction;
 
         float length() const;
 };

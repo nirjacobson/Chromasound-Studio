@@ -12,13 +12,12 @@ class RectLED : public QWidget
 {
         Q_OBJECT
     public:
-        explicit RectLED(QWidget *parent = nullptr, const QColor& color = Qt::GlobalColor::lightGray, const QColor& selectedColor = Qt::GlobalColor::green);
+        explicit RectLED(QWidget *parent = nullptr, const QColor& color = Qt::GlobalColor::green, const QColor& selectedColor = Qt::GlobalColor::cyan);
 
         void setSelected(const bool selected);
         bool selected() const;
 
-        void setOn(const bool on);
-        bool on() const;
+        void setOnFunction(std::function<bool(void)> func);
 
     signals:
         void clicked();
@@ -33,7 +32,7 @@ class RectLED : public QWidget
         QColor _color;
         QColor _selectedColor;
         bool _selected;
-        bool _on;
+        std::function<bool(void)> _onFunction;
 };
 
 #endif // RECTLED_H
