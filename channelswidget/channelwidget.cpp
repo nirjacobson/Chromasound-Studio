@@ -21,15 +21,24 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index) :
     ui->led->setOn(_app->project().getChannel(_index).enabled());
     ui->rectLed->setOnFunction([=](){
         QMap<int, float> activePatterns = _app->project().activePatternsAtTime(_app->position());
+        const Pattern& activePattern = _app->project().patterns()[_app->activePattern()];
+        const Track& track = activePattern.getTrack(index);
         if (_app->playMode() == Application::PlayMode::Pat) {
             return _app->isPlaying() &&
                    _app->project().getChannel(_index).enabled() &&
-                    _app->project().patterns()[_app->activePattern()].activeTracksAtTime(_app->position()).contains(index);
+                    activePattern.activeTracksAtTime(_app->position()).contains(index) &&
+                    std::find_if(track.items().begin(),
+                              track.items().end(),
+                     [&](const Track::Item* item){ return qAbs(item->time() - _app->position()) <= 0.0625f; }) == track.items().end();
         } else {
            return _app->isPlaying() &&
                    activePatterns.contains(_app->activePattern()) &&
                   _app->project().getChannel(_index).enabled() &&
-                  _app->project().patterns()[_app->activePattern()].activeTracksAtTime(_app->position() - activePatterns[_app->activePattern()]).contains(index);
+                  activePattern.activeTracksAtTime(_app->position() - activePatterns[_app->activePattern()]).contains(index) &&
+                  std::find_if(track.items().begin(), track.items().end(),
+                  [&](const Track::Item* item){
+                    float delta = item->time() - (_app->position() - activePatterns[_app->activePattern()]);
+                    return delta >= 0 && delta <= 0.0625f; }) == track.items().end();
         }
     });
 
