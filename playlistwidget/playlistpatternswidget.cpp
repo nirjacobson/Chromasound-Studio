@@ -44,7 +44,7 @@ void PlaylistPatternsWidget::paintEvent(QPaintEvent* event)
 
     for (int i = 0; i < numPatternsAcrossHeight && (firstPattern + i) < _rows; i++) {
         QPoint thisTopLeft = topLeft + QPoint(0, i * _rowHeight);
-        QRect rect(thisTopLeft, thisTopLeft + QPoint(width(), _rowHeight));
+        QRect rect(thisTopLeft, thisTopLeft + QPoint(width() - 2, _rowHeight));
 
         painter.fillRect(rect, painter.brush());
         painter.drawRect(rect);
