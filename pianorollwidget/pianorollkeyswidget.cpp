@@ -52,7 +52,7 @@ void PianoRollKeysWidget::paintEvent(QPaintEvent* event)
     for (int i = 0; i < numOctavesAcrossHeight; i++) {
         for (int j = 0; j < WHITE_KEYS_PER_OCTAVE; j++) {
             QPoint thisTopLeft = topLeft - QPoint(0, (j * whiteKeyWidth));
-            QRect rect(thisTopLeft, thisTopLeft + QPoint(width(), whiteKeyWidth));
+            QRect rect(thisTopLeft, thisTopLeft + QPoint(width() - 2, whiteKeyWidth));
             painter.fillRect(rect, painter.brush());
             painter.drawRect(rect);
             if (j == 0) {
@@ -77,7 +77,6 @@ void PianoRollKeysWidget::paintEvent(QPaintEvent* event)
             QRect rect(thisTopLeft, thisTopLeft + QPoint(width()/2, _rowHeight));
             painter.fillRect(rect, painter.brush());
             painter.drawRect(rect);
-//            painter.drawText(rect.adjusted(4, 4, 0, 0), QString("Key %1").arg(j));
         }
 
         topLeft -= QPoint(0, octaveHeight);

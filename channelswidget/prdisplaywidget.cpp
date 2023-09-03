@@ -63,7 +63,7 @@ void PRDisplayWidget::paintEvent(QPaintEvent* event)
         }
     }
 
-    if (position <= visibleLength) {
+    if (_app->isPlaying() && _app->project().getChannel(_index).enabled() && position <= visibleLength) {
         int appPositionPixel = position / beatsPerPixel;
 
         QPoint p1(appPositionPixel, 0);
