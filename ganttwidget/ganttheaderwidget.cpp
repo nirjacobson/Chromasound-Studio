@@ -9,6 +9,7 @@ GanttHeaderWidget::GanttHeaderWidget(QWidget *parent)
     , _left(0)
     , _cellWidth(16)
     , _cellBeats(1)
+    , _positionFunction([](){ return -1; })
 {
 
 }
@@ -20,7 +21,7 @@ void GanttHeaderWidget::setApplication(Application* app)
 
 void GanttHeaderWidget::setScrollPercentage(const float percent)
 {
-    int visibleLength = ((int)(length() / 4) + 1) * 4;
+    int visibleLength = ((int)(length() / _app->project().beatsPerBar()) + 1) * _app->project().beatsPerBar();
     int totalWidth = _cellWidth * visibleLength / _cellBeats;
     int scrollWidth = qMax(0, totalWidth - width());
     _left = percent * scrollWidth;
@@ -41,6 +42,11 @@ void GanttHeaderWidget::setCellWidth(int width)
 void GanttHeaderWidget::setCellBeats(float beats)
 {
     _cellBeats = beats;
+}
+
+void GanttHeaderWidget::setPositionFunction(std::function<float ()> func)
+{
+    _positionFunction = func;
 }
 
 float GanttHeaderWidget::length() const
@@ -89,7 +95,7 @@ void GanttHeaderWidget::paintEvent(QPaintEvent* event)
     float leftPosition = _left * beatsPerPixel;
     float rightPosition = leftPosition + (width() * beatsPerPixel);
 
-    float appPosition = _app->position();
+    float appPosition = _positionFunction();
 
     if (leftPosition <= appPosition && appPosition <= rightPosition) {
         int appPositionPixel = (appPosition - leftPosition) / beatsPerPixel;

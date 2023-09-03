@@ -15,7 +15,23 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index) :
     ui->stepSequencer->setApplication(app);
     ui->stepSequencer->setIndex(index);
 
+    ui->prDisplay->setApplication(app);
+    ui->prDisplay->setIndex(index);
+
     ui->led->setOn(_app->project().getChannel(_index).enabled());
+    ui->rectLed->setOnFunction([=](){
+        QMap<int, float> activePatterns = _app->project().activePatternsAtTime(_app->position());
+        if (_app->playMode() == Application::PlayMode::Pat) {
+            return _app->isPlaying() &&
+                   _app->project().getChannel(_index).enabled() &&
+                    _app->project().patterns()[_app->activePattern()].activeTracksAtTime(_app->position()).contains(index);
+        } else {
+           return _app->isPlaying() &&
+                   activePatterns.contains(_app->activePattern()) &&
+                  _app->project().getChannel(_index).enabled() &&
+                  _app->project().patterns()[_app->activePattern()].activeTracksAtTime(_app->position() - activePatterns[_app->activePattern()]).contains(index);
+        }
+    });
 
     connect(ui->pushButton, &QPushButton::pressed, this, &ChannelWidget::buttonPressed);
     connect(ui->pushButton, &QWidget::customContextMenuRequested, this, &ChannelWidget::buttonContextMenuRequested);

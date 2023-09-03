@@ -17,6 +17,7 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app) :
     ui->ganttWidget->setItemsMovableX(true);
     ui->ganttWidget->setItemsMovableY(true);
 
+
     connect(ui->ganttWidget, &GanttWidget::clicked, this, &PianoRollWidget::ganttClicked);
     connect(ui->ganttWidget, &GanttWidget::itemsChanged, this, &PianoRollWidget::ganttItemsChanged);
 }
@@ -30,6 +31,26 @@ void PianoRollWidget::setTrack(const int pattern, const int track)
 {
     _track = &_app->project().getPattern(pattern).getTrack(track);
     ui->ganttWidget->setItems(reinterpret_cast<QList<GanttItem*>*>(&_track->items()));
+    ui->ganttWidget->setPositionFunction([=](){
+        float appPosition = _app->position();
+
+        if (_app->playMode() == Application::PlayMode::Song) {
+            QMap<int, float> activePatterns = _app->project().activePatternsAtTime(appPosition);
+
+            if (activePatterns.contains(pattern)) {
+                float delta = appPosition - activePatterns[pattern];
+                QList<int> activeTracks = _app->project().patterns()[pattern].activeTracksAtTime(delta);
+
+                if (activeTracks.contains(track)) {
+                    return delta;
+                }
+            }
+        } else {
+            return appPosition;
+        }
+
+        return -1.0f;
+    });
     update();
 }
 

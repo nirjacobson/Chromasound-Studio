@@ -29,7 +29,9 @@ void StepSequencerWidget::paintEvent(QPaintEvent* event)
     float beatsPerStep = 0.25;
 
     int numSteps = _app->project().beatsPerBar() * 4;
-    setMinimumSize(QSize((numSteps-1) * (StepSequencerWidget::StepWidth + StepSequencerWidget::StepSpacing) + StepSequencerWidget::StepWidth + 3, 8));
+    QSize size((numSteps-1) * (StepSequencerWidget::StepWidth + StepSequencerWidget::StepSpacing) + StepSequencerWidget::StepWidth + 3, height());
+    setMinimumSize(size);
+    setMaximumSize(size);
 
     bool steps[numSteps];
     if (pattern.hasTrack(_index)) {

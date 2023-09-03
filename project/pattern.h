@@ -17,6 +17,8 @@ class Pattern
         Track& addTrack(const int idx);
         float getLength() const;
 
+        QList<int> activeTracksAtTime(const float time) const;
+
     private:
         QMap<int, Track> _tracks;
 };

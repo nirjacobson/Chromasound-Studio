@@ -21,10 +21,9 @@ float Application::position() const
     }
 
     if (_playMode == Pat) {
-        float minPatternLength = _project.beatsPerBar();
-        float patternLength = _project.getPattern(_activePattern).getLength();
+        float patternLength = qCeil(_project.getPattern(_activePattern).getLength()/_project.beatsPerBar()) * _project.beatsPerBar();
 
-        return fmod( ((_ref + _timer.nsecsElapsed()) / beatNS), qMax(minPatternLength, patternLength) );
+        return fmod( ((_ref + _timer.nsecsElapsed()) / beatNS), patternLength );
     }
 
     return (_ref + _timer.nsecsElapsed()) / beatNS;
