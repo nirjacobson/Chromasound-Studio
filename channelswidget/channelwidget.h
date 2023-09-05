@@ -6,6 +6,7 @@
 #include <QInputDialog>
 #include <QMenu>
 #include <QAction>
+#include <iostream>
 
 #include "application.h"
 #include "project/channel.h"
@@ -29,6 +30,8 @@ class ChannelWidget : public QWidget
         bool on() const;
 
         int index() const;
+
+        const QRect getSequencerGeometry();
 
     private:
         Ui::ChannelWidget *ui;

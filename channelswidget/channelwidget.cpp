@@ -87,6 +87,14 @@ int ChannelWidget::index() const
     return _index;
 }
 
+const QRect ChannelWidget::getSequencerGeometry()
+{
+    QRect rect;
+    rect.setBottomLeft(ui->stepSequencer->mapToGlobal(ui->stepSequencer->geometry().bottomLeft()));
+    rect.setWidth(ui->stepSequencer->width());
+    return rect;
+}
+
 void ChannelWidget::ledClicked(bool shift)
 {
     Channel& channel = _app->project().getChannel(_index);
@@ -108,7 +116,8 @@ void ChannelWidget::buttonPressed()
             ui->pushButton->setText(name);
         }
     } else {
-        emit toggled(ui->pushButton->isChecked());
+        bool state = ui->pushButton->isChecked();
+        emit toggled(!state);
     }
 }
 
