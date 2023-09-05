@@ -34,6 +34,8 @@ class Track
                 void setRow(const long row);
                 void setTime(const float time);
                 void setDuration(const float duration);
+                int velocity() const;
+                void setVelocity(const int velocity);
         };
 
         QList<Item*>& items();

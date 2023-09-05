@@ -5,6 +5,7 @@
 
 #include "../application.h"
 #include "ganttleftwidget.h"
+#include "ganttbottomwidget.h"
 #include "ganttitem.h"
 
 namespace Ui {
@@ -20,6 +21,7 @@ class GanttWidget : public QWidget
         ~GanttWidget();
 
         void setLeftWidget(GanttLeftWidget* const widget);
+        void setBottomWidget(GanttBottomWidget* const widget);
         void setParameters(int rows, int rowHeight, int cellWidth, float beatsPerCell);
 
         void setItems(QList<GanttItem*>* items);
@@ -39,6 +41,7 @@ class GanttWidget : public QWidget
         Application* _app;
 
         GanttLeftWidget* _leftWidget;
+        GanttBottomWidget* _bottomWidget;
 
         int _rows;
         int _rowHeight;

@@ -147,6 +147,12 @@ float Project::PlaylistItem::duration() const
     return _project->patterns()[_pattern].getLength();
 }
 
+int Project::PlaylistItem::velocity() const
+{
+    // Not supported
+    return 0.0f;
+}
+
 void Project::PlaylistItem::setRow(const long row)
 {
     _pattern = row;
@@ -158,6 +164,11 @@ void Project::PlaylistItem::setTime(const float time)
 }
 
 void Project::PlaylistItem::setDuration(const float duration)
+{
+    // Not supported
+}
+
+void Project::PlaylistItem::setVelocity(const int velocity)
 {
     // Not supported
 }

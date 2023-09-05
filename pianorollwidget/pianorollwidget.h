@@ -5,6 +5,7 @@
 
 #include "application.h"
 #include "pianorollkeyswidget.h"
+#include "pianorollvelocitieswidget.h"
 
 namespace Ui {
     class PianoRollWidget;
@@ -28,6 +29,7 @@ class PianoRollWidget : public QWidget
         Application* _app;
         Ui::PianoRollWidget *ui;
         PianoRollKeysWidget* _keysWidget;
+        PianoRollVelocitiesWidget* _velocitiesWidget;
 
         Track* _track;
 
