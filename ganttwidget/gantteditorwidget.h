@@ -36,6 +36,8 @@ class GanttEditorWidget : public QWidget
         void setPositionFunction(std::function<float(void)> func);
 
     signals:
+        void horizontalScroll(const int pixels);
+        void verticalScroll(const int pixels);
         void clicked(Qt::MouseButton button, int row, float time);
         void itemsChanged();
 
@@ -44,6 +46,7 @@ class GanttEditorWidget : public QWidget
         void mousePressEvent(QMouseEvent* event);
         void mouseReleaseEvent(QMouseEvent* event);
         void mouseMoveEvent(QMouseEvent* event);
+        void wheelEvent(QWheelEvent* event);
 
     private:
         static constexpr QColor CursorColor = QColor(64, 192, 64);
@@ -76,6 +79,7 @@ class GanttEditorWidget : public QWidget
         std::function<float(void)> _positionFunction;
 
         float length() const;
+        float visibleLength() const;
 };
 
 #endif // GANTTEDITORWIDGET_H

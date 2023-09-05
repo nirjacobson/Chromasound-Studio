@@ -6,7 +6,8 @@ ChannelsWidget::ChannelsWidget(QWidget *parent, Application* app) :
     ui(new Ui::ChannelsWidget),
     _app(app),
     _activeChannelWidget(nullptr),
-    _stepKeysWidget(new StepKeys(this, app))
+    _stepKeysWidget(new StepKeys(this, app)),
+    _stepVelocitiesWidget(new StepVelocities(this, app))
 {
     ui->setupUi(this);
 
@@ -36,8 +37,10 @@ ChannelsWidget::ChannelsWidget(QWidget *parent, Application* app) :
     connect(ui->velocityButton, &QPushButton::clicked, this, &ChannelsWidget::velocityButtonClicked);
 
     _stepKeysWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    _stepVelocitiesWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
 
     connect(_stepKeysWidget, &StepKeys::clicked, this, &ChannelsWidget::pianoKeyClicked);
+    connect(_stepVelocitiesWidget, &StepVelocities::clicked, this, &ChannelsWidget::velocityClicked);
 }
 
 ChannelsWidget::~ChannelsWidget()
@@ -45,6 +48,9 @@ ChannelsWidget::~ChannelsWidget()
     for (ChannelWidget* channelWidget : _channelWidgets) {
         delete channelWidget;
     }
+
+    delete _stepVelocitiesWidget;
+    delete _stepKeysWidget;
 
     delete ui;
 }
@@ -67,16 +73,35 @@ void ChannelsWidget::handleToggle(ChannelWidget* channelWidget, const bool selec
     }
 
     _stepKeysWidget->setVisible(false);
+    _stepVelocitiesWidget->setVisible(false);
     _activeChannelWidget = nullptr;
 
     if (selected) {
         _activeChannelWidget = channelWidget;
 
-        if (ui->pianoButton->isChecked() && !_app->project().patterns()[_app->activePattern()].getTrack(_activeChannelWidget->index()).doesUsePianoRoll()) {
-            adjustPopup();
-            _stepKeysWidget->setChannel(channelWidget->index());
-            _stepKeysWidget->setVisible(true);
-            _stepKeysWidget->raise();
+        const Pattern& pattern = _app->project().patterns()[_app->activePattern()];
+        if (pattern.hasTrack(_activeChannelWidget->index())) {
+            const Track& track = pattern.getTrack(_activeChannelWidget->index());
+            if (!track.doesUsePianoRoll()) {
+                if (ui->pianoButton->isChecked()) {
+                    adjustPopup();
+                    _stepKeysWidget->setChannel(channelWidget->index());
+                    _stepKeysWidget->setVisible(true);
+                    _stepKeysWidget->raise();
+                } else if (ui->velocityButton->isChecked() && !track.items().empty()) {
+                    adjustPopup();
+                    _stepVelocitiesWidget->setChannel(channelWidget->index());
+                    _stepVelocitiesWidget->setVisible(true);
+                    _stepVelocitiesWidget->raise();
+                }
+            }
+        } else {
+            if (ui->pianoButton->isChecked()) {
+                adjustPopup();
+                _stepKeysWidget->setChannel(channelWidget->index());
+                _stepKeysWidget->setVisible(true);
+                _stepKeysWidget->raise();
+            }
         }
     }
 }
@@ -94,6 +119,7 @@ void ChannelsWidget::adjustPopup()
         const QRect& rect = _activeChannelWidget->getSequencerGeometry();
         QPoint bottomLeft = rect.bottomLeft();
         _stepKeysWidget->setGeometry(QRect(bottomLeft, QSize(rect.width(), 128)));
+        _stepVelocitiesWidget->setGeometry(QRect(bottomLeft, QSize(rect.width(), 128)));
     }
 }
 
@@ -111,19 +137,47 @@ void ChannelsWidget::pianoButtonClicked()
     if (ui->pianoButton->isChecked()) {
         ui->velocityButton->setChecked(false);
 
-        if (_activeChannelWidget && !_app->project().patterns()[_app->activePattern()].getTrack(_activeChannelWidget->index()).doesUsePianoRoll()) {
-            adjustPopup();
-            _stepKeysWidget->setChannel(_activeChannelWidget->index());
-            _stepKeysWidget->setVisible(true);
-            _stepKeysWidget->raise();
+        if (_activeChannelWidget) {
+            const Pattern& pattern = _app->project().patterns()[_app->activePattern()];
+            if (pattern.hasTrack(_activeChannelWidget->index())) {
+                const Track& track = pattern.getTrack(_activeChannelWidget->index());
+                if(!track.doesUsePianoRoll()) {
+                    adjustPopup();
+                    _stepVelocitiesWidget->setVisible(false);
+                    _stepKeysWidget->setChannel(_activeChannelWidget->index());
+                    _stepKeysWidget->setVisible(true);
+                    _stepKeysWidget->raise();
+                }
+            } else {
+                adjustPopup();
+                _stepKeysWidget->setChannel(_activeChannelWidget->index());
+                _stepKeysWidget->setVisible(true);
+                _stepKeysWidget->raise();
+            }
         }
     }
 }
 
 void ChannelsWidget::velocityButtonClicked()
 {
+    _stepVelocitiesWidget->setVisible(false);
+
     if (ui->velocityButton->isChecked()) {
         ui->pianoButton->setChecked(false);
+
+        if (_activeChannelWidget) {
+            const Pattern& pattern = _app->project().patterns()[_app->activePattern()];
+            if (pattern.hasTrack(_activeChannelWidget->index())) {
+                const Track& track = pattern.getTrack(_activeChannelWidget->index());
+                if (!track.doesUsePianoRoll() && !track.items().empty()) {
+                    adjustPopup();
+                    _stepKeysWidget->setVisible(false);
+                    _stepVelocitiesWidget->setChannel(_activeChannelWidget->index());
+                    _stepVelocitiesWidget->setVisible(true);
+                    _stepVelocitiesWidget->raise();
+                }
+            }
+        }
     }
 }
 
@@ -145,6 +199,20 @@ void ChannelsWidget::pianoKeyClicked(const Qt::MouseButton button, const int ste
     _stepKeysWidget->update();
     _activeChannelWidget->update();
 
+}
+
+void ChannelsWidget::velocityClicked(const int step, const int velocity)
+{
+    float beatsPerStep = 0.25;
+    Track& track = _app->project().getPattern(_app->activePattern()).getTrack(_activeChannelWidget->index());
+
+    auto existingItem = std::find_if(track.items().begin(), track.items().end(), [=](const Track::Item* item){ return item->time() == step * beatsPerStep; });
+    if (existingItem != track.items().end()) {
+        (*existingItem)->note().setVelocity(velocity);
+    }
+
+    _stepVelocitiesWidget->update();
+    _activeChannelWidget->update();
 }
 
 

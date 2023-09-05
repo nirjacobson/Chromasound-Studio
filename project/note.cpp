@@ -3,6 +3,7 @@
 Note::Note(const int key, const float duration)
     : _key(key)
     , _duration(duration)
+    , _velocity(100)
 {
 
 }
@@ -17,6 +18,11 @@ float Note::duration() const
     return _duration;
 }
 
+int Note::velocity() const
+{
+    return _velocity;
+}
+
 void Note::setKey(const int key)
 {
     _key = key;
@@ -25,6 +31,11 @@ void Note::setKey(const int key)
 void Note::setDuration(const float duration)
 {
     _duration = duration;
+}
+
+void Note::setVelocity(const int velocity)
+{
+    _velocity = velocity;
 }
 
 bool Note::operator==(const Note& note)

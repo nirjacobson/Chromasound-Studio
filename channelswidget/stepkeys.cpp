@@ -126,12 +126,9 @@ void StepKeys::wheelEvent(QWheelEvent* event)
 void StepKeys::mousePressEvent(QMouseEvent* event)
 {
     int absBottom = ROW_HEIGHT * ROWS;
-    int bottom = _top + height() + 1;
 
     int octaveHeight = ROW_HEIGHT * KEYS_PER_OCTAVE;
     int whiteKeyWidth = (float)octaveHeight / 7.0f;
-
-    int bottomPosition = absBottom - bottom;
 
     int width = StepSequencerWidget::StepWidth + StepSequencerWidget::StepSpacing;
 

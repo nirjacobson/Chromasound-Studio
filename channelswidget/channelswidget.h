@@ -9,6 +9,7 @@
 #include "channelwidget.h"
 #include "stepcursorwidget.h"
 #include "stepkeys.h"
+#include "stepvelocities.h"
 
 namespace Ui {
     class ChannelsWidget;
@@ -33,6 +34,7 @@ class ChannelsWidget : public QWidget
         ChannelWidget* _activeChannelWidget;
 
         StepKeys* _stepKeysWidget;
+        StepVelocities* _stepVelocitiesWidget;
 
         void toggleSolo(ChannelWidget* channelWidget);
         void handleToggle(ChannelWidget* channelWidget, const bool selected);
@@ -45,6 +47,7 @@ class ChannelsWidget : public QWidget
         void pianoButtonClicked();
         void velocityButtonClicked();
         void pianoKeyClicked(const Qt::MouseButton button, const int step, const int key);
+        void velocityClicked(const int step, const int velocity);
 };
 
 #endif // CHANNELSWIDGET_H

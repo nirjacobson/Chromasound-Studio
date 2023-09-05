@@ -10,12 +10,24 @@ PlaylistPatternsWidget::PlaylistPatternsWidget(QWidget *parent)
     setMaximumWidth(128);
 }
 
+float PlaylistPatternsWidget::getScrollPercentage()
+{
+    int scrollHeight = qMax(0, length() - height());
+
+    return (float)_top / (float)scrollHeight;
+}
+
 void PlaylistPatternsWidget::setScrollPercentage(const float percent)
 {
-    int totalHeight = _rowHeight * _rows;
-    int scrollHeight = qMax(0, totalHeight - height());
+    int scrollHeight = qMax(0, length() - height());
     _top = percent * scrollHeight;
 
+    update();
+}
+
+void PlaylistPatternsWidget::scrollBy(const int pixels)
+{
+    _top += pixels;
     update();
 }
 
@@ -27,6 +39,11 @@ void PlaylistPatternsWidget::setRows(int rows)
 void PlaylistPatternsWidget::setRowHeight(int height)
 {
     _rowHeight = height;
+}
+
+int PlaylistPatternsWidget::length() const
+{
+    return _rowHeight * _rows;
 }
 
 void PlaylistPatternsWidget::paintEvent(QPaintEvent* event)

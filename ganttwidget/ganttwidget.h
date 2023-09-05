@@ -49,6 +49,8 @@ class GanttWidget : public QWidget
         void verticalScroll(int amount);
         void horizontalScroll(int amount);
         void snapClicked();
+        void wheelHorizontalScroll(int pixels);
+        void wheelVerticalScroll(int pixels);
 
     signals:
         void clicked(Qt::MouseButton button, int row, float time);
