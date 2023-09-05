@@ -15,6 +15,7 @@ class GanttHeaderWidget : public ScrollableWidget
 
         void setApplication(Application* app);
 
+        float getScrollPercentage();
         void setScrollPercentage(const float percent);
 
         void setItems(QList<GanttItem*>* items);
@@ -24,9 +25,12 @@ class GanttHeaderWidget : public ScrollableWidget
 
         void setPositionFunction(std::function<float(void)> func);
 
+        void scrollBy(const int pixels);
+
     signals:
 
     protected:
+        int length() const;
         void paintEvent(QPaintEvent* event);
 
     private:
@@ -42,7 +46,7 @@ class GanttHeaderWidget : public ScrollableWidget
         int _cellWidth;
         float _cellBeats;
 
-        float length() const;
+        float playlength() const;
 
         std::function<float(void)> _positionFunction;
 };

@@ -9,12 +9,24 @@ PianoRollKeysWidget::PianoRollKeysWidget(QWidget* parent)
     setMinimumWidth(128);
     setMaximumWidth(128);
 }
+
+float PianoRollKeysWidget::getScrollPercentage()
+{
+    int scrollHeight = qMax(0, length() - height());
+
+    return (float)_top / (float)scrollHeight;
+}
 void PianoRollKeysWidget::setScrollPercentage(const float percent)
 {
-    int totalHeight = _rowHeight * _rows;
-    int scrollHeight = qMax(0, totalHeight - height());
+    int scrollHeight = qMax(0, length() - height());
     _top = percent * scrollHeight;
 
+    update();
+}
+
+void PianoRollKeysWidget::scrollBy(const int pixels)
+{
+    _top += pixels;
     update();
 }
 
@@ -26,6 +38,11 @@ void PianoRollKeysWidget::setRows(int rows)
 void PianoRollKeysWidget::setRowHeight(int height)
 {
     _rowHeight = height;
+}
+
+int PianoRollKeysWidget::length() const
+{
+    return _rowHeight * _rows;
 }
 
 void PianoRollKeysWidget::paintEvent(QPaintEvent* event)

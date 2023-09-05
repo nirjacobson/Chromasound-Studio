@@ -26,6 +26,8 @@ GanttWidget::GanttWidget(QWidget *parent, Application* app) :
     connect(ui->snapCheckBox, &QCheckBox::clicked, this, &GanttWidget::snapClicked);
     connect(ui->editorWidget, &GanttEditorWidget::clicked, this, &GanttWidget::clicked);
     connect(ui->editorWidget, &GanttEditorWidget::itemsChanged, this, &GanttWidget::itemsChanged);
+    connect(ui->editorWidget, &GanttEditorWidget::horizontalScroll, this, &GanttWidget::wheelHorizontalScroll);
+    connect(ui->editorWidget, &GanttEditorWidget::verticalScroll, this, &GanttWidget::wheelVerticalScroll);
 }
 
 GanttWidget::~GanttWidget()
@@ -125,4 +127,20 @@ void GanttWidget::horizontalScroll(int amount)
 void GanttWidget::snapClicked()
 {
     ui->editorWidget->setSnap(ui->snapCheckBox->isChecked());
+}
+
+void GanttWidget::wheelHorizontalScroll(int pixels)
+{
+    ui->headerWidget->scrollBy(pixels);
+    ui->horizontalScrollBar->blockSignals(true);
+    ui->horizontalScrollBar->setValue(ui->headerWidget->getScrollPercentage()*ui->horizontalScrollBar->maximum());
+    ui->horizontalScrollBar->blockSignals(false);
+}
+
+void GanttWidget::wheelVerticalScroll(int pixels)
+{
+    dynamic_cast<GanttLeftWidget*>(_leftWidget)->scrollBy(pixels);
+    ui->verticalScrollBar->blockSignals(true);
+    ui->verticalScrollBar->setValue(_leftWidget->getScrollPercentage()*ui->verticalScrollBar->maximum());
+    ui->verticalScrollBar->blockSignals(false);
 }

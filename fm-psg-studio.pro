@@ -10,6 +10,7 @@ CONFIG += c++11
 
 SOURCES += \
     channelswidget/stepkeys.cpp \
+    channelswidget/stepvelocities.cpp \
     pianorollwidget/pianorollkeyswidget.cpp \
     pianorollwidget/pianorollwidget.cpp \
     project/channel.cpp \
@@ -41,6 +42,7 @@ SOURCES += \
 
 HEADERS += \
     channelswidget/stepkeys.h \
+    channelswidget/stepvelocities.h \
     pianorollwidget/pianorollkeyswidget.h \
     pianorollwidget/pianorollwidget.h \
     project/channel.h \

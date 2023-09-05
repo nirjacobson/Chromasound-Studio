@@ -11,12 +11,15 @@ class PianoRollKeysWidget : public GanttLeftWidget
     public:
         explicit PianoRollKeysWidget(QWidget *parent = nullptr);
 
+        float getScrollPercentage();
         void setScrollPercentage(const float percent);
+        void scrollBy(const int pixels);
 
         void setRows(int rows);
         void setRowHeight(int height);
 
     protected:
+        int length() const;
         void paintEvent(QPaintEvent* event);
 
     private:

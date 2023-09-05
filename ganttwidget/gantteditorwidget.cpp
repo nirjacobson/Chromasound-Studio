@@ -35,8 +35,7 @@ void GanttEditorWidget::setVerticalScrollPercentage(const float percent)
 
 void GanttEditorWidget::setHorizontalScrollPercentage(const float percent)
 {
-    int visibleLength = ((int)(length() / _app->project().beatsPerBar()) + 1) * _app->project().beatsPerBar();
-    int totalWidth = _cellWidth * visibleLength / _cellBeats;
+    int totalWidth = _cellWidth * visibleLength() / _cellBeats;
     int scrollWidth = qMax(0, totalWidth - width());
     _left = percent * scrollWidth;
 
@@ -96,6 +95,11 @@ float GanttEditorWidget::length() const
     }
 
     return end;
+}
+
+float GanttEditorWidget::visibleLength() const
+{
+    return ((int)(length() / _app->project().beatsPerBar()) + 1) * _app->project().beatsPerBar();
 }
 
 void GanttEditorWidget::setItemsResizable(const bool resizable)
@@ -323,4 +327,33 @@ void GanttEditorWidget::mouseMoveEvent(QMouseEvent* event)
             unsetCursor();
         }
     }
+}
+
+void GanttEditorWidget::wheelEvent(QWheelEvent* event)
+{
+    long oldTop = _top;
+    long oldLeft = _left;
+    if (event->pixelDelta().isNull()) {
+        _top -= event->angleDelta().y() / 8 / 5;
+        _left -= event->angleDelta().x() / 8 / 5;
+    } else {
+        _top -= event->pixelDelta().y();
+        _left -= event->pixelDelta().x();
+    }
+    _top = qMin(_top, (_rows * _rowHeight) - (long)height());
+    _top = qMax(_top, 0L);
+
+    long totalWidth = _cellWidth * visibleLength() / _cellBeats;
+
+    _left = qMin(_left, totalWidth - width());
+    _left = qMax(_left, 0L);
+
+    if (oldTop != _top) {
+        emit verticalScroll(_top - oldTop);
+    }
+
+    if (oldLeft != _left) {
+        emit horizontalScroll(_left - oldLeft);
+    }
+    update();
 }

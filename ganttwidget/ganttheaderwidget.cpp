@@ -19,11 +19,18 @@ void GanttHeaderWidget::setApplication(Application* app)
     _app = app;
 }
 
+float GanttHeaderWidget::getScrollPercentage()
+{
+    int scrollWidth = qMax(0, length() - width());
+
+    if (scrollWidth == 0) return 0;
+
+    return (float)_left / (float)scrollWidth;
+}
+
 void GanttHeaderWidget::setScrollPercentage(const float percent)
 {
-    int visibleLength = ((int)(length() / _app->project().beatsPerBar()) + 1) * _app->project().beatsPerBar();
-    int totalWidth = _cellWidth * visibleLength / _cellBeats;
-    int scrollWidth = qMax(0, totalWidth - width());
+    int scrollWidth = qMax(0, length() - width());
     _left = percent * scrollWidth;
 
     update();
@@ -49,7 +56,13 @@ void GanttHeaderWidget::setPositionFunction(std::function<float ()> func)
     _positionFunction = func;
 }
 
-float GanttHeaderWidget::length() const
+void GanttHeaderWidget::scrollBy(const int pixels)
+{
+    _left += pixels;
+    update();
+}
+
+float GanttHeaderWidget::playlength() const
 {
     float end = 0;
     if (_items) {
@@ -84,7 +97,7 @@ void GanttHeaderWidget::paintEvent(QPaintEvent* event)
         QPoint thisTopLeft = topLeft + QPoint(i * barWidth, 0);
         QPoint thisBottomRight = thisTopLeft + QPoint(barWidth, height());
 
-        painter.setBrush(((firstBar + i) * beatsPerBar) < length() ? QColor(BackgroundColor) : QColor(Qt::lightGray));
+        painter.setBrush(((firstBar + i) * beatsPerBar) < playlength() ? QColor(BackgroundColor) : QColor(Qt::lightGray));
         painter.drawRect(QRect(thisTopLeft, thisBottomRight));
 
         QPoint thisBottomLeft = QPoint(thisTopLeft.x(), thisBottomRight.y());
@@ -114,4 +127,12 @@ void GanttHeaderWidget::paintEvent(QPaintEvent* event)
         painter.setPen(Qt::NoPen);
         painter.fillPath(path, CursorColor);
     }
+}
+
+int GanttHeaderWidget::length() const
+{
+    int visibleLength = ((int)(playlength() / _app->project().beatsPerBar()) + 1) * _app->project().beatsPerBar();
+    int totalWidth = _cellWidth * visibleLength / _cellBeats;
+
+    return totalWidth;
 }
