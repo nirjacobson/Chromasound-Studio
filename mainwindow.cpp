@@ -92,7 +92,6 @@ void MainWindow::pianoRollTriggered(const int index)
     _pianoRollWidget->setTrack(_app->activePattern(), index);
 
     _pianoRollWindow->setWidget(_pianoRollWidget);
-    _pianoRollWindow->resize(400, 300);
 
     _pianoRollWindow->show();
     _pianoRollWindow->setFocus();
@@ -110,5 +109,8 @@ void MainWindow::showEvent(QShowEvent* event)
 {
     _playlistWindow->resize(ui->mdiArea->frameGeometry().width()/2, ui->mdiArea->frameGeometry().height());
     _playlistWindow->move(ui->mdiArea->frameGeometry().width()/2, 0);
+
+    _pianoRollWindow->resize(ui->mdiArea->frameGeometry().width()/2, ui->mdiArea->frameGeometry().height());
+    _pianoRollWindow->move(ui->mdiArea->frameGeometry().width()/2, 0);
 }
 

@@ -1,16 +1,20 @@
 #include "pianorollwidget.h"
 #include "ui_pianorollwidget.h"
 
-PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app) :
-    QWidget(parent),
-    _app(app),
-    ui(new Ui::PianoRollWidget),
-    _keysWidget(new PianoRollKeysWidget(this))
-{
+PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
+    : QWidget(parent)
+    , _app(app)
+    , ui(new Ui::PianoRollWidget)
+    , _keysWidget(new PianoRollKeysWidget(this))
+    , _velocitiesWidget(new PianoRollVelocitiesWidget(this))
+{    
+    _velocitiesWidget->setApplication(app);
+
     ui->setupUi(this);
 
     ui->ganttWidget->setApplication(_app);
     ui->ganttWidget->setLeftWidget(_keysWidget);
+    ui->ganttWidget->setBottomWidget(_velocitiesWidget);
     ui->ganttWidget->setParameters(Rows, RowHeight, CellWidth, 0.25);
     ui->ganttWidget->invertRows(true);
     ui->ganttWidget->setItemsResizable(true);
@@ -20,12 +24,14 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app) :
 
     connect(ui->ganttWidget, &GanttWidget::clicked, this, &PianoRollWidget::ganttClicked);
     connect(ui->ganttWidget, &GanttWidget::itemsChanged, this, &PianoRollWidget::ganttItemsChanged);
-
 }
 
 PianoRollWidget::~PianoRollWidget()
 {
     delete ui;
+
+    delete _velocitiesWidget;
+    delete _keysWidget;
 }
 
 void PianoRollWidget::setTrack(const int pattern, const int track)

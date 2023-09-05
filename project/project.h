@@ -31,9 +31,11 @@ class Project
             public:
                 long row() const;
                 float duration() const;
+                int velocity() const;
                 void setRow(const long row);
                 void setTime(const float time);
                 void setDuration(const float duration);
+                void setVelocity(const int velocity);
         };
 
         Project();

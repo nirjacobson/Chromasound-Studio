@@ -17,19 +17,6 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <item row="0" column="1">
-    <widget class="QScrollBar" name="horizontalScrollBar">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>24</height>
-      </size>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0">
     <widget class="QCheckBox" name="snapCheckBox">
      <property name="text">
@@ -39,6 +26,9 @@
       <bool>true</bool>
      </property>
     </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="GanttEditorWidget" name="editorWidget" native="true"/>
    </item>
    <item row="1" column="1">
     <widget class="GanttHeaderWidget" name="headerWidget" native="true">
@@ -53,6 +43,35 @@
        <width>16777215</width>
        <height>24</height>
       </size>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QScrollBar" name="verticalScrollBar">
+     <property name="minimumSize">
+      <size>
+       <width>24</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="sliderPosition">
+      <number>0</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QScrollBar" name="horizontalScrollBar">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>24</height>
+      </size>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
@@ -72,24 +91,8 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="GanttEditorWidget" name="editorWidget" native="true"/>
-   </item>
-   <item row="2" column="2">
-    <widget class="QScrollBar" name="verticalScrollBar">
-     <property name="minimumSize">
-      <size>
-       <width>24</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="sliderPosition">
-      <number>0</number>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-    </widget>
+   <item row="3" column="1">
+    <widget class="QWidget" name="bottomWidget" native="true"/>
    </item>
   </layout>
  </widget>

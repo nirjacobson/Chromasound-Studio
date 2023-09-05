@@ -5,7 +5,8 @@ GanttWidget::GanttWidget(QWidget *parent, Application* app) :
     QWidget(parent),
     ui(new Ui::GanttWidget),
     _app(app),
-    _leftWidget(0),
+    _leftWidget(nullptr),
+    _bottomWidget(nullptr),
     _rows(0),
     _rowHeight(16),
     _cellWidth(16),
@@ -20,6 +21,7 @@ GanttWidget::GanttWidget(QWidget *parent, Application* app) :
     ui->editorWidget->setCellWidth(_cellWidth);
     ui->editorWidget->setCellBeats(_cellBeats);
     ui->editorWidget->setRows(_rows);
+    ui->bottomWidget->setVisible(false);
 
     connect(ui->verticalScrollBar, &QScrollBar::valueChanged, this, &GanttWidget::verticalScroll);
     connect(ui->horizontalScrollBar, &QScrollBar::valueChanged, this, &GanttWidget::horizontalScroll);
@@ -43,6 +45,13 @@ void GanttWidget::setLeftWidget(GanttLeftWidget* const widget)
     layout()->replaceWidget(ui->leftWidget, widget);
 }
 
+void GanttWidget::setBottomWidget(GanttBottomWidget* const widget)
+{
+    _bottomWidget = widget;
+    _bottomWidget->setScrollPercentage(ui->headerWidget->getScrollPercentage());
+    layout()->replaceWidget(ui->bottomWidget, widget);
+}
+
 void GanttWidget::setParameters(int rows, int rowHeight, int cellWidth, float beatsPerCell)
 {
     _rows = rows;
@@ -56,6 +65,9 @@ void GanttWidget::setParameters(int rows, int rowHeight, int cellWidth, float be
     if (_leftWidget) _leftWidget->setRows(rows);
     if (_leftWidget) _leftWidget->setRowHeight(_rowHeight);
 
+    if (_bottomWidget) _bottomWidget->setCellWidth(_cellWidth);
+    if (_bottomWidget) _bottomWidget->setCellBeats(_cellBeats);
+
     ui->editorWidget->setRows(rows);
     ui->editorWidget->setRowHeight(_rowHeight);
     ui->editorWidget->setCellWidth(_cellWidth);
@@ -66,6 +78,7 @@ void GanttWidget::setItems(QList<GanttItem*>* items)
 {
     ui->headerWidget->setItems(items);
     ui->editorWidget->setItems(items);
+    if (_bottomWidget) _bottomWidget->setItems(items);
 }
 
 void GanttWidget::setApplication(Application* app)
@@ -132,6 +145,10 @@ void GanttWidget::snapClicked()
 void GanttWidget::wheelHorizontalScroll(int pixels)
 {
     ui->headerWidget->scrollBy(pixels);
+
+    if (_bottomWidget)
+        dynamic_cast<GanttBottomWidget*>(_bottomWidget)->scrollBy(pixels);
+
     ui->horizontalScrollBar->blockSignals(true);
     ui->horizontalScrollBar->setValue(ui->headerWidget->getScrollPercentage()*ui->horizontalScrollBar->maximum());
     ui->horizontalScrollBar->blockSignals(false);
@@ -139,7 +156,9 @@ void GanttWidget::wheelHorizontalScroll(int pixels)
 
 void GanttWidget::wheelVerticalScroll(int pixels)
 {
-    dynamic_cast<GanttLeftWidget*>(_leftWidget)->scrollBy(pixels);
+    if (_leftWidget)
+        dynamic_cast<GanttLeftWidget*>(_leftWidget)->scrollBy(pixels);
+
     ui->verticalScrollBar->blockSignals(true);
     ui->verticalScrollBar->setValue(_leftWidget->getScrollPercentage()*ui->verticalScrollBar->maximum());
     ui->verticalScrollBar->blockSignals(false);

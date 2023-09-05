@@ -116,3 +116,13 @@ void Track::Item::setDuration(const float duration)
 {
     _note.setDuration(duration);
 }
+
+int Track::Item::velocity() const
+{
+    return _note.velocity();
+}
+
+void Track::Item::setVelocity(const int velocity)
+{
+    _note.setVelocity(velocity);
+}

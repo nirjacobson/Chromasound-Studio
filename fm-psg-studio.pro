@@ -11,7 +11,9 @@ CONFIG += c++11
 SOURCES += \
     channelswidget/stepkeys.cpp \
     channelswidget/stepvelocities.cpp \
+    ganttwidget/ganttbottomwidget.cpp \
     pianorollwidget/pianorollkeyswidget.cpp \
+    pianorollwidget/pianorollvelocitieswidget.cpp \
     pianorollwidget/pianorollwidget.cpp \
     project/channel.cpp \
     project/track.cpp \
@@ -43,7 +45,9 @@ SOURCES += \
 HEADERS += \
     channelswidget/stepkeys.h \
     channelswidget/stepvelocities.h \
+    ganttwidget/ganttbottomwidget.h \
     pianorollwidget/pianorollkeyswidget.h \
+    pianorollwidget/pianorollvelocitieswidget.h \
     pianorollwidget/pianorollwidget.h \
     project/channel.h \
     project/note.h \
