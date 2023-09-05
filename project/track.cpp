@@ -49,6 +49,12 @@ void Track::removeItem(const float time, const int key)
     _items.erase(it, _items.end());
 }
 
+void Track::removeItem(const float time)
+{
+    auto it = std::remove_if(_items.begin(), _items.end(), [=](Item* const item){ return (item->time() <= time) && ((item->time() + item->note().duration()) >= time); });
+    _items.erase(it, _items.end());
+}
+
 void Track::usePianoRoll()
 {
     _usePianoRoll = true;
@@ -72,6 +78,11 @@ float Track::Item::time() const
 }
 
 const Note& Track::Item::note() const
+{
+    return _note;
+}
+
+Note& Track::Item::note()
 {
     return _note;
 }

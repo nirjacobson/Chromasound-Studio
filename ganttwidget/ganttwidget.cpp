@@ -99,6 +99,15 @@ void GanttWidget::setPositionFunction(std::function<float ()> func)
     ui->editorWidget->setPositionFunction(func);
 }
 
+void GanttWidget::scrollVertically(const float percentage)
+{
+    _leftWidget->setScrollPercentage(percentage);
+    ui->editorWidget->setVerticalScrollPercentage(percentage);
+    ui->horizontalScrollBar->blockSignals(true);
+    ui->verticalScrollBar->setValue(percentage * ui->verticalScrollBar->maximum());
+    ui->horizontalScrollBar->blockSignals(false);
+}
+
 void GanttWidget::verticalScroll(int amount)
 {
     float vscroll = (float)amount / ui->verticalScrollBar->maximum();

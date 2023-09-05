@@ -4,7 +4,9 @@
 ChannelsWidget::ChannelsWidget(QWidget *parent, Application* app) :
     QWidget(parent),
     ui(new Ui::ChannelsWidget),
-    _app(app)
+    _app(app),
+    _activeChannelWidget(nullptr),
+    _stepKeysWidget(new StepKeys(this, app))
 {
     ui->setupUi(this);
 
@@ -29,6 +31,13 @@ ChannelsWidget::ChannelsWidget(QWidget *parent, Application* app) :
         widget->layout()->addWidget(stepCursorWidget);
         layout()->addWidget(widget);
     }
+
+    connect(ui->pianoButton, &QPushButton::clicked, this, &ChannelsWidget::pianoButtonClicked);
+    connect(ui->velocityButton, &QPushButton::clicked, this, &ChannelsWidget::velocityButtonClicked);
+
+    _stepKeysWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+
+    connect(_stepKeysWidget, &StepKeys::clicked, this, &ChannelsWidget::pianoKeyClicked);
 }
 
 ChannelsWidget::~ChannelsWidget()
@@ -52,7 +61,23 @@ void ChannelsWidget::toggleSolo(ChannelWidget* channelWidget)
 void ChannelsWidget::handleToggle(ChannelWidget* channelWidget, const bool selected)
 {
     for (ChannelWidget* cw : _channelWidgets) {
-        cw->setChecked(cw == channelWidget ? selected : false);
+        if (cw != channelWidget) {
+            cw->setChecked(false);
+        }
+    }
+
+    _stepKeysWidget->setVisible(false);
+    _activeChannelWidget = nullptr;
+
+    if (selected) {
+        _activeChannelWidget = channelWidget;
+
+        if (ui->pianoButton->isChecked() && !_app->project().patterns()[_app->activePattern()].getTrack(_activeChannelWidget->index()).doesUsePianoRoll()) {
+            adjustPopup();
+            _stepKeysWidget->setChannel(channelWidget->index());
+            _stepKeysWidget->setVisible(true);
+            _stepKeysWidget->raise();
+        }
     }
 }
 
@@ -63,11 +88,64 @@ void ChannelsWidget::handleSelect(ChannelWidget* channelWidget)
     }
 }
 
+void ChannelsWidget::adjustPopup()
+{
+    if (_activeChannelWidget) {
+        const QRect& rect = _activeChannelWidget->getSequencerGeometry();
+        QPoint bottomLeft = rect.bottomLeft();
+        _stepKeysWidget->setGeometry(QRect(bottomLeft, QSize(rect.width(), 128)));
+    }
+}
+
 void ChannelsWidget::handleSelectAll()
 {
     for (ChannelWidget* cw : _channelWidgets) {
         cw->setSelected(true);
     }
 }
+
+void ChannelsWidget::pianoButtonClicked()
+{
+    _stepKeysWidget->setVisible(false);
+
+    if (ui->pianoButton->isChecked()) {
+        ui->velocityButton->setChecked(false);
+
+        if (_activeChannelWidget && !_app->project().patterns()[_app->activePattern()].getTrack(_activeChannelWidget->index()).doesUsePianoRoll()) {
+            adjustPopup();
+            _stepKeysWidget->setChannel(_activeChannelWidget->index());
+            _stepKeysWidget->setVisible(true);
+            _stepKeysWidget->raise();
+        }
+    }
+}
+
+void ChannelsWidget::velocityButtonClicked()
+{
+    if (ui->velocityButton->isChecked()) {
+        ui->pianoButton->setChecked(false);
+    }
+}
+
+void ChannelsWidget::pianoKeyClicked(const Qt::MouseButton button, const int step, const int key)
+{
+    float beatsPerStep = 0.25;
+    Track& track = _app->project().getPattern(_app->activePattern()).getTrack(_activeChannelWidget->index());
+
+    if (button == Qt::LeftButton) {
+        auto existingItem = std::find_if(track.items().begin(), track.items().end(), [=](const Track::Item* item){ return item->time() == step * beatsPerStep; });
+        if (existingItem == track.items().end()) {
+            track.items().append(new Track::Item(step * beatsPerStep, Note(key, beatsPerStep)));
+        } else {
+            (*existingItem)->note().setKey(key);
+        }
+    } else {
+        track.removeItem(step * beatsPerStep, key);
+    }
+    _stepKeysWidget->update();
+    _activeChannelWidget->update();
+
+}
+
 
 

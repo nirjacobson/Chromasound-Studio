@@ -19,6 +19,7 @@ class Track
 
                 float time() const;
                 const Note& note() const;
+                Note& note();
 
                 bool operator==(const Track::Item& item);
 
@@ -42,6 +43,7 @@ class Track
 
         void addItem(const float time, const Note& note);
         void removeItem(const float time, const int key);
+        void removeItem(const float time);
 
         void usePianoRoll();
         bool doesUsePianoRoll() const;

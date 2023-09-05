@@ -32,6 +32,8 @@ class GanttWidget : public QWidget
 
         void setPositionFunction(std::function<float(void)> func);
 
+        void scrollVertically(const float percentage);
+
     private:
         Ui::GanttWidget *ui;
         Application* _app;

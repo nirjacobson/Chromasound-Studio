@@ -100,7 +100,7 @@ void StepSequencerWidget::mousePressEvent(QMouseEvent* event)
     if (event->button() == Qt::LeftButton) {
         track.addItem(time, Note(12 * 5, beatsPerStep));
     } else {
-        track.removeItem(time, 12 * 5);
+        track.removeItem(time);
     }
 
     update();

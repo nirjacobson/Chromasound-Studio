@@ -16,10 +16,11 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app) :
     ui->ganttWidget->setItemsResizable(true);
     ui->ganttWidget->setItemsMovableX(true);
     ui->ganttWidget->setItemsMovableY(true);
-
+    ui->ganttWidget->scrollVertically(0.25);
 
     connect(ui->ganttWidget, &GanttWidget::clicked, this, &PianoRollWidget::ganttClicked);
     connect(ui->ganttWidget, &GanttWidget::itemsChanged, this, &PianoRollWidget::ganttItemsChanged);
+
 }
 
 PianoRollWidget::~PianoRollWidget()
