@@ -10,7 +10,7 @@ PRDisplayWidget::PRDisplayWidget(QWidget* parent, Application* app, int index)
     , _app(app)
     , _index(index)
 {
-    setMinimumSize(QSize(192, 64));
+    setMinimumWidth(192);
 }
 
 void PRDisplayWidget::setApplication(Application* app)

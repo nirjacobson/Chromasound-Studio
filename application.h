@@ -13,7 +13,7 @@ class Application : public QApplication
 
     public:
         enum PlayMode {
-            Pat,
+            Pattern,
             Song
         };
 

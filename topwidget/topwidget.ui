@@ -151,7 +151,7 @@
         <item>
          <widget class="QRadioButton" name="patRadioButton">
           <property name="text">
-           <string>Pat</string>
+           <string>Pattern</string>
           </property>
           <property name="checked">
            <bool>true</bool>
@@ -172,7 +172,7 @@
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>40</width>
+            <width>10</width>
             <height>20</height>
            </size>
           </property>

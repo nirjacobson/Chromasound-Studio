@@ -47,7 +47,7 @@ void StepSequencerWidget::paintEvent(QPaintEvent*)
     }
 
     int step = -1;
-    if (_app->playMode() == Application::PlayMode::Pat) {
+    if (_app->playMode() == Application::PlayMode::Pattern) {
         step = _app->position() / beatsPerStep;
     } else {
         QMap<int, float> activePatterns = _app->project().activePatternsAtTime(_app->position());
