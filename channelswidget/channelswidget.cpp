@@ -16,7 +16,7 @@ ChannelsWidget::ChannelsWidget(QWidget *parent, Application* app) :
     }
 
     for (ChannelWidget* channelWidget : _channelWidgets) {
-        layout()->addWidget(channelWidget);
+        ui->verticalLayout->addWidget(channelWidget);
         connect(channelWidget, &ChannelWidget::ledShiftClicked, this, [=](){ toggleSolo(channelWidget); });
         connect(channelWidget, &ChannelWidget::toggled, this, [=](bool selected){ handleToggle(channelWidget, selected); });
         connect(channelWidget, &ChannelWidget::rectLedClicked, this, [=](){ handleSelect(channelWidget); });
@@ -30,8 +30,10 @@ ChannelsWidget::ChannelsWidget(QWidget *parent, Application* app) :
         widget->setLayout(new QHBoxLayout);
         widget->layout()->addItem(new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Fixed));
         widget->layout()->addWidget(stepCursorWidget);
-        layout()->addWidget(widget);
+        ui->verticalLayout->addWidget(widget);
     }
+
+    layout()->update();
 
     connect(ui->pianoButton, &QPushButton::clicked, this, &ChannelsWidget::pianoButtonClicked);
     connect(ui->velocityButton, &QPushButton::clicked, this, &ChannelsWidget::velocityButtonClicked);
