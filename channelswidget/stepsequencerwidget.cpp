@@ -22,7 +22,7 @@ void StepSequencerWidget::setIndex(const int i)
     _index = i;
 }
 
-void StepSequencerWidget::paintEvent(QPaintEvent* event)
+void StepSequencerWidget::paintEvent(QPaintEvent*)
 {
     Pattern& pattern = _app->project().getPattern(_app->activePattern());
 
@@ -106,7 +106,7 @@ void StepSequencerWidget::mousePressEvent(QMouseEvent* event)
     update();
 }
 
-void StepSequencerWidget::resizeEvent(QResizeEvent* event)
+void StepSequencerWidget::resizeEvent(QResizeEvent*)
 {
     int numSteps = _app->project().beatsPerBar() * 4;
     setMinimumSize(QSize((numSteps-1) * (StepSequencerWidget::StepWidth + StepSequencerWidget::StepSpacing) + StepSequencerWidget::StepWidth + 3, 8));

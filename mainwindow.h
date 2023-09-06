@@ -29,7 +29,7 @@ private slots:
     void stop();
 
     void patternChanged(int num);
-    void beatsPerBarChanged(int beats);
+    void beatsPerBarChanged(int);
 
     void frame();
 
@@ -54,6 +54,6 @@ private:
 
     // QWidget interface
     protected:
-    void showEvent(QShowEvent* event);
+    void showEvent(QShowEvent*);
 };
 #endif // MAINWINDOW_H

@@ -23,14 +23,14 @@ class StepSequencerWidget : public QWidget
     signals:
 
     protected:
-        void paintEvent(QPaintEvent* event);
+        void paintEvent(QPaintEvent*);
         void mousePressEvent(QMouseEvent* event);
 
     private:
         static constexpr QColor StepColor = QColor(192,192,255);
         static constexpr QColor AltStepColor = QColor(255,192,192);
         static constexpr QColor ActiveStepLightColor = QColor(255, 192, 0);
-        static constexpr int StepRadius = 4;
+        static constexpr int StepRadius = 2;
 
         Application* _app;
 
@@ -38,7 +38,7 @@ class StepSequencerWidget : public QWidget
 
         // QWidget interface
     protected:
-        void resizeEvent(QResizeEvent* event);
+        void resizeEvent(QResizeEvent*);
 };
 
 #endif // STEPSEQUENCERWIDGET_H

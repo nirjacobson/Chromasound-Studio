@@ -16,13 +16,13 @@ class StepCursorWidget : public QWidget
     signals:
 
     protected:
-        void paintEvent(QPaintEvent* event);
+        void paintEvent(QPaintEvent*);
 
     private:
         Application* _app;
 
     protected:
-        void resizeEvent(QResizeEvent* event);
+        void resizeEvent(QResizeEvent*);
 };
 
 #endif // STEPCURSORWIDGET_H

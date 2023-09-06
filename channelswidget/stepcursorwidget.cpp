@@ -7,7 +7,7 @@ StepCursorWidget::StepCursorWidget(QWidget *parent, Application* app)
 
 }
 
-void StepCursorWidget::paintEvent(QPaintEvent* event)
+void StepCursorWidget::paintEvent(QPaintEvent*)
 {
 
     int steps = _app->project().beatsPerBar() * 4;
@@ -41,7 +41,7 @@ void StepCursorWidget::paintEvent(QPaintEvent* event)
     painter.drawRect(stepRect);
 }
 
-void StepCursorWidget::resizeEvent(QResizeEvent* event)
+void StepCursorWidget::resizeEvent(QResizeEvent*)
 {
     int numSteps = _app->project().beatsPerBar() * 4;
     setMinimumSize(QSize((numSteps-1) * (StepSequencerWidget::StepWidth + StepSequencerWidget::StepSpacing) + StepSequencerWidget::StepWidth + 3, 8));

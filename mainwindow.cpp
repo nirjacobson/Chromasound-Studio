@@ -72,7 +72,7 @@ void MainWindow::patternChanged(int num)
     _channelsWidget->update();
 }
 
-void MainWindow::beatsPerBarChanged(int beats)
+void MainWindow::beatsPerBarChanged(int)
 {
     _channelsWidget->update();
     _playlistWidget->update();
@@ -105,12 +105,15 @@ void MainWindow::doUpdate()
     if (_pianoRollWidget) _pianoRollWidget->update();
 }
 
-void MainWindow::showEvent(QShowEvent* event)
+void MainWindow::showEvent(QShowEvent*)
 {
-    _playlistWindow->resize(ui->mdiArea->frameGeometry().width()/2, ui->mdiArea->frameGeometry().height());
-    _playlistWindow->move(ui->mdiArea->frameGeometry().width()/2, 0);
+    int width = ui->mdiArea->frameGeometry().width()/2;
+    int height = ui->mdiArea->frameGeometry().height();
 
-    _pianoRollWindow->resize(ui->mdiArea->frameGeometry().width()/2, ui->mdiArea->frameGeometry().height());
-    _pianoRollWindow->move(ui->mdiArea->frameGeometry().width()/2, 0);
+    _playlistWindow->resize(width, height);
+    _playlistWindow->move(width, 0);
+
+    _pianoRollWindow->resize(width, height);
+    _pianoRollWindow->move(width, 0);
 }
 

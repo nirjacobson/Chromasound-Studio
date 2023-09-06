@@ -15,7 +15,7 @@ void StepVelocities::setChannel(const int idx)
     _index = idx;
 }
 
-void StepVelocities::paintEvent(QPaintEvent* event)
+void StepVelocities::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
     Pattern& pattern = _app->project().getPattern(_app->activePattern());

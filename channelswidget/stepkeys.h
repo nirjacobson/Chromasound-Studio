@@ -22,7 +22,7 @@ class StepKeys : public QWidget
 
         // QWidget interface
     protected:
-        void paintEvent(QPaintEvent* event);
+        void paintEvent(QPaintEvent*);
 
     private:
         static constexpr int KEYS_PER_OCTAVE = 12;

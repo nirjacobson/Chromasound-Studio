@@ -16,7 +16,7 @@ void StepKeys::setChannel(const int idx)
     _index = idx;
 }
 
-void StepKeys::paintEvent(QPaintEvent* event)
+void StepKeys::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
     Pattern& pattern = _app->project().getPattern(_app->activePattern());
