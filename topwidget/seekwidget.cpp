@@ -14,7 +14,7 @@ void SeekWidget::setApplication(Application* app)
 
 void SeekWidget::paintEvent(QPaintEvent* event)
 {   
-    if (_app->playMode() == Application::Pat) {
+    if (_app->playMode() == Application::Pattern) {
         float patternLength = qCeil(_app->project().getPattern(_app->activePattern()).getLength()/_app->project().beatsPerBar()) * _app->project().beatsPerBar();
         float percentage = _app->position() / (float)patternLength;
 

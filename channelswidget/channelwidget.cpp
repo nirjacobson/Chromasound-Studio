@@ -20,25 +20,27 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index) :
 
     ui->led->setOn(_app->project().getChannel(_index).enabled());
     ui->rectLed->setOnFunction([=](){
-        QMap<int, float> activePatterns = _app->project().activePatternsAtTime(_app->position());
+        float appPosition = _app->position();
+
+        QMap<int, float> activePatterns = _app->project().activePatternsAtTime(appPosition);
         const Pattern& activePattern = _app->project().patterns()[_app->activePattern()];
         const Track& track = activePattern.getTrack(index);
-        if (_app->playMode() == Application::PlayMode::Pat) {
-            return _app->isPlaying() &&
-                   _app->project().getChannel(_index).enabled() &&
-                    activePattern.activeTracksAtTime(_app->position()).contains(index) &&
+        if (_app->playMode() == Application::PlayMode::Pattern) {
+            return _app->project().getChannel(_index).enabled() &&
+                    activePattern.activeTracksAtTime(appPosition).contains(index) &&
                     std::find_if(track.items().begin(),
                               track.items().end(),
-                     [&](const Track::Item* item){ return qAbs(item->time() - _app->position()) <= 0.0625f; }) == track.items().end();
+                     [&](const Track::Item* item){
+                        float delta = item->time() - appPosition;
+                        return qAbs(delta) <= 0.0625; }) == track.items().end();
         } else {
-           return _app->isPlaying() &&
-                   activePatterns.contains(_app->activePattern()) &&
+           return activePatterns.contains(_app->activePattern()) &&
                   _app->project().getChannel(_index).enabled() &&
-                  activePattern.activeTracksAtTime(_app->position() - activePatterns[_app->activePattern()]).contains(index) &&
+                  activePattern.activeTracksAtTime(appPosition - activePatterns[_app->activePattern()]).contains(index) &&
                   std::find_if(track.items().begin(), track.items().end(),
                   [&](const Track::Item* item){
-                    float delta = item->time() - (_app->position() - activePatterns[_app->activePattern()]);
-                    return delta >= 0 && delta <= 0.0625f; }) == track.items().end();
+                    float delta = item->time() - (appPosition - activePatterns[_app->activePattern()]);
+                    return qAbs(delta) <= 0.0625; }) == track.items().end();
         }
     });
 

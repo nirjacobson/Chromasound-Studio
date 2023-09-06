@@ -73,7 +73,7 @@ void TopWidget::beatsPerBarDidChange(int beats)
 
 void TopWidget::patModeSelected()
 {
-    _app->setPlayMode(Application::Pat);
+    _app->setPlayMode(Application::Pattern);
 }
 
 void TopWidget::songModeSelected()

@@ -131,7 +131,7 @@ void GanttEditorWidget::paintEvent(QPaintEvent* event)
 
     int firstRow = _top / _rowHeight;
     int firstRowStart = firstRow * _rowHeight - _top;
-    int numRows = qCeil((float)height()/_rowHeight);
+    int numRows = qCeil((float)height()/_rowHeight) + 1;
 
     QPoint topLeft(0, firstRowStart);
 

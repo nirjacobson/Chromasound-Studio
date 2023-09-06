@@ -5,7 +5,7 @@ Application* Application::_instance = nullptr;
 Application::Application(int &argc, char **argv, int flags)
     : QApplication(argc, argv, flags)
     , _activePattern(0)
-    , _playMode(Pat)
+    , _playMode(Pattern)
     , _ref(0)
     , _playing(false)
 {
@@ -20,7 +20,7 @@ float Application::position() const
         return _ref / beatNS;
     }
 
-    if (_playMode == Pat) {
+    if (_playMode == Pattern) {
         float patternLength = qCeil(_project.getPattern(_activePattern).getLength()/_project.beatsPerBar()) * _project.beatsPerBar();
 
         return fmod( ((_ref + _timer.nsecsElapsed()) / beatNS), patternLength );

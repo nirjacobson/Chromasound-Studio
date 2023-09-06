@@ -5,7 +5,7 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
     QWidget(parent),
     _app(app),
     ui(new Ui::PlaylistWidget),
-    _patternsWidget(new PlaylistPatternsWidget(this))
+    _patternsWidget(new PlaylistPatternsWidget(this, app))
 {
     ui->setupUi(this);
     ui->ganttWidget->setApplication(_app);
