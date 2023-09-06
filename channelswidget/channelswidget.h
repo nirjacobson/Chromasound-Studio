@@ -48,6 +48,10 @@ class ChannelsWidget : public QWidget
         void velocityButtonClicked();
         void pianoKeyClicked(const Qt::MouseButton button, const int step, const int key);
         void velocityClicked(const int step, const int velocity);
+
+        // QWidget interface
+    protected:
+        void showEvent(QShowEvent* event);
 };
 
 #endif // CHANNELSWIDGET_H
