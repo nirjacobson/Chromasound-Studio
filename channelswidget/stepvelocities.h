@@ -26,7 +26,7 @@ class StepVelocities : public QWidget
         int _index;
 
     protected:
-        void paintEvent(QPaintEvent* event);
+        void paintEvent(QPaintEvent*);
         void mousePressEvent(QMouseEvent* event);
 };
 
