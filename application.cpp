@@ -4,7 +4,6 @@ Application* Application::_instance = nullptr;
 
 Application::Application(int &argc, char **argv, int flags)
     : QApplication(argc, argv, flags)
-    , _activePattern(0)
     , _playMode(Pattern)
     , _ref(0)
     , _playing(false)
@@ -21,7 +20,7 @@ float Application::position() const
     }
 
     if (_playMode == Pattern) {
-        float patternLength = qCeil(_project.getPattern(_activePattern).getLength()/_project.beatsPerBar()) * _project.beatsPerBar();
+        float patternLength = qCeil(_project.getDefaultPattern().getLength()/_project.beatsPerBar()) * _project.beatsPerBar();
 
         return fmod( ((_ref + _timer.nsecsElapsed()) / beatNS), patternLength );
     }
@@ -55,16 +54,6 @@ void Application::stop()
 Project& Application::project()
 {
     return _project;
-}
-
-int Application::activePattern() const
-{
-    return _activePattern;
-}
-
-void Application::setActivePattern(const int i)
-{
-    _activePattern = i;
 }
 
 Application::PlayMode Application::playMode() const

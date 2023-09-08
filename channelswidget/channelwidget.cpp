@@ -23,23 +23,24 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index) :
         float appPosition = _app->position();
 
         QMap<int, float> activePatterns = _app->project().activePatternsAtTime(appPosition);
-        const Pattern& activePattern = _app->project().patterns()[_app->activePattern()];
-        const Track& track = activePattern.getTrack(index);
+        const Pattern& defaultPattern = _app->project().getDefaultPattern();
+        int defaultPatternIdx = _app->project().defaultPattern();
+        const Track& track = defaultPattern.getTrack(index);
         if (_app->playMode() == Application::PlayMode::Pattern) {
             return _app->project().getChannel(_index).enabled() &&
-                    activePattern.activeTracksAtTime(appPosition).contains(index) &&
+                    defaultPattern.activeTracksAtTime(appPosition).contains(index) &&
                     std::find_if(track.items().begin(),
                               track.items().end(),
                      [&](const Track::Item* item){
                         float delta = item->time() - appPosition;
                         return qAbs(delta) <= 0.0625; }) == track.items().end();
         } else {
-           return activePatterns.contains(_app->activePattern()) &&
+           return activePatterns.contains(_app->project().defaultPattern()) &&
                   _app->project().getChannel(_index).enabled() &&
-                  activePattern.activeTracksAtTime(appPosition - activePatterns[_app->activePattern()]).contains(index) &&
+                  defaultPattern.activeTracksAtTime(appPosition - activePatterns[defaultPatternIdx]).contains(index) &&
                   std::find_if(track.items().begin(), track.items().end(),
                   [&](const Track::Item* item){
-                    float delta = item->time() - (appPosition - activePatterns[_app->activePattern()]);
+                    float delta = item->time() - (appPosition - activePatterns[defaultPatternIdx]);
                     return qAbs(delta) <= 0.0625; }) == track.items().end();
         }
     });
@@ -130,7 +131,7 @@ void ChannelWidget::buttonContextMenuRequested(const QPoint& p)
 
 void ChannelWidget::paintEvent(QPaintEvent* event)
 {
-    const Pattern& activePattern = _app->project().getPattern(_app->activePattern());
+    const Pattern& activePattern = _app->project().getDefaultPattern();
     ui->stackedWidget->setCurrentIndex(activePattern.hasTrack(_index) && activePattern.getTrack(_index).doesUsePianoRoll());
 
     QWidget::paintEvent(event);

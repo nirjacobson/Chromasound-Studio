@@ -24,7 +24,7 @@ void StepSequencerWidget::setIndex(const int i)
 
 void StepSequencerWidget::paintEvent(QPaintEvent*)
 {
-    Pattern& pattern = _app->project().getPattern(_app->activePattern());
+    Pattern& pattern = _app->project().getDefaultPattern();
 
     float beatsPerStep = 0.25;
 
@@ -51,9 +51,9 @@ void StepSequencerWidget::paintEvent(QPaintEvent*)
         step = _app->position() / beatsPerStep;
     } else {
         QMap<int, float> activePatterns = _app->project().activePatternsAtTime(_app->position());
-
-        if (activePatterns.contains(_app->activePattern())) {
-            step = (_app->position() - activePatterns[_app->activePattern()]) / beatsPerStep;
+        int defaultPatternIdx = _app->project().defaultPattern();
+        if (activePatterns.contains(defaultPatternIdx)) {
+            step = (_app->position() - activePatterns[defaultPatternIdx]) / beatsPerStep;
         }
     }
 
@@ -90,7 +90,7 @@ void StepSequencerWidget::paintEvent(QPaintEvent*)
 
 void StepSequencerWidget::mousePressEvent(QMouseEvent* event)
 {
-    Pattern& pattern = _app->project().getPattern(_app->activePattern());
+    Pattern& pattern = _app->project().getDefaultPattern();
     Track& track = pattern.hasTrack(_index) ? pattern.getTrack(_index) : pattern.addTrack(_index);
 
     float beatsPerStep = 0.25;

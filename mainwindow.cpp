@@ -68,7 +68,7 @@ void MainWindow::stop()
 
 void MainWindow::patternChanged(int num)
 {
-    _app->setActivePattern(num - 1);
+    _app->project().setDefaultPattern(num - 1);
     _channelsWidget->update();
 }
 
@@ -85,11 +85,11 @@ void MainWindow::frame()
 
 void MainWindow::pianoRollTriggered(const int index)
 {
-    _app->project().getPattern(_app->activePattern()).getTrack(index).usePianoRoll();
+    _app->project().getDefaultPattern().getTrack(index).usePianoRoll();
     _channelsWidget->update();
 
     _pianoRollWidget = new PianoRollWidget(this, _app);
-    _pianoRollWidget->setTrack(_app->activePattern(), index);
+    _pianoRollWidget->setTrack(_app->project().defaultPattern(), index);
 
     _pianoRollWindow->setWidget(_pianoRollWidget);
 
