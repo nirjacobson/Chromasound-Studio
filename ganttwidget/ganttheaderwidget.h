@@ -31,7 +31,7 @@ class GanttHeaderWidget : public ScrollableWidget
 
     protected:
         int length() const;
-        void paintEvent(QPaintEvent* event);
+        void paintEvent(QPaintEvent*);
 
     private:
         static constexpr QColor BackgroundColor = QColor(64, 64, 64);

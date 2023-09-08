@@ -19,8 +19,8 @@ class LED : public QWidget
         void clicked(bool shift);
 
     protected:
-        void paintEvent(QPaintEvent* event);
-        void mousePressEvent(QMouseEvent* event);
+        void paintEvent(QPaintEvent*);
+        void mousePressEvent(QMouseEvent*);
 
     private:
         QColor _color;

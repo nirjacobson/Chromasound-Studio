@@ -34,8 +34,8 @@ class Project
                 int velocity() const;
                 void setRow(const long row);
                 void setTime(const float time);
-                void setDuration(const float duration);
-                void setVelocity(const int velocity);
+                void setDuration(const float);
+                void setVelocity(const int);
         };
 
         Project();

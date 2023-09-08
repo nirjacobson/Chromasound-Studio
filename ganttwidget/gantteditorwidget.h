@@ -42,9 +42,9 @@ class GanttEditorWidget : public QWidget
         void itemsChanged();
 
     protected:
-        void paintEvent(QPaintEvent* event);
+        void paintEvent(QPaintEvent*);
         void mousePressEvent(QMouseEvent* event);
-        void mouseReleaseEvent(QMouseEvent* event);
+        void mouseReleaseEvent(QMouseEvent*);
         void mouseMoveEvent(QMouseEvent* event);
         void wheelEvent(QWheelEvent* event);
 

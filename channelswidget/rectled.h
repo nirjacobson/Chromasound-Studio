@@ -24,9 +24,9 @@ class RectLED : public QWidget
         void doubleClicked();
 
     protected:
-        void paintEvent(QPaintEvent* event);
-        void mousePressEvent(QMouseEvent* event);
-        void mouseDoubleClickEvent(QMouseEvent* event);
+        void paintEvent(QPaintEvent*);
+        void mousePressEvent(QMouseEvent*);
+        void mouseDoubleClickEvent(QMouseEvent*);
 
     private:
         QColor _color;

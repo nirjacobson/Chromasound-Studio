@@ -45,7 +45,7 @@ int PianoRollKeysWidget::length() const
     return _rowHeight * _rows;
 }
 
-void PianoRollKeysWidget::paintEvent(QPaintEvent* event)
+void PianoRollKeysWidget::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
     painter.setPen(QColor(Qt::gray));

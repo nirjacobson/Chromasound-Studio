@@ -51,7 +51,7 @@ class ChannelsWidget : public QWidget
 
         // QWidget interface
     protected:
-        void showEvent(QShowEvent* event);
+        void showEvent(QShowEvent*);
 };
 
 #endif // CHANNELSWIDGET_H

@@ -19,7 +19,7 @@ bool LED::on()
     return _on;
 }
 
-void LED::paintEvent(QPaintEvent* event)
+void LED::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -29,7 +29,7 @@ void LED::paintEvent(QPaintEvent* event)
     painter.drawEllipse(rect().adjusted(1, 1, -1, -1));
 }
 
-void LED::mousePressEvent(QMouseEvent* event)
+void LED::mousePressEvent(QMouseEvent*)
 {
     emit clicked(Qt::ShiftModifier == QApplication::keyboardModifiers());
 }

@@ -184,12 +184,12 @@ void Project::PlaylistItem::setTime(const float time)
     _time = time;
 }
 
-void Project::PlaylistItem::setDuration(const float duration)
+void Project::PlaylistItem::setDuration(const float)
 {
     // Not supported
 }
 
-void Project::PlaylistItem::setVelocity(const int velocity)
+void Project::PlaylistItem::setVelocity(const int)
 {
     // Not supported
 }

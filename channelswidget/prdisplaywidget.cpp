@@ -23,7 +23,7 @@ void PRDisplayWidget::setIndex(const int i)
     _index = i;
 }
 
-void PRDisplayWidget::paintEvent(QPaintEvent* event)
+void PRDisplayWidget::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);

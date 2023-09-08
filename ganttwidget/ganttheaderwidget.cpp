@@ -77,7 +77,7 @@ float GanttHeaderWidget::playlength() const
     return end;
 }
 
-void GanttHeaderWidget::paintEvent(QPaintEvent* event)
+void GanttHeaderWidget::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
 

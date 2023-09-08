@@ -18,7 +18,7 @@ class PRDisplayWidget : public QWidget
     signals:
 
     protected:
-        void paintEvent(QPaintEvent* event);
+        void paintEvent(QPaintEvent*);
 
     private:
         static constexpr QColor BorderColor = QColor(128,128,128);

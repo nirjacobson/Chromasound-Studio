@@ -217,7 +217,7 @@ void ChannelsWidget::velocityClicked(const int step, const int velocity)
     _activeChannelWidget->update();
 }
 
-void ChannelsWidget::showEvent(QShowEvent* event)
+void ChannelsWidget::showEvent(QShowEvent*)
 {
     adjustSize();
 }
