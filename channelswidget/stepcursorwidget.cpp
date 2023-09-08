@@ -20,12 +20,12 @@ void StepCursorWidget::paintEvent(QPaintEvent*)
         step = _app->position() / beatsPerStep;
     } else {
         QMap<int, float> activePatterns = _app->project().activePatternsAtTime(_app->position());
-
-        if (!activePatterns.contains(_app->activePattern())) {
+        int defaultPatternIdx = _app->project().defaultPattern();
+        if (!activePatterns.contains(defaultPatternIdx)) {
             return;
         }
 
-        step = (_app->position() - activePatterns[_app->activePattern()]) / beatsPerStep;
+        step = (_app->position() - activePatterns[defaultPatternIdx]) / beatsPerStep;
     }
 
 

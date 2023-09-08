@@ -81,7 +81,7 @@ void ChannelsWidget::handleToggle(ChannelWidget* channelWidget, const bool selec
     if (selected) {
         _activeChannelWidget = channelWidget;
 
-        const Pattern& pattern = _app->project().patterns()[_app->activePattern()];
+        const Pattern& pattern = _app->project().getDefaultPattern();
         if (pattern.hasTrack(_activeChannelWidget->index())) {
             const Track& track = pattern.getTrack(_activeChannelWidget->index());
             if (!track.doesUsePianoRoll()) {
@@ -140,7 +140,7 @@ void ChannelsWidget::pianoButtonClicked()
         ui->velocityButton->setChecked(false);
 
         if (_activeChannelWidget) {
-            const Pattern& pattern = _app->project().patterns()[_app->activePattern()];
+            const Pattern& pattern = _app->project().getDefaultPattern();
             if (pattern.hasTrack(_activeChannelWidget->index())) {
                 const Track& track = pattern.getTrack(_activeChannelWidget->index());
                 if(!track.doesUsePianoRoll()) {
@@ -168,7 +168,7 @@ void ChannelsWidget::velocityButtonClicked()
         ui->pianoButton->setChecked(false);
 
         if (_activeChannelWidget) {
-            const Pattern& pattern = _app->project().patterns()[_app->activePattern()];
+            const Pattern& pattern = _app->project().getDefaultPattern();
             if (pattern.hasTrack(_activeChannelWidget->index())) {
                 const Track& track = pattern.getTrack(_activeChannelWidget->index());
                 if (!track.doesUsePianoRoll() && !track.items().empty()) {
@@ -186,7 +186,7 @@ void ChannelsWidget::velocityButtonClicked()
 void ChannelsWidget::pianoKeyClicked(const Qt::MouseButton button, const int step, const int key)
 {
     float beatsPerStep = 0.25;
-    Track& track = _app->project().getPattern(_app->activePattern()).getTrack(_activeChannelWidget->index());
+    Track& track = _app->project().getDefaultPattern().getTrack(_activeChannelWidget->index());
 
     if (button == Qt::LeftButton) {
         auto existingItem = std::find_if(track.items().begin(), track.items().end(), [=](const Track::Item* item){ return item->time() == step * beatsPerStep; });
@@ -206,7 +206,7 @@ void ChannelsWidget::pianoKeyClicked(const Qt::MouseButton button, const int ste
 void ChannelsWidget::velocityClicked(const int step, const int velocity)
 {
     float beatsPerStep = 0.25;
-    Track& track = _app->project().getPattern(_app->activePattern()).getTrack(_activeChannelWidget->index());
+    Track& track = _app->project().getDefaultPattern().getTrack(_activeChannelWidget->index());
 
     auto existingItem = std::find_if(track.items().begin(), track.items().end(), [=](const Track::Item* item){ return item->time() == step * beatsPerStep; });
     if (existingItem != track.items().end()) {

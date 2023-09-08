@@ -30,9 +30,6 @@ class Application : public QApplication
 
         Project& project();
 
-        int activePattern() const;
-        void setActivePattern(const int i);
-
         PlayMode playMode() const;
         void setPlayMode(const PlayMode mode);
 
@@ -40,7 +37,6 @@ class Application : public QApplication
         static Application* _instance;
 
         Project _project;
-        int _activePattern;
         PlayMode _playMode;
 
         QElapsedTimer _timer;
