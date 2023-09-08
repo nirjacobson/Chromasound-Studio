@@ -49,7 +49,7 @@ int PlaylistPatternsWidget::length() const
     return _rowHeight * _rows;
 }
 
-void PlaylistPatternsWidget::paintEvent(QPaintEvent* event)
+void PlaylistPatternsWidget::paintEvent(QPaintEvent*)
 {
     int firstPattern = _top / _rowHeight;
     int firstPatternStart = firstPattern * _rowHeight - _top;

@@ -27,7 +27,7 @@ void RectLED::setOnFunction(std::function<bool ()> func)
     _onFunction = func;
 }
 
-void RectLED::paintEvent(QPaintEvent* event)
+void RectLED::paintEvent(QPaintEvent*)
 {
     bool on = _onFunction();
 
@@ -39,7 +39,7 @@ void RectLED::paintEvent(QPaintEvent* event)
     painter.drawRect(rect());
 }
 
-void RectLED::mousePressEvent(QMouseEvent* event)
+void RectLED::mousePressEvent(QMouseEvent*)
 {
     if (Qt::ShiftModifier == QApplication::keyboardModifiers()) {
         setSelected(!selected());
@@ -49,7 +49,7 @@ void RectLED::mousePressEvent(QMouseEvent* event)
     }
 }
 
-void RectLED::mouseDoubleClickEvent(QMouseEvent* event)
+void RectLED::mouseDoubleClickEvent(QMouseEvent*)
 {
     if (Qt::ShiftModifier != QApplication::keyboardModifiers()) {
         emit doubleClicked();

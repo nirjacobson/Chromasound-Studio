@@ -27,7 +27,7 @@ class PianoRollVelocitiesWidget : public GanttBottomWidget
 
     protected:
         int length() const;
-        void paintEvent(QPaintEvent* event);
+        void paintEvent(QPaintEvent*);
         void mousePressEvent(QMouseEvent* event);
 
     private:

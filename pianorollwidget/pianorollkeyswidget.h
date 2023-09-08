@@ -20,7 +20,7 @@ class PianoRollKeysWidget : public GanttLeftWidget
 
     protected:
         int length() const;
-        void paintEvent(QPaintEvent* event);
+        void paintEvent(QPaintEvent*);
 
     private:
         static constexpr int KEYS_PER_OCTAVE = 12;

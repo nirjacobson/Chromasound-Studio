@@ -42,7 +42,7 @@ void TimeDisplayWidget::paintEvent(QPaintEvent* event)
     painter.drawText(4, 16, _mode == BS ? "B:S" : "M:S:Z");
 }
 
-void TimeDisplayWidget::mousePressEvent(QMouseEvent* event)
+void TimeDisplayWidget::mousePressEvent(QMouseEvent*)
 {
     _mode = _mode == BS ? MSZ : BS;
     update();

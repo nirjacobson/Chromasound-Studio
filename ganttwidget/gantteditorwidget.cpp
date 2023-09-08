@@ -122,7 +122,7 @@ void GanttEditorWidget::setPositionFunction(std::function<float ()> func)
     _positionFunction = func;
 }
 
-void GanttEditorWidget::paintEvent(QPaintEvent* event)
+void GanttEditorWidget::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
     painter.setPen(QColor(Qt::gray));
@@ -228,7 +228,7 @@ void GanttEditorWidget::mousePressEvent(QMouseEvent* event)
     }
 }
 
-void GanttEditorWidget::mouseReleaseEvent(QMouseEvent* event)
+void GanttEditorWidget::mouseReleaseEvent(QMouseEvent*)
 {
     _itemUnderCursorSelected = false;
     _itemUnderCursor = nullptr;

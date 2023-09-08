@@ -22,7 +22,7 @@ class TimeDisplayWidget : public QLCDNumber
 
     protected:
         void paintEvent(QPaintEvent* event);
-        void mousePressEvent(QMouseEvent* event);
+        void mousePressEvent(QMouseEvent*);
 
     private:
         Application* _app;

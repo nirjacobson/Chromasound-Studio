@@ -65,7 +65,7 @@ int PianoRollVelocitiesWidget::length() const
     return totalWidth;
 }
 
-void PianoRollVelocitiesWidget::paintEvent(QPaintEvent* event)
+void PianoRollVelocitiesWidget::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
 
