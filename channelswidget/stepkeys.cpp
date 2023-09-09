@@ -19,7 +19,7 @@ void StepKeys::setChannel(const int idx)
 void StepKeys::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
-    Pattern& pattern = _app->project().getDefaultPattern();
+    Pattern& pattern = _app->project().getFrontPattern();
 
     float beatsPerStep = 0.25;
 

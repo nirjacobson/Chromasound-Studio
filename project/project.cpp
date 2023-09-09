@@ -1,7 +1,7 @@
 #include "project.h"
 
 Project::Project()
-    : _defaultPattern(0)
+    : _frontPattern(0)
     , _tempo(120)
     , _beatsPerBar(4)
 {
@@ -45,24 +45,24 @@ const Pattern& Project::getPattern(const int idx) const
     return _patterns[idx];
 }
 
-int Project::defaultPattern() const
+int Project::frontPattern() const
 {
-    return _defaultPattern;
+    return _frontPattern;
 }
 
-void Project::setDefaultPattern(const int idx)
+void Project::setFrontPattern(const int idx)
 {
-    _defaultPattern = idx;
+    _frontPattern = idx;
 }
 
-Pattern& Project::getDefaultPattern()
+Pattern& Project::getFrontPattern()
 {
-    return getPattern(_defaultPattern);
+    return getPattern(_frontPattern);
 }
 
-const Pattern& Project::getDefaultPattern() const
+const Pattern& Project::getFrontPattern() const
 {
-    return getPattern(_defaultPattern);
+    return getPattern(_frontPattern);
 }
 
 QList<Project::PlaylistItem*>& Project::playlist()
