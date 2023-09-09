@@ -46,10 +46,10 @@ class Project
         Channel& getChannel(const int idx);
         Pattern& getPattern(const int idx);
         const Pattern& getPattern(const int idx) const;
-        int defaultPattern() const;
-        void setDefaultPattern(const int idx);
-        Pattern& getDefaultPattern();
-        const Pattern& getDefaultPattern() const;
+        int frontPattern() const;
+        void setFrontPattern(const int idx);
+        Pattern& getFrontPattern();
+        const Pattern& getFrontPattern() const;
 
         QList<PlaylistItem*>& playlist();
         void addPlaylistItem(const float time, const int pattern);
@@ -69,7 +69,7 @@ class Project
     private:
         QList<Channel> _channels;
         QList<Pattern> _patterns;
-        int _defaultPattern;
+        int _frontPattern;
 
         QList<PlaylistItem*> _playlist;
 

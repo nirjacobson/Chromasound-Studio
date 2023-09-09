@@ -18,7 +18,7 @@ void StepVelocities::setChannel(const int idx)
 void StepVelocities::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
-    Pattern& pattern = _app->project().getDefaultPattern();
+    Pattern& pattern = _app->project().getFrontPattern();
 
     float beatsPerStep = 0.25;
 
@@ -66,7 +66,7 @@ void StepVelocities::mousePressEvent(QMouseEvent* event)
 {
     float beatsPerStep = 0.25;
     int fullBarHeight = height() - 16;
-    Pattern& pattern = _app->project().getDefaultPattern();
+    Pattern& pattern = _app->project().getFrontPattern();
 
     int width = StepSequencerWidget::StepWidth + StepSequencerWidget::StepSpacing;
     int stepClicked = event->x() / width;

@@ -20,7 +20,7 @@ float Application::position() const
     }
 
     if (_playMode == Pattern) {
-        float patternLength = qCeil(_project.getDefaultPattern().getLength()/_project.beatsPerBar()) * _project.beatsPerBar();
+        float patternLength = qCeil(_project.getFrontPattern().getLength()/_project.beatsPerBar()) * _project.beatsPerBar();
 
         return fmod( ((_ref + _timer.nsecsElapsed()) / beatNS), patternLength );
     }
