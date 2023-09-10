@@ -62,7 +62,7 @@ void PlaylistPatternsWidget::paintEvent(QPaintEvent*)
 
     float appPosition = _app->position();
 
-    QMap<int, float> activePatterns = _app->project().activePatternsAtTime(appPosition);
+    QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(appPosition);
 
 
     for (int i = 0; i < numPatternsAcrossHeight && (firstPattern + i) < _rows; i++) {

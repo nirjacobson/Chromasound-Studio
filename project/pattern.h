@@ -8,6 +8,8 @@
 
 class Pattern
 {
+        friend class BSON;
+
     public:
         Pattern();
 

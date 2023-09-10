@@ -5,8 +5,11 @@
 #include <QMdiSubWindow>
 #include <QTimer>
 #include <QRect>
+#include <QFile>
+#include <QFileDialog>
 
 #include "application.h"
+#include "bson.h"
 #include "channelswidget/channelswidget.h"
 #include "playlistwidget/playlistwidget.h"
 #include "pianorollwidget/pianorollwidget.h"
@@ -34,6 +37,9 @@ private slots:
     void frame();
 
     void pianoRollTriggered(const int index);
+
+    void openTriggered();
+    void saveTriggered();
 
 private:
     Ui::MainWindow* ui;

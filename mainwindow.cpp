@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QtDebug>
+
 MainWindow::MainWindow(QWidget *parent, Application* app)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -37,6 +37,9 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
    connect(ui->topWidget, &TopWidget::beatsPerBarChanged, this, &MainWindow::beatsPerBarChanged);
 
    connect(_channelsWidget, &ChannelsWidget::pianoRollTriggered, this, &MainWindow::pianoRollTriggered);
+
+   connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openTriggered);
+   connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveTriggered);
 }
 
 MainWindow::~MainWindow()
@@ -95,6 +98,23 @@ void MainWindow::pianoRollTriggered(const int index)
 
     _pianoRollWindow->show();
     _pianoRollWindow->setFocus();
+}
+
+void MainWindow::openTriggered()
+{
+    const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "FM-PSG Studio Projects (*.fsp)");
+    Project p = BSON::decode(path);
+    fprintf(stderr, "%d\n", p.channels());
+}
+
+void MainWindow::saveTriggered()
+{
+    const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "FM-PSG Studio Projects (*.fsp)");
+    QFile file(path);
+    file.open(QIODevice::WriteOnly);
+    file.write(BSON::encode(_app->project()));
+    file.close();
+
 }
 
 void MainWindow::doUpdate()

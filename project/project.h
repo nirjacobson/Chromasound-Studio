@@ -9,37 +9,64 @@
 
 class Project
 {
+        friend class BSON;
+
     public:
+        class Playlist
+        {
+                friend class BSON;
+                friend class Project;
 
-        class PlaylistItem : public GanttItem {
             public:
-                PlaylistItem(Project* const project, const float time, const int pattern);
 
-                float time() const;
+                class Item : public GanttItem {
+                        friend class BSON;
 
-                int pattern() const;
+                    public:
+                        Item(Project* const project, const float time, const int pattern);
 
-                bool operator==(const PlaylistItem& item);
+                        float time() const;
+
+                        int pattern() const;
+
+                        bool operator==(const Item& item);
+
+                    private:
+                        Item();
+
+                        Project* _project;
+                        float _time;
+                        int _pattern;
+
+                        // GanttItem interface
+                    public:
+                        long row() const;
+                        float duration() const;
+                        int velocity() const;
+                        void setRow(const long row);
+                        void setTime(const float time);
+                        void setDuration(const float);
+                        void setVelocity(const int);
+                };
+
+                Playlist(Project* const project);
+                ~Playlist();
+
+                void addItem(const float time, const int pattern);
+                void removeItem(const float time, const int pattern);
+
+                float getLength() const;
+
+                QMap<int, float> activePatternsAtTime(const float time) const;
 
             private:
+                Playlist();
 
+                QList<Item*> _items;
                 Project* _project;
-                float _time;
-                int _pattern;
-
-                // GanttItem interface
-            public:
-                long row() const;
-                float duration() const;
-                int velocity() const;
-                void setRow(const long row);
-                void setTime(const float time);
-                void setDuration(const float);
-                void setVelocity(const int);
         };
 
         Project();
-        ~Project();
 
         int channels() const;
 
@@ -51,9 +78,7 @@ class Project
         Pattern& getFrontPattern();
         const Pattern& getFrontPattern() const;
 
-        QList<PlaylistItem*>& playlist();
-        void addPlaylistItem(const float time, const int pattern);
-        void removePlaylistItem(const float time, const int pattern);
+        Playlist& playlist();
 
         float getLength() const;
 
@@ -64,14 +89,18 @@ class Project
         void setBeatsPerBar(const int beats);
 
         const QList<Pattern>& patterns() const;
-        QMap<int, float> activePatternsAtTime(const float time) const;
+
+        void addChannel();
+
+        Project& operator=(Project&& src);
+        Project(Project&& o);
 
     private:
         QList<Channel> _channels;
         QList<Pattern> _patterns;
         int _frontPattern;
 
-        QList<PlaylistItem*> _playlist;
+        Playlist _playlist;
 
         int _tempo;
         int _beatsPerBar;

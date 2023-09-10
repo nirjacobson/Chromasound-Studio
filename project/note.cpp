@@ -42,3 +42,8 @@ bool Note::operator==(const Note& note)
 {
     return _key == note.key() && _duration == note.duration();
 }
+
+Note::Note()
+{
+
+}

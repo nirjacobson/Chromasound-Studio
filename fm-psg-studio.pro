@@ -2,13 +2,14 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++11
+CONFIG += c++17
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    bson.cpp \
     channelswidget/stepkeys.cpp \
     channelswidget/stepvelocities.cpp \
     ganttwidget/ganttbottomwidget.cpp \
@@ -43,6 +44,7 @@ SOURCES += \
     topwidget/topwidget.cpp
 
 HEADERS += \
+    bson.h \
     channelswidget/stepkeys.h \
     channelswidget/stepvelocities.h \
     ganttwidget/ganttbottomwidget.h \
@@ -83,6 +85,10 @@ FORMS += \
     playlistwidget/playlistwidget.ui \
     topwidget/topwidget.ui \
     mainwindow.ui \
+
+INCLUDEPATH += -I/usr/include/libbson-1.0
+
+LIBS += -lbson-1.0
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
