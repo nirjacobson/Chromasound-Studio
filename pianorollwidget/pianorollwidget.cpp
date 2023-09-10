@@ -7,6 +7,7 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
     , ui(new Ui::PianoRollWidget)
     , _keysWidget(new PianoRollKeysWidget(this))
     , _velocitiesWidget(new PianoRollVelocitiesWidget(this))
+    , _itemLastClicked(nullptr)
 {    
     _velocitiesWidget->setApplication(app);
 
@@ -24,6 +25,7 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
 
     connect(ui->ganttWidget, &GanttWidget::clicked, this, &PianoRollWidget::ganttClicked);
     connect(ui->ganttWidget, &GanttWidget::itemsChanged, this, &PianoRollWidget::ganttItemsChanged);
+    connect(ui->ganttWidget, &GanttWidget::itemReleased, this, &PianoRollWidget::ganttItemReleased);
 }
 
 PianoRollWidget::~PianoRollWidget()
@@ -64,7 +66,7 @@ void PianoRollWidget::setTrack(const int pattern, const int track)
 void PianoRollWidget::ganttClicked(Qt::MouseButton button, int row, float time)
 {
     if (button == Qt::LeftButton) {
-        _track->addItem(time, Note(row, 1));
+        _itemLastClicked = _track->addItem(time, Note(row, (_itemLastClicked ? _itemLastClicked->duration() : 1)));
     } else {
         _track->removeItem(time, row);
     }
@@ -74,5 +76,10 @@ void PianoRollWidget::ganttClicked(Qt::MouseButton button, int row, float time)
 void PianoRollWidget::ganttItemsChanged()
 {
     update();
+}
+
+void PianoRollWidget::ganttItemReleased(const GanttItem* item)
+{
+    _itemLastClicked = item;
 }
 

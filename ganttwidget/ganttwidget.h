@@ -58,6 +58,7 @@ class GanttWidget : public QWidget
     signals:
         void clicked(Qt::MouseButton button, int row, float time);
         void itemsChanged();
+        void itemReleased(const GanttItem* item);
 };
 
 #endif // GANTTWIDGET_H

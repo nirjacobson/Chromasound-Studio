@@ -32,10 +32,12 @@ class PianoRollWidget : public QWidget
         PianoRollVelocitiesWidget* _velocitiesWidget;
 
         Track* _track;
+        const GanttItem* _itemLastClicked;
 
     private slots:
         void ganttClicked(Qt::MouseButton button, int row, float time);
         void ganttItemsChanged();
+        void ganttItemReleased(const GanttItem* item);
 };
 
 #endif // PIANOROLLWIDGET_H

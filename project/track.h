@@ -52,7 +52,7 @@ class Track
 
         float length() const;
 
-        void addItem(const float time, const Note& note);
+        Item* addItem(const float time, const Note& note);
         void removeItem(const float time, const int key);
         void removeItem(const float time);
 
