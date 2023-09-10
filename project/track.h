@@ -9,11 +9,15 @@
 
 class Track
 {
+        friend class BSON;
+
     public:
         Track();
         ~Track();
 
         class Item : public GanttItem {
+               friend class BSON;
+
             public:
                 Item(const float time, const Note& note);
 
@@ -24,6 +28,8 @@ class Track
                 bool operator==(const Track::Item& item);
 
             private:
+                Item();
+
                 float _time;
                 Note _note;
 

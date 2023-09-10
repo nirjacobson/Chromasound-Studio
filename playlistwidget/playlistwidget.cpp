@@ -29,10 +29,10 @@ void PlaylistWidget::ganttClicked(Qt::MouseButton button, int row, float time)
 {
     if (button == Qt::LeftButton) {
         if (_app->project().getPattern(row).getLength() > 0) {
-            _app->project().addPlaylistItem(time, row);
+            _app->project().playlist().addItem(time, row);
         }
     } else {
-        _app->project().removePlaylistItem(time, row);
+        _app->project().playlist().removeItem(time, row);
     }
     update();
 }

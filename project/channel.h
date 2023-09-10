@@ -5,8 +5,9 @@
 
 class Channel
 {
-    public:
+        friend class BSON;
 
+    public:
         Channel();
 
         bool enabled() const;

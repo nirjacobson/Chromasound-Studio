@@ -92,6 +92,12 @@ bool Track::Item::operator==(const Item& item)
     return _time == item.time() && _note == item.note();
 }
 
+Track::Item::Item()
+    : _note(0, 0)
+{
+
+}
+
 long Track::Item::row() const
 {
     return _note.key();

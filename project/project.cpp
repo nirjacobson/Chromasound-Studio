@@ -2,21 +2,11 @@
 
 Project::Project()
     : _frontPattern(0)
+    , _playlist(this)
     , _tempo(120)
     , _beatsPerBar(4)
 {
-    _channels.append(Channel());
-    _channels.append(Channel());
-    _channels.append(Channel());
-    _channels.append(Channel());
 
-    _patterns.append(Pattern());
-}
-
-Project::~Project()
-{
-    for (PlaylistItem* item : _playlist)
-        delete item;
 }
 
 int Project::channels() const
@@ -65,36 +55,14 @@ const Pattern& Project::getFrontPattern() const
     return getPattern(_frontPattern);
 }
 
-QList<Project::PlaylistItem*>& Project::playlist()
+Project::Playlist& Project::playlist()
 {
     return _playlist;
 }
 
-void Project::addPlaylistItem(const float time, const int pattern)
-{
-    PlaylistItem item(this, time, pattern);
-    if (std::find_if(_playlist.begin(), _playlist.end(), [=](PlaylistItem* const playlistItem){ return *playlistItem == item; }) == _playlist.end()) {
-        _playlist.append(new PlaylistItem(this, time, pattern));
-    }
-}
-
-void Project::removePlaylistItem(const float time, const int pattern)
-{
-    auto it = std::remove_if(_playlist.begin(), _playlist.end(), [=](PlaylistItem* const item){ return (item->pattern() == pattern) && (item->time() <= time) && ((item->time() + _patterns[item->pattern()].getLength()) >= time); });
-    _playlist.erase(it, _playlist.end());
-}
-
 float Project::getLength() const
 {
-    float end = 0;
-    for (const PlaylistItem* item : _playlist) {
-        float thisEnd = item->time() + _patterns[item->pattern()].getLength();
-        if (thisEnd > end) {
-            end = thisEnd;
-        }
-    }
-
-    return end;
+    return _playlist.getLength();
 }
 
 int Project::tempo() const
@@ -122,20 +90,40 @@ const QList<Pattern>& Project::patterns() const
     return _patterns;
 }
 
-QMap<int, float> Project::activePatternsAtTime(const float time) const
+void Project::addChannel()
 {
-    QMap<int, float> result;
-
-    QList<PlaylistItem*>::ConstIterator it = _playlist.begin();
-    while ((it = std::find_if(it, _playlist.end(), [=](const PlaylistItem* item){ return (item->time() <= time) && ((item->time() + _patterns[item->pattern()].getLength()) >= time); })) != _playlist.end()) {
-        result.insert((*it)->pattern(), (*it)->time());
-        it++;
-    }
-
-    return result;
+    _channels.append(Channel());
 }
 
-Project::PlaylistItem::PlaylistItem(Project* const project, const float time, const int pattern)
+Project& Project::operator=(Project&& src)
+{
+    _channels = src._channels;
+    _patterns = src._patterns;
+    _frontPattern = src._frontPattern;
+
+    _playlist = src._playlist;
+    _playlist._project = this;
+
+    _tempo = src._tempo;
+    _beatsPerBar = src._beatsPerBar;
+
+    return *this;
+}
+
+Project::Project(Project&& o)
+{
+    _channels = o._channels;
+    _patterns = o._patterns;
+    _frontPattern = o._frontPattern;
+
+    _playlist = o._playlist;
+    _playlist._project = this;
+
+    _tempo = o._tempo;
+    _beatsPerBar = o._beatsPerBar;
+}
+
+Project::Playlist::Item::Item(Project* const project, const float time, const int pattern)
     : _project(project)
     , _time(time)
     , _pattern(pattern)
@@ -143,53 +131,114 @@ Project::PlaylistItem::PlaylistItem(Project* const project, const float time, co
 
 }
 
-float Project::PlaylistItem::time() const
+float Project::Playlist::Item::time() const
 {
     return _time;
 }
 
-int Project::PlaylistItem::pattern() const
+int Project::Playlist::Item::pattern() const
 {
     return _pattern;
 }
 
-bool Project::PlaylistItem::operator==(const PlaylistItem& item)
+bool Project::Playlist::Item::operator==(const Playlist::Item& item)
 {
     return _time == item.time() && _pattern == item.pattern();
 }
 
-long Project::PlaylistItem::row() const
+Project::Playlist::Item::Item()
+{
+
+}
+
+long Project::Playlist::Item::row() const
 {
     return _pattern;
 }
 
-float Project::PlaylistItem::duration() const
+float Project::Playlist::Item::duration() const
 {
     return _project->patterns()[_pattern].getLength();
 }
 
-int Project::PlaylistItem::velocity() const
+int Project::Playlist::Item::velocity() const
 {
     // Not supported
     return 0.0f;
 }
 
-void Project::PlaylistItem::setRow(const long row)
+void Project::Playlist::Item::setRow(const long row)
 {
     _pattern = row;
 }
 
-void Project::PlaylistItem::setTime(const float time)
+void Project::Playlist::Item::setTime(const float time)
 {
     _time = time;
 }
 
-void Project::PlaylistItem::setDuration(const float)
+void Project::Playlist::Item::setDuration(const float)
 {
     // Not supported
 }
 
-void Project::PlaylistItem::setVelocity(const int)
+void Project::Playlist::Item::setVelocity(const int)
 {
     // Not supported
+}
+
+Project::Playlist::Playlist(Project* const project)
+{
+    _project = project;
+}
+
+Project::Playlist::~Playlist()
+{
+    for (Playlist::Item* item : _items)
+        delete item;
+}
+
+void Project::Playlist::addItem(const float time, const int pattern)
+{
+    Playlist::Item item(_project, time, pattern);
+    if (std::find_if(_items.begin(), _items.end(), [=](Playlist::Item* const pitem){ return *pitem == item; }) == _items.end()) {
+        _items.append(new Project::Playlist::Item(_project, time, pattern));
+    }
+}
+
+void Project::Playlist::removeItem(const float time, const int pattern)
+{
+    auto it = std::remove_if(_items.begin(), _items.end(), [=](Playlist::Item* const item){ return (item->pattern() == pattern) && (item->time() <= time) && ((item->time() + _project->patterns()[item->pattern()].getLength()) >= time); });
+    _items.erase(it, _items.end());
+}
+
+float Project::Playlist::getLength() const
+{
+    float end = 0;
+    for (const Playlist::Item* item : _items) {
+        float thisEnd = item->time() + _project->_patterns[item->pattern()].getLength();
+        if (thisEnd > end) {
+            end = thisEnd;
+        }
+    }
+
+    return end;
+}
+
+QMap<int, float> Project::Playlist::activePatternsAtTime(const float time) const
+{
+    QMap<int, float> result;
+
+    QList<Playlist::Item*>::ConstIterator it = _items.begin();
+    while ((it = std::find_if(it, _items.end(), [=](const Playlist::Item* item){ return (item->time() <= time) && ((item->time() + _project->_patterns[item->pattern()].getLength()) >= time); })) != _items.end()) {
+        result.insert((*it)->pattern(), (*it)->time());
+        it++;
+    }
+
+    return result;
+}
+
+Project::Playlist::Playlist()
+{
+
 }

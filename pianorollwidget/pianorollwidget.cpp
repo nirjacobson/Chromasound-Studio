@@ -42,7 +42,7 @@ void PianoRollWidget::setTrack(const int pattern, const int track)
         float appPosition = _app->position();
 
         if (_app->playMode() == Application::PlayMode::Song) {
-            QMap<int, float> activePatterns = _app->project().activePatternsAtTime(appPosition);
+            QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(appPosition);
 
             if (activePatterns.contains(pattern)) {
                 float delta = appPosition - activePatterns[pattern];

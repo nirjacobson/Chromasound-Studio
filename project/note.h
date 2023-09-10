@@ -4,6 +4,8 @@
 
 class Note
 {
+        friend class BSON;
+
     public:
         Note(const int key, const float duration);
 
@@ -18,6 +20,8 @@ class Note
         bool operator==(const Note& note);
 
     private:
+        Note();
+
         int _key;
         float _duration;
         int _velocity;

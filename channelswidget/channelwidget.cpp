@@ -22,7 +22,7 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index) :
     ui->rectLed->setOnFunction([=](){
         float appPosition = _app->position();
 
-        QMap<int, float> activePatterns = _app->project().activePatternsAtTime(appPosition);
+        QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(appPosition);
         const Pattern& frontPattern = _app->project().getFrontPattern();
         int frontPatternIdx = _app->project().frontPattern();
         const Track& track = frontPattern.getTrack(index);
