@@ -19,6 +19,9 @@ class TopWidget : public QWidget
         ~TopWidget();
 
         void setApplication(Application* app);
+        void setPattern(const int p);
+        void setTempo(const int t);
+        void setBeatsPerBar(const int b);
 
     signals:
         void play();

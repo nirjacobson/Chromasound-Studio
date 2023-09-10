@@ -9,6 +9,13 @@ Project::Project()
 
 }
 
+Project::~Project()
+{
+    for (Pattern* p : _patterns) {
+        delete p;
+    }
+}
+
 int Project::channels() const
 {
     return _channels.size();
@@ -23,16 +30,16 @@ Pattern& Project::getPattern(const int idx)
 {
     if (idx >= _patterns.size()) {
         for (int i = _patterns.size(); i <= idx; i++) {
-            _patterns.append(Pattern());
+            _patterns.append(new Pattern);
         }
     }
 
-    return _patterns[idx];
+    return *_patterns[idx];
 }
 
 const Pattern& Project::getPattern(const int idx) const
 {
-    return _patterns[idx];
+    return *_patterns[idx];
 }
 
 int Project::frontPattern() const
@@ -85,7 +92,7 @@ void Project::setBeatsPerBar(const int beats)
     _beatsPerBar = beats;
 }
 
-const QList<Pattern>& Project::patterns() const
+const QList<Pattern*>& Project::patterns() const
 {
     return _patterns;
 }
@@ -101,8 +108,10 @@ Project& Project::operator=(Project&& src)
     _patterns = src._patterns;
     _frontPattern = src._frontPattern;
 
-    _playlist = src._playlist;
+    src._patterns.clear();
+
     _playlist._project = this;
+    _playlist = std::move(src._playlist);
 
     _tempo = src._tempo;
     _beatsPerBar = src._beatsPerBar;
@@ -116,8 +125,10 @@ Project::Project(Project&& o)
     _patterns = o._patterns;
     _frontPattern = o._frontPattern;
 
-    _playlist = o._playlist;
+    o._patterns.clear();
+
     _playlist._project = this;
+    _playlist = std::move(o._playlist);
 
     _tempo = o._tempo;
     _beatsPerBar = o._beatsPerBar;
@@ -158,7 +169,7 @@ long Project::Playlist::Item::row() const
 
 float Project::Playlist::Item::duration() const
 {
-    return _project->patterns()[_pattern].getLength();
+    return _project->patterns()[_pattern]->getLength();
 }
 
 int Project::Playlist::Item::velocity() const
@@ -192,6 +203,17 @@ Project::Playlist::Playlist(Project* const project)
     _project = project;
 }
 
+Project::Playlist::Playlist(Playlist&& o)
+{
+    _items = o._items;
+
+    o._items.clear();
+
+    for (Item* item : _items) {
+        item->_project = _project;
+    }
+}
+
 Project::Playlist::~Playlist()
 {
     for (Playlist::Item* item : _items)
@@ -208,7 +230,7 @@ void Project::Playlist::addItem(const float time, const int pattern)
 
 void Project::Playlist::removeItem(const float time, const int pattern)
 {
-    auto it = std::remove_if(_items.begin(), _items.end(), [=](Playlist::Item* const item){ return (item->pattern() == pattern) && (item->time() <= time) && ((item->time() + _project->patterns()[item->pattern()].getLength()) >= time); });
+    auto it = std::remove_if(_items.begin(), _items.end(), [=](Playlist::Item* const item){ return (item->pattern() == pattern) && (item->time() <= time) && ((item->time() + _project->patterns()[item->pattern()]->getLength()) >= time); });
     _items.erase(it, _items.end());
 }
 
@@ -216,7 +238,7 @@ float Project::Playlist::getLength() const
 {
     float end = 0;
     for (const Playlist::Item* item : _items) {
-        float thisEnd = item->time() + _project->_patterns[item->pattern()].getLength();
+        float thisEnd = item->time() + _project->_patterns[item->pattern()]->getLength();
         if (thisEnd > end) {
             end = thisEnd;
         }
@@ -230,12 +252,26 @@ QMap<int, float> Project::Playlist::activePatternsAtTime(const float time) const
     QMap<int, float> result;
 
     QList<Playlist::Item*>::ConstIterator it = _items.begin();
-    while ((it = std::find_if(it, _items.end(), [=](const Playlist::Item* item){ return (item->time() <= time) && ((item->time() + _project->_patterns[item->pattern()].getLength()) >= time); })) != _items.end()) {
+    while ((it = std::find_if(it, _items.end(), [=](const Playlist::Item* item){ return (item->time() <= time) && ((item->time() + _project->_patterns[item->pattern()]->getLength()) >= time); })) != _items.end()) {
         result.insert((*it)->pattern(), (*it)->time());
         it++;
     }
 
     return result;
+}
+
+
+Project::Playlist& Project::Playlist::operator=(Playlist&& o)
+{
+    _items = o._items;
+
+    o._items.clear();
+
+    for (Item* item : _items) {
+        item->_project = _project;
+    }
+
+    return *this;
 }
 
 Project::Playlist::Playlist()

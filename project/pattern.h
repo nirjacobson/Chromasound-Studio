@@ -12,6 +12,10 @@ class Pattern
 
     public:
         Pattern();
+        ~Pattern();
+
+        Pattern(Pattern&& o);
+        Pattern& operator=(Pattern&& o);
 
         bool hasTrack(const int idx) const;
         const Track& getTrack(const int idx) const;
@@ -22,7 +26,7 @@ class Pattern
         QList<int> activeTracksAtTime(const float time) const;
 
     private:
-        QMap<int, Track> _tracks;
+        QMap<int, Track*> _tracks;
 };
 
 #endif // PATTERN_H

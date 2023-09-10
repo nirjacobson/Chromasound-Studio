@@ -14,6 +14,9 @@ class Track
     public:
         Track();
         ~Track();
+        Track(Track&& o);
+
+        Track& operator=(Track&& o);
 
         class Item : public GanttItem {
                friend class BSON;

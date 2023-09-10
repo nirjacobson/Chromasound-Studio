@@ -12,6 +12,24 @@ Track::~Track()
         delete item;
 }
 
+Track::Track(Track&& o)
+{
+    _items = o._items;
+    _usePianoRoll = o._usePianoRoll;
+
+    o.items().clear();
+}
+
+Track& Track::operator=(Track&& o)
+{
+    _items = o._items;
+    _usePianoRoll = o._usePianoRoll;
+
+    o.items().clear();
+
+    return *this;
+}
+
 QList<Track::Item*>& Track::items()
 {
     return _items;
