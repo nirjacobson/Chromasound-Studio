@@ -53,12 +53,17 @@ float Track::length() const
     return end;
 }
 
-void Track::addItem(const float time, const Note& note)
+Track::Item* Track::addItem(const float time, const Note& note)
 {
+    Item* ret = nullptr;
+
     Item item(time, note);
     if (std::find_if(_items.begin(), _items.end(), [=](Item* const noteItem){ return *noteItem == item; }) == _items.end()) {
-        _items.append(new Item(time, note));
+        ret = new Item(time, note);
+        _items.append(ret);
     }
+
+    return ret;
 }
 
 void Track::removeItem(const float time, const int key)

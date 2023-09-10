@@ -230,6 +230,9 @@ void GanttEditorWidget::mousePressEvent(QMouseEvent* event)
 
 void GanttEditorWidget::mouseReleaseEvent(QMouseEvent*)
 {
+    if (_itemUnderCursor)
+        emit itemReleased(_itemUnderCursor);
+
     _itemUnderCursorSelected = false;
     _itemUnderCursor = nullptr;
 }

@@ -40,6 +40,7 @@ class GanttEditorWidget : public QWidget
         void verticalScroll(const int pixels);
         void clicked(Qt::MouseButton button, int row, float time);
         void itemsChanged();
+        void itemReleased(const GanttItem* item);
 
     protected:
         void paintEvent(QPaintEvent*);

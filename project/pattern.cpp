@@ -40,6 +40,9 @@ const Track& Pattern::getTrack(const int idx) const
 
 Track& Pattern::getTrack(const int idx)
 {
+    if (!_tracks[idx])
+        _tracks[idx] = new Track;
+
     return *_tracks[idx];
 }
 
