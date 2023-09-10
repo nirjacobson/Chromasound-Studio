@@ -40,6 +40,27 @@ void TopWidget::setApplication(Application* app)
     ui->beatsPerBarSpinBox->setValue(app->project().beatsPerBar());
 }
 
+void TopWidget::setPattern(const int p)
+{
+    ui->patSpinBox->blockSignals(true);
+    ui->patSpinBox->setValue(p+1);
+    ui->patSpinBox->blockSignals(false);
+}
+
+void TopWidget::setTempo(const int t)
+{
+    ui->tempoSpinBox->blockSignals(true);
+    ui->tempoSpinBox->setValue(t);
+    ui->tempoSpinBox->blockSignals(false);
+}
+
+void TopWidget::setBeatsPerBar(const int b)
+{
+    ui->beatsPerBarSpinBox->blockSignals(true);
+    ui->beatsPerBarSpinBox->setValue(b);
+    ui->beatsPerBarSpinBox->blockSignals(false);
+}
+
 void TopWidget::playPauseClicked()
 {
     _isPlaying = !_isPlaying;

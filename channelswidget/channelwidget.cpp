@@ -25,10 +25,10 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index) :
         QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(appPosition);
         const Pattern& frontPattern = _app->project().getFrontPattern();
         int frontPatternIdx = _app->project().frontPattern();
-        const Track& track = frontPattern.getTrack(index);
+        const Track& track = frontPattern.getTrack(_index);
         if (_app->playMode() == Application::PlayMode::Pattern) {
             return _app->project().getChannel(_index).enabled() &&
-                    frontPattern.activeTracksAtTime(appPosition).contains(index) &&
+                    frontPattern.activeTracksAtTime(appPosition).contains(_index) &&
                     std::find_if(track.items().begin(),
                               track.items().end(),
                      [&](const Track::Item* item){
@@ -37,7 +37,7 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index) :
         } else {
            return activePatterns.contains(_app->project().frontPattern()) &&
                   _app->project().getChannel(_index).enabled() &&
-                  frontPattern.activeTracksAtTime(appPosition - activePatterns[frontPatternIdx]).contains(index) &&
+                  frontPattern.activeTracksAtTime(appPosition - activePatterns[frontPatternIdx]).contains(_index) &&
                   std::find_if(track.items().begin(), track.items().end(),
                   [&](const Track::Item* item){
                     float delta = item->time() - (appPosition - activePatterns[frontPatternIdx]);

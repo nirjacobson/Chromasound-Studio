@@ -62,7 +62,7 @@ Channel BSON::toChannel(bson_iter_t& b)
         c._enabled = bson_iter_bool(&enabled);
     }
     if (bson_iter_find_descendant(&b, "name", &name) && BSON_ITER_HOLDS_UTF8(&name)) {
-        c._name = bson_iter_utf8(&enabled, nullptr);
+        c._name = bson_iter_utf8(&name, nullptr);
     }
 
     return c;
@@ -143,6 +143,8 @@ void BSON::fromTrack(bson_t* dst, const Track& track)
         BSON_APPEND_DOCUMENT(&items, key, &b_item);
     }
     bson_append_array_end(dst, &items);
+
+    BSON_APPEND_BOOL(dst, "usePianoRoll", track.doesUsePianoRoll());
 }
 
 Track BSON::toTrack(bson_iter_t& b)
@@ -153,11 +155,17 @@ Track BSON::toTrack(bson_iter_t& b)
     bson_iter_t child;
     bson_iter_t item;
 
-    if (bson_iter_find_descendant(&b, "items", &items) && BSON_ITER_HOLDS_DOCUMENT(&items) && bson_iter_recurse(&items, &child)) {
-        do {
+    bson_iter_t usePianoRoll;
+
+    if (bson_iter_find_descendant(&b, "items", &items) && BSON_ITER_HOLDS_ARRAY(&items) && bson_iter_recurse(&items, &child)) {
+        while (bson_iter_next(&child)) {
             bson_iter_recurse(&child, &item);
             t._items.append(new Track::Item(toTrackItem(item)));
-        } while (bson_iter_next(&child)) ;
+        }
+    }
+
+    if (bson_iter_find_descendant(&b, "usePianoRoll", &usePianoRoll) && BSON_ITER_HOLDS_BOOL(&usePianoRoll)) {
+        t._usePianoRoll = bson_iter_bool(&usePianoRoll);
     }
 
     return t;
@@ -171,7 +179,7 @@ void BSON::fromPattern(bson_t* dst, const Pattern& pattern)
     for (auto it = pattern._tracks.begin(); it != pattern._tracks.end(); ++it) {
         bson_t b_track;
         bson_init(&b_track);
-        fromTrack(&b_track, it.value());
+        fromTrack(&b_track, *it.value());
 
         char keybuff[8];
         const char* key;
@@ -191,11 +199,11 @@ Pattern BSON::toPattern(bson_iter_t& b)
     bson_iter_t track;
 
     if (bson_iter_find_descendant(&b, "tracks", &tracks) && BSON_ITER_HOLDS_DOCUMENT(&tracks) && bson_iter_recurse(&tracks, &child)) {
-        do {
+        while (bson_iter_next(&child)) {
             const char* key = bson_iter_key(&child);
             bson_iter_recurse(&child, &track);
-            p._tracks.insert(QString(key).toInt(), toTrack(track));
-        } while (bson_iter_next(&child)) ;
+            p._tracks[QString(key).toInt()] = new Track(toTrack(track));
+        }
     }
 
     return p;
@@ -253,11 +261,11 @@ Project::Playlist BSON::toPlaylist(bson_iter_t& b, Project* project)
     bson_iter_t child;
     bson_iter_t item;
 
-    if (bson_iter_find_descendant(&b, "items", &items) && BSON_ITER_HOLDS_DOCUMENT(&items) && bson_iter_recurse(&items, &child)) {
-        do {
+    if (bson_iter_find_descendant(&b, "items", &items) && BSON_ITER_HOLDS_ARRAY(&items) && bson_iter_recurse(&items, &child)) {
+        while (bson_iter_next(&child)) {
             bson_iter_recurse(&child, &item);
             p._items.append(new Project::Playlist::Item(toPlaylistItem(item)));
-        } while (bson_iter_next(&child)) ;
+        }
     }
 
     return p;
@@ -292,10 +300,10 @@ void BSON::fromProject(bson_t* dst,const Project& project)
     i = 0;
 
     BSON_APPEND_ARRAY_BEGIN(dst, "patterns", &patterns);
-    for (const Pattern& pattern : project._patterns) {
+    for (const Pattern* pattern : project._patterns) {
         bson_t b_pattern;
         bson_init(&b_pattern);
-        fromPattern(&b_pattern, pattern);
+        fromPattern(&b_pattern, *pattern);
 
         char keybuff[8];
         const char* key;
@@ -329,20 +337,30 @@ Project BSON::toProject(bson_iter_t& b)
 
     bson_iter_t channels;
     bson_iter_t channel;
+    bson_iter_t channelInner;
     if (bson_iter_find_descendant(&b, "channels", &channels) && BSON_ITER_HOLDS_ARRAY(&channels) && bson_iter_recurse(&channels, &channel)) {
-        do {
-            p._channels.append(toChannel(channel));
-        } while (bson_iter_next(&channel)) ;
+        while (bson_iter_next(&channel)) {
+            bson_iter_recurse(&channel, &channelInner);
+            p._channels.append(toChannel(channelInner));
+        }
     }
 
     // Patterns
 
     bson_iter_t patterns;
     bson_iter_t pattern;
+    bson_iter_t patternInner;
     if (bson_iter_find_descendant(&b, "patterns", &patterns) && BSON_ITER_HOLDS_ARRAY(&patterns) && bson_iter_recurse(&patterns, &pattern)) {
-        do {
-            p._patterns.append(toPattern(pattern));
-        } while (bson_iter_next(&channel)) ;
+        while (bson_iter_next(&pattern)) {
+            bson_iter_recurse(&pattern, &patternInner);
+            p._patterns.append(new Pattern(toPattern(patternInner)));
+        }
+    }
+
+    bson_iter_t frontPattern;
+
+    if (bson_iter_find_descendant(&b, "frontPattern", &frontPattern) && BSON_ITER_HOLDS_INT32(&frontPattern)) {
+        p._frontPattern = bson_iter_int32(&frontPattern);
     }
 
     // Playlist

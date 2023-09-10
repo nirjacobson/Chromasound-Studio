@@ -103,8 +103,13 @@ void MainWindow::pianoRollTriggered(const int index)
 void MainWindow::openTriggered()
 {
     const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "FM-PSG Studio Projects (*.fsp)");
-    Project p = BSON::decode(path);
-    fprintf(stderr, "%d\n", p.channels());
+    _app->project() = BSON::decode(path);
+
+    ui->topWidget->setPattern(_app->project().frontPattern());
+    ui->topWidget->setTempo(_app->project().tempo());
+    ui->topWidget->setBeatsPerBar(_app->project().beatsPerBar());
+
+    doUpdate();
 }
 
 void MainWindow::saveTriggered()
@@ -114,7 +119,6 @@ void MainWindow::saveTriggered()
     file.open(QIODevice::WriteOnly);
     file.write(BSON::encode(_app->project()));
     file.close();
-
 }
 
 void MainWindow::doUpdate()

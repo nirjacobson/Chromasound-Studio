@@ -46,7 +46,7 @@ void PianoRollWidget::setTrack(const int pattern, const int track)
 
             if (activePatterns.contains(pattern)) {
                 float delta = appPosition - activePatterns[pattern];
-                QList<int> activeTracks = _app->project().patterns()[pattern].activeTracksAtTime(delta);
+                QList<int> activeTracks = _app->project().patterns()[pattern]->activeTracksAtTime(delta);
 
                 if (activeTracks.contains(track)) {
                     return delta;

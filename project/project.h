@@ -21,6 +21,7 @@ class Project
 
                 class Item : public GanttItem {
                         friend class BSON;
+                        friend class Playlist;
 
                     public:
                         Item(Project* const project, const float time, const int pattern);
@@ -50,6 +51,7 @@ class Project
                 };
 
                 Playlist(Project* const project);
+                Playlist(Playlist&& o);
                 ~Playlist();
 
                 void addItem(const float time, const int pattern);
@@ -58,6 +60,7 @@ class Project
                 float getLength() const;
 
                 QMap<int, float> activePatternsAtTime(const float time) const;
+                Playlist& operator=(Playlist&& o);
 
             private:
                 Playlist();
@@ -67,6 +70,7 @@ class Project
         };
 
         Project();
+        ~Project();
 
         int channels() const;
 
@@ -88,7 +92,7 @@ class Project
         int beatsPerBar() const;
         void setBeatsPerBar(const int beats);
 
-        const QList<Pattern>& patterns() const;
+        const QList<Pattern*>& patterns() const;
 
         void addChannel();
 
@@ -97,7 +101,7 @@ class Project
 
     private:
         QList<Channel> _channels;
-        QList<Pattern> _patterns;
+        QList<Pattern*> _patterns;
         int _frontPattern;
 
         Playlist _playlist;
