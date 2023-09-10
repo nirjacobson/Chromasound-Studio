@@ -4,8 +4,7 @@ LED::LED(QWidget *parent, const QColor& color)
     : QWidget{parent}
     , _color(color)
 {
-    setMinimumSize(QSize(16, 16));
-    setMaximumSize(QSize(16, 16));
+
 }
 
 void LED::setOn(const bool on)
