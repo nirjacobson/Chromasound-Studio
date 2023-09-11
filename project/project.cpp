@@ -38,6 +38,20 @@ void Project::removeChannel(const int index)
     _channels.removeAt(index);
 }
 
+void Project::moveChannelUp(const int idx)
+{
+    if (idx != 0) {
+        swapChannels(idx, idx-1);
+    }
+}
+
+void Project::moveChannelDown(const int idx)
+{
+    if (idx != _channels.size()-1) {
+        swapChannels(idx, idx+1);
+    }
+}
+
 Pattern& Project::getPattern(const int idx)
 {
     if (idx >= _patterns.size()) {
@@ -144,6 +158,15 @@ Project::Project(Project&& o)
 
     _tempo = o._tempo;
     _beatsPerBar = o._beatsPerBar;
+}
+
+void Project::swapChannels(const int idxa, const int idxb)
+{
+    for (Pattern* pat : _patterns) {
+        pat->swapChannels(idxa, idxb);
+    }
+
+    _channels.swapItemsAt(idxa, idxb);
 }
 
 Project::Playlist::Item::Item(Project* const project, const float time, const int pattern)
