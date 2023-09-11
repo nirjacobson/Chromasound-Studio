@@ -23,8 +23,11 @@ class ChannelsWidget : public QWidget
         explicit ChannelsWidget(QWidget *parent = nullptr, Application* app = nullptr);
         ~ChannelsWidget();
 
+        void build();
+
     signals:
         void pianoRollTriggered(const int index);
+        void deleteTriggered(const int index);
 
     private:
         Ui::ChannelsWidget *ui;
@@ -41,6 +44,8 @@ class ChannelsWidget : public QWidget
         void handleSelect(ChannelWidget* channelWidget);
 
         void adjustPopup();
+
+        void deleteChannelTriggered(ChannelWidget* channelWidget);
 
     private slots:
         void handleSelectAll();

@@ -37,6 +37,7 @@ private slots:
     void frame();
 
     void pianoRollTriggered(const int index);
+    void deleteChannelTriggered(const int index);
 
     void openTriggered();
     void saveTriggered();

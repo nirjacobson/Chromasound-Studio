@@ -26,6 +26,15 @@ Channel& Project::getChannel(const int idx)
     return _channels[idx];
 }
 
+void Project::removeChannel(const int index)
+{
+    for (Pattern* pat : _patterns) {
+        pat->removeChannel(index);
+    }
+
+    _channels.removeAt(index);
+}
+
 Pattern& Project::getPattern(const int idx)
 {
     if (idx >= _patterns.size()) {

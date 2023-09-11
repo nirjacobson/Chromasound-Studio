@@ -30,6 +30,7 @@ class ChannelWidget : public QWidget
         bool on() const;
 
         int index() const;
+        void setIndex(const int idx);
 
         const QRect getSequencerGeometry();
 
@@ -40,6 +41,7 @@ class ChannelWidget : public QWidget
 
         QMenu _contextMenu;
         QAction _pianoRollAction;
+        QAction _deleteAction;
 
     signals:
         void ledShiftClicked();
@@ -48,6 +50,7 @@ class ChannelWidget : public QWidget
         void rectLedClicked();
         void rectLedDoubleClicked();
         void pianoRollTriggered();
+        void deleteTriggered();
 
     private slots:
         void ledClicked(bool shift);

@@ -37,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
    connect(ui->topWidget, &TopWidget::beatsPerBarChanged, this, &MainWindow::beatsPerBarChanged);
 
    connect(_channelsWidget, &ChannelsWidget::pianoRollTriggered, this, &MainWindow::pianoRollTriggered);
+   connect(_channelsWidget, &ChannelsWidget::deleteTriggered, this, &MainWindow::deleteChannelTriggered);
 
    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openTriggered);
    connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveTriggered);
@@ -91,13 +92,25 @@ void MainWindow::pianoRollTriggered(const int index)
     _app->project().getFrontPattern().getTrack(index).usePianoRoll();
     _channelsWidget->update();
 
+    PianoRollWidget* oldWidget = _pianoRollWidget;
     _pianoRollWidget = new PianoRollWidget(this, _app);
     _pianoRollWidget->setTrack(_app->project().frontPattern(), index);
 
     _pianoRollWindow->setWidget(_pianoRollWidget);
+    delete oldWidget;
 
     _pianoRollWindow->show();
     _pianoRollWindow->setFocus();
+}
+
+void MainWindow::deleteChannelTriggered(const int index)
+{
+    _channelsWidget->resize(_channelsWidget->minimumSizeHint());
+    _channelsWindow->resize(_channelsWindow->minimumSizeHint());
+
+    doUpdate();
+
+    _app->project().removeChannel(index);
 }
 
 void MainWindow::openTriggered()
@@ -108,6 +121,14 @@ void MainWindow::openTriggered()
     ui->topWidget->setPattern(_app->project().frontPattern());
     ui->topWidget->setTempo(_app->project().tempo());
     ui->topWidget->setBeatsPerBar(_app->project().beatsPerBar());
+
+    ChannelsWidget* oldWidget = _channelsWidget;
+    _channelsWidget = new ChannelsWidget(this, _app);
+    _channelsWindow->setWidget(_channelsWidget);
+    delete oldWidget;
+
+    _channelsWidget->resize(_channelsWidget->minimumSizeHint());
+    _channelsWindow->resize(_channelsWindow->minimumSizeHint());
 
     doUpdate();
 }
