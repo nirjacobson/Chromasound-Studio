@@ -29,6 +29,8 @@ class Pattern
 
         QList<int> activeTracksAtTime(const float time) const;
 
+        void swapChannels(const int idxa, const int idxb);
+
     private:
         QMap<int, Track*> _tracks;
 };

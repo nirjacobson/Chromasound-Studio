@@ -76,6 +76,8 @@ class Project
 
         Channel& getChannel(const int idx);
         void removeChannel(const int index);
+        void moveChannelUp(const int idx);
+        void moveChannelDown(const int idx);
 
         Pattern& getPattern(const int idx);
         const Pattern& getPattern(const int idx) const;
@@ -110,6 +112,8 @@ class Project
 
         int _tempo;
         int _beatsPerBar;
+
+        void swapChannels(const int idxa, const int idxb);
 };
 
 #endif // PROJECT_H

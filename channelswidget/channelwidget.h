@@ -41,6 +41,8 @@ class ChannelWidget : public QWidget
 
         QMenu _contextMenu;
         QAction _pianoRollAction;
+        QAction _moveUpAction;
+        QAction _moveDownAction;
         QAction _deleteAction;
 
     signals:
@@ -51,6 +53,8 @@ class ChannelWidget : public QWidget
         void rectLedDoubleClicked();
         void pianoRollTriggered();
         void deleteTriggered();
+        void moveUpTriggered();
+        void moveDownTriggered();
 
     private slots:
         void ledClicked(bool shift);

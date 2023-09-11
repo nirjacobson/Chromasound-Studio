@@ -9,7 +9,9 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index) :
     _index(index),
     _contextMenu(tr("Context menu"), this),
     _pianoRollAction("Piano roll", this),
-    _deleteAction("Delete", this)
+    _deleteAction("Delete", this),
+    _moveUpAction("Move up", this),
+    _moveDownAction("Move down", this)
 {
     ui->setupUi(this);
 
@@ -54,9 +56,14 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index) :
     connect(ui->rectLed, &RectLED::doubleClicked, this, &ChannelWidget::rectLedDoubleClicked);
 
     connect(&_pianoRollAction, &QAction::triggered, this, &ChannelWidget::pianoRollTriggered);
+    connect(&_moveUpAction, &QAction::triggered, this, &ChannelWidget::moveUpTriggered);
+    connect(&_moveDownAction, &QAction::triggered, this, &ChannelWidget::moveDownTriggered);
     connect(&_deleteAction, &QAction::triggered, this, &ChannelWidget::deleteTriggered);
 
     _contextMenu.addAction(&_pianoRollAction);
+    _contextMenu.addSeparator();
+    _contextMenu.addAction(&_moveUpAction);
+    _contextMenu.addAction(&_moveDownAction);
     _contextMenu.addSeparator();
     _contextMenu.addAction(&_deleteAction);
 }

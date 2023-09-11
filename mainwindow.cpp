@@ -40,6 +40,8 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
    connect(_channelsWidget, &ChannelsWidget::pianoRollTriggered, this, &MainWindow::pianoRollTriggered);
    connect(_channelsWidget, &ChannelsWidget::deleteTriggered, this, &MainWindow::deleteChannelTriggered);
    connect(_channelsWidget, &ChannelsWidget::channelAdded, this, &MainWindow::channelAdded);
+   connect(_channelsWidget, &ChannelsWidget::moveUpTriggered, this, &MainWindow::moveChannelUpTriggered);
+   connect(_channelsWidget, &ChannelsWidget::moveDownTriggered, this, &MainWindow::moveChannelDownTriggered);
 
    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openTriggered);
    connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveTriggered);
@@ -115,6 +117,20 @@ void MainWindow::deleteChannelTriggered(const int index)
 void MainWindow::channelAdded()
 {
     _app->project().addChannel();
+
+    refreshChannels();
+}
+
+void MainWindow::moveChannelUpTriggered(const int index)
+{
+    _app->project().moveChannelUp(index);
+
+    refreshChannels();
+}
+
+void MainWindow::moveChannelDownTriggered(const int index)
+{
+    _app->project().moveChannelDown(index);
 
     refreshChannels();
 }

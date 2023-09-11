@@ -29,6 +29,8 @@ class ChannelsWidget : public QWidget
         void pianoRollTriggered(const int index);
         void deleteTriggered(const int index);
         void channelAdded();
+        void moveUpTriggered(const int index);
+        void moveDownTriggered(const int index);
 
     private:
         Ui::ChannelsWidget *ui;
