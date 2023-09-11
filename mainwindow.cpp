@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
 
    _channelsWindow = new QMdiSubWindow(ui->mdiArea);
    _channelsWindow->setWidget(_channelsWidget);
+   _channelsWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
    ui->mdiArea->addSubWindow(_channelsWindow);
    _channelsWindow->show();
 
@@ -38,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
 
    connect(_channelsWidget, &ChannelsWidget::pianoRollTriggered, this, &MainWindow::pianoRollTriggered);
    connect(_channelsWidget, &ChannelsWidget::deleteTriggered, this, &MainWindow::deleteChannelTriggered);
+   connect(_channelsWidget, &ChannelsWidget::channelAdded, this, &MainWindow::channelAdded);
 
    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openTriggered);
    connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveTriggered);
@@ -105,12 +107,16 @@ void MainWindow::pianoRollTriggered(const int index)
 
 void MainWindow::deleteChannelTriggered(const int index)
 {
-    _channelsWidget->resize(_channelsWidget->minimumSizeHint());
-    _channelsWindow->resize(_channelsWindow->minimumSizeHint());
-
-    doUpdate();
-
     _app->project().removeChannel(index);
+
+    refreshChannels();
+}
+
+void MainWindow::channelAdded()
+{
+    _app->project().addChannel();
+
+    refreshChannels();
 }
 
 void MainWindow::openTriggered()
@@ -122,15 +128,7 @@ void MainWindow::openTriggered()
     ui->topWidget->setTempo(_app->project().tempo());
     ui->topWidget->setBeatsPerBar(_app->project().beatsPerBar());
 
-    ChannelsWidget* oldWidget = _channelsWidget;
-    _channelsWidget = new ChannelsWidget(this, _app);
-    _channelsWindow->setWidget(_channelsWidget);
-    delete oldWidget;
-
-    _channelsWidget->resize(_channelsWidget->minimumSizeHint());
-    _channelsWindow->resize(_channelsWindow->minimumSizeHint());
-
-    doUpdate();
+    refreshChannels();
 }
 
 void MainWindow::saveTriggered()
@@ -148,6 +146,13 @@ void MainWindow::doUpdate()
     _channelsWidget->update();
     _playlistWidget->update();
     if (_pianoRollWidget) _pianoRollWidget->update();
+}
+
+void MainWindow::refreshChannels()
+{
+    _channelsWidget->rebuild();
+
+    doUpdate();
 }
 
 void MainWindow::showEvent(QShowEvent*)

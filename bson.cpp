@@ -332,6 +332,7 @@ void BSON::fromProject(bson_t* dst,const Project& project)
 Project BSON::toProject(bson_iter_t& b)
 {
     Project p;
+    p._channels.clear();
 
     // Channels
 

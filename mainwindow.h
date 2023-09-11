@@ -38,6 +38,7 @@ private slots:
 
     void pianoRollTriggered(const int index);
     void deleteChannelTriggered(const int index);
+    void channelAdded();
 
     void openTriggered();
     void saveTriggered();
@@ -58,6 +59,7 @@ private:
     QTimer _timer;
 
     void doUpdate();
+    void refreshChannels();
 
     // QWidget interface
     protected:
