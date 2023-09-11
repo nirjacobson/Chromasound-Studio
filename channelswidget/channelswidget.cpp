@@ -11,27 +11,7 @@ ChannelsWidget::ChannelsWidget(QWidget *parent, Application* app) :
 {
     ui->setupUi(this);
 
-    for (int i = 0; i < app->project().channels(); i++) {
-        _channelWidgets.append(new ChannelWidget(this, app, i));
-    }
-
-    for (ChannelWidget* channelWidget : _channelWidgets) {
-        ui->verticalLayout->addWidget(channelWidget);
-        connect(channelWidget, &ChannelWidget::ledShiftClicked, this, [=](){ toggleSolo(channelWidget); });
-        connect(channelWidget, &ChannelWidget::toggled, this, [=](bool selected){ handleToggle(channelWidget, selected); });
-        connect(channelWidget, &ChannelWidget::rectLedClicked, this, [=](){ handleSelect(channelWidget); });
-        connect(channelWidget, &ChannelWidget::rectLedDoubleClicked, this, &ChannelsWidget::handleSelectAll);
-        connect(channelWidget, &ChannelWidget::pianoRollTriggered, this, [=](){ emit pianoRollTriggered(channelWidget->index()); });
-    }
-
-    if (!_channelWidgets.isEmpty()) {
-        StepCursorWidget* stepCursorWidget = new StepCursorWidget(this, app);
-        QWidget* widget = new QWidget();
-        widget->setLayout(new QHBoxLayout);
-        widget->layout()->addItem(new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Fixed));
-        widget->layout()->addWidget(stepCursorWidget);
-        ui->verticalLayout->addWidget(widget);
-    }
+    build();
 
     layout()->update();
 
@@ -55,6 +35,32 @@ ChannelsWidget::~ChannelsWidget()
     delete _stepKeysWidget;
 
     delete ui;
+}
+
+void ChannelsWidget::build()
+{
+    for (int i = 0; i < _app->project().channels(); i++) {
+        _channelWidgets.append(new ChannelWidget(this, _app, i));
+    }
+
+    for (ChannelWidget* channelWidget : _channelWidgets) {
+        ui->verticalLayout->addWidget(channelWidget);
+        connect(channelWidget, &ChannelWidget::ledShiftClicked, this, [=](){ toggleSolo(channelWidget); });
+        connect(channelWidget, &ChannelWidget::toggled, this, [=](bool selected){ handleToggle(channelWidget, selected); });
+        connect(channelWidget, &ChannelWidget::rectLedClicked, this, [=](){ handleSelect(channelWidget); });
+        connect(channelWidget, &ChannelWidget::rectLedDoubleClicked, this, &ChannelsWidget::handleSelectAll);
+        connect(channelWidget, &ChannelWidget::pianoRollTriggered, this, [=](){ emit pianoRollTriggered(channelWidget->index()); });
+        connect(channelWidget, &ChannelWidget::deleteTriggered, this, [=](){ deleteChannelTriggered(channelWidget); });
+    }
+
+    if (!_channelWidgets.isEmpty()) {
+        StepCursorWidget* stepCursorWidget = new StepCursorWidget(this, _app);
+        QWidget* widget = new QWidget();
+        widget->setLayout(new QHBoxLayout);
+        widget->layout()->addItem(new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Fixed));
+        widget->layout()->addWidget(stepCursorWidget);
+        ui->verticalLayout->addWidget(widget);
+    }
 }
 
 void ChannelsWidget::toggleSolo(ChannelWidget* channelWidget)
@@ -215,6 +221,21 @@ void ChannelsWidget::velocityClicked(const int step, const int velocity)
 
     _stepVelocitiesWidget->update();
     _activeChannelWidget->update();
+}
+
+void ChannelsWidget::deleteChannelTriggered(ChannelWidget* channelWidget)
+{
+    ui->verticalLayout->removeWidget(channelWidget);
+    _channelWidgets.removeAll(channelWidget);
+    channelWidget->setParent(nullptr);
+
+    for (ChannelWidget* otherWidget : _channelWidgets) {
+        if (otherWidget->index() > channelWidget->index()) {
+            otherWidget->setIndex(otherWidget->index() - 1);
+        }
+    }
+
+    emit deleteTriggered(channelWidget->index());
 }
 
 void ChannelsWidget::showEvent(QShowEvent*)

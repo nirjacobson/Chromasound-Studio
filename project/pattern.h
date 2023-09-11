@@ -3,6 +3,7 @@
 
 #include <QMap>
 #include <QtMath>
+#include <QList>
 
 #include "track.h"
 
@@ -21,6 +22,9 @@ class Pattern
         const Track& getTrack(const int idx) const;
         Track& getTrack(const int idx);
         Track& addTrack(const int idx);
+
+        void removeChannel(const int idx);
+
         float getLength() const;
 
         QList<int> activeTracksAtTime(const float time) const;

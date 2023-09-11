@@ -52,6 +52,26 @@ Track& Pattern::addTrack(const int idx)
     return *_tracks[idx];
 }
 
+void Pattern::removeChannel(const int idx)
+{
+    _tracks.remove(idx);
+
+    QList<int> toDecrement;
+
+    for (auto it = _tracks.begin(); it != _tracks.end(); ++it) {
+        if (it.key() > idx) {
+            toDecrement.append(it.key());
+        }
+    }
+
+    std::sort(toDecrement.begin(), toDecrement.end());
+
+    for (const int i : toDecrement) {
+        _tracks[i-1] = _tracks[i];
+        _tracks.remove(i);
+    }
+}
+
 float Pattern::getLength() const
 {
     float lastEnd = 0;

@@ -75,6 +75,8 @@ class Project
         int channels() const;
 
         Channel& getChannel(const int idx);
+        void removeChannel(const int index);
+
         Pattern& getPattern(const int idx);
         const Pattern& getPattern(const int idx) const;
         int frontPattern() const;
