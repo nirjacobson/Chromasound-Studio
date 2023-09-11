@@ -6,7 +6,10 @@ Project::Project()
     , _tempo(120)
     , _beatsPerBar(4)
 {
-
+    addChannel();
+    addChannel();
+    addChannel();
+    addChannel();
 }
 
 Project::~Project()

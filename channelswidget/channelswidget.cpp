@@ -11,12 +11,13 @@ ChannelsWidget::ChannelsWidget(QWidget *parent, Application* app) :
 {
     ui->setupUi(this);
 
-    build();
+    rebuild();
 
     layout()->update();
 
     connect(ui->pianoButton, &QPushButton::clicked, this, &ChannelsWidget::pianoButtonClicked);
     connect(ui->velocityButton, &QPushButton::clicked, this, &ChannelsWidget::velocityButtonClicked);
+    connect(ui->addButton, &QPushButton::clicked, this, &ChannelsWidget::channelAdded);
 
     _stepKeysWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     _stepVelocitiesWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
@@ -37,8 +38,20 @@ ChannelsWidget::~ChannelsWidget()
     delete ui;
 }
 
-void ChannelsWidget::build()
+void ChannelsWidget::rebuild()
 {
+    QList<QLayoutItem*> items;
+    for (int i = 0; i < ui->verticalLayout->count(); i++) {
+        items.append(ui->verticalLayout->itemAt(i));
+    }
+    for (QLayoutItem* item : items) {
+        ui->verticalLayout->removeItem(item);
+        delete item->widget();
+        delete item;
+    }
+
+    _channelWidgets.clear();
+
     for (int i = 0; i < _app->project().channels(); i++) {
         _channelWidgets.append(new ChannelWidget(this, _app, i));
     }
@@ -50,7 +63,7 @@ void ChannelsWidget::build()
         connect(channelWidget, &ChannelWidget::rectLedClicked, this, [=](){ handleSelect(channelWidget); });
         connect(channelWidget, &ChannelWidget::rectLedDoubleClicked, this, &ChannelsWidget::handleSelectAll);
         connect(channelWidget, &ChannelWidget::pianoRollTriggered, this, [=](){ emit pianoRollTriggered(channelWidget->index()); });
-        connect(channelWidget, &ChannelWidget::deleteTriggered, this, [=](){ deleteChannelTriggered(channelWidget); });
+        connect(channelWidget, &ChannelWidget::deleteTriggered, this, [=](){ emit deleteTriggered(channelWidget->index()); });
     }
 
     if (!_channelWidgets.isEmpty()) {
@@ -61,6 +74,7 @@ void ChannelsWidget::build()
         widget->layout()->addWidget(stepCursorWidget);
         ui->verticalLayout->addWidget(widget);
     }
+
 }
 
 void ChannelsWidget::toggleSolo(ChannelWidget* channelWidget)
@@ -221,21 +235,6 @@ void ChannelsWidget::velocityClicked(const int step, const int velocity)
 
     _stepVelocitiesWidget->update();
     _activeChannelWidget->update();
-}
-
-void ChannelsWidget::deleteChannelTriggered(ChannelWidget* channelWidget)
-{
-    ui->verticalLayout->removeWidget(channelWidget);
-    _channelWidgets.removeAll(channelWidget);
-    channelWidget->setParent(nullptr);
-
-    for (ChannelWidget* otherWidget : _channelWidgets) {
-        if (otherWidget->index() > channelWidget->index()) {
-            otherWidget->setIndex(otherWidget->index() - 1);
-        }
-    }
-
-    emit deleteTriggered(channelWidget->index());
 }
 
 void ChannelsWidget::showEvent(QShowEvent*)
