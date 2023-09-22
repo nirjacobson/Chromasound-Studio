@@ -62,6 +62,8 @@ class ChannelWidget : public QWidget
         void toneTriggered();
         void noiseTriggered();
 
+        void nameChanged();
+
     private slots:
         void ledClicked(bool shift);
         void buttonPressed();

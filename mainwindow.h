@@ -48,6 +48,8 @@ private slots:
     void toneTriggered(const int index);
     void noiseTriggered(const int index);
 
+    void channelNameChanged(const int index);
+
     void openTriggered();
     void saveTriggered();
 
@@ -66,6 +68,9 @@ private:
     QMdiSubWindow* _playlistWindow;
     QMdiSubWindow* _pianoRollWindow;
     QMdiSubWindow* _channelWindow;
+
+    int _selectedChannel;
+
 
     QTimer _timer;
 

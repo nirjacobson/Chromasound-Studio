@@ -39,6 +39,7 @@ class ChannelsWidget : public QWidget
         void toneTriggered(const int index);
         void noiseTriggered(const int index);
         void channelSelected(const int index);
+        void nameChanged(const int index);
 
     private:
         Ui::ChannelsWidget *ui;

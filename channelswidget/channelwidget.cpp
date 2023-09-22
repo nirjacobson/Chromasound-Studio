@@ -153,6 +153,7 @@ void ChannelWidget::buttonPressed()
             _app->project().getChannel(_index).setName(name);
             ui->pushButton->setText(name);
         }
+        emit nameChanged();
     } else {
         bool state = ui->pushButton->isChecked();
         emit toggled(!state);

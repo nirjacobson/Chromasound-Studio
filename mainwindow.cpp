@@ -48,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
    connect(_channelsWidget, &ChannelsWidget::moveUpTriggered, this, &MainWindow::moveChannelUpTriggered);
    connect(_channelsWidget, &ChannelsWidget::moveDownTriggered, this, &MainWindow::moveChannelDownTriggered);
    connect(_channelsWidget, &ChannelsWidget::channelSelected, this, &MainWindow::channelSelected);
+   connect(_channelsWidget, &ChannelsWidget::nameChanged, this, &MainWindow::channelNameChanged);
 
    connect(_channelsWidget, &ChannelsWidget::toneTriggered, this, &MainWindow::toneTriggered);
    connect(_channelsWidget, &ChannelsWidget::noiseTriggered, this, &MainWindow::noiseTriggered);
@@ -154,6 +155,8 @@ void MainWindow::moveChannelDownTriggered(const int index)
 
 void MainWindow::channelSelected(const int index)
 {
+    _selectedChannel = index;
+
     _channelWindow->hide();
 
     if (_app->project().getChannel(index).type() == Channel::Type::NOISE) {
@@ -181,6 +184,22 @@ void MainWindow::toneTriggered(const int index)
 void MainWindow::noiseTriggered(const int index)
 {
     _app->project().getChannel(index).setType(Channel::Type::NOISE);
+}
+
+void MainWindow::channelNameChanged(const int index)
+{
+    if (index == _selectedChannel) {
+        switch(_app->project().getChannel(index).type()) {
+
+            case Channel::NONE:
+                break;
+            case Channel::TONE:
+                break;
+            case Channel::NOISE:
+                _noiseWidget->setWindowTitle(QString("%1: Noise").arg(_app->project().getChannel(index).name()));
+                break;
+        }
+    }
 }
 
 void MainWindow::openTriggered()
