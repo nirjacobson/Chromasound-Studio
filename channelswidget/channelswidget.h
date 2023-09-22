@@ -30,6 +30,9 @@ class ChannelsWidget : public QWidget
         void update();
         void update(const int index);
 
+        void select(const int index);
+        int selected() const;
+
     signals:
         void pianoRollTriggered(const int index);
         void deleteTriggered(const int index);

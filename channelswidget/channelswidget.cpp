@@ -126,6 +126,25 @@ void ChannelsWidget::update(const int index)
     _channelWidgets[index]->setIndex(index);
 }
 
+void ChannelsWidget::select(const int index)
+{
+    for (ChannelWidget* cw : _channelWidgets) {
+        cw->setChecked(false);
+    }
+    _channelWidgets[index]->setChecked(true);
+}
+
+int ChannelsWidget::selected() const
+{
+    for (int i = 0; i < _channelWidgets.size(); i++) {
+        if (_channelWidgets[i]->checked()) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
 void ChannelsWidget::toggleSolo(ChannelWidget* channelWidget)
 {
     bool on = channelWidget->on();
