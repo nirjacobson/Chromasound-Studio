@@ -13,8 +13,6 @@ ChannelsWidget::ChannelsWidget(QWidget *parent, Application* app) :
 
     rebuild();
 
-    layout()->update();
-
     connect(ui->pianoButton, &QPushButton::clicked, this, &ChannelsWidget::pianoButtonClicked);
     connect(ui->velocityButton, &QPushButton::clicked, this, &ChannelsWidget::velocityButtonClicked);
     connect(ui->addButton, &QPushButton::clicked, this, &ChannelsWidget::channelAdded);
@@ -66,6 +64,8 @@ void ChannelsWidget::rebuild()
         connect(channelWidget, &ChannelWidget::moveUpTriggered, this, [=](){ emit moveUpTriggered(channelWidget->index()); });
         connect(channelWidget, &ChannelWidget::moveDownTriggered, this, [=](){ emit moveDownTriggered(channelWidget->index()); });
         connect(channelWidget, &ChannelWidget::deleteTriggered, this, [=](){ emit deleteTriggered(channelWidget->index()); });
+        connect(channelWidget, &ChannelWidget::toneTriggered, this, [=](){ emit toneTriggered(channelWidget->index()); });
+        connect(channelWidget, &ChannelWidget::noiseTriggered, this, [=](){ emit noiseTriggered(channelWidget->index()); });
     }
 
     if (!_channelWidgets.isEmpty()) {
@@ -77,6 +77,51 @@ void ChannelsWidget::rebuild()
         ui->verticalLayout->addWidget(widget);
     }
 
+}
+
+void ChannelsWidget::remove(const int index)
+{
+    QLayoutItem* item = ui->verticalLayout->itemAt(index);
+    ui->verticalLayout->removeItem(item);
+    item->widget()->deleteLater();
+    delete item;
+    _channelWidgets.removeAt(index);
+
+    for (int i = index; i < _channelWidgets.size(); i++) {
+        _channelWidgets[i]->setIndex(_channelWidgets[i]->index() - 1);
+    }
+}
+
+void ChannelsWidget::add(const int index)
+{
+    ChannelWidget* cw = new ChannelWidget(this, _app, index);
+    connect(cw, &ChannelWidget::ledShiftClicked, this, [=](){ toggleSolo(cw); });
+    connect(cw, &ChannelWidget::toggled, this, [=](bool selected){ handleToggle(cw, selected); });
+    connect(cw, &ChannelWidget::rectLedClicked, this, [=](){ handleSelect(cw); });
+    connect(cw, &ChannelWidget::rectLedDoubleClicked, this, &ChannelsWidget::handleSelectAll);
+    connect(cw, &ChannelWidget::pianoRollTriggered, this, [=](){ emit pianoRollTriggered(cw->index()); });
+    connect(cw, &ChannelWidget::moveUpTriggered, this, [=](){ emit moveUpTriggered(cw->index()); });
+    connect(cw, &ChannelWidget::moveDownTriggered, this, [=](){ emit moveDownTriggered(cw->index()); });
+    connect(cw, &ChannelWidget::deleteTriggered, this, [=](){ emit deleteTriggered(cw->index()); });
+    connect(cw, &ChannelWidget::toneTriggered, this, [=](){ emit toneTriggered(cw->index()); });
+    connect(cw, &ChannelWidget::noiseTriggered, this, [=](){ emit noiseTriggered(cw->index()); });
+    ui->verticalLayout->insertWidget(index, cw);
+
+    _channelWidgets.insert(index, cw);
+
+    for (int i = index + 1; i < _channelWidgets.size(); i++) {
+        _channelWidgets[i]->setIndex(i);
+    }
+}
+
+void ChannelsWidget::update()
+{
+    QWidget::update();
+}
+
+void ChannelsWidget::update(const int index)
+{
+    _channelWidgets[index]->setIndex(index);
 }
 
 void ChannelsWidget::toggleSolo(ChannelWidget* channelWidget)
@@ -127,6 +172,8 @@ void ChannelsWidget::handleToggle(ChannelWidget* channelWidget, const bool selec
                 _stepKeysWidget->raise();
             }
         }
+
+        emit channelSelected(channelWidget->index());
     }
 }
 

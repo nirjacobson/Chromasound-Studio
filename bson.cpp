@@ -49,6 +49,12 @@ void BSON::fromChannel(bson_t* dst, const Channel& channel)
 {
     BSON_APPEND_BOOL(dst, "enabled", channel._enabled);
     BSON_APPEND_UTF8(dst, "name", channel._name.toStdString().c_str());
+    BSON_APPEND_UTF8(dst, "type", Channel::channelTypeToString(channel._type).toStdString().c_str());
+
+    if (channel._settings) {
+        bson_t settings = channel._settings->toBSON();
+        BSON_APPEND_DOCUMENT(dst, "settings", &settings);
+    }
 }
 
 Channel BSON::toChannel(bson_iter_t& b)
@@ -57,12 +63,24 @@ Channel BSON::toChannel(bson_iter_t& b)
 
     bson_iter_t enabled;
     bson_iter_t name;
+    bson_iter_t type;
+    bson_iter_t settings;
+    bson_iter_t settingsInner;
 
     if (bson_iter_find_descendant(&b, "enabled", &enabled) && BSON_ITER_HOLDS_BOOL(&enabled)) {
         c._enabled = bson_iter_bool(&enabled);
     }
     if (bson_iter_find_descendant(&b, "name", &name) && BSON_ITER_HOLDS_UTF8(&name)) {
         c._name = bson_iter_utf8(&name, nullptr);
+    }
+    if (bson_iter_find_descendant(&b, "type", &type) && BSON_ITER_HOLDS_UTF8(&type)) {
+        c._type = Channel::channelTypeFromString(bson_iter_utf8(&type, nullptr));
+    }
+    if (bson_iter_find_descendant(&b, "settings", &settings) && BSON_ITER_HOLDS_DOCUMENT(&settings) && bson_iter_recurse(&settings, &settingsInner)) {
+        if (c._type == Channel::Type::NOISE) {
+            c._settings = new NoiseChannelSettings;
+            c._settings->fromBSON(settingsInner);
+        }
     }
 
     return c;

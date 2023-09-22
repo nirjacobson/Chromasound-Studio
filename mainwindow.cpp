@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _channelsWidget(new ChannelsWidget(this, app))
     , _playlistWidget(new PlaylistWidget(this, app))
     , _pianoRollWidget(nullptr)
+    , _noiseWidget(nullptr)
 {
     ui->setupUi(this);
 
@@ -28,6 +29,10 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
    ui->mdiArea->addSubWindow(_pianoRollWindow);
    _pianoRollWindow->hide();
 
+   _channelWindow = new QMdiSubWindow(ui->mdiArea);
+   ui->mdiArea->addSubWindow(_channelWindow);
+   _channelWindow->hide();
+
    _timer.setInterval(1000 / 30);
    connect(&_timer, &QTimer::timeout, this, &MainWindow::frame);
 
@@ -42,6 +47,10 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
    connect(_channelsWidget, &ChannelsWidget::channelAdded, this, &MainWindow::channelAdded);
    connect(_channelsWidget, &ChannelsWidget::moveUpTriggered, this, &MainWindow::moveChannelUpTriggered);
    connect(_channelsWidget, &ChannelsWidget::moveDownTriggered, this, &MainWindow::moveChannelDownTriggered);
+   connect(_channelsWidget, &ChannelsWidget::channelSelected, this, &MainWindow::channelSelected);
+
+   connect(_channelsWidget, &ChannelsWidget::toneTriggered, this, &MainWindow::toneTriggered);
+   connect(_channelsWidget, &ChannelsWidget::noiseTriggered, this, &MainWindow::noiseTriggered);
 
    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openTriggered);
    connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveTriggered);
@@ -110,29 +119,68 @@ void MainWindow::pianoRollTriggered(const int index)
 void MainWindow::deleteChannelTriggered(const int index)
 {
     _app->project().removeChannel(index);
-
-    refreshChannels();
+    _channelsWidget->remove(index);
 }
 
 void MainWindow::channelAdded()
 {
     _app->project().addChannel();
-
-    refreshChannels();
+    _channelsWidget->add(_app->project().channels() - 1);
 }
 
 void MainWindow::moveChannelUpTriggered(const int index)
 {
-    _app->project().moveChannelUp(index);
+    if (index != 0) {
+        _app->project().moveChannelUp(index);
 
-    refreshChannels();
+        _channelsWidget->update(index);
+        _channelsWidget->update(index-1);
+    }
+
+    _channelsWidget->update();
 }
 
 void MainWindow::moveChannelDownTriggered(const int index)
 {
-    _app->project().moveChannelDown(index);
+    if (index != _app->project().channels()-1) {
+        _app->project().moveChannelDown(index);
 
-    refreshChannels();
+        _channelsWidget->update(index);
+        _channelsWidget->update(index+1);
+    }
+
+    _channelsWidget->update();
+}
+
+void MainWindow::channelSelected(const int index)
+{
+    _channelWindow->hide();
+
+    if (_app->project().getChannel(index).type() == Channel::Type::NOISE) {
+        NoiseWidget* oldWidget = _noiseWidget;
+        _noiseWidget = new NoiseWidget(this);
+        _noiseWidget->setWindowTitle(QString("%1: Noise").arg(_app->project().getChannel(index).name()));
+        _noiseWidget->setData(dynamic_cast<NoiseChannelSettings*>(&_app->project().getChannel(index).data()));
+
+        _channelWindow->setWidget(_noiseWidget);
+        _channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
+        delete oldWidget;
+
+        _channelWindow->show();
+        _channelWindow->setFocus();
+    } else {
+
+    }
+}
+
+void MainWindow::toneTriggered(const int index)
+{
+    _app->project().getChannel(index).setType(Channel::Type::TONE);
+}
+
+void MainWindow::noiseTriggered(const int index)
+{
+    _app->project().getChannel(index).setType(Channel::Type::NOISE);
 }
 
 void MainWindow::openTriggered()
@@ -144,7 +192,7 @@ void MainWindow::openTriggered()
     ui->topWidget->setTempo(_app->project().tempo());
     ui->topWidget->setBeatsPerBar(_app->project().beatsPerBar());
 
-    refreshChannels();
+    _channelsWidget->rebuild();
 }
 
 void MainWindow::saveTriggered()
@@ -162,13 +210,6 @@ void MainWindow::doUpdate()
     _channelsWidget->update();
     _playlistWidget->update();
     if (_pianoRollWidget) _pianoRollWidget->update();
-}
-
-void MainWindow::refreshChannels()
-{
-    _channelsWidget->rebuild();
-
-    doUpdate();
 }
 
 void MainWindow::showEvent(QShowEvent*)
