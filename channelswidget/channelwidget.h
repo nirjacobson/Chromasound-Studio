@@ -9,7 +9,6 @@
 #include <iostream>
 
 #include "application.h"
-#include "project/channel.h"
 
 namespace Ui {
     class ChannelWidget;
@@ -45,6 +44,10 @@ class ChannelWidget : public QWidget
         QAction _moveDownAction;
         QAction _deleteAction;
 
+        QActionGroup _typeActionGroup;
+        QAction _toneAction;
+        QAction _noiseAction;
+
     signals:
         void ledShiftClicked();
         void toggled(bool);
@@ -55,6 +58,9 @@ class ChannelWidget : public QWidget
         void deleteTriggered();
         void moveUpTriggered();
         void moveDownTriggered();
+
+        void toneTriggered();
+        void noiseTriggered();
 
     private slots:
         void ledClicked(bool shift);

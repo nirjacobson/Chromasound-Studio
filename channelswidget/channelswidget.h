@@ -24,6 +24,11 @@ class ChannelsWidget : public QWidget
         ~ChannelsWidget();
 
         void rebuild();
+        void remove(const int index);
+        void add(const int index);
+
+        void update();
+        void update(const int index);
 
     signals:
         void pianoRollTriggered(const int index);
@@ -31,6 +36,9 @@ class ChannelsWidget : public QWidget
         void channelAdded();
         void moveUpTriggered(const int index);
         void moveDownTriggered(const int index);
+        void toneTriggered(const int index);
+        void noiseTriggered(const int index);
+        void channelSelected(const int index);
 
     private:
         Ui::ChannelsWidget *ui;

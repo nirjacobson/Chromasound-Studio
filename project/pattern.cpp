@@ -105,16 +105,22 @@ QList<int> Pattern::activeTracksAtTime(const float time) const
 
 void Pattern::swapChannels(const int idxa, const int idxb)
 {
+    bool hasA = hasTrack(idxa);
     bool hasB = hasTrack(idxb);
 
-    Track* trackA = _tracks[idxa];
+    Track* trackB = _tracks[idxb];
+
+    if (hasA)
+        _tracks[idxb] = _tracks[idxa];
 
     if (hasB)
-        _tracks[idxa] = _tracks[idxb];
+        _tracks[idxa] = trackB;
 
-    _tracks[idxb] = trackA;
-
-    if (!hasB)
+    if (!hasB) {
         _tracks.remove(idxa);
+    }
 
+    if (!hasA) {
+        _tracks.remove(idxb);
+    }
 }

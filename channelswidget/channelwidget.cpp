@@ -2,51 +2,26 @@
 #include "ui_channelwidget.h"
 #include <QtDebug>
 
-ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index) :
-    QWidget(parent),
-    ui(new Ui::ChannelWidget),
-    _app(app),
-    _index(index),
-    _contextMenu(tr("Context menu"), this),
-    _pianoRollAction("Piano roll", this),
-    _deleteAction("Delete", this),
-    _moveUpAction("Move up", this),
-    _moveDownAction("Move down", this)
+ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
+    : QWidget(parent)
+    , ui(new Ui::ChannelWidget)
+    , _app(app)
+    , _index(index)
+    , _contextMenu(tr("Context menu"), this)
+    , _pianoRollAction("Piano roll", this)
+    , _moveUpAction("Move up", this)
+    , _moveDownAction("Move down", this)
+    , _deleteAction("Delete", this)
+    , _typeActionGroup(this)
+    , _toneAction("Tone", this)
+    , _noiseAction("Noise", this)
 {
     ui->setupUi(this);
 
     ui->stepSequencer->setApplication(app);
-    ui->stepSequencer->setIndex(index);
-
     ui->prDisplay->setApplication(app);
-    ui->prDisplay->setIndex(index);
 
-    ui->led->setOn(_app->project().getChannel(_index).enabled());
-    ui->rectLed->setOnFunction([=](){
-        float appPosition = _app->position();
-
-        QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(appPosition);
-        const Pattern& frontPattern = _app->project().getFrontPattern();
-        int frontPatternIdx = _app->project().frontPattern();
-        const Track& track = frontPattern.getTrack(_index);
-        if (_app->playMode() == Application::PlayMode::Pattern) {
-            return _app->project().getChannel(_index).enabled() &&
-                    frontPattern.activeTracksAtTime(appPosition).contains(_index) &&
-                    std::find_if(track.items().begin(),
-                              track.items().end(),
-                     [&](const Track::Item* item){
-                        float delta = item->time() - appPosition;
-                        return qAbs(delta) <= 0.0625; }) == track.items().end();
-        } else {
-           return activePatterns.contains(_app->project().frontPattern()) &&
-                  _app->project().getChannel(_index).enabled() &&
-                  frontPattern.activeTracksAtTime(appPosition - activePatterns[frontPatternIdx]).contains(_index) &&
-                  std::find_if(track.items().begin(), track.items().end(),
-                  [&](const Track::Item* item){
-                    float delta = item->time() - (appPosition - activePatterns[frontPatternIdx]);
-                    return qAbs(delta) <= 0.0625; }) == track.items().end();
-        }
-    });
+    setIndex(index);
 
     connect(ui->pushButton, &QPushButton::pressed, this, &ChannelWidget::buttonPressed);
     connect(ui->pushButton, &QWidget::customContextMenuRequested, this, &ChannelWidget::buttonContextMenuRequested);
@@ -60,10 +35,23 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index) :
     connect(&_moveDownAction, &QAction::triggered, this, &ChannelWidget::moveDownTriggered);
     connect(&_deleteAction, &QAction::triggered, this, &ChannelWidget::deleteTriggered);
 
+    connect(&_toneAction, &QAction::triggered, this, &ChannelWidget::toneTriggered);
+    connect(&_noiseAction, &QAction::triggered, this, &ChannelWidget::noiseTriggered);
+
     _contextMenu.addAction(&_pianoRollAction);
+
     _contextMenu.addSeparator();
     _contextMenu.addAction(&_moveUpAction);
     _contextMenu.addAction(&_moveDownAction);
+
+    _contextMenu.addSection("Type");
+    _toneAction.setCheckable(true);
+    _noiseAction.setCheckable(true);
+    _typeActionGroup.addAction(&_toneAction);
+    _typeActionGroup.addAction(&_noiseAction);
+    _contextMenu.addAction(&_toneAction);
+    _contextMenu.addAction(&_noiseAction);
+
     _contextMenu.addSeparator();
     _contextMenu.addAction(&_deleteAction);
 }
@@ -105,8 +93,35 @@ void ChannelWidget::setIndex(const int idx)
 {
     _index = idx;
 
-   ui->stepSequencer->setIndex(idx);
-   ui->prDisplay->setIndex(idx);
+   ui->pushButton->setText(_app->project().getChannel(_index).name());
+   ui->stepSequencer->setIndex(_index);
+   ui->prDisplay->setIndex(_index);
+   ui->led->setOn(_app->project().getChannel(_index).enabled());
+   ui->rectLed->setOnFunction([=](){
+       float appPosition = _app->position();
+
+       QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(appPosition);
+       const Pattern& frontPattern = _app->project().getFrontPattern();
+       int frontPatternIdx = _app->project().frontPattern();
+       const Track& track = frontPattern.getTrack(_index);
+       if (_app->playMode() == Application::PlayMode::Pattern) {
+           return _app->project().getChannel(_index).enabled() &&
+                   frontPattern.activeTracksAtTime(appPosition).contains(_index) &&
+                   std::find_if(track.items().begin(),
+                             track.items().end(),
+                    [&](const Track::Item* item){
+                       float delta = item->time() - appPosition;
+                       return qAbs(delta) <= 0.0625; }) == track.items().end();
+       } else {
+          return activePatterns.contains(_app->project().frontPattern()) &&
+                 _app->project().getChannel(_index).enabled() &&
+                 frontPattern.activeTracksAtTime(appPosition - activePatterns[frontPatternIdx]).contains(_index) &&
+                 std::find_if(track.items().begin(), track.items().end(),
+                 [&](const Track::Item* item){
+                   float delta = item->time() - (appPosition - activePatterns[frontPatternIdx]);
+                   return qAbs(delta) <= 0.0625; }) == track.items().end();
+       }
+   });
 }
 
 const QRect ChannelWidget::getSequencerGeometry()
@@ -133,8 +148,9 @@ void ChannelWidget::buttonPressed()
 {
     if (Qt::ShiftModifier == QApplication::keyboardModifiers()) {
         bool ok;
-        const QString name = QInputDialog::getText(this, tr("Change Channel Name"), tr("Channel name:"), QLineEdit::Normal, "", &ok);
+        const QString name = QInputDialog::getText(this, tr("Change Channel Name"), tr("Channel name:"), QLineEdit::Normal, _app->project().getChannel(_index).name(), &ok);
         if (ok && !name.isEmpty()) {
+            _app->project().getChannel(_index).setName(name);
             ui->pushButton->setText(name);
         }
     } else {

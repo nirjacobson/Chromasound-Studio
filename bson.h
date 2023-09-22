@@ -5,7 +5,7 @@
 
 #include <libbson-1.0/bson/bson.h>
 
-#include "project/channel.h"
+#include "project/channel/channel.h"
 #include "project/note.h"
 #include "project/track.h"
 #include "project/pattern.h"

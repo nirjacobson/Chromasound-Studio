@@ -4,7 +4,7 @@
 #include <QList>
 
 #include "pattern.h"
-#include "channel.h"
+#include "channel/channel.h"
 #include "ganttwidget/ganttitem.h"
 
 class Project

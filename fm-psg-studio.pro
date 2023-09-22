@@ -13,10 +13,13 @@ SOURCES += \
     channelswidget/stepkeys.cpp \
     channelswidget/stepvelocities.cpp \
     ganttwidget/ganttbottomwidget.cpp \
+    noisewidget/noisewidget.cpp \
     pianorollwidget/pianorollkeyswidget.cpp \
     pianorollwidget/pianorollvelocitieswidget.cpp \
     pianorollwidget/pianorollwidget.cpp \
-    project/channel.cpp \
+    project/channel/channel.cpp \
+    project/channel/channelsettings.cpp \
+    project/channel/noisechannelsettings.cpp \
     project/track.cpp \
     project/note.cpp \
     project/pattern.cpp \
@@ -48,10 +51,13 @@ HEADERS += \
     channelswidget/stepkeys.h \
     channelswidget/stepvelocities.h \
     ganttwidget/ganttbottomwidget.h \
+    noisewidget/noisewidget.h \
     pianorollwidget/pianorollkeyswidget.h \
     pianorollwidget/pianorollvelocitieswidget.h \
     pianorollwidget/pianorollwidget.h \
-    project/channel.h \
+    project/channel/channel.h \
+    project/channel/channelsettings.h \
+    project/channel/noisechannelsettings.h \
     project/note.h \
     project/pattern.h \
     project/project.h \
@@ -81,6 +87,7 @@ FORMS += \
     channelswidget/channelswidget.ui \
     channelswidget/channelwidget.ui \
     ganttwidget/ganttwidget.ui \
+    noisewidget/noisewidget.ui \
     pianorollwidget/pianorollwidget.ui \
     playlistwidget/playlistwidget.ui \
     topwidget/topwidget.ui \

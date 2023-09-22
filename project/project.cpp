@@ -125,7 +125,7 @@ const QList<Pattern*>& Project::patterns() const
 
 void Project::addChannel()
 {
-    _channels.append(Channel());
+    _channels.append(Channel(QString("Channel %1").arg(_channels.size()+1)));
 }
 
 Project& Project::operator=(Project&& src)

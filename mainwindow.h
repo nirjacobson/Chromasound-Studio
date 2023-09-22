@@ -11,6 +11,7 @@
 #include "application.h"
 #include "bson.h"
 #include "channelswidget/channelswidget.h"
+#include "noisewidget/noisewidget.h"
 #include "playlistwidget/playlistwidget.h"
 #include "pianorollwidget/pianorollwidget.h"
 
@@ -42,6 +43,11 @@ private slots:
     void moveChannelUpTriggered(const int index);
     void moveChannelDownTriggered(const int index);
 
+    void channelSelected(const int index);
+
+    void toneTriggered(const int index);
+    void noiseTriggered(const int index);
+
     void openTriggered();
     void saveTriggered();
 
@@ -54,14 +60,16 @@ private:
     PlaylistWidget* _playlistWidget;
     PianoRollWidget* _pianoRollWidget;
 
+    NoiseWidget* _noiseWidget;
+
     QMdiSubWindow* _channelsWindow;
     QMdiSubWindow* _playlistWindow;
     QMdiSubWindow* _pianoRollWindow;
+    QMdiSubWindow* _channelWindow;
 
     QTimer _timer;
 
     void doUpdate();
-    void refreshChannels();
 
     // QWidget interface
     protected:
