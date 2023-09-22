@@ -131,26 +131,39 @@ void MainWindow::channelAdded()
 
 void MainWindow::moveChannelUpTriggered(const int index)
 {
+
     if (index != 0) {
+        bool isSelected = _channelsWidget->selected() == index;
+        bool isOtherSelected = _channelsWidget->selected() == index - 1;
+
         _app->project().moveChannelUp(index);
 
         _channelsWidget->update(index);
         _channelsWidget->update(index-1);
-    }
 
-    _channelsWidget->update();
+        if (isSelected)
+            _channelsWidget->select(index - 1);
+        if (isOtherSelected)
+            _channelsWidget->select(index);
+    }
 }
 
 void MainWindow::moveChannelDownTriggered(const int index)
 {
     if (index != _app->project().channels()-1) {
+        bool isSelected = _channelsWidget->selected() == index;
+        bool isOtherSelected = _channelsWidget->selected() == index + 1;
+
         _app->project().moveChannelDown(index);
 
         _channelsWidget->update(index);
         _channelsWidget->update(index+1);
-    }
 
-    _channelsWidget->update();
+        if (isSelected)
+            _channelsWidget->select(index + 1);
+        if (isOtherSelected)
+            _channelsWidget->select(index);
+    }
 }
 
 void MainWindow::channelSelected(const int index)

@@ -84,6 +84,11 @@ bool ChannelWidget::on() const
     return _app->project().getChannel(_index).enabled();
 }
 
+bool ChannelWidget::checked() const
+{
+    return ui->pushButton->isChecked();
+}
+
 int ChannelWidget::index() const
 {
     return _index;

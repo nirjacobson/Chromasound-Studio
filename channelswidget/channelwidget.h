@@ -27,6 +27,7 @@ class ChannelWidget : public QWidget
         void setSelected(const bool selected);
 
         bool on() const;
+        bool checked() const;
 
         int index() const;
         void setIndex(const int idx);
