@@ -12,14 +12,23 @@ SOURCES += \
     bson.cpp \
     channelswidget/stepkeys.cpp \
     channelswidget/stepvelocities.cpp \
+    fmwidget/algorithmdisplaywidget.cpp \
+    fmwidget/algorithmgraph.cpp \
+    fmwidget/algorithmwidget.cpp \
+    fmwidget/envelopedisplaywidget.cpp \
+    fmwidget/fmwidget.cpp \
+    fmwidget/operatorwidget.cpp \
     ganttwidget/ganttbottomwidget.cpp \
     noisewidget/noisewidget.cpp \
     pianorollwidget/pianorollkeyswidget.cpp \
     pianorollwidget/pianorollvelocitieswidget.cpp \
     pianorollwidget/pianorollwidget.cpp \
     project/channel/channel.cpp \
-    project/channel/channelsettings.cpp \
+    project/channel/envelopesettings.cpp \
+    project/channel/fmchannelsettings.cpp \
     project/channel/noisechannelsettings.cpp \
+    project/channel/operatorsettings.cpp \
+    project/channel/settings.cpp \
     project/track.cpp \
     project/note.cpp \
     project/pattern.cpp \
@@ -50,14 +59,23 @@ HEADERS += \
     bson.h \
     channelswidget/stepkeys.h \
     channelswidget/stepvelocities.h \
+    fmwidget/algorithmdisplaywidget.h \
+    fmwidget/algorithmgraph.h \
+    fmwidget/algorithmwidget.h \
+    fmwidget/envelopedisplaywidget.h \
+    fmwidget/fmwidget.h \
+    fmwidget/operatorwidget.h \
     ganttwidget/ganttbottomwidget.h \
     noisewidget/noisewidget.h \
     pianorollwidget/pianorollkeyswidget.h \
     pianorollwidget/pianorollvelocitieswidget.h \
     pianorollwidget/pianorollwidget.h \
     project/channel/channel.h \
-    project/channel/channelsettings.h \
+    project/channel/envelopesettings.h \
+    project/channel/fmchannelsettings.h \
     project/channel/noisechannelsettings.h \
+    project/channel/operatorsettings.h \
+    project/channel/settings.h \
     project/note.h \
     project/pattern.h \
     project/project.h \
@@ -86,6 +104,9 @@ HEADERS += \
 FORMS += \
     channelswidget/channelswidget.ui \
     channelswidget/channelwidget.ui \
+    fmwidget/algorithmwidget.ui \
+    fmwidget/fmwidget.ui \
+    fmwidget/operatorwidget.ui \
     ganttwidget/ganttwidget.ui \
     noisewidget/noisewidget.ui \
     pianorollwidget/pianorollwidget.ui \

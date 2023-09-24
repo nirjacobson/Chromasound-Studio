@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _playlistWidget(new PlaylistWidget(this, app))
     , _pianoRollWidget(nullptr)
     , _noiseWidget(nullptr)
+    , _fmWidget(nullptr)
 {
     ui->setupUi(this);
 
@@ -52,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
 
    connect(_channelsWidget, &ChannelsWidget::toneTriggered, this, &MainWindow::toneTriggered);
    connect(_channelsWidget, &ChannelsWidget::noiseTriggered, this, &MainWindow::noiseTriggered);
+   connect(_channelsWidget, &ChannelsWidget::fmTriggered, this, &MainWindow::fmTriggered);
 
    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openTriggered);
    connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveTriggered);
@@ -172,20 +174,36 @@ void MainWindow::channelSelected(const int index)
 
     _channelWindow->hide();
 
-    if (_app->project().getChannel(index).type() == Channel::Type::NOISE) {
-        NoiseWidget* oldWidget = _noiseWidget;
-        _noiseWidget = new NoiseWidget(this);
-        _noiseWidget->setWindowTitle(QString("%1: Noise").arg(_app->project().getChannel(index).name()));
-        _noiseWidget->setData(dynamic_cast<NoiseChannelSettings*>(&_app->project().getChannel(index).data()));
+    QWidget* oldWidget = nullptr;
+    switch (_app->project().getChannel(index).type()) {
+        case Channel::Type::NOISE:
+            oldWidget = _noiseWidget;
+            _noiseWidget = new NoiseWidget(this);
+            _noiseWidget->setSettings(dynamic_cast<NoiseChannelSettings*>(&_app->project().getChannel(index).settings()));
+            _noiseWidget->setWindowTitle(QString("%1: Noise").arg(_app->project().getChannel(index).name()));
 
-        _channelWindow->setWidget(_noiseWidget);
-        _channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
+            _channelWindow->setWidget(_noiseWidget);
+            break;
+        case Channel::Type::FM:
+            oldWidget = _fmWidget;
+            _fmWidget = new FMWidget(this);
+            _fmWidget->setSettings(dynamic_cast<FMChannelSettings*>(&_app->project().getChannel(index).settings()));
+            _fmWidget->setWindowTitle(QString("%1: FM").arg(_app->project().getChannel(index).name()));
+
+            _channelWindow->setWidget(_fmWidget);
+            break;
+        case Channel::NONE:
+        case Channel::TONE:
+            break;
+    }
+
+    if (_app->project().getChannel(index).type() != Channel::Type::NONE) {
         delete oldWidget;
+
+        _channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
 
         _channelWindow->show();
         _channelWindow->setFocus();
-    } else {
-
     }
 }
 
@@ -199,6 +217,11 @@ void MainWindow::noiseTriggered(const int index)
     _app->project().getChannel(index).setType(Channel::Type::NOISE);
 }
 
+void MainWindow::fmTriggered(const int index)
+{
+    _app->project().getChannel(index).setType(Channel::Type::FM);
+}
+
 void MainWindow::channelNameChanged(const int index)
 {
     if (index == _selectedChannel) {
@@ -210,6 +233,9 @@ void MainWindow::channelNameChanged(const int index)
                 break;
             case Channel::NOISE:
                 _noiseWidget->setWindowTitle(QString("%1: Noise").arg(_app->project().getChannel(index).name()));
+                break;
+            case Channel::FM:
+                _fmWidget->setWindowTitle(QString("%1: FM").arg(_app->project().getChannel(index).name()));
                 break;
         }
     }

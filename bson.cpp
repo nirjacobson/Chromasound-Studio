@@ -81,6 +81,10 @@ Channel BSON::toChannel(bson_iter_t& b)
             c._settings = new NoiseChannelSettings;
             c._settings->fromBSON(settingsInner);
         }
+        if (c._type == Channel::Type::FM) {
+            c._settings = new FMChannelSettings;
+            c._settings->fromBSON(settingsInner);
+        }
     }
 
     return c;

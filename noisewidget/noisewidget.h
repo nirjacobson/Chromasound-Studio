@@ -18,11 +18,11 @@ class NoiseWidget : public QWidget
         explicit NoiseWidget(QWidget *parent = nullptr);
         ~NoiseWidget();
 
-        void setData(NoiseChannelSettings* data);
+        void setSettings(NoiseChannelSettings* settings);
 
     private:
         Ui::NoiseWidget *ui;
-        NoiseChannelSettings* _data;
+        NoiseChannelSettings* _settings;
 
     private slots:
         void typeChanged(int idx);

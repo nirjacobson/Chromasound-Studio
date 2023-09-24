@@ -15,6 +15,7 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     , _typeActionGroup(this)
     , _toneAction("Tone", this)
     , _noiseAction("Noise", this)
+    , _fmAction("FM", this)
 {
     ui->setupUi(this);
 
@@ -37,6 +38,7 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
 
     connect(&_toneAction, &QAction::triggered, this, &ChannelWidget::toneTriggered);
     connect(&_noiseAction, &QAction::triggered, this, &ChannelWidget::noiseTriggered);
+    connect(&_fmAction, &QAction::triggered, this, &ChannelWidget::fmTriggered);
 
     _contextMenu.addAction(&_pianoRollAction);
 
@@ -47,10 +49,13 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     _contextMenu.addSection("Type");
     _toneAction.setCheckable(true);
     _noiseAction.setCheckable(true);
+    _fmAction.setCheckable(true);
     _typeActionGroup.addAction(&_toneAction);
     _typeActionGroup.addAction(&_noiseAction);
+    _typeActionGroup.addAction(&_fmAction);
     _contextMenu.addAction(&_toneAction);
     _contextMenu.addAction(&_noiseAction);
+    _contextMenu.addAction(&_fmAction);
 
     _contextMenu.addSeparator();
     _contextMenu.addAction(&_deleteAction);

@@ -48,6 +48,7 @@ class ChannelWidget : public QWidget
         QActionGroup _typeActionGroup;
         QAction _toneAction;
         QAction _noiseAction;
+        QAction _fmAction;
 
     signals:
         void ledShiftClicked();
@@ -62,6 +63,7 @@ class ChannelWidget : public QWidget
 
         void toneTriggered();
         void noiseTriggered();
+        void fmTriggered();
 
         void nameChanged();
 
