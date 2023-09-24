@@ -3,8 +3,9 @@
 
 #include <QString>
 
-#include "channelsettings.h"
+#include "settings.h"
 #include "noisechannelsettings.h"
+#include "fmchannelsettings.h"
 
 class Channel
 {
@@ -15,6 +16,7 @@ class Channel
             NONE = 0,
             TONE,
             NOISE,
+            FM,
         };
 
         Channel();
@@ -29,14 +31,14 @@ class Channel
         QString name() const;
         void setName(const QString& name);
 
-        ChannelSettings& data();
+        Settings& settings();
 
     private:
         bool _enabled;
         Type _type;
         QString _name;
 
-        ChannelSettings* _settings;
+        Settings* _settings;
 
         static QString channelTypeToString(const Channel::Type type);
         static Channel::Type channelTypeFromString(const QString& str);

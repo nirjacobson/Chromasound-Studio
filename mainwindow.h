@@ -14,6 +14,7 @@
 #include "noisewidget/noisewidget.h"
 #include "playlistwidget/playlistwidget.h"
 #include "pianorollwidget/pianorollwidget.h"
+#include "fmwidget/fmwidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -47,6 +48,7 @@ private slots:
 
     void toneTriggered(const int index);
     void noiseTriggered(const int index);
+    void fmTriggered(const int index);
 
     void channelNameChanged(const int index);
 
@@ -63,6 +65,7 @@ private:
     PianoRollWidget* _pianoRollWidget;
 
     NoiseWidget* _noiseWidget;
+    FMWidget* _fmWidget;
 
     QMdiSubWindow* _channelsWindow;
     QMdiSubWindow* _playlistWindow;

@@ -3,6 +3,7 @@
 LED::LED(QWidget *parent, const QColor& color)
     : QWidget{parent}
     , _color(color)
+    , _on(false)
 {
 
 }
@@ -20,15 +21,23 @@ bool LED::on()
 
 void LED::paintEvent(QPaintEvent*)
 {
+    QRect drawRect(QPoint(), QSize(16, 16));
+    drawRect.translate(rect().center() - drawRect.center());
+
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
     QColor color = _on ? _color : _color.darker();
     painter.setBrush(QBrush(color, Qt::SolidPattern));
     painter.setPen(QPen(color.darker(), 2));
-    painter.drawEllipse(rect().adjusted(1, 1, -1, -1));
+    painter.drawEllipse(drawRect.adjusted(1, 1, -1, -1));
 }
 
-void LED::mousePressEvent(QMouseEvent*)
+void LED::mousePressEvent(QMouseEvent* event)
 {
-    emit clicked(Qt::ShiftModifier == QApplication::keyboardModifiers());
+    QRect drawRect(QPoint(), QSize(16, 16));
+    drawRect.translate(rect().center() - drawRect.center());
+
+    if (drawRect.contains(event->pos())) {
+        emit clicked(Qt::ShiftModifier == QApplication::keyboardModifiers());
+    }
 }

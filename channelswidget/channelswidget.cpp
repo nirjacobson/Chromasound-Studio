@@ -66,6 +66,7 @@ void ChannelsWidget::rebuild()
         connect(channelWidget, &ChannelWidget::deleteTriggered, this, [=](){ emit deleteTriggered(channelWidget->index()); });
         connect(channelWidget, &ChannelWidget::toneTriggered, this, [=](){ emit toneTriggered(channelWidget->index()); });
         connect(channelWidget, &ChannelWidget::noiseTriggered, this, [=](){ emit noiseTriggered(channelWidget->index()); });
+        connect(channelWidget, &ChannelWidget::fmTriggered, this, [=](){ emit fmTriggered(channelWidget->index()); });
         connect(channelWidget, &ChannelWidget::nameChanged, this, [=](){ emit nameChanged(channelWidget->index()); });
     }
 

@@ -16,22 +16,22 @@ NoiseWidget::~NoiseWidget()
     delete ui;
 }
 
-void NoiseWidget::setData(NoiseChannelSettings* data)
+void NoiseWidget::setSettings(NoiseChannelSettings* settings)
 {
-    _data = data;
+    _settings = settings;
 
-    ui->typeComboBox->setCurrentIndex(data->noiseType());
-    ui->rateComboBox->setCurrentIndex(data->shiftRate());
+    ui->typeComboBox->setCurrentIndex(settings->noiseType());
+    ui->rateComboBox->setCurrentIndex(settings->shiftRate());
 }
 
 void NoiseWidget::typeChanged(int idx)
 {
     switch (idx) {
         case 0:
-            _data->setNoiseType(NoiseChannelSettings::NoiseType::Periodic);
+            _settings->setNoiseType(NoiseChannelSettings::NoiseType::Periodic);
             break;
         case 1:
-            _data->setNoiseType(NoiseChannelSettings::NoiseType::White);
+            _settings->setNoiseType(NoiseChannelSettings::NoiseType::White);
             break;
     }
 }
@@ -40,13 +40,13 @@ void NoiseWidget::shiftRateChanged(int idx)
 {
     switch (idx) {
         case 0:
-            _data->setShiftRate(NoiseChannelSettings::ShiftRate::FIVE_TWELVE);
+            _settings->setShiftRate(NoiseChannelSettings::ShiftRate::FIVE_TWELVE);
             break;
         case 1:
-            _data->setShiftRate(NoiseChannelSettings::ShiftRate::TEN_TWENTYFOUR);
+            _settings->setShiftRate(NoiseChannelSettings::ShiftRate::TEN_TWENTYFOUR);
             break;
         case 2:
-            _data->setShiftRate(NoiseChannelSettings::ShiftRate::TWENTY_FORTYEIGHT);
+            _settings->setShiftRate(NoiseChannelSettings::ShiftRate::TWENTY_FORTYEIGHT);
             break;
     }
 }

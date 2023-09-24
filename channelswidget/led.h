@@ -5,6 +5,7 @@
 #include <QColor>
 #include <QPainter>
 #include <QApplication>
+#include <QMouseEvent>
 
 class LED : public QWidget
 {
@@ -20,7 +21,7 @@ class LED : public QWidget
 
     protected:
         void paintEvent(QPaintEvent*);
-        void mousePressEvent(QMouseEvent*);
+        void mousePressEvent(QMouseEvent* event);
 
     private:
         QColor _color;
