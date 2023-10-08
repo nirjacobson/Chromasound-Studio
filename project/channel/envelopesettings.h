@@ -29,6 +29,8 @@ class EnvelopeSettings : public Settings
         void setD2r(const int d2r);
         void setRr(const int rr);
 
+        bool operator==(const EnvelopeSettings& other) const;
+
     private:
         int _ar;
         int _t1l;

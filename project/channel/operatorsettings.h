@@ -10,6 +10,7 @@ class OperatorSettings : public Settings
         OperatorSettings();
 
         EnvelopeSettings& envelopeSettings();
+        const EnvelopeSettings& envelopeSettings() const;
         int mul() const;
         int dt() const;
         int rs() const;
@@ -20,6 +21,8 @@ class OperatorSettings : public Settings
         void setDt(const int dt);
         void setRs(const int rs);
         void setAm(const bool am);
+
+        bool operator==(const OperatorSettings& other) const;
 
     private:
         EnvelopeSettings _envelopeSettings;

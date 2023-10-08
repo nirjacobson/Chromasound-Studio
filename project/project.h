@@ -54,6 +54,7 @@ class Project
                 Playlist(Playlist&& o);
                 ~Playlist();
 
+                const QList<Item*>& items() const;
                 void addItem(const float time, const int pattern);
                 void removeItem(const float time, const int pattern);
 
@@ -75,6 +76,7 @@ class Project
         int channels() const;
 
         Channel& getChannel(const int idx);
+        const Channel& getChannel(const int idx) const;
         void removeChannel(const int index);
         void moveChannelUp(const int idx);
         void moveChannelDown(const int idx);
@@ -87,6 +89,7 @@ class Project
         const Pattern& getFrontPattern() const;
 
         Playlist& playlist();
+        const Playlist& playlist() const;
 
         float getLength() const;
 

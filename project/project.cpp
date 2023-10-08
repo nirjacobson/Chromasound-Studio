@@ -29,6 +29,11 @@ Channel& Project::getChannel(const int idx)
     return _channels[idx];
 }
 
+const Channel& Project::getChannel(const int idx) const
+{
+    return _channels[idx];
+}
+
 void Project::removeChannel(const int index)
 {
     for (Pattern* pat : _patterns) {
@@ -89,6 +94,11 @@ const Pattern& Project::getFrontPattern() const
 }
 
 Project::Playlist& Project::playlist()
+{
+    return _playlist;
+}
+
+const Project::Playlist& Project::playlist() const
 {
     return _playlist;
 }
@@ -253,6 +263,11 @@ Project::Playlist::~Playlist()
 {
     for (Playlist::Item* item : _items)
         delete item;
+}
+
+const QList<Project::Playlist::Item*>& Project::Playlist::items() const
+{
+    return _items;
 }
 
 void Project::Playlist::addItem(const float time, const int pattern)

@@ -101,6 +101,16 @@ void EnvelopeSettings::setRr(const int rr)
     _rr = rr;
 }
 
+bool EnvelopeSettings::operator==(const EnvelopeSettings& other) const
+{
+    return _ar == other._ar &&
+           _t1l == other._t1l &&
+           _d1r == other._d1r &&
+           _t2l == other._t2l &&
+           _d2r == other._d2r &&
+           _rr == other._rr;
+}
+
 bson_t EnvelopeSettings::toBSON() const
 {
     bson_t bson;
