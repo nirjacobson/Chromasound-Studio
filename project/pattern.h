@@ -22,6 +22,7 @@ class Pattern
         const Track& getTrack(const int idx) const;
         Track& getTrack(const int idx);
         Track& addTrack(const int idx);
+        const QMap<int, Track*> tracks() const;
 
         void removeChannel(const int idx);
 

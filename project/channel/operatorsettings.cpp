@@ -14,6 +14,11 @@ EnvelopeSettings& OperatorSettings::envelopeSettings()
     return _envelopeSettings;
 }
 
+const EnvelopeSettings& OperatorSettings::envelopeSettings() const
+{
+    return _envelopeSettings;
+}
+
 int OperatorSettings::mul() const
 {
     return _mul;
@@ -57,6 +62,15 @@ void OperatorSettings::setRs(const int rs)
 void OperatorSettings::setAm(const bool am)
 {
     _am = am;
+}
+
+bool OperatorSettings::operator==(const OperatorSettings& other) const
+{
+    return _envelopeSettings == other._envelopeSettings &&
+            _rs == other._rs &&
+            _mul == other._mul &&
+            _dt == other._dt &&
+            _am == other._am;
 }
 
 bson_t OperatorSettings::toBSON() const

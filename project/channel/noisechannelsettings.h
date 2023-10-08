@@ -30,6 +30,9 @@ class NoiseChannelSettings : public Settings
         bson_t toBSON() const;
         void fromBSON(bson_iter_t& bson);
 
+        bool operator==(const NoiseChannelSettings& other) const;
+        bool operator!=(const NoiseChannelSettings& other) const;
+
     private:
         NoiseType _type;
         ShiftRate _rate;

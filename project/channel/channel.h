@@ -32,6 +32,7 @@ class Channel
         void setName(const QString& name);
 
         Settings& settings();
+        const Settings& settings() const;
 
     private:
         bool _enabled;

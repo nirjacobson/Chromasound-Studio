@@ -58,6 +58,16 @@ void NoiseChannelSettings::fromBSON(bson_iter_t& bson)
     }
 }
 
+bool NoiseChannelSettings::operator==(const NoiseChannelSettings& other) const
+{
+    return _type == other._type && _rate == other._rate;
+}
+
+bool NoiseChannelSettings::operator!=(const NoiseChannelSettings& other) const
+{
+    return !operator==(other);
+}
+
 QString NoiseChannelSettings::noiseTypeToString(const NoiseType type)
 {
     switch(type) {

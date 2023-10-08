@@ -52,6 +52,11 @@ Track& Pattern::addTrack(const int idx)
     return *_tracks[idx];
 }
 
+const QMap<int, Track*> Pattern::tracks() const
+{
+    return _tracks;
+}
+
 void Pattern::removeChannel(const int idx)
 {
     _tracks.remove(idx);

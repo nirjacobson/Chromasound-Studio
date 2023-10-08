@@ -12,6 +12,11 @@ FMChannelSettings::FourOperatorSettings& FMChannelSettings::operators()
     return _operators;
 }
 
+const FMChannelSettings::FourOperatorSettings& FMChannelSettings::operators() const
+{
+    return _operators;
+}
+
 int FMChannelSettings::algorithm() const
 {
     return _algorithm;
@@ -79,4 +84,11 @@ void FMChannelSettings::fromBSON(bson_iter_t& bson)
     if (bson_iter_find_descendant(&bson, "feedback", &feedback) && BSON_ITER_HOLDS_INT(&feedback)) {
         _feedback = bson_iter_int32(&feedback);
     }
+}
+
+bool FMChannelSettings::operator==(const FMChannelSettings& other) const
+{
+    return _algorithm == other._algorithm &&
+           _feedback == other._feedback &&
+           std::equal(std::begin(_operators), std::end(_operators), std::begin(other._operators));
 }

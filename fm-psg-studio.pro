@@ -51,6 +51,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     application.cpp \
+    project/vgmstream.cpp \
     topwidget/seekwidget.cpp \
     topwidget/timedisplaywidget.cpp \
     topwidget/topwidget.cpp
@@ -97,6 +98,7 @@ HEADERS += \
     playlistwidget/playlistpatternswidget.h \
     mainwindow.h \
     application.h \
+    project/vgmstream.h \
     topwidget/seekwidget.h \
     topwidget/timedisplaywidget.h \
     topwidget/topwidget.h

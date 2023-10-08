@@ -69,6 +69,11 @@ Settings& Channel::settings()
     return *_settings;
 }
 
+const Settings& Channel::settings() const
+{
+    return *_settings;
+}
+
 QString Channel::channelTypeToString(const Type type)
 {
     switch (type) {
