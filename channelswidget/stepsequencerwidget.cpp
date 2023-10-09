@@ -103,6 +103,8 @@ void StepSequencerWidget::mousePressEvent(QMouseEvent* event)
         track.removeItem(time);
     }
 
+    emit clicked();
+
     update();
 }
 
