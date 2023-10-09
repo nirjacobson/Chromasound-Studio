@@ -13,7 +13,7 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
     ui->ganttWidget->setItems(reinterpret_cast<QList<GanttItem*>*>(&app->project().playlist()));
     ui->ganttWidget->setParameters(Rows, RowHeight, CellWidth, 1);
     ui->ganttWidget->setItemsMovableX(true);
-    ui->ganttWidget->setPositionFunction([&](){ return _app->playMode() == Application::PlayMode::Song ? _app->position() : 0.0f; });
+    ui->ganttWidget->setPositionFunction([&](){ return _app->project().playMode() == Project::PlayMode::SONG ? _app->position() : 0.0f; });
 
     connect(ui->ganttWidget, &GanttWidget::clicked, this, &PlaylistWidget::ganttClicked);
     connect(ui->ganttWidget, &GanttWidget::itemsChanged, this, &PlaylistWidget::ganttItemsChanged);

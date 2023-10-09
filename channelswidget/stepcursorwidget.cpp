@@ -16,7 +16,7 @@ void StepCursorWidget::paintEvent(QPaintEvent*)
     float beatsPerStep = 0.25;
 
     int step;
-    if (_app->playMode() == Application::PlayMode::Pattern) {
+    if (_app->project().playMode() == Project::PlayMode::PATTERN) {
         step = _app->position() / beatsPerStep;
     } else {
         QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(_app->position());

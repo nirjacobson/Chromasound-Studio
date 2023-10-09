@@ -12,6 +12,11 @@ class Project
         friend class BSON;
 
     public:
+        enum PlayMode {
+            PATTERN,
+            SONG
+        };
+
         class Playlist
         {
                 friend class BSON;
@@ -88,6 +93,9 @@ class Project
         Pattern& getFrontPattern();
         const Pattern& getFrontPattern() const;
 
+        PlayMode playMode() const;
+        void setPlayMode(const PlayMode mode);
+
         Playlist& playlist();
         const Playlist& playlist() const;
 
@@ -110,6 +118,7 @@ class Project
         QList<Channel> _channels;
         QList<Pattern*> _patterns;
         int _frontPattern;
+        PlayMode _playMode;
 
         Playlist _playlist;
 

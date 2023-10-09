@@ -53,7 +53,7 @@ void PRDisplayWidget::paintEvent(QPaintEvent*)
     float beatsPerPixel = (float)visibleLength / (float)width();
     float position = _app->position();
 
-    if (_app->playMode() == Application::PlayMode::Song) {
+    if (_app->project().playMode() == Project::PlayMode::SONG) {
         QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(_app->position());
         int frontPatternIdx = _app->project().frontPattern();
 

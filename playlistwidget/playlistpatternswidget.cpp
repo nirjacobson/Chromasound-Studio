@@ -69,7 +69,7 @@ void PlaylistPatternsWidget::paintEvent(QPaintEvent*)
         int pattern = firstPattern + i;
 
         bool on = false;
-        if (_app->playMode() == Application::PlayMode::Song && activePatterns.contains(pattern)) {
+        if (_app->project().playMode() == Project::PlayMode::SONG && activePatterns.contains(pattern)) {
             Pattern& pat = _app->project().getPattern(pattern);
             QList<int> activeTracks = pat.activeTracksAtTime(appPosition - activePatterns[pattern]);
             for (int t : activeTracks) {

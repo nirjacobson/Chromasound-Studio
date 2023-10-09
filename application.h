@@ -6,42 +6,33 @@
 #include <QElapsedTimer>
 
 #include "project/project.h"
+#include "fm-psg/fm-psg.h"
+#include "fm-psg/fm-psg_dummy.h"
+#include "fm-psg/fm-psg_impl.h"
 
 class Application : public QApplication
 {
     Q_OBJECT
 
     public:
-        enum PlayMode {
-            Pattern,
-            Song
-        };
-
         Application(int &argc, char **argv, int flags = ApplicationFlags);
-
-        static constexpr int SampleRate = 44100;
-
-        float position() const;
-        bool isPlaying() const;
 
         void pause();
         void play();
         void stop();
 
-        Project& project();
+        float position() const;
+        bool isPlaying() const;
 
-        PlayMode playMode() const;
-        void setPlayMode(const PlayMode mode);
+        Project& project();
 
     private:
         static Application* _instance;
+        FM_PSG* _fmPSG;
 
         Project _project;
-        PlayMode _playMode;
 
         QElapsedTimer _timer;
-        qint64 _ref;
-        bool _playing;
 
         qint64 nanosecondsPerBeat() const;
 };
