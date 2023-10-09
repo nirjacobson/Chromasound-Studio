@@ -116,7 +116,9 @@ void VGMStream::processPattern(const float time, const Project& project, const P
         const Channel& channel = project.getChannel(it.key());
         const Track* track = it.value();
 
-        processTrack(time, channel, track, items);
+        if (channel.enabled()) {
+            processTrack(time, channel, track, items);
+        }
     }
 }
 
