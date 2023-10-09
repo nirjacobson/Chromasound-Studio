@@ -133,6 +133,8 @@ void ChannelWidget::setIndex(const int idx)
                        return qAbs(delta) <= 0.0625; }) == track.items().end();
            }
        }
+
+       return false;
    });
 
    update();
