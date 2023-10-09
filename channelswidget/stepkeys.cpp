@@ -134,12 +134,12 @@ void StepKeys::mousePressEvent(QMouseEvent* event)
 
     int whiteKeys[] = { 0, 2, 4, 5, 7, 9, 11 };
 
-    int stepClicked = event->x() / width;
+    int stepClicked = event->position().x() / width;
 
-    int mousePositionY = _top + event->y();
+    int mousePositionY = _top + event->position().y();
     int mousePosition = absBottom - mousePositionY;
     int mouseKey = -1;
-    if ((event->x() % width) < width/2) {
+    if (((int)event->position().x() % width) < width/2) {
         mouseKey = mousePosition / ROW_HEIGHT;
     } else {
         int octave = mousePosition / octaveHeight;

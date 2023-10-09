@@ -6,6 +6,7 @@
 #include <QInputDialog>
 #include <QMenu>
 #include <QAction>
+#include <QActionGroup>
 #include <iostream>
 
 #include "application.h"
