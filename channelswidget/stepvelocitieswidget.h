@@ -1,5 +1,5 @@
-#ifndef STEPVELOCITIES_H
-#define STEPVELOCITIES_H
+#ifndef STEPVELOCITIESWIDGET_H
+#define STEPVELOCITIESWIDGET_H
 
 #include <QWidget>
 #include <QPainter>
@@ -7,11 +7,13 @@
 #include "application.h"
 #include "stepsequencerwidget.h"
 
-class StepVelocities : public QWidget
+class StepVelocitiesWidget : public QWidget
 {
         Q_OBJECT
     public:
-        explicit StepVelocities(QWidget *parent = nullptr, Application* app = nullptr);
+        explicit StepVelocitiesWidget(QWidget *parent = nullptr, Application* app = nullptr);
+
+        void setApplication(Application* app);
 
         void setChannel(const int idx);
 
@@ -30,4 +32,4 @@ class StepVelocities : public QWidget
         void mousePressEvent(QMouseEvent* event);
 };
 
-#endif // STEPVELOCITIES_H
+#endif // STEPVELOCITIESWIDGET_H

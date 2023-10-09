@@ -5,9 +5,7 @@ ChannelsWidget::ChannelsWidget(QWidget *parent, Application* app) :
     QWidget(parent),
     ui(new Ui::ChannelsWidget),
     _app(app),
-    _activeChannelWidget(nullptr),
-    _stepKeysWidget(new StepKeys(this, app)),
-    _stepVelocitiesWidget(new StepVelocities(this, app))
+    _activeChannelWidget(nullptr)
 {
     ui->setupUi(this);
 
@@ -16,12 +14,6 @@ ChannelsWidget::ChannelsWidget(QWidget *parent, Application* app) :
     connect(ui->pianoButton, &QPushButton::clicked, this, &ChannelsWidget::pianoButtonClicked);
     connect(ui->velocityButton, &QPushButton::clicked, this, &ChannelsWidget::velocityButtonClicked);
     connect(ui->addButton, &QPushButton::clicked, this, &ChannelsWidget::channelAdded);
-
-    _stepKeysWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-    _stepVelocitiesWidget->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-
-    connect(_stepKeysWidget, &StepKeys::clicked, this, &ChannelsWidget::pianoKeyClicked);
-    connect(_stepVelocitiesWidget, &StepVelocities::clicked, this, &ChannelsWidget::velocityClicked);
 }
 
 ChannelsWidget::~ChannelsWidget()
@@ -29,9 +21,6 @@ ChannelsWidget::~ChannelsWidget()
     for (ChannelWidget* channelWidget : _channelWidgets) {
         delete channelWidget;
     }
-
-    delete _stepVelocitiesWidget;
-    delete _stepKeysWidget;
 
     delete ui;
 }
@@ -68,6 +57,8 @@ void ChannelsWidget::rebuild()
         connect(channelWidget, &ChannelWidget::noiseTriggered, this, [=](){ emit noiseTriggered(channelWidget->index()); });
         connect(channelWidget, &ChannelWidget::fmTriggered, this, [=](){ emit fmTriggered(channelWidget->index()); });
         connect(channelWidget, &ChannelWidget::nameChanged, this, [=](){ emit nameChanged(channelWidget->index()); });
+        connect(channelWidget, &ChannelWidget::pianoKeyClicked, this, &ChannelsWidget::pianoKeyClicked);
+        connect(channelWidget, &ChannelWidget::velocityClicked, this, &ChannelsWidget::velocityClicked);
     }
 
     if (!_channelWidgets.isEmpty()) {
@@ -108,6 +99,8 @@ void ChannelsWidget::add(const int index)
     connect(cw, &ChannelWidget::toneTriggered, this, [=](){ emit toneTriggered(cw->index()); });
     connect(cw, &ChannelWidget::noiseTriggered, this, [=](){ emit noiseTriggered(cw->index()); });
     connect(cw, &ChannelWidget::nameChanged, this, [=](){ emit nameChanged(cw->index()); });
+    connect(cw, &ChannelWidget::pianoKeyClicked, this, &ChannelsWidget::pianoKeyClicked);
+    connect(cw, &ChannelWidget::velocityClicked, this, &ChannelsWidget::velocityClicked);
     ui->verticalLayout->insertWidget(index, cw);
 
     _channelWidgets.insert(index, cw);
@@ -163,8 +156,10 @@ void ChannelsWidget::handleToggle(ChannelWidget* channelWidget, const bool selec
         }
     }
 
-    _stepKeysWidget->setVisible(false);
-    _stepVelocitiesWidget->setVisible(false);
+    if (_activeChannelWidget) {
+        _activeChannelWidget->hideStepWidgets();
+    }
+
     _activeChannelWidget = nullptr;
 
     if (selected) {
@@ -175,23 +170,14 @@ void ChannelsWidget::handleToggle(ChannelWidget* channelWidget, const bool selec
             const Track& track = pattern.getTrack(_activeChannelWidget->index());
             if (!track.doesUsePianoRoll()) {
                 if (ui->pianoButton->isChecked()) {
-                    adjustPopup();
-                    _stepKeysWidget->setChannel(channelWidget->index());
-                    _stepKeysWidget->setVisible(true);
-                    _stepKeysWidget->raise();
+                    _activeChannelWidget->showStepKeysWidget();
                 } else if (ui->velocityButton->isChecked() && !track.items().empty()) {
-                    adjustPopup();
-                    _stepVelocitiesWidget->setChannel(channelWidget->index());
-                    _stepVelocitiesWidget->setVisible(true);
-                    _stepVelocitiesWidget->raise();
+                    _activeChannelWidget->showStepVelsWidget();
                 }
             }
         } else {
             if (ui->pianoButton->isChecked()) {
-                adjustPopup();
-                _stepKeysWidget->setChannel(channelWidget->index());
-                _stepKeysWidget->setVisible(true);
-                _stepKeysWidget->raise();
+                _activeChannelWidget->showStepKeysWidget();
             }
         }
 
@@ -206,16 +192,6 @@ void ChannelsWidget::handleSelect(ChannelWidget* channelWidget)
     }
 }
 
-void ChannelsWidget::adjustPopup()
-{
-    if (_activeChannelWidget) {
-        const QRect& rect = _activeChannelWidget->getSequencerGeometry();
-        QPoint bottomLeft = rect.bottomLeft();
-        _stepKeysWidget->setGeometry(QRect(bottomLeft, QSize(rect.width(), 128)));
-        _stepVelocitiesWidget->setGeometry(QRect(bottomLeft, QSize(rect.width(), 128)));
-    }
-}
-
 void ChannelsWidget::handleSelectAll()
 {
     for (ChannelWidget* cw : _channelWidgets) {
@@ -225,7 +201,9 @@ void ChannelsWidget::handleSelectAll()
 
 void ChannelsWidget::pianoButtonClicked()
 {
-    _stepKeysWidget->setVisible(false);
+    if (_activeChannelWidget) {
+        _activeChannelWidget->hideStepWidgets();
+    }
 
     if (ui->pianoButton->isChecked()) {
         ui->velocityButton->setChecked(false);
@@ -235,17 +213,10 @@ void ChannelsWidget::pianoButtonClicked()
             if (pattern.hasTrack(_activeChannelWidget->index())) {
                 const Track& track = pattern.getTrack(_activeChannelWidget->index());
                 if(!track.doesUsePianoRoll()) {
-                    adjustPopup();
-                    _stepVelocitiesWidget->setVisible(false);
-                    _stepKeysWidget->setChannel(_activeChannelWidget->index());
-                    _stepKeysWidget->setVisible(true);
-                    _stepKeysWidget->raise();
+                    _activeChannelWidget->showStepKeysWidget();
                 }
             } else {
-                adjustPopup();
-                _stepKeysWidget->setChannel(_activeChannelWidget->index());
-                _stepKeysWidget->setVisible(true);
-                _stepKeysWidget->raise();
+                _activeChannelWidget->showStepKeysWidget();
             }
         }
     }
@@ -253,7 +224,9 @@ void ChannelsWidget::pianoButtonClicked()
 
 void ChannelsWidget::velocityButtonClicked()
 {
-    _stepVelocitiesWidget->setVisible(false);
+    if (_activeChannelWidget) {
+        _activeChannelWidget->hideStepWidgets();
+    }
 
     if (ui->velocityButton->isChecked()) {
         ui->pianoButton->setChecked(false);
@@ -263,11 +236,7 @@ void ChannelsWidget::velocityButtonClicked()
             if (pattern.hasTrack(_activeChannelWidget->index())) {
                 const Track& track = pattern.getTrack(_activeChannelWidget->index());
                 if (!track.doesUsePianoRoll() && !track.items().empty()) {
-                    adjustPopup();
-                    _stepKeysWidget->setVisible(false);
-                    _stepVelocitiesWidget->setChannel(_activeChannelWidget->index());
-                    _stepVelocitiesWidget->setVisible(true);
-                    _stepVelocitiesWidget->raise();
+                    _activeChannelWidget->showStepVelsWidget();
                 }
             }
         }
@@ -289,7 +258,6 @@ void ChannelsWidget::pianoKeyClicked(const Qt::MouseButton button, const int ste
     } else {
         track.removeItem(step * beatsPerStep, key);
     }
-    _stepKeysWidget->update();
     _activeChannelWidget->update();
 
 }
@@ -304,7 +272,6 @@ void ChannelsWidget::velocityClicked(const int step, const int velocity)
         (*existingItem)->note().setVelocity(velocity);
     }
 
-    _stepVelocitiesWidget->update();
     _activeChannelWidget->update();
 }
 

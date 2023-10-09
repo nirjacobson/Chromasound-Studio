@@ -1,5 +1,5 @@
-#ifndef STEPKEYS_H
-#define STEPKEYS_H
+#ifndef STEPKEYSWIDGET_H
+#define STEPKEYSWIDGET_H
 
 #include <QWidget>
 #include <QPainter>
@@ -9,11 +9,13 @@
 #include "application.h"
 #include "stepsequencerwidget.h"
 
-class StepKeys : public QWidget
+class StepKeysWidget : public QWidget
 {
         Q_OBJECT
     public:
-        explicit StepKeys(QWidget *parent = nullptr, Application* app = nullptr);
+        explicit StepKeysWidget(QWidget *parent = nullptr, Application* app = nullptr);
+
+        void setApplication(Application* app);
 
         void setChannel(const int idx);
 
@@ -45,4 +47,4 @@ class StepKeys : public QWidget
         void mousePressEvent(QMouseEvent* event);
 };
 
-#endif // STEPKEYS_H
+#endif // STEPKEYSWIDGET_H

@@ -19,6 +19,16 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
 {
     ui->setupUi(this);
 
+    ui->trackStackedWidget->setMinimumHeight(32);
+    ui->stepsStackedWidget->setMinimumHeight(128);
+
+    ui->stepKeys->setApplication(app);
+    ui->stepVelocities->setApplication(app);
+    ui->stepKeys->setChannel(index);
+    ui->stepVelocities->setChannel(index);
+
+    ui->stepsStackedWidget->setVisible(false);
+
     ui->stepSequencer->setApplication(app);
     ui->prDisplay->setApplication(app);
 
@@ -39,6 +49,9 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     connect(&_toneAction, &QAction::triggered, this, &ChannelWidget::toneTriggered);
     connect(&_noiseAction, &QAction::triggered, this, &ChannelWidget::noiseTriggered);
     connect(&_fmAction, &QAction::triggered, this, &ChannelWidget::fmTriggered);
+
+    connect(ui->stepKeys, &StepKeysWidget::clicked, this, &ChannelWidget::pianoKeyClicked);
+    connect(ui->stepVelocities, &StepVelocitiesWidget::clicked, this, &ChannelWidget::velocityClicked);
 
     _contextMenu.addAction(&_pianoRollAction);
 
@@ -137,7 +150,27 @@ void ChannelWidget::setIndex(const int idx)
        return false;
    });
 
+   ui->stepKeys->setChannel(_index);
+   ui->stepVelocities->setChannel(_index);
+
    update();
+}
+
+void ChannelWidget::showStepKeysWidget()
+{
+   ui->stepsStackedWidget->setCurrentIndex(0);
+   ui->stepsStackedWidget->setVisible(true);
+}
+
+void ChannelWidget::showStepVelsWidget()
+{
+   ui->stepsStackedWidget->setCurrentIndex(1);
+   ui->stepsStackedWidget->setVisible(true);
+}
+
+void ChannelWidget::hideStepWidgets()
+{
+   ui->stepsStackedWidget->setVisible(false);
 }
 
 const QRect ChannelWidget::getSequencerGeometry()
@@ -184,7 +217,7 @@ void ChannelWidget::buttonContextMenuRequested(const QPoint& p)
 void ChannelWidget::paintEvent(QPaintEvent* event)
 {
     const Pattern& activePattern = _app->project().getFrontPattern();
-    ui->stackedWidget->setCurrentIndex(activePattern.hasTrack(_index) && activePattern.getTrack(_index).doesUsePianoRoll());
+    ui->trackStackedWidget->setCurrentIndex(activePattern.hasTrack(_index) && activePattern.getTrack(_index).doesUsePianoRoll());
 
     QWidget::paintEvent(event);
 }
