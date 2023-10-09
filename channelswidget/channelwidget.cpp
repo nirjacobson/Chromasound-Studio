@@ -113,23 +113,25 @@ void ChannelWidget::setIndex(const int idx)
        QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(appPosition);
        const Pattern& frontPattern = _app->project().getFrontPattern();
        int frontPatternIdx = _app->project().frontPattern();
-       const Track& track = frontPattern.getTrack(_index);
-       if (_app->project().playMode() == Project::PlayMode::PATTERN) {
-           return _app->project().getChannel(_index).enabled() &&
-                   frontPattern.activeTracksAtTime(appPosition).contains(_index) &&
-                   std::find_if(track.items().begin(),
-                             track.items().end(),
-                    [&](const Track::Item* item){
-                       float delta = item->time() - appPosition;
+       if (frontPattern.hasTrack(_index)) {
+           const Track& track = frontPattern.getTrack(_index);
+           if (_app->project().playMode() == Project::PlayMode::PATTERN) {
+               return _app->project().getChannel(_index).enabled() &&
+                       frontPattern.activeTracksAtTime(appPosition).contains(_index) &&
+                       std::find_if(track.items().begin(),
+                                 track.items().end(),
+                        [&](const Track::Item* item){
+                           float delta = item->time() - appPosition;
+                           return qAbs(delta) <= 0.0625; }) == track.items().end();
+           } else {
+              return activePatterns.contains(_app->project().frontPattern()) &&
+                     _app->project().getChannel(_index).enabled() &&
+                     frontPattern.activeTracksAtTime(appPosition - activePatterns[frontPatternIdx]).contains(_index) &&
+                     std::find_if(track.items().begin(), track.items().end(),
+                     [&](const Track::Item* item){
+                       float delta = item->time() - (appPosition - activePatterns[frontPatternIdx]);
                        return qAbs(delta) <= 0.0625; }) == track.items().end();
-       } else {
-          return activePatterns.contains(_app->project().frontPattern()) &&
-                 _app->project().getChannel(_index).enabled() &&
-                 frontPattern.activeTracksAtTime(appPosition - activePatterns[frontPatternIdx]).contains(_index) &&
-                 std::find_if(track.items().begin(), track.items().end(),
-                 [&](const Track::Item* item){
-                   float delta = item->time() - (appPosition - activePatterns[frontPatternIdx]);
-                   return qAbs(delta) <= 0.0625; }) == track.items().end();
+           }
        }
    });
 

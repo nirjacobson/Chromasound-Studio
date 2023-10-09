@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QLayout>
 #include <QList>
+#include <QWindow>
 
 #include "application.h"
 #include "channelwidget.h"

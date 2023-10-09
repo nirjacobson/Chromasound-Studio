@@ -69,9 +69,9 @@ void StepVelocities::mousePressEvent(QMouseEvent* event)
     Pattern& pattern = _app->project().getFrontPattern();
 
     int width = StepSequencerWidget::StepWidth + StepSequencerWidget::StepSpacing;
-    int stepClicked = event->x() / width;
+    int stepClicked = event->position().x() / width;
 
-    int invertY = height() - event->y();
+    int invertY = height() - event->position().y();
     int velocityClicked = qMin(100, (int)((float)invertY/(float)fullBarHeight * 100));
 
     if (pattern.hasTrack(_index)) {

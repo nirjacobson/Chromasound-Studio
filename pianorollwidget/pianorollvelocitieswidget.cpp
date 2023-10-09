@@ -101,8 +101,8 @@ void PianoRollVelocitiesWidget::mousePressEvent(QMouseEvent* event)
         int fullBarHeight = height() - 16;
         float beatsPerPixel = _cellBeats / _cellWidth;
 
-        float mousePosition = (_left + event->x()) * beatsPerPixel;
-        int invertY = height() - event->y();
+        float mousePosition = (_left + event->position().x()) * beatsPerPixel;
+        int invertY = height() - event->position().y();
         int velocityClicked = qMin(100, (int)((float)invertY/(float)fullBarHeight * 100));
 
         auto it = std::find_if(_items->begin(), _items->end(), [=](GanttItem* const item){ return item->time() <= mousePosition && mousePosition <= item->time() + barWidth * beatsPerPixel; });
