@@ -1,8 +1,8 @@
-#include "stepkeys.h"
+#include "stepkeyswidget.h"
 
-constexpr QColor StepKeys::HIGHLIGHT_COLOR;
+constexpr QColor StepKeysWidget::HIGHLIGHT_COLOR;
 
-StepKeys::StepKeys(QWidget *parent, Application* app)
+StepKeysWidget::StepKeysWidget(QWidget *parent, Application* app)
     : QWidget{parent}
     , _top(2 * ROW_HEIGHT * KEYS_PER_OCTAVE)
     , _app(app)
@@ -11,12 +11,17 @@ StepKeys::StepKeys(QWidget *parent, Application* app)
 
 }
 
-void StepKeys::setChannel(const int idx)
+void StepKeysWidget::setApplication(Application* app)
+{
+    _app = app;
+}
+
+void StepKeysWidget::setChannel(const int idx)
 {
     _index = idx;
 }
 
-void StepKeys::paintEvent(QPaintEvent*)
+void StepKeysWidget::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
     Pattern& pattern = _app->project().getFrontPattern();
@@ -111,7 +116,7 @@ void StepKeys::paintEvent(QPaintEvent*)
 
 }
 
-void StepKeys::wheelEvent(QWheelEvent* event)
+void StepKeysWidget::wheelEvent(QWheelEvent* event)
 {
     if (event->pixelDelta().isNull()) {
         _top -= event->angleDelta().y() / 8 / 5;
@@ -123,7 +128,7 @@ void StepKeys::wheelEvent(QWheelEvent* event)
     update();
 }
 
-void StepKeys::mousePressEvent(QMouseEvent* event)
+void StepKeysWidget::mousePressEvent(QMouseEvent* event)
 {
     int absBottom = ROW_HEIGHT * ROWS;
 

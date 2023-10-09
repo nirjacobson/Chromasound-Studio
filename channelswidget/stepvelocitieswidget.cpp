@@ -1,8 +1,8 @@
-#include "stepvelocities.h"
+#include "stepvelocitieswidget.h"
 
-constexpr QColor StepVelocities::BarColor;
+constexpr QColor StepVelocitiesWidget::BarColor;
 
-StepVelocities::StepVelocities(QWidget* parent, Application* app)
+StepVelocitiesWidget::StepVelocitiesWidget(QWidget* parent, Application* app)
     : QWidget{parent}
     , _app(app)
     , _index(0)
@@ -10,12 +10,17 @@ StepVelocities::StepVelocities(QWidget* parent, Application* app)
 
 }
 
-void StepVelocities::setChannel(const int idx)
+void StepVelocitiesWidget::setApplication(Application* app)
+{
+    _app = app;
+}
+
+void StepVelocitiesWidget::setChannel(const int idx)
 {
     _index = idx;
 }
 
-void StepVelocities::paintEvent(QPaintEvent*)
+void StepVelocitiesWidget::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
     Pattern& pattern = _app->project().getFrontPattern();
@@ -62,7 +67,7 @@ void StepVelocities::paintEvent(QPaintEvent*)
     }
 }
 
-void StepVelocities::mousePressEvent(QMouseEvent* event)
+void StepVelocitiesWidget::mousePressEvent(QMouseEvent* event)
 {
     float beatsPerStep = 0.25;
     int fullBarHeight = height() - 16;

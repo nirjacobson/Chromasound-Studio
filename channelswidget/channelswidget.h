@@ -9,8 +9,6 @@
 #include "application.h"
 #include "channelwidget.h"
 #include "stepcursorwidget.h"
-#include "stepkeys.h"
-#include "stepvelocities.h"
 
 namespace Ui {
     class ChannelsWidget;
@@ -53,14 +51,9 @@ class ChannelsWidget : public QWidget
         QList<ChannelWidget*> _channelWidgets;
         ChannelWidget* _activeChannelWidget;
 
-        StepKeys* _stepKeysWidget;
-        StepVelocities* _stepVelocitiesWidget;
-
         void toggleSolo(ChannelWidget* channelWidget);
         void handleToggle(ChannelWidget* channelWidget, const bool selected);
         void handleSelect(ChannelWidget* channelWidget);
-
-        void adjustPopup();
 
     private slots:
         void handleSelectAll();

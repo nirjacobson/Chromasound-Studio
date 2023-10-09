@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>343</width>
-    <height>48</height>
+    <width>378</width>
+    <height>127</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>0</width>
-    <height>48</height>
+    <height>0</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -25,8 +25,11 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout">
-   <item>
+  <layout class="QGridLayout" name="gridLayout_3">
+   <property name="verticalSpacing">
+    <number>4</number>
+   </property>
+   <item row="0" column="0">
     <widget class="LED" name="led" native="true">
      <property name="minimumSize">
       <size>
@@ -48,7 +51,7 @@
      </property>
     </widget>
    </item>
-   <item>
+   <item row="0" column="1">
     <widget class="QPushButton" name="pushButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -79,11 +82,11 @@
      </property>
     </widget>
    </item>
-   <item>
+   <item row="0" column="2">
     <widget class="RectLED" name="rectLed" native="true"/>
    </item>
-   <item>
-    <widget class="QStackedWidget" name="stackedWidget">
+   <item row="0" column="3">
+    <widget class="QStackedWidget" name="trackStackedWidget">
      <property name="currentIndex">
       <number>0</number>
      </property>
@@ -127,6 +130,51 @@
      </widget>
     </widget>
    </item>
+   <item row="1" column="3">
+    <widget class="QStackedWidget" name="stepsStackedWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="page_3">
+      <layout class="QGridLayout" name="gridLayout_4">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="StepKeysWidget" name="stepKeys" native="true"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="page_4">
+      <layout class="QGridLayout" name="gridLayout_5">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="StepVelocitiesWidget" name="stepVelocities" native="true"/>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -152,6 +200,18 @@
    <class>PRDisplayWidget</class>
    <extends>QWidget</extends>
    <header>channelswidget/prdisplaywidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>StepKeysWidget</class>
+   <extends>QWidget</extends>
+   <header>channelswidget/stepkeyswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>StepVelocitiesWidget</class>
+   <extends>QWidget</extends>
+   <header>channelswidget/stepvelocitieswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -33,6 +33,10 @@ class ChannelWidget : public QWidget
         int index() const;
         void setIndex(const int idx);
 
+        void showStepKeysWidget();
+        void showStepVelsWidget();
+        void hideStepWidgets();
+
         const QRect getSequencerGeometry();
 
     private:
@@ -52,6 +56,9 @@ class ChannelWidget : public QWidget
         QAction _fmAction;
 
     signals:
+        void pianoKeyClicked(const Qt::MouseButton button, const int step, const int key);
+        void velocityClicked(const int step, const int velocity);
+
         void ledShiftClicked();
         void toggled(bool);
 

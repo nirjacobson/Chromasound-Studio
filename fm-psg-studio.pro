@@ -10,8 +10,8 @@ CONFIG += c++17
 
 SOURCES += \
     bson.cpp \
-    channelswidget/stepkeys.cpp \
-    channelswidget/stepvelocities.cpp \
+    channelswidget/stepkeyswidget.cpp \
+    channelswidget/stepvelocitieswidget.cpp \
     fm-psg/fm-psg_dummy.cpp \
     fm-psg/fm-psg_impl.cpp \
     fm-psg/vgmplayer.cpp \
@@ -61,8 +61,8 @@ SOURCES += \
 
 HEADERS += \
     bson.h \
-    channelswidget/stepkeys.h \
-    channelswidget/stepvelocities.h \
+    channelswidget/stepkeyswidget.h \
+    channelswidget/stepvelocitieswidget.h \
     fm-psg/fm-psg.h \
     fm-psg/fm-psg_dummy.h \
     fm-psg/fm-psg_impl.h \
