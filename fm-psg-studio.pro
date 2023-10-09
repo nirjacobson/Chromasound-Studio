@@ -12,6 +12,9 @@ SOURCES += \
     bson.cpp \
     channelswidget/stepkeys.cpp \
     channelswidget/stepvelocities.cpp \
+    fm-psg/fm-psg_dummy.cpp \
+    fm-psg/fm-psg_impl.cpp \
+    fm-psg/vgmplayer.cpp \
     fmwidget/algorithmdisplaywidget.cpp \
     fmwidget/algorithmgraph.cpp \
     fmwidget/algorithmwidget.cpp \
@@ -60,6 +63,10 @@ HEADERS += \
     bson.h \
     channelswidget/stepkeys.h \
     channelswidget/stepvelocities.h \
+    fm-psg/fm-psg.h \
+    fm-psg/fm-psg_dummy.h \
+    fm-psg/fm-psg_impl.h \
+    fm-psg/vgmplayer.h \
     fmwidget/algorithmdisplaywidget.h \
     fmwidget/algorithmgraph.h \
     fmwidget/algorithmwidget.h \
@@ -118,7 +125,7 @@ FORMS += \
 
 INCLUDEPATH += -I/usr/include/libbson-1.0
 
-LIBS += -lbson-1.0
+LIBS += -lbson-1.0 -lpigpio
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

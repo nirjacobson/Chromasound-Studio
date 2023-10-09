@@ -349,6 +349,10 @@ void BSON::fromProject(bson_t* dst,const Project& project)
 
     BSON_APPEND_INT32(dst, "tempo", project._tempo);
     BSON_APPEND_INT32(dst, "beatsPerBar", project.beatsPerBar());
+
+    // Play mode
+
+    BSON_APPEND_UTF8(dst, "playMode", project._playMode == Project::PlayMode::PATTERN ? "PATTERN" : "SONG");
 }
 
 Project BSON::toProject(bson_iter_t& b)
@@ -405,6 +409,14 @@ Project BSON::toProject(bson_iter_t& b)
     if (bson_iter_find_descendant(&b, "beatsPerBar", &beatsPerBar) && BSON_ITER_HOLDS_INT32(&beatsPerBar)) {
         p._beatsPerBar = bson_iter_int32(&beatsPerBar);
     }
+
+    // Play mode
+
+   bson_iter_t playMode;
+
+   if (bson_iter_find_descendant(&b, "playMode", &playMode) && BSON_ITER_HOLDS_UTF8(&playMode)) {
+       p._playMode = (QString(bson_iter_utf8(&playMode, NULL)) == QString("PATTERN")) ? Project::PlayMode::PATTERN : Project::PlayMode::SONG;
+   }
 
     return p;
 }

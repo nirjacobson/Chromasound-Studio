@@ -114,7 +114,7 @@ void ChannelWidget::setIndex(const int idx)
        const Pattern& frontPattern = _app->project().getFrontPattern();
        int frontPatternIdx = _app->project().frontPattern();
        const Track& track = frontPattern.getTrack(_index);
-       if (_app->playMode() == Application::PlayMode::Pattern) {
+       if (_app->project().playMode() == Project::PlayMode::PATTERN) {
            return _app->project().getChannel(_index).enabled() &&
                    frontPattern.activeTracksAtTime(appPosition).contains(_index) &&
                    std::find_if(track.items().begin(),

@@ -1,7 +1,18 @@
 #include "project.h"
 
+Project::PlayMode Project::playMode() const
+{
+    return _playMode;
+}
+
+void Project::setPlayMode(const PlayMode mode)
+{
+    _playMode = mode;
+}
+
 Project::Project()
     : _frontPattern(0)
+    , _playMode(PATTERN)
     , _playlist(this)
     , _tempo(120)
     , _beatsPerBar(4)

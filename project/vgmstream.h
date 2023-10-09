@@ -62,6 +62,11 @@ class VGMStream
                 const Settings* _channelSettings;
         };
 
+        class StreamEndItem : public StreamItem {
+            public:
+                StreamEndItem(const float time);
+        };
+
         class PhysicalChannel {
             private:
                 float _time;
@@ -103,6 +108,8 @@ class VGMStream
 
         void generateItems(const Project& project, QList<StreamItem*>& items);
         void assignChannelsAndExpand(QList<StreamItem*>& items);
+
+        void pad(QList<StreamItem*>& items, const float toDuration);
 
         void encode(const QList<StreamItem*> items, const int tempo, QByteArray& data);
 

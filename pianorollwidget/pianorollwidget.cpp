@@ -43,7 +43,7 @@ void PianoRollWidget::setTrack(const int pattern, const int track)
     ui->ganttWidget->setPositionFunction([=](){
         float appPosition = _app->position();
 
-        if (_app->playMode() == Application::PlayMode::Song) {
+        if (_app->project().playMode() == Project::PlayMode::SONG) {
             QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(appPosition);
 
             if (activePatterns.contains(pattern)) {

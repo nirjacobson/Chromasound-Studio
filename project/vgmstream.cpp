@@ -44,6 +44,10 @@ QByteArray VGMStream::compile(const Project& project)
     assignChannelsAndExpand(items);
     encode(items, project.tempo(), data);
 
+    for (StreamItem* item : items) {
+        delete item;
+    }
+
     return data;
 }
 
@@ -55,6 +59,7 @@ QByteArray VGMStream::compile(const Project& project, const int pattern)
     processPattern(0, project, project.getPattern(pattern), items);
 
     assignChannelsAndExpand(items);
+    pad(items, qCeil(project.getPattern(pattern).getLength() / project.beatsPerBar()) * project.beatsPerBar());
     encode(items, project.tempo(), data);
 
     return data;
@@ -169,6 +174,12 @@ void VGMStream::assignChannelsAndExpand(QList<StreamItem*>& items)
     });
 }
 
+void VGMStream::pad(QList<StreamItem*>& items, const float toDuration)
+{
+    StreamEndItem* sei = new StreamEndItem(toDuration);
+    items.append(sei);
+}
+
 void VGMStream::encode(const QList<StreamItem*> items, const int tempo, QByteArray& data)
 {
     float lastTime = 0.0f;
@@ -184,6 +195,7 @@ void VGMStream::encode(const QList<StreamItem*> items, const int tempo, QByteArr
             encodeNoteItem(sni, data);
         }
     }
+    data.append(0x66);
 }
 
 void VGMStream::encodeDelay(const int tempo, const float beats, QByteArray& data)
@@ -454,4 +466,10 @@ FMChannelSettings& VGMStream::FMChannel::settings()
 NoiseChannelSettings& VGMStream::NoiseChannel::settings()
 {
     return _settings;
+}
+
+VGMStream::StreamEndItem::StreamEndItem(const float time)
+    : StreamItem(time)
+{
+
 }
