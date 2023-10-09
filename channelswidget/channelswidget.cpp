@@ -122,10 +122,8 @@ void ChannelsWidget::update(const int index)
 
 void ChannelsWidget::select(const int index)
 {
-    for (ChannelWidget* cw : _channelWidgets) {
-        cw->setChecked(false);
-    }
     _channelWidgets[index]->setChecked(true);
+    handleToggle(_channelWidgets[index], true);
 }
 
 int ChannelsWidget::selected() const

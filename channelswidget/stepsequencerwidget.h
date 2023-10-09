@@ -21,6 +21,7 @@ class StepSequencerWidget : public QWidget
         void setIndex(const int i);
 
     signals:
+        void clicked();
 
     protected:
         void paintEvent(QPaintEvent*);

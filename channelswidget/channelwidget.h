@@ -79,6 +79,7 @@ class ChannelWidget : public QWidget
         void ledClicked(bool shift);
         void buttonPressed();
         void buttonContextMenuRequested(const QPoint& p);
+        void stepSequencerClicked();
 
     protected:
         void paintEvent(QPaintEvent* event);

@@ -53,6 +53,8 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     connect(ui->stepKeys, &StepKeysWidget::clicked, this, &ChannelWidget::pianoKeyClicked);
     connect(ui->stepVelocities, &StepVelocitiesWidget::clicked, this, &ChannelWidget::velocityClicked);
 
+    connect(ui->stepSequencer, &StepSequencerWidget::clicked, this, &ChannelWidget::stepSequencerClicked);
+
     _contextMenu.addAction(&_pianoRollAction);
 
     _contextMenu.addSeparator();
@@ -212,6 +214,11 @@ void ChannelWidget::buttonPressed()
 void ChannelWidget::buttonContextMenuRequested(const QPoint& p)
 {
     _contextMenu.exec(mapToGlobal(p));
+}
+
+void ChannelWidget::stepSequencerClicked()
+{
+    update();
 }
 
 void ChannelWidget::paintEvent(QPaintEvent* event)
