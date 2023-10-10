@@ -35,33 +35,70 @@ VGMStream::VGMStream()
 
 }
 
-QByteArray VGMStream::compile(const Project& project)
+QByteArray VGMStream::compile(const Project& project, bool header)
 {
     QList<StreamItem*> items;
+    QByteArray headerData;
     QByteArray data;
+    int totalSamples;
 
     if (project.playMode() == Project::PlayMode::PATTERN) {
         processPattern(0, project, project.getFrontPattern(), items);
         assignChannelsAndExpand(items);
         pad(items, qCeil(project.getFrontPattern().getLength() / project.beatsPerBar()) * project.beatsPerBar());
-        encode(items, project.tempo(), data);
+        totalSamples = encode(items, project.tempo(), data);
 
         for (StreamItem* item : items) {
             delete item;
         }
-
-        return data;
     } else {
         generateItems(project, items);
         assignChannelsAndExpand(items);
-        encode(items, project.tempo(), data);
+        totalSamples = encode(items, project.tempo(), data);
 
         for (StreamItem* item : items) {
             delete item;
         }
-
-        return data;
     }
+
+    if (header) {
+        headerData = QByteArray(64, 0);
+
+        // VGM header
+        headerData[0] = 'V';
+        headerData[1] = 'g';
+        headerData[2] = 'm';
+        headerData[3] = ' ';
+
+        // EOF
+        *(uint32_t*)&headerData[0x4] = data.size() + 64 - 0x4;
+        // Version
+        headerData[0x8] = 0x50;
+        headerData[0x9] = 0x01;
+        // SN76489 clock
+        *(uint32_t*)&headerData[0xC] = 3579545;
+        // GD3 offset
+        *(uint32_t*)&headerData[0x14] = data.size() + 64 - 0xC;
+        // Total samples
+        *(uint32_t*)&headerData[0x18] = totalSamples;
+        // Loop offset
+        *(uint32_t*)&headerData[0x1C] = (project.playMode() == Project::PlayMode::PATTERN) ? (0x40 - 0x1C) : 0x0;
+        // Loop # samples
+        *(uint32_t*)&headerData[0x20] = (project.playMode() == Project::PlayMode::PATTERN) ? totalSamples : 0x0;
+        // SN76489AN flags
+        *(uint16_t*)&headerData[0x28] = 0x0003;
+        headerData[0x2A] = 15;
+        // YM2612 clock
+        *(uint32_t*)&headerData[0x2C] = 7680000;
+        // Data offset
+        *(uint32_t*)&headerData[0x34] = 0xC;
+
+        QByteArray result = headerData;
+        result.append(data);
+        return result;
+    }
+
+    return data;
 }
 
 int VGMStream::acquireToneChannel(const float time, const float duration)
@@ -181,11 +218,12 @@ void VGMStream::pad(QList<StreamItem*>& items, const float toDuration)
     items.append(sei);
 }
 
-void VGMStream::encode(const QList<StreamItem*> items, const int tempo, QByteArray& data)
+int VGMStream::encode(const QList<StreamItem*> items, const int tempo, QByteArray& data)
 {
     float lastTime = 0.0f;
+    int totalSamples = 0;
     for (int i = 0; i < items.size(); i++) {
-        encodeDelay(tempo, items[i]->time() - lastTime, data);
+        totalSamples += encodeDelay(tempo, items[i]->time() - lastTime, data);
         lastTime = items[i]->time();
         StreamSettingsItem* ssi;
         StreamNoteItem* sni;
@@ -196,9 +234,11 @@ void VGMStream::encode(const QList<StreamItem*> items, const int tempo, QByteArr
         }
     }
     data.append(0x66);
+
+    return totalSamples;
 }
 
-void VGMStream::encodeDelay(const int tempo, const float beats, QByteArray& data)
+int VGMStream::encodeDelay(const int tempo, const float beats, QByteArray& data)
 {
     int samples = beats * 60.0f/tempo * 44100;
 
@@ -222,6 +262,8 @@ void VGMStream::encodeDelay(const int tempo, const float beats, QByteArray& data
             samples -= s;
         }
     }
+
+    return samples;
 }
 
 void VGMStream::encodeSettingsItem(const StreamSettingsItem* item, QByteArray& data)

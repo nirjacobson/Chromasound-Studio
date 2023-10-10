@@ -13,7 +13,7 @@ class VGMStream
     public:
         VGMStream();
 
-        QByteArray compile(const Project& project);
+        QByteArray compile(const Project& project, bool header = false);
 
     private:
         static QList<float> frequencies;
@@ -110,9 +110,9 @@ class VGMStream
 
         void pad(QList<StreamItem*>& items, const float toDuration);
 
-        void encode(const QList<StreamItem*> items, const int tempo, QByteArray& data);
+        int encode(const QList<StreamItem*> items, const int tempo, QByteArray& data);
 
-        void encodeDelay(const int tempo, const float beats, QByteArray& data);
+        int encodeDelay(const int tempo, const float beats, QByteArray& data);
         void encodeSettingsItem(const StreamSettingsItem* item, QByteArray& data);
         void encodeNoteItem(const StreamNoteItem* item, QByteArray& data);
 };
