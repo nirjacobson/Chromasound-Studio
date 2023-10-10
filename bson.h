@@ -19,6 +19,9 @@ class BSON
         static QByteArray encode(const Project& project);
         static Project decode(const QString& file);
 
+        static QByteArray encodePatch(const FMChannelSettings* settings);
+        static FMChannelSettings* decodePatch(const QString& file);
+
     private:
         static void fromChannel(bson_t* dst, const Channel& channel);
         static Channel toChannel(bson_iter_t& b);
