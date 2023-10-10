@@ -15,6 +15,7 @@
 #include "playlistwidget/playlistwidget.h"
 #include "pianorollwidget/pianorollwidget.h"
 #include "fmwidget/fmwidget.h"
+#include "project/vgmstream.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -54,6 +55,7 @@ private slots:
 
     void openTriggered();
     void saveTriggered();
+    void renderTriggered();
 
 private:
     Ui::MainWindow* ui;

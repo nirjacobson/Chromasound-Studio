@@ -57,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
 
    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openTriggered);
    connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveTriggered);
+   connect(ui->actionRender, &QAction::triggered, this, &MainWindow::renderTriggered);
 }
 
 MainWindow::~MainWindow()
@@ -197,7 +198,7 @@ void MainWindow::channelSelected(const int index)
             break;
     }
 
-    if (_app->project().getChannel(index).type() != Channel::Type::NONE) {
+        if (_app->project().getChannel(index).type() > Channel::Type::TONE) {
         delete oldWidget;
 
         _channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
@@ -259,6 +260,18 @@ void MainWindow::saveTriggered()
     QFile file(path);
     file.open(QIODevice::WriteOnly);
     file.write(BSON::encode(_app->project()));
+    file.close();
+}
+
+void MainWindow::renderTriggered()
+{
+    const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "VGM files (*.vgm)");
+    QFile file(path);
+    file.open(QIODevice::WriteOnly);
+
+    VGMStream vgmStream;
+    QByteArray data = vgmStream.compile(_app->project());
+    file.write(data);
     file.close();
 }
 
