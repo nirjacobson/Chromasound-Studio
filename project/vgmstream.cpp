@@ -401,7 +401,8 @@ void VGMStream::encodeNoteItem(const StreamNoteItem* item, QByteArray& data)
 
         data.append(0x52);
         int c = (item->channel() < 3) ? item->channel() : (1 + item->channel());
-        data.append(0x28, ((item->on() ? 0xF : 0x0) << 4) | c);
+        data.append(0x28);
+        data.append(((item->on() ? 0xF : 0x0) << 4) | c);
     }
 }
 
