@@ -29,7 +29,8 @@ class VGMPlayer : public QThread
             IDLE,
             REPORT_SPACE,
             RECEIVE_DATA,
-            REPORT_TIME
+            REPORT_TIME,
+            PAUSE_RESUME
         } Command;
 
         int _spi;
@@ -41,6 +42,7 @@ class VGMPlayer : public QThread
         QMutex _stopLock;
         QMutex _timeLock;
         bool _stop;
+        bool _paused;
 
         bool _loop;
 

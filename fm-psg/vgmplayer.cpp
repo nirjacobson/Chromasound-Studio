@@ -6,6 +6,7 @@ VGMPlayer::VGMPlayer(int spi, QObject *parent)
     , _time(0)
     , _position(0)
     , _stop(false)
+    , _paused(false)
     , _loop(false)
 {
 
@@ -23,6 +24,7 @@ void VGMPlayer::stop()
 {
     _stopLock.lock();
     _stop = true;
+    _paused = false;
     _stopLock.unlock();
 
     _position = 0;
@@ -32,6 +34,7 @@ void VGMPlayer::pause()
 {
     _stopLock.lock();
     _stop = true;
+    _paused = true;
     _stopLock.unlock();
 }
 
@@ -47,7 +50,11 @@ uint32_t VGMPlayer::time()
 void VGMPlayer::start(Priority p)
 {
     _stopLock.lock();
+    if (_paused) {
+        spi_write(PAUSE_RESUME); // resume
+    }
     _stop = false;
+    _paused = false;
     _stopLock.unlock();
 
     QThread::start(p);
@@ -75,8 +82,14 @@ void VGMPlayer::run()
     while (true) {
         _stopLock.lock();
         bool stop = _stop;
+        bool paused = _paused;
         _stopLock.unlock();
-        if (stop) return;
+        if (stop) {
+            if (paused) {
+                spi_write(PAUSE_RESUME); // pause
+            }
+            return;
+        }
 
         spi_write(REPORT_SPACE);
         spi_xfer(&tx, &rx);
