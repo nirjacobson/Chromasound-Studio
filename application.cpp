@@ -4,6 +4,7 @@ Application* Application::_instance = nullptr;
 
 Application::Application(int &argc, char **argv, int flags)
     : QApplication(argc, argv, flags)
+    , _paused(false)
 {
 
     const char* dummy_fm_psg = std::getenv("DUMMY_FM_PSG");
@@ -20,17 +21,24 @@ Application::Application(int &argc, char **argv, int flags)
 void Application::pause()
 {
     _fmPSG->pause();
+    _paused = true;
 }
 
 
 void Application::play()
 {
-    _fmPSG->play();
+    if (_paused) {
+        _fmPSG->play();
+    } else {
+        _fmPSG->play(VGMStream().compile(_project), _project.playMode() == Project::PlayMode::PATTERN);
+    }
+    _paused = false;
 }
 
 void Application::stop()
 {
     _fmPSG->stop();
+    _paused = false;
 }
 
 float Application::position() const

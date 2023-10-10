@@ -6,6 +6,7 @@
 #include <QElapsedTimer>
 
 #include "project/project.h"
+#include "project/vgmstream.h"
 #include "fm-psg/fm-psg.h"
 #include "fm-psg/fm-psg_dummy.h"
 #include "fm-psg/fm-psg_impl.h"
@@ -32,9 +33,7 @@ class Application : public QApplication
 
         Project _project;
 
-        QElapsedTimer _timer;
-
-        qint64 nanosecondsPerBeat() const;
+        bool _paused;
 };
 
 #endif // APPLICATION_H

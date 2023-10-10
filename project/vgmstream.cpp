@@ -41,9 +41,6 @@ QByteArray VGMStream::compile(const Project& project)
     QByteArray data;
 
     if (project.playMode() == Project::PlayMode::PATTERN) {
-        QList<StreamItem*> items;
-        QByteArray data;
-
         processPattern(0, project, project.getFrontPattern(), items);
         assignChannelsAndExpand(items);
         pad(items, qCeil(project.getFrontPattern().getLength() / project.beatsPerBar()) * project.beatsPerBar());
