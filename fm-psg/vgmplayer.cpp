@@ -85,9 +85,10 @@ void VGMPlayer::run()
         bool paused = _paused;
         _stopLock.unlock();
         if (stop) {
-            if (paused) {
-                spi_write(PAUSE_RESUME); // pause
-            }
+            spi_write(paused ? PAUSE_RESUME : STOP);
+            _timeLock.lock();
+            _time = 0;
+            _timeLock.unlock();
             return;
         }
 

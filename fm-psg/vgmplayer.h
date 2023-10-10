@@ -30,7 +30,8 @@ class VGMPlayer : public QThread
             REPORT_SPACE,
             RECEIVE_DATA,
             REPORT_TIME,
-            PAUSE_RESUME
+            PAUSE_RESUME,
+            STOP
         } Command;
 
         int _spi;
