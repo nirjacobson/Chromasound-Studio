@@ -49,10 +49,13 @@ uint32_t VGMPlayer::time()
 
 void VGMPlayer::start(Priority p)
 {
-    _stopLock.lock();
     if (_paused) {
-        spi_write(PAUSE_RESUME); // resume
+        spi_write(PAUSE_RESUME);
+    } else if (_stop) {
+        spi_write(STOP_START);
     }
+
+    _stopLock.lock();
     _stop = false;
     _paused = false;
     _stopLock.unlock();
@@ -85,7 +88,7 @@ void VGMPlayer::run()
         bool paused = _paused;
         _stopLock.unlock();
         if (stop) {
-            spi_write(paused ? PAUSE_RESUME : STOP);
+            spi_write(paused ? PAUSE_RESUME : STOP_START);
             _timeLock.lock();
             _time = 0;
             _timeLock.unlock();
