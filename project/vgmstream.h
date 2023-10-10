@@ -14,7 +14,6 @@ class VGMStream
         VGMStream();
 
         QByteArray compile(const Project& project);
-        QByteArray compile(const Project& project, const int pattern);
 
     private:
         static QList<float> frequencies;

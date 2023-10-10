@@ -40,29 +40,31 @@ QByteArray VGMStream::compile(const Project& project)
     QList<StreamItem*> items;
     QByteArray data;
 
-    generateItems(project, items);
-    assignChannelsAndExpand(items);
-    encode(items, project.tempo(), data);
+    if (project.playMode() == Project::PlayMode::PATTERN) {
+        QList<StreamItem*> items;
+        QByteArray data;
 
-    for (StreamItem* item : items) {
-        delete item;
+        processPattern(0, project, project.getFrontPattern(), items);
+        assignChannelsAndExpand(items);
+        pad(items, qCeil(project.getFrontPattern().getLength() / project.beatsPerBar()) * project.beatsPerBar());
+        encode(items, project.tempo(), data);
+
+        for (StreamItem* item : items) {
+            delete item;
+        }
+
+        return data;
+    } else {
+        generateItems(project, items);
+        assignChannelsAndExpand(items);
+        encode(items, project.tempo(), data);
+
+        for (StreamItem* item : items) {
+            delete item;
+        }
+
+        return data;
     }
-
-    return data;
-}
-
-QByteArray VGMStream::compile(const Project& project, const int pattern)
-{
-    QList<StreamItem*> items;
-    QByteArray data;
-
-    processPattern(0, project, project.getPattern(pattern), items);
-
-    assignChannelsAndExpand(items);
-    pad(items, qCeil(project.getPattern(pattern).getLength() / project.beatsPerBar()) * project.beatsPerBar());
-    encode(items, project.tempo(), data);
-
-    return data;
 }
 
 int VGMStream::acquireToneChannel(const float time, const float duration)
@@ -188,7 +190,6 @@ void VGMStream::encode(const QList<StreamItem*> items, const int tempo, QByteArr
     for (int i = 0; i < items.size(); i++) {
         encodeDelay(tempo, items[i]->time() - lastTime, data);
         lastTime = items[i]->time();
-
         StreamSettingsItem* ssi;
         StreamNoteItem* sni;
         if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
@@ -215,11 +216,13 @@ void VGMStream::encodeDelay(const int tempo, const float beats, QByteArray& data
             data.append(0x70 | (samples-1));
             samples = 0;
         } else {
-            data.append(0x61);
-            data.append(samples & 0xFF);
-            data.append((samples >> 8) & 0xFF);
+            int s = samples < 0xFFFF ? samples : 0xFFFF;
 
-            samples -= samples & 0xFFFF;
+            data.append(0x61);
+            data.append(s & 0xFF);
+            data.append((s >> 8) & 0xFF);
+
+            samples -= s;
         }
     }
 }

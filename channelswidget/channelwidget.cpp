@@ -63,8 +63,11 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
 
     _contextMenu.addSection("Type");
     _toneAction.setCheckable(true);
+    _toneAction.setChecked(_app->project().getChannel(index).type() == Channel::Type::TONE);
     _noiseAction.setCheckable(true);
+    _noiseAction.setChecked(_app->project().getChannel(index).type() == Channel::Type::NOISE);
     _fmAction.setCheckable(true);
+    _fmAction.setChecked(_app->project().getChannel(index).type() == Channel::Type::FM);
     _typeActionGroup.addAction(&_toneAction);
     _typeActionGroup.addAction(&_noiseAction);
     _typeActionGroup.addAction(&_fmAction);
