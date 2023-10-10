@@ -80,8 +80,6 @@ void VGMPlayer::run()
     char rx, tx;
     uint16_t space;
 
-    bool done = false;
-
     while (true) {
         _stopLock.lock();
         bool stop = _stop;
@@ -89,9 +87,12 @@ void VGMPlayer::run()
         _stopLock.unlock();
         if (stop) {
             spi_write(paused ? PAUSE_RESUME : STOP_START);
-            _timeLock.lock();
-            _time = 0;
-            _timeLock.unlock();
+            if (!paused) {
+                _timeLock.lock();
+                _time = 0;
+                _timeLock.unlock();
+                _position = 0;
+            }
             return;
         }
 
@@ -102,21 +103,19 @@ void VGMPlayer::run()
         space |= (int)rx << 8;
 
         if (space > 0) {
-            spi_write(RECEIVE_DATA);
-
             int remaining = _vgm.size() - _position;
             long count = space < remaining ? space : remaining;
 
-            for (int i = 0; i < 4; i++) {
-                spi_write(((char*)&count)[i]);
-            }
+            if (count > 0) {
+                spi_write(RECEIVE_DATA);
 
-            for (int i = 0; i < count; i++) {
-                spi_write(_vgm[_position++]);
-            }
+                for (int i = 0; i < 4; i++) {
+                    spi_write(((char*)&count)[i]);
+                }
 
-            if (count == remaining) {
-                done = true;
+                for (int i = 0; i < count; i++) {
+                    spi_write(_vgm[_position++]);
+                }
             }
         }
 
@@ -131,13 +130,5 @@ void VGMPlayer::run()
         spi_xfer(&tx, &rx);
         _time |= (int)rx << 24;
         _timeLock.unlock();
-
-        if (done) {
-            _position = 0;
-
-            if (!_loop) {
-                break;
-            }
-        }
     }
 }
