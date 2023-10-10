@@ -114,11 +114,18 @@ int VGMStream::acquireToneChannel(const float time, const float duration)
 
 int VGMStream::acquireNoiseChannel(const float time, const float duration, const NoiseChannelSettings* settings, QList<StreamItem*>& items)
 {
+    for (int i = 0; i < FM_CHANNELS; i++) {
+        if (_noiseChannels[i].settings() == *settings) {
+            if (_noiseChannels[i].acquire(time, duration)) {
+                return i;
+            }
+        }
+    }
+
     for (int i = 0; i < NOISE_CHANNELS; i++) {
         if (_noiseChannels[i].acquire(time, duration)) {
-            if (_noiseChannels[i].settings() != *settings) {
-                items.append(new StreamSettingsItem(time, i, settings));
-            }
+            _noiseChannels[i].settings() = *settings;
+            items.append(new StreamSettingsItem(time, i, settings));
             return i;
         }
     }
@@ -138,6 +145,7 @@ int VGMStream::acquireFMChannel(const float time, const float duration, const FM
 
     for (int i = 0; i < FM_CHANNELS; i++) {
         if (_fmChannels[i].acquire(time, duration)) {
+            _fmChannels[i].settings() = *settings;
             items.append(new StreamSettingsItem(time, i, settings));
             return i;
         }
@@ -377,11 +385,11 @@ void VGMStream::encodeNoteItem(const StreamNoteItem* item, QByteArray& data)
         if (item->on()) {
             int octave = item->note().key() / 12;
             int key = item->note().key() % 12;
-            int n = (octave << 10) | ym2612_frequencies[key];
+            int n = (octave << 11) | ym2612_frequencies[key];
 
             data.append((part == 1) ? 0x52 : 0x53);
             data.append(0xA4 + channel);
-            data.append(n >> 10);
+            data.append((n >> 8) & 0xFF);
 
             data.append((part == 1) ? 0x52 : 0x53);
             data.append(0xA0 + channel);
