@@ -8,7 +8,7 @@ float FM_PSG_Dummy::position()
         return _ref / beatNS;
     }
 
-    if (_project.playMode() == Project::PlayMode::PATTERN) {
+    if (_loop) {
         float patternLength = qCeil(_project.getFrontPattern().getLength()/_project.beatsPerBar()) * _project.beatsPerBar();
 
         return fmod( ((_ref + _timer.nsecsElapsed()) / beatNS), patternLength );
@@ -31,12 +31,14 @@ FM_PSG_Dummy::FM_PSG_Dummy(const Project& project)
     : _project(project)
     , _ref(0)
     , _playing(false)
+    , _loop(false)
 {
 
 }
 
-void FM_PSG_Dummy::play(const QByteArray&, const bool)
+void FM_PSG_Dummy::play(const QByteArray&, const bool loop)
 {
+    _loop = loop;
     _playing = true;
     _timer.restart();
 }
