@@ -213,7 +213,15 @@ void VGMStream::assignChannelsAndExpand(QList<StreamItem*>& items)
 
     std::sort(items.begin(), items.end(), [](const StreamItem* a, const StreamItem* b){
         if (a->time() == b->time()) {
-            return dynamic_cast<const StreamNoteItem*>(b) != nullptr;
+            const StreamNoteItem* an;
+            const StreamNoteItem* bn;
+            if((an = dynamic_cast<const StreamNoteItem*>(a)) != nullptr) {
+                if((bn = dynamic_cast<const StreamNoteItem*>(b)) != nullptr) {
+                    return !an->on() && bn->on();
+                }
+                return false;
+            }
+            return true;
         }
 
         return a->time() < b->time();
