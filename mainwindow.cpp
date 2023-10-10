@@ -198,7 +198,7 @@ void MainWindow::channelSelected(const int index)
             break;
     }
 
-        if (_app->project().getChannel(index).type() > Channel::Type::TONE) {
+    if (_app->project().getChannel(index).type() > Channel::Type::TONE) {
         delete oldWidget;
 
         _channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
@@ -270,7 +270,7 @@ void MainWindow::renderTriggered()
     file.open(QIODevice::WriteOnly);
 
     VGMStream vgmStream;
-    QByteArray data = vgmStream.compile(_app->project());
+    QByteArray data = vgmStream.compile(_app->project(), true);
     file.write(data);
     file.close();
 }
