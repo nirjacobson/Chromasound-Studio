@@ -117,6 +117,10 @@ void VGMPlayer::run()
                     spi_write(_vgm[_position++]);
                 }
             }
+
+            if (_loop && count == remaining) {
+                _position = 0;
+            }
         }
 
         _timeLock.lock();
