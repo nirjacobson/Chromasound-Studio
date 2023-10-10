@@ -2,13 +2,16 @@
 #include "ui_fmwidget.h"
 
 FMWidget::FMWidget(QWidget *parent) :
-    QWidget(parent),
+    QMainWindow(parent),
     ui(new Ui::FMWidget)
 {
     ui->setupUi(this);
 
     connect(ui->algorithmWidget, &AlgorithmWidget::algorithmChanged, this, &FMWidget::algorithmChanged);
     connect(ui->algorithmWidget, &AlgorithmWidget::feedbackChanged, this, &FMWidget::feedbackChanged);
+
+    connect(ui->actionOpen, &QAction::triggered, this, &FMWidget::openTriggered);
+    connect(ui->actionSave, &QAction::triggered, this, &FMWidget::saveTriggered);
 }
 
 FMWidget::~FMWidget()
@@ -37,4 +40,24 @@ void FMWidget::algorithmChanged(const int a)
 void FMWidget::feedbackChanged(const int fb)
 {
     _settings->setFeedback(fb);
+}
+
+
+void FMWidget::openTriggered()
+{
+    const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "YM2612 Patch (*.fm)");
+    FMChannelSettings* settings = BSON::decodePatch(path);
+    *_settings = *settings;
+    delete settings;
+
+    setSettings(_settings);
+}
+
+void FMWidget::saveTriggered()
+{
+    const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "YM2612 Patch (*.fm)");
+    QFile file(path);
+    file.open(QIODevice::WriteOnly);
+    file.write(BSON::encodePatch(_settings));
+    file.close();
 }
