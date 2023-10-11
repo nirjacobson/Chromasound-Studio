@@ -47,7 +47,7 @@ class VGMStream
         void assignChannel(StreamNoteItem* noteItem, QList<StreamItem*>& items);
         void releaseChannel(const Channel::Type type, const int channel);
 
-        void encode(const QList<StreamItem*>& items, QByteArray& data);
+        void encode(QList<StreamItem*>& items, QByteArray& data);
 
         QByteArray compile(const Project& project, bool header = false);
 
