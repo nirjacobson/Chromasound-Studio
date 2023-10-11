@@ -17,6 +17,11 @@ Application::Application(int &argc, char **argv, int flags)
     }
 }
 
+Application::~Application()
+{
+    delete _fmPSG;
+}
+
 
 void Application::pause()
 {
