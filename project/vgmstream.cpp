@@ -62,7 +62,7 @@ void VGMStream::releaseChannel(const Channel::Type type, const int channel)
     }
 }
 
-void VGMStream::encode(const QList<StreamItem*> items, QByteArray& data)
+void VGMStream::encode(const QList<StreamItem*>& items, QByteArray& data)
 {
     for (int i = 0; i < items.size(); i++) {
         StreamSettingsItem* ssi;
@@ -73,6 +73,23 @@ void VGMStream::encode(const QList<StreamItem*> items, QByteArray& data)
             encodeNoteItem(sni, data);
         }
     }
+
+
+    std::sort(items.begin(), items.end(), [](const StreamItem* a, const StreamItem* b){
+        if (a->time() == b->time()) {
+            const StreamNoteItem* an;
+            const StreamNoteItem* bn;
+            if((an = dynamic_cast<const StreamNoteItem*>(a)) != nullptr) {
+                if((bn = dynamic_cast<const StreamNoteItem*>(b)) != nullptr) {
+                    return !an->on() && bn->on();
+                }
+                return false;
+            }
+            return true;
+        }
+
+        return a->time() < b->time();
+    });
 }
 
 QByteArray VGMStream::compile(const Project& project, bool header)
