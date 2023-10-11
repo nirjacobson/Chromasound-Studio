@@ -16,6 +16,9 @@ class FM_PSG_Dummy : public FM_PSG
         float position();
         bool isPlaying() const;
 
+        void keyOn(const Channel::Type, const Settings&, const int key, const int);
+        void keyOff(int);
+
     private:
         const Project& _project;
         QElapsedTimer _timer;

@@ -4,6 +4,7 @@
 #include "ganttwidget/ganttleftwidget.h"
 #include <QtMath>
 #include <QPainter>
+#include <QMouseEvent>
 
 class PianoRollKeysWidget : public GanttLeftWidget
 {
@@ -18,10 +19,16 @@ class PianoRollKeysWidget : public GanttLeftWidget
         void setRows(int rows);
         void setRowHeight(int height);
 
+    signals:
+        void keyOn(const int key);
+        void keyOff(const int key);
+
     protected:
         int length() const;
         void paintEvent(QPaintEvent*);
 
+        void mousePressEvent(QMouseEvent* event);
+        void mouseReleaseEvent(QMouseEvent* event);
     private:
         static constexpr int KEYS_PER_OCTAVE = 12;
         static constexpr int WHITE_KEYS_PER_OCTAVE = 7;
@@ -30,6 +37,8 @@ class PianoRollKeysWidget : public GanttLeftWidget
         int _rows;
         int _top;
         int _rowHeight;
+
+        int _onKey;
 };
 
 #endif // PIANOROLLKEYSWIDGET_H

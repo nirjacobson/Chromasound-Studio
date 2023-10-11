@@ -10,9 +10,17 @@ class VGMPlayer : public QThread
         Q_OBJECT
 
     public:
+        enum Mode {
+            Playback,
+            Interactive
+        };
+
         explicit VGMPlayer(int spi, QObject *parent = nullptr);
 
         void setVGM(const QByteArray& vgm, const bool loop);
+        void setMode(const Mode mode);
+
+        bool isPlaying() const;
 
         void stop();
         void pause();
@@ -34,6 +42,8 @@ class VGMPlayer : public QThread
             STOP_START
         } Command;
 
+        Mode _mode;
+
         int _spi;
 
         QByteArray _vgm;
@@ -49,6 +59,9 @@ class VGMPlayer : public QThread
 
         void spi_write(char val);
         void spi_xfer(char* tx, char* rx);
+
+        void runInteractive();
+        void runPlayback();
 
         // QThread interface
     protected:

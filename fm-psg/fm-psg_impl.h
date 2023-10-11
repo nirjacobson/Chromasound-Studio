@@ -1,8 +1,11 @@
 #ifndef FM_PSG_IMPL_H
 #define FM_PSG_IMPL_H
 
+#include <QMap>
+
 #include "fm-psg.h"
 #include "project/project.h"
+#include "project/vgmstream.h"
 
 class FM_PSG_Impl : public FM_PSG
 {
@@ -17,9 +20,15 @@ class FM_PSG_Impl : public FM_PSG
         void stop();
         bool isPlaying() const;
 
+        void keyOn(const Channel::Type channelType, const Settings& settings, const int key, const int velocity);
+        void keyOff(int key);
+
     private:
         const Project& _project;
         int _spi;
+
+        VGMStream _vgmStream;
+        QMap<int, VGMStream::StreamNoteItem*> _keys;
 
         VGMPlayer* _vgmPlayer;
 

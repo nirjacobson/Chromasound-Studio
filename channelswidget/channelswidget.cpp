@@ -137,6 +137,13 @@ int ChannelsWidget::selected() const
     return -1;
 }
 
+int ChannelsWidget::activeChannel() const
+{
+    if (!_activeChannelWidget) return -1;
+
+    return _activeChannelWidget->index();
+}
+
 void ChannelsWidget::toggleSolo(ChannelWidget* channelWidget)
 {
     bool on = channelWidget->on();

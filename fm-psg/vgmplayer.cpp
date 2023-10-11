@@ -2,6 +2,7 @@
 
 VGMPlayer::VGMPlayer(int spi, QObject *parent)
     : QThread{parent}
+    , _mode(Mode::Interactive)
     , _spi(spi)
     , _time(0)
     , _position(0)
@@ -18,6 +19,16 @@ void VGMPlayer::setVGM(const QByteArray& vgm, const bool loop)
     _loop = loop;
     _time = 0;
     _position = 0;
+}
+
+void VGMPlayer::setMode(const Mode mode)
+{
+    _mode = mode;
+}
+
+bool VGMPlayer::isPlaying() const
+{
+    return _mode == Mode::Playback && isRunning();
 }
 
 void VGMPlayer::stop()
@@ -75,7 +86,54 @@ void VGMPlayer::spi_xfer(char* tx, char* rx)
     gpioDelay(SPI_DELAY);
 }
 
-void VGMPlayer::run()
+void VGMPlayer::run() {
+    if (_mode == Mode::Interactive) {
+        runInteractive();
+    } else {
+        runPlayback();
+    }
+}
+
+void VGMPlayer::runInteractive()
+{
+    char rx, tx;
+    uint16_t space;
+
+    while (true) {
+        _stopLock.lock();
+        bool stop = _stop;
+        _stopLock.unlock();
+        if (stop) {
+            _position = 0;
+            break;
+        }
+
+        spi_write(REPORT_SPACE);
+        spi_xfer(&tx, &rx);
+        space = rx;
+        spi_xfer(&tx, &rx);
+        space |= (int)rx << 8;
+
+        if (space > 0) {
+            int remaining = _vgm.size() - _position;
+            long count = space < remaining ? space : remaining;
+
+            if (count > 0) {
+                spi_write(RECEIVE_DATA);
+
+                for (int i = 0; i < 4; i++) {
+                    spi_write(((char*)&count)[i]);
+                }
+
+                for (int i = 0; i < count; i++) {
+                    spi_write(_vgm[_position++]);
+                }
+            }
+        }
+    }
+}
+
+void VGMPlayer::runPlayback()
 {
     char rx, tx;
     uint16_t space;

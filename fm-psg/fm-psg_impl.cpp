@@ -35,8 +35,13 @@ float FM_PSG_Impl::position()
 
 void FM_PSG_Impl::play(const QByteArray& vgm, const bool loop)
 {
+    _vgmPlayer->stop();
+    _vgmPlayer->quit();
+    _vgmPlayer->wait();
+
     reset();
 
+    _vgmPlayer->setMode(VGMPlayer::Mode::Playback);
     _vgmPlayer->setVGM(vgm, loop);
     _vgmPlayer->start();
 }
@@ -56,11 +61,42 @@ void FM_PSG_Impl::stop()
     _vgmPlayer->stop();
     _vgmPlayer->quit();
     _vgmPlayer->wait();
+
+    reset();
+
+    _vgmPlayer->setMode(VGMPlayer::Mode::Interactive);
+    _vgmPlayer->start();
 }
 
 bool FM_PSG_Impl::isPlaying() const
 {
-    return _vgmPlayer->isRunning();
+    return _vgmPlayer->isPlaying();
+}
+
+void FM_PSG_Impl::keyOn(const Channel::Type channelType, const Settings& settings, const int key, const int velocity)
+{
+    VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(0, channelType, Note(key, 0, velocity), &settings);
+    QList<VGMStream::StreamItem*> items;
+    QByteArray data;
+    items.append(sni);
+    _vgmStream.assignChannel(sni, items);
+    _vgmStream.encode(items, data);
+    _keys[key] = sni;
+    _vgmPlayer->setVGM(data, false);
+}
+
+void FM_PSG_Impl::keyOff(int key)
+{
+    VGMStream::StreamNoteItem* sni = _keys[key];
+    _vgmStream.releaseChannel(sni->type(), sni->channel());
+    sni->setOn(false);
+    QList<VGMStream::StreamItem*> items;
+    QByteArray data;
+    items.append(sni);
+    _vgmStream.encode(items, data);
+    _keys.remove(key);
+    delete sni;
+    _vgmPlayer->setVGM(data, false);
 }
 
 void FM_PSG_Impl::reset()

@@ -56,3 +56,13 @@ Project& Application::project()
     return _project;
 }
 
+void Application::keyOn(const Channel::Type channelType, const Settings& settings, const int key, const int velocity)
+{
+    _fmPSG->keyOn(channelType, settings, key, velocity);
+}
+
+void Application::keyOff(int key)
+{
+    _fmPSG->keyOff(key);
+}
+
