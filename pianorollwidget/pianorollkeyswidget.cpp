@@ -159,7 +159,7 @@ void PianoRollKeysWidget::mousePressEvent(QMouseEvent* event)
 
 void PianoRollKeysWidget::mouseReleaseEvent(QMouseEvent*)
 {
-    _onKey = -1;
     update();
     emit keyOff(_onKey);
+    _onKey = -1;
 }
