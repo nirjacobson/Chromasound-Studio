@@ -43,11 +43,13 @@ void PianoRollKeysWidget::setRowHeight(int height)
 void PianoRollKeysWidget::pressKey(const int key)
 {
     _onKeys.append(key);
+    update();
 }
 
 void PianoRollKeysWidget::releaseKey(const int key)
 {
     _onKeys.removeAll(key);
+    update();
 }
 
 int PianoRollKeysWidget::length() const
