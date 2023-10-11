@@ -88,6 +88,8 @@ void FM_PSG_Impl::keyOn(const Channel::Type channelType, const Settings& setting
 void FM_PSG_Impl::keyOff(int key)
 {
     VGMStream::StreamNoteItem* sni = _keys[key];
+    if (!sni) return;
+
     _vgmStream.releaseChannel(sni->type(), sni->channel());
     sni->setOn(false);
     QList<VGMStream::StreamItem*> items;
