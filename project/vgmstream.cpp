@@ -158,6 +158,21 @@ QByteArray VGMStream::compile(const Project& project, bool header)
     return data;
 }
 
+void VGMStream::reset()
+{
+    for (int i = 0; i < TONE_CHANNELS; i++) {
+        _toneChannels[i].reset();
+    }
+
+    for (int i = 0; i < NOISE_CHANNELS; i++) {
+        _noiseChannels[i].reset();
+    }
+
+    for (int i = 0; i < FM_CHANNELS; i++) {
+        _fmChannels[i].reset();
+    }
+}
+
 int VGMStream::acquireToneChannel(const float time, const float duration)
 {
     for (int i = 0; i < TONE_CHANNELS; i++) {
@@ -557,6 +572,13 @@ bool VGMStream::PhysicalChannel::acquire(float time, float duration)
 
 void VGMStream::PhysicalChannel::release()
 {
+    _acquiredIndefinitely = false;
+}
+
+void VGMStream::PhysicalChannel::reset()
+{
+    _time = 0;
+    _duration = 0;
     _acquiredIndefinitely = false;
 }
 

@@ -51,6 +51,8 @@ class VGMStream
 
         QByteArray compile(const Project& project, bool header = false);
 
+        void reset();
+
     private:
         static QList<float> frequencies;
         static QList<QList<int>> slotsByAlg;
@@ -81,6 +83,7 @@ class VGMStream
             public:
                 bool acquire(float time, float duration);
                 void release();
+                void reset();
         };
         class FMChannel : public PhysicalChannel {
             public:
