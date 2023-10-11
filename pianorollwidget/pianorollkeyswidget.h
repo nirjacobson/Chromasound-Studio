@@ -19,8 +19,11 @@ class PianoRollKeysWidget : public GanttLeftWidget
         void setRows(int rows);
         void setRowHeight(int height);
 
+        void pressKey(const int key);
+        void releaseKey(const int key);
+
     signals:
-        void keyOn(const int key);
+        void keyOn(const int key, const int velocity);
         void keyOff(const int key);
 
     protected:
@@ -28,7 +31,7 @@ class PianoRollKeysWidget : public GanttLeftWidget
         void paintEvent(QPaintEvent*);
 
         void mousePressEvent(QMouseEvent* event);
-        void mouseReleaseEvent(QMouseEvent*);
+        void mouseReleaseEvent(QMouseEvent*event);
     private:
         static constexpr int KEYS_PER_OCTAVE = 12;
         static constexpr int WHITE_KEYS_PER_OCTAVE = 7;
@@ -38,7 +41,7 @@ class PianoRollKeysWidget : public GanttLeftWidget
         int _top;
         int _rowHeight;
 
-        int _onKey;
+        QList<int> _onKeys;
 };
 
 #endif // PIANOROLLKEYSWIDGET_H

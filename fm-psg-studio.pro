@@ -22,6 +22,8 @@ SOURCES += \
     fmwidget/fmwidget.cpp \
     fmwidget/operatorwidget.cpp \
     ganttwidget/ganttbottomwidget.cpp \
+    midi/midiinput.cpp \
+    midi/midipoller.cpp \
     noisewidget/noisewidget.cpp \
     pianorollwidget/pianorollkeyswidget.cpp \
     pianorollwidget/pianorollvelocitieswidget.cpp \
@@ -74,6 +76,8 @@ HEADERS += \
     fmwidget/fmwidget.h \
     fmwidget/operatorwidget.h \
     ganttwidget/ganttbottomwidget.h \
+    midi/midiinput.h \
+    midi/midipoller.h \
     noisewidget/noisewidget.h \
     pianorollwidget/pianorollkeyswidget.h \
     pianorollwidget/pianorollvelocitieswidget.h \
@@ -125,7 +129,7 @@ FORMS += \
 
 INCLUDEPATH += -I/usr/include/libbson-1.0
 
-LIBS += -lbson-1.0 -lpigpio
+LIBS += -lportmidi -lbson-1.0 -lpigpio
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

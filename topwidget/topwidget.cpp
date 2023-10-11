@@ -1,10 +1,11 @@
 #include "topwidget.h"
 #include "ui_topwidget.h"
 
-TopWidget::TopWidget(QWidget *parent, Application* app) :
-    QWidget(parent),
-    ui(new Ui::TopWidget),
-    _isPlaying(false)
+TopWidget::TopWidget(QWidget *parent, Application* app)
+    : QWidget(parent)
+    , ui(new Ui::TopWidget)
+    , _midiInput(MIDIInput::instance())
+    , _isPlaying(false)
 {
     ui->setupUi(this);
 
@@ -12,9 +13,14 @@ TopWidget::TopWidget(QWidget *parent, Application* app) :
         setApplication(app);
     }
 
+    for (const QString& deviceName : _midiInput->devices()) {
+        ui->deviceComboBox->addItem(deviceName);
+    }
+
     ui->playButton->setIcon(ui->playButton->style()->standardIcon(QStyle::SP_MediaPlay));
     ui->stopButton->setIcon(ui->playButton->style()->standardIcon(QStyle::SP_MediaStop));
 
+    connect(ui->deviceComboBox, &QComboBox::currentIndexChanged, this, &TopWidget::midiDeviceSet);
     connect(ui->patRadioButton, &QRadioButton::clicked, this, &TopWidget::patModeSelected);
     connect(ui->songRadioButton, &QRadioButton::clicked, this, &TopWidget::songModeSelected);
     connect(ui->playButton, &QPushButton::clicked, this, &TopWidget::playPauseClicked);

@@ -5,6 +5,7 @@
 #include <QStyle>
 
 #include "application.h"
+#include "midi/midiinput.h"
 
 namespace Ui {
     class TopWidget;
@@ -30,10 +31,13 @@ class TopWidget : public QWidget
         void patternChanged(int);
         void tempoChanged(int);
         void beatsPerBarChanged(int);
+        void midiDeviceSet(int);
 
     private:
         Ui::TopWidget *ui;
         Application* _app;
+
+        MIDIInput* _midiInput;
 
         bool _isPlaying;
 

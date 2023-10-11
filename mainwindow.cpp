@@ -5,6 +5,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , _app(app)
+    , _midiInput(MIDIInput::instance())
     , _channelsWidget(new ChannelsWidget(this, app))
     , _playlistWidget(new PlaylistWidget(this, app))
     , _pianoRollWidget(nullptr)
@@ -12,6 +13,10 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _fmWidget(nullptr)
 {
     ui->setupUi(this);
+
+    _midiInput->init();
+    connect(&_midiPoller, &MIDIPoller::receivedMessage, this, &MainWindow::handleMIDIMessage);
+    _midiPoller.start();
 
     ui->topWidget->setApplication(app);
 
@@ -42,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
    connect(ui->topWidget, &TopWidget::stop, this, &MainWindow::stop);
    connect(ui->topWidget, &TopWidget::patternChanged, this, &MainWindow::patternChanged);
    connect(ui->topWidget, &TopWidget::beatsPerBarChanged, this, &MainWindow::beatsPerBarChanged);
+   connect(ui->topWidget, &TopWidget::midiDeviceSet, this, &MainWindow::setMIDIDevice);
 
    connect(_channelsWidget, &ChannelsWidget::pianoRollTriggered, this, &MainWindow::pianoRollTriggered);
    connect(_channelsWidget, &ChannelsWidget::deleteTriggered, this, &MainWindow::deleteChannelTriggered);
@@ -65,6 +71,15 @@ MainWindow::~MainWindow()
     if (_pianoRollWidget) delete _pianoRollWidget;
     delete _playlistWindow;
     delete _channelsWindow;
+    delete _channelWindow;
+    delete _pianoRollWindow;
+
+    _midiPoller.stop();
+    _midiPoller.quit();
+    _midiPoller.wait();
+
+    _midiInput->destroy();
+
     delete ui;
 }
 
@@ -178,6 +193,8 @@ void MainWindow::channelSelected(const int index)
     _selectedChannel = index;
 
     _channelWindow->hide();
+    if (_pianoRollWidget)
+        _pianoRollWidget->setTrack(_app->project().frontPattern(), index);
 
     QWidget* oldWidget = nullptr;
     switch (_app->project().getChannel(index).type()) {
@@ -279,15 +296,44 @@ void MainWindow::renderTriggered()
     file.close();
 }
 
-void MainWindow::keyOn(const int key)
+void MainWindow::keyOn(const int key, const int velocity)
 {
-    Channel& channel = _app->project().getChannel(_channelsWidget->activeChannel());
-    _app->keyOn(channel.type(), channel.settings(), key, 100);
+    int activeChannel = _channelsWidget->activeChannel();
+    if (activeChannel >= 0) {
+        Channel& channel = _app->project().getChannel(activeChannel);
+        _app->keyOn(channel.type(), channel.settings(), key, velocity);
+        if (_pianoRollWidget) _pianoRollWidget->pressKey(key);
+    }
 }
 
 void MainWindow::keyOff(const int key)
 {
     _app->keyOff(key);
+    if (_pianoRollWidget) _pianoRollWidget->releaseKey(key);
+}
+
+void MainWindow::handleMIDIMessage(const long message)
+{
+    const char status = ((message >> 0) & 0xFF);
+    const char data1 = ((message >> 8) & 0xFF);
+    const char data2 = ((message >> 16) & 0xFF);
+
+    if (status == 0x90) {
+        keyOn(data1, data2);
+    } else if (status == 0x80) {
+        keyOff(data1);
+    }
+}
+
+void MainWindow::setMIDIDevice(const int device)
+{
+    _midiPoller.stop();
+    _midiPoller.quit();
+    _midiPoller.wait();
+
+    _midiInput->setDevice(device);
+
+    _midiPoller.start();
 }
 
 void MainWindow::doUpdate()
