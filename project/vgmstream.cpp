@@ -62,7 +62,7 @@ void VGMStream::releaseChannel(const Channel::Type type, const int channel)
     }
 }
 
-void VGMStream::encode(const QList<StreamItem*>& items, QByteArray& data)
+void VGMStream::encode(QList<StreamItem*>& items, QByteArray& data)
 {
     for (int i = 0; i < items.size(); i++) {
         StreamSettingsItem* ssi;

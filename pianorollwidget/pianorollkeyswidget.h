@@ -28,7 +28,7 @@ class PianoRollKeysWidget : public GanttLeftWidget
         void paintEvent(QPaintEvent*);
 
         void mousePressEvent(QMouseEvent* event);
-        void mouseReleaseEvent(QMouseEvent* event);
+        void mouseReleaseEvent(QMouseEvent*);
     private:
         static constexpr int KEYS_PER_OCTAVE = 12;
         static constexpr int WHITE_KEYS_PER_OCTAVE = 7;
