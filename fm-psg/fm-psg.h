@@ -7,6 +7,7 @@
 #include <QObject>
 
 #include "vgmplayer.h"
+#include "project/channel/channel.h"
 
 class FM_PSG : public QObject
 {
@@ -23,6 +24,9 @@ class FM_PSG : public QObject
         virtual void stop() = 0;
 
         virtual bool isPlaying() const = 0;
+
+        virtual void keyOn(const Channel::Type channelType, const Settings& settings, const int key, const int velocity) = 0;
+        virtual void keyOff(int key) = 0;
 };
 
 #endif // FM_PSG_H

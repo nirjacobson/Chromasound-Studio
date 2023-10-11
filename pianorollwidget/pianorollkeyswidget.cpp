@@ -68,6 +68,18 @@ void PianoRollKeysWidget::paintEvent(QPaintEvent*)
 
     for (int i = 0; i < numOctavesAcrossHeight; i++) {
         for (int j = 0; j < WHITE_KEYS_PER_OCTAVE; j++) {
+            int octave = bottomOctave + i;
+            int key = j;
+            key *= 2;
+            if (key >= 6) key--;
+            key = (octave * 12) + key;
+
+            if (key == _onKey) {
+                painter.setBrush(QColor(255, 192, 192));
+            } else {
+                painter.setBrush(QColor(Qt::white));
+            }
+
             QPoint thisTopLeft = topLeft - QPoint(0, (j * whiteKeyWidth));
             QRect rect(thisTopLeft, thisTopLeft + QPoint(width() - 2, whiteKeyWidth));
             painter.fillRect(rect, painter.brush());
@@ -89,6 +101,18 @@ void PianoRollKeysWidget::paintEvent(QPaintEvent*)
 
     for (int i = 0; i < numOctavesAcrossHeight; i++) {
         for (int j = 0; j < BLACK_KEYS_PER_OCTAVE; j++) {
+            int octave = bottomOctave + i;
+            int key = j;
+            key = (key * 2) + 1;
+            if (key > 3) key++;
+            key = (octave * 12) + key;
+
+            if (key == _onKey) {
+                painter.setBrush(QColor(255, 192, 192));
+            } else {
+                painter.setBrush(QColor(Qt::black));
+            }
+
             int offset = j > 1 ? 1 : 0;
             QPoint thisTopLeft = topLeft - QPoint(0, (offset + (j * 2)) * _rowHeight);
             QRect rect(thisTopLeft, thisTopLeft + QPoint(width()/2, _rowHeight));
@@ -98,4 +122,44 @@ void PianoRollKeysWidget::paintEvent(QPaintEvent*)
 
         topLeft -= QPoint(0, octaveHeight);
     }
+}
+
+void PianoRollKeysWidget::mousePressEvent(QMouseEvent* event)
+{
+    int absBottom = _rowHeight * _rows;
+    int bottom = _top + height() + 1;
+
+    int octaveHeight = _rowHeight * KEYS_PER_OCTAVE;
+    int whiteKeyWidth = (float)octaveHeight / 7.0f;
+
+    int bottomPosition = absBottom - bottom;
+
+    int mousePosition = height() - event->pos().y();
+    int mousePositionIntoOctave = (bottomPosition + mousePosition) % octaveHeight;
+    int mouseOctave = (bottomPosition + mousePosition) / octaveHeight;
+
+    int key;
+    if (event->pos().x() >= width()/2) {
+        key = (mousePositionIntoOctave / whiteKeyWidth);
+        key *= 2;
+        if (key >= 6) {
+            key--;
+        }
+        key = (mouseOctave * 12) + key;
+    } else {
+        key = (mouseOctave * 12) + (mousePositionIntoOctave / _rowHeight);
+    }
+
+    _onKey = key;
+
+    update();
+
+    emit keyOn(key);
+}
+
+void PianoRollKeysWidget::mouseReleaseEvent(QMouseEvent* event)
+{
+    _onKey = -1;
+    update();
+    emit keyOff(_onKey);
 }

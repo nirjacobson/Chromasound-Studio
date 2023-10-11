@@ -11,14 +11,6 @@
 class VGMStream
 {
     public:
-        VGMStream();
-
-        QByteArray compile(const Project& project, bool header = false);
-
-    private:
-        static QList<float> frequencies;
-        static QList<QList<int>> slotsByAlg;
-        static QList<int> ym2612_frequencies;
 
         class StreamItem {
             private:
@@ -50,6 +42,20 @@ class VGMStream
                 bool _on;
         };
 
+        VGMStream();
+
+        void assignChannel(StreamNoteItem* noteItem, QList<StreamItem*>& items);
+        void releaseChannel(const Channel::Type type, const int channel);
+
+        void encode(const QList<StreamItem*> items, QByteArray& data);
+
+        QByteArray compile(const Project& project, bool header = false);
+
+    private:
+        static QList<float> frequencies;
+        static QList<QList<int>> slotsByAlg;
+        static QList<int> ym2612_frequencies;
+
         class StreamSettingsItem : public StreamItem {
             public:
                 StreamSettingsItem(const float time, const int channel, const Settings* channelSettings);
@@ -70,9 +76,11 @@ class VGMStream
             private:
                 float _time;
                 float _duration;
+                bool _acquiredIndefinitely;
 
             public:
                 bool acquire(float time, float duration);
+                void release();
         };
         class FMChannel : public PhysicalChannel {
             public:
@@ -110,7 +118,7 @@ class VGMStream
 
         void pad(QList<StreamItem*>& items, const float toDuration);
 
-        int encode(const QList<StreamItem*> items, const int tempo, QByteArray& data);
+        int encode(const QList<StreamItem*>& items, const int tempo, QByteArray& data);
 
         int encodeDelay(const int tempo, const float beats, QByteArray& data);
         void encodeSettingsItem(const StreamSettingsItem* item, QByteArray& data);

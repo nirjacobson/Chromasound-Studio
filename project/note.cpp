@@ -1,9 +1,9 @@
 #include "note.h"
 
-Note::Note(const int key, const float duration)
+Note::Note(const int key, const float duration, const int velocity)
     : _key(key)
     , _duration(duration)
-    , _velocity(100)
+    , _velocity(velocity)
 {
 
 }

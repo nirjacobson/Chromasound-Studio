@@ -110,7 +110,11 @@ void MainWindow::pianoRollTriggered(const int index)
     _channelsWidget->update();
 
     PianoRollWidget* oldWidget = _pianoRollWidget;
+
     _pianoRollWidget = new PianoRollWidget(this, _app);
+    connect(_pianoRollWidget, &PianoRollWidget::keyOn, this, &MainWindow::keyOn);
+    connect(_pianoRollWidget, &PianoRollWidget::keyOff, this, &MainWindow::keyOff);
+
     _pianoRollWidget->setTrack(_app->project().frontPattern(), index);
 
     _pianoRollWindow->setWidget(_pianoRollWidget);
@@ -273,6 +277,17 @@ void MainWindow::renderTriggered()
     QByteArray data = vgmStream.compile(_app->project(), true);
     file.write(data);
     file.close();
+}
+
+void MainWindow::keyOn(const int key)
+{
+    Channel& channel = _app->project().getChannel(_channelsWidget->activeChannel());
+    _app->keyOn(channel.type(), channel.settings(), key, 100);
+}
+
+void MainWindow::keyOff(const int key)
+{
+    _app->keyOff(key);
 }
 
 void MainWindow::doUpdate()

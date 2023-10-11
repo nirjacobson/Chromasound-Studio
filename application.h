@@ -27,6 +27,9 @@ class Application : public QApplication
 
         Project& project();
 
+        void keyOn(const Channel::Type channelType, const Settings& settings, const int key, const int velocity);
+        void keyOff(int key);
+
     private:
         static Application* _instance;
         FM_PSG* _fmPSG;

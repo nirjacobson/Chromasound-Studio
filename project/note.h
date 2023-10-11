@@ -7,7 +7,7 @@ class Note
         friend class BSON;
 
     public:
-        Note(const int key, const float duration);
+        Note(const int key, const float duration, const int velocity = 100);
 
         int key() const;
         float duration() const;

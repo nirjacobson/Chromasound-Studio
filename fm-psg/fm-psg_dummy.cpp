@@ -22,6 +22,16 @@ bool FM_PSG_Dummy::isPlaying() const
     return _playing;
 }
 
+void FM_PSG_Dummy::keyOn(const Channel::Type, const Settings&, const int key, const int)
+{
+
+}
+
+void FM_PSG_Dummy::keyOff(int)
+{
+
+}
+
 qint64 FM_PSG_Dummy::nanosecondsPerBeat() const
 {
     return 1e9 * 60 / _project.tempo();

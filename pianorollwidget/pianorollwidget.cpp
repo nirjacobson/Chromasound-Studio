@@ -26,6 +26,9 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
     connect(ui->ganttWidget, &GanttWidget::clicked, this, &PianoRollWidget::ganttClicked);
     connect(ui->ganttWidget, &GanttWidget::itemsChanged, this, &PianoRollWidget::ganttItemsChanged);
     connect(ui->ganttWidget, &GanttWidget::itemReleased, this, &PianoRollWidget::ganttItemReleased);
+
+    connect(_keysWidget, &PianoRollKeysWidget::keyOn, this, &PianoRollWidget::keyOn);
+    connect(_keysWidget, &PianoRollKeysWidget::keyOff, this, &PianoRollWidget::keyOff);
 }
 
 PianoRollWidget::~PianoRollWidget()

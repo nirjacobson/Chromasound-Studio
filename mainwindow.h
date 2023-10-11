@@ -57,6 +57,9 @@ private slots:
     void saveTriggered();
     void renderTriggered();
 
+    void keyOn(const int key);
+    void keyOff(const int key);
+
 private:
     Ui::MainWindow* ui;
 

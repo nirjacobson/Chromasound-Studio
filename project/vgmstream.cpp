@@ -35,6 +35,46 @@ VGMStream::VGMStream()
 
 }
 
+void VGMStream::assignChannel(StreamNoteItem* noteItem, QList<StreamItem*>& items)
+{
+    if (noteItem->type() == Channel::Type::TONE) {
+        int channel = acquireToneChannel(noteItem->time(), noteItem->note().duration());
+        noteItem->setChannel(channel);
+    } else if (noteItem->type() == Channel::Type::NOISE) {
+        const NoiseChannelSettings* ncs = dynamic_cast<const NoiseChannelSettings*>(noteItem->channelSettings());
+        int channel = acquireNoiseChannel(noteItem->time(), noteItem->note().duration(), ncs, items);
+        noteItem->setChannel(channel);
+    } else if (noteItem->type() == Channel::Type::FM) {
+        const FMChannelSettings* fmcs = dynamic_cast<const FMChannelSettings*>(noteItem->channelSettings());
+        int channel = acquireFMChannel(noteItem->time(), noteItem->note().duration(), fmcs, items);
+        noteItem->setChannel(channel);
+    }
+}
+
+void VGMStream::releaseChannel(const Channel::Type type, const int channel)
+{
+    if (type == Channel::Type::TONE) {
+        _toneChannels[channel].release();
+    } else if (type == Channel::Type::NOISE) {
+        _noiseChannels[channel].release();
+    } else if (type == Channel::Type::FM) {
+        _fmChannels[channel].release();
+    }
+}
+
+void VGMStream::encode(const QList<StreamItem*> items, QByteArray& data)
+{
+    for (int i = 0; i < items.size(); i++) {
+        StreamSettingsItem* ssi;
+        StreamNoteItem* sni;
+        if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
+            encodeSettingsItem(ssi, data);
+        } else if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
+            encodeNoteItem(sni, data);
+        }
+    }
+}
+
 QByteArray VGMStream::compile(const Project& project, bool header)
 {
     QList<StreamItem*> items;
@@ -193,18 +233,7 @@ void VGMStream::assignChannelsAndExpand(QList<StreamItem*>& items)
 
     for (StreamItem* item : itemsCopy) {
         StreamNoteItem* noteItem = dynamic_cast<StreamNoteItem*>(item);
-        if (noteItem->type() == Channel::Type::TONE) {
-            int channel = acquireToneChannel(noteItem->time(), noteItem->note().duration());
-            noteItem->setChannel(channel);
-        } else if (noteItem->type() == Channel::Type::NOISE) {
-            const NoiseChannelSettings* ncs = dynamic_cast<const NoiseChannelSettings*>(noteItem->channelSettings());
-            int channel = acquireNoiseChannel(noteItem->time(), noteItem->note().duration(), ncs, items);
-            noteItem->setChannel(channel);
-        } else if (noteItem->type() == Channel::Type::FM) {
-            const FMChannelSettings* fmcs = dynamic_cast<const FMChannelSettings*>(noteItem->channelSettings());
-            int channel = acquireFMChannel(noteItem->time(), noteItem->note().duration(), fmcs, items);
-            noteItem->setChannel(channel);
-        }
+        assignChannel(noteItem, items);
         StreamNoteItem* noteOffItem = new StreamNoteItem(*noteItem);
         noteOffItem->setTime(noteItem->time() + noteItem->note().duration());
         noteOffItem->setOn(false);
@@ -234,7 +263,7 @@ void VGMStream::pad(QList<StreamItem*>& items, const float toDuration)
     items.append(sei);
 }
 
-int VGMStream::encode(const QList<StreamItem*> items, const int tempo, QByteArray& data)
+int VGMStream::encode(const QList<StreamItem*>& items, const int tempo, QByteArray& data)
 {
     float lastTime = 0.0f;
     int totalSamples = 0;
@@ -491,14 +520,27 @@ void VGMStream::StreamItem::setTime(const float time)
 
 bool VGMStream::PhysicalChannel::acquire(float time, float duration)
 {
-    if (_time <= time && time < (_time+_duration)) {
+    if (_acquiredIndefinitely) {
+        return false;
+    }
+
+    if (_duration > 0 && _time <= time && time < (_time+_duration)) {
         return false;
     }
 
     _time = time;
     _duration = duration;
 
+    if (duration == 0) {
+        _acquiredIndefinitely = true;
+    }
+
     return true;
+}
+
+void VGMStream::PhysicalChannel::release()
+{
+    _acquiredIndefinitely = false;
 }
 
 VGMStream::StreamSettingsItem::StreamSettingsItem(const float time, const int channel, const Settings* channelSettings)

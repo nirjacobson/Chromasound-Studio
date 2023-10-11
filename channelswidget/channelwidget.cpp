@@ -41,7 +41,7 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     connect(ui->rectLed, &RectLED::clicked, this, &ChannelWidget::rectLedClicked);
     connect(ui->rectLed, &RectLED::doubleClicked, this, &ChannelWidget::rectLedDoubleClicked);
 
-    connect(&_pianoRollAction, &QAction::triggered, this, &ChannelWidget::pianoRollTriggered);
+    connect(&_pianoRollAction, &QAction::triggered, this, &ChannelWidget::pianoRollWasTriggered);
     connect(&_moveUpAction, &QAction::triggered, this, &ChannelWidget::moveUpTriggered);
     connect(&_moveDownAction, &QAction::triggered, this, &ChannelWidget::moveDownTriggered);
     connect(&_deleteAction, &QAction::triggered, this, &ChannelWidget::deleteTriggered);
@@ -222,6 +222,13 @@ void ChannelWidget::buttonContextMenuRequested(const QPoint& p)
 void ChannelWidget::stepSequencerClicked()
 {
     update();
+}
+
+void ChannelWidget::pianoRollWasTriggered()
+{
+    ui->pushButton->setChecked(true);
+    emit toggled(true);
+    emit pianoRollTriggered();
 }
 
 void ChannelWidget::paintEvent(QPaintEvent* event)

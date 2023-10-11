@@ -80,6 +80,7 @@ class ChannelWidget : public QWidget
         void buttonPressed();
         void buttonContextMenuRequested(const QPoint& p);
         void stepSequencerClicked();
+        void pianoRollWasTriggered();
 
     protected:
         void paintEvent(QPaintEvent* event);
