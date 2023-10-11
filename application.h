@@ -17,6 +17,7 @@ class Application : public QApplication
 
     public:
         Application(int &argc, char **argv, int flags = ApplicationFlags);
+        ~Application();
 
         void pause();
         void play();
