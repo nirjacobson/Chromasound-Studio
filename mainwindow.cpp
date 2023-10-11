@@ -318,10 +318,8 @@ void MainWindow::handleMIDIMessage(const long message)
     const char data1 = ((message >> 8) & 0xFF);
     const char data2 = ((message >> 16) & 0xFF);
 
-    qDebug() << (int)data2;
-
     if (status == 0x90) {
-        keyOn(data1, (float)data2/127.0f * 100);
+        keyOn(data1, qMin((int)data2, 100));
     } else if (status == 0x80) {
         keyOff(data1);
     }
