@@ -43,5 +43,7 @@ void MIDIPoller::run()
                 emit receivedMessage(message);
             }
         }
+
+        QThread::usleep(1);
     }
 }
