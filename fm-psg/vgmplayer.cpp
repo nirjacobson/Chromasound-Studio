@@ -24,6 +24,10 @@ void VGMPlayer::setVGM(const QByteArray& vgm, const bool loop)
 void VGMPlayer::setMode(const Mode mode)
 {
     _mode = mode;
+
+    if (_mode == Mode::Interactive) {
+        _vgm.clear();
+    }
 }
 
 bool VGMPlayer::isPlaying() const
