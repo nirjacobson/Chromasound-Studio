@@ -186,7 +186,7 @@ int VGMStream::acquireToneChannel(const float time, const float duration)
 
 int VGMStream::acquireNoiseChannel(const float time, const float duration, const NoiseChannelSettings* settings, QList<StreamItem*>& items)
 {
-    for (int i = 0; i < FM_CHANNELS; i++) {
+    for (int i = 0; i < NOISE_CHANNELS; i++) {
         if (_noiseChannels[i].settings() == *settings) {
             if (_noiseChannels[i].acquire(time, duration)) {
                 return i;
