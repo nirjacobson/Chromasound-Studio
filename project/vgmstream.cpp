@@ -32,7 +32,7 @@ QList<int> VGMStream::ym2612_frequencies = {
 
 VGMStream::VGMStream()
 {
-
+    reset();
 }
 
 void VGMStream::assignChannel(StreamNoteItem* noteItem, QList<StreamItem*>& items)
