@@ -319,7 +319,7 @@ void MainWindow::handleMIDIMessage(const long message)
     const char data2 = ((message >> 16) & 0xFF);
 
     if (status == 0x90) {
-        keyOn(data1, data2);
+        keyOn(data1, (float)data2/127.0f * 100);
     } else if (status == 0x80) {
         keyOff(data1);
     }
