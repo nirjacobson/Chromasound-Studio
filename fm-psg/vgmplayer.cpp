@@ -104,7 +104,7 @@ void VGMPlayer::runInteractive()
         bool stop = _stop;
         _stopLock.unlock();
         if (stop) {
-            _position = 0;
+            spi_write(STOP_START);
             break;
         }
 
