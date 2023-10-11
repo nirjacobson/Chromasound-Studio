@@ -25,8 +25,11 @@ class PianoRollWidget : public QWidget
 
         void setTrack(const int pattern, const int track);
 
+        void pressKey(const int key);
+        void releaseKey(const int key);
+
     signals:
-        void keyOn(const int key);
+        void keyOn(const int key, const int velocity);
         void keyOff(const int key);
 
     private:

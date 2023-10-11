@@ -40,6 +40,16 @@ void PianoRollKeysWidget::setRowHeight(int height)
     _rowHeight = height;
 }
 
+void PianoRollKeysWidget::pressKey(const int key)
+{
+    _onKeys.append(key);
+}
+
+void PianoRollKeysWidget::releaseKey(const int key)
+{
+    _onKeys.removeAll(key);
+}
+
 int PianoRollKeysWidget::length() const
 {
     return _rowHeight * _rows;
@@ -74,7 +84,7 @@ void PianoRollKeysWidget::paintEvent(QPaintEvent*)
             if (key >= 6) key--;
             key = (octave * 12) + key;
 
-            if (key == _onKey) {
+            if (_onKeys.contains(key)) {
                 painter.setBrush(QColor(255, 192, 192));
             } else {
                 painter.setBrush(QColor(Qt::white));
@@ -107,7 +117,7 @@ void PianoRollKeysWidget::paintEvent(QPaintEvent*)
             if (key > 3) key++;
             key = (octave * 12) + key;
 
-            if (key == _onKey) {
+            if (_onKeys.contains(key)) {
                 painter.setBrush(QColor(255, 192, 192));
             } else {
                 painter.setBrush(QColor(Qt::black));
@@ -150,16 +160,42 @@ void PianoRollKeysWidget::mousePressEvent(QMouseEvent* event)
         key = (mouseOctave * 12) + (mousePositionIntoOctave / _rowHeight);
     }
 
-    _onKey = key;
+    _onKeys.append(key);
 
     update();
 
-    emit keyOn(key);
+    emit keyOn(key, 100);
 }
 
-void PianoRollKeysWidget::mouseReleaseEvent(QMouseEvent*)
+void PianoRollKeysWidget::mouseReleaseEvent(QMouseEvent* event)
 {
+    int absBottom = _rowHeight * _rows;
+    int bottom = _top + height() + 1;
+
+    int octaveHeight = _rowHeight * KEYS_PER_OCTAVE;
+    int whiteKeyWidth = (float)octaveHeight / 7.0f;
+
+    int bottomPosition = absBottom - bottom;
+
+    int mousePosition = height() - event->pos().y();
+    int mousePositionIntoOctave = (bottomPosition + mousePosition) % octaveHeight;
+    int mouseOctave = (bottomPosition + mousePosition) / octaveHeight;
+
+    int key;
+    if (event->pos().x() >= width()/2) {
+        key = (mousePositionIntoOctave / whiteKeyWidth);
+        key *= 2;
+        if (key >= 6) {
+            key--;
+        }
+        key = (mouseOctave * 12) + key;
+    } else {
+        key = (mouseOctave * 12) + (mousePositionIntoOctave / _rowHeight);
+    }
+
+    _onKeys.removeAll(key);
+
     update();
-    emit keyOff(_onKey);
-    _onKey = -1;
+
+    emit keyOff(key);
 }

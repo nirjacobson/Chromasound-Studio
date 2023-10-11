@@ -16,6 +16,8 @@
 #include "pianorollwidget/pianorollwidget.h"
 #include "fmwidget/fmwidget.h"
 #include "project/vgmstream.h"
+#include "midi/midiinput.h"
+#include "midi/midipoller.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -57,13 +59,18 @@ private slots:
     void saveTriggered();
     void renderTriggered();
 
-    void keyOn(const int key);
+    void keyOn(const int key, const int velocity);
     void keyOff(const int key);
+    void handleMIDIMessage(const long msg);
+    void setMIDIDevice(const int device);
 
 private:
     Ui::MainWindow* ui;
 
     Application* _app;
+
+    MIDIInput* _midiInput;
+    MIDIPoller _midiPoller;
 
     ChannelsWidget* _channelsWidget;
     PlaylistWidget* _playlistWidget;

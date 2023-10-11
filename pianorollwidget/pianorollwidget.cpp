@@ -66,6 +66,16 @@ void PianoRollWidget::setTrack(const int pattern, const int track)
     update();
 }
 
+void PianoRollWidget::pressKey(const int key)
+{
+    _keysWidget->pressKey(key);
+}
+
+void PianoRollWidget::releaseKey(const int key)
+{
+    _keysWidget->releaseKey(key);
+}
+
 void PianoRollWidget::ganttClicked(Qt::MouseButton button, int row, float time)
 {
     if (button == Qt::LeftButton) {
