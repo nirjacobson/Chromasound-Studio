@@ -13,6 +13,8 @@ FM_PSG_Impl::FM_PSG_Impl(const Project& project)
 
     _vgmPlayer = new VGMPlayer(_spi, this);
     reset();
+
+    _vgmPlayer->start();
 }
 
 FM_PSG_Impl::~FM_PSG_Impl()
