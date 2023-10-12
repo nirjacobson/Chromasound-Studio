@@ -349,10 +349,27 @@ void MainWindow::showEvent(QShowEvent*)
     int width = ui->mdiArea->frameGeometry().width()/2;
     int height = ui->mdiArea->frameGeometry().height();
 
+    _channelsWindow->move(0, 0);
+
     _playlistWindow->resize(width, height);
     _playlistWindow->move(width, 0);
 
     _pianoRollWindow->resize(width, height);
     _pianoRollWindow->move(width, 0);
 }
+
+void MainWindow::resizeEvent(QResizeEvent* event)
+{
+    int width = ui->mdiArea->frameGeometry().width()/2;
+    int height = ui->mdiArea->frameGeometry().height();
+
+    _channelsWindow->move(0, 0);
+
+    _playlistWindow->resize(width, height);
+    _playlistWindow->move(width, 0);
+
+    _pianoRollWindow->resize(width, height);
+    _pianoRollWindow->move(width, 0);
+}
+
 
