@@ -169,7 +169,6 @@ void ChannelsWidget::handleToggle(ChannelWidget* channelWidget, const bool selec
 
     if (selected) {
         _activeChannelWidget = channelWidget;
-        _activeChannelWidget->setChecked(true);
 
         const Pattern& pattern = _app->project().getFrontPattern();
         if (pattern.hasTrack(_activeChannelWidget->index())) {
