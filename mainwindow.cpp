@@ -301,13 +301,16 @@ void MainWindow::saveTriggered()
 void MainWindow::renderTriggered()
 {
     const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "VGM files (*.vgm)");
-    QFile file(path);
-    file.open(QIODevice::WriteOnly);
 
-    VGMStream vgmStream;
-    QByteArray data = vgmStream.compile(_app->project(), true);
-    file.write(data);
-    file.close();
+    if (!path.isNull()) {
+        QFile file(path);
+        file.open(QIODevice::WriteOnly);
+
+        VGMStream vgmStream;
+        QByteArray data = vgmStream.compile(_app->project(), true);
+        file.write(data);
+        file.close();
+    }
 }
 
 void MainWindow::keyOn(const int key, const int velocity)
