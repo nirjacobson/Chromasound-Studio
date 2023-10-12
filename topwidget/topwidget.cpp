@@ -46,25 +46,30 @@ void TopWidget::setApplication(Application* app)
     ui->beatsPerBarSpinBox->setValue(app->project().beatsPerBar());
 }
 
-void TopWidget::setPattern(const int p)
+void TopWidget::updateFromProject(const Project& project)
 {
+
     ui->patSpinBox->blockSignals(true);
-    ui->patSpinBox->setValue(p+1);
+    ui->patSpinBox->setValue(project.frontPattern()+1);
     ui->patSpinBox->blockSignals(false);
-}
 
-void TopWidget::setTempo(const int t)
-{
     ui->tempoSpinBox->blockSignals(true);
-    ui->tempoSpinBox->setValue(t);
+    ui->tempoSpinBox->setValue(project.tempo());
     ui->tempoSpinBox->blockSignals(false);
-}
 
-void TopWidget::setBeatsPerBar(const int b)
-{
     ui->beatsPerBarSpinBox->blockSignals(true);
-    ui->beatsPerBarSpinBox->setValue(b);
+    ui->beatsPerBarSpinBox->setValue(project.beatsPerBar());
     ui->beatsPerBarSpinBox->blockSignals(false);
+
+    if (project.playMode() == Project::PlayMode::PATTERN) {
+        ui->patRadioButton->blockSignals(true);
+        ui->patRadioButton->setChecked(true);
+        ui->patRadioButton->blockSignals(false);
+    } else {
+        ui->songRadioButton->blockSignals(true);
+        ui->songRadioButton->setChecked(true);
+        ui->songRadioButton->blockSignals(false);
+    }
 }
 
 void TopWidget::playPauseClicked()

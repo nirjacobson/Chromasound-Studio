@@ -264,11 +264,11 @@ void MainWindow::openTriggered()
     const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "FM-PSG Studio Projects (*.fsp)");
     _app->project() = BSON::decode(path);
 
-    ui->topWidget->setPattern(_app->project().frontPattern());
-    ui->topWidget->setTempo(_app->project().tempo());
-    ui->topWidget->setBeatsPerBar(_app->project().beatsPerBar());
+    ui->topWidget->updateFromProject(_app->project());
 
     _channelsWidget->rebuild();
+
+    _playlistWidget->update();
 }
 
 void MainWindow::saveTriggered()
