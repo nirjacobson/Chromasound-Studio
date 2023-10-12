@@ -31,8 +31,6 @@ bson_t NoiseChannelSettings::toBSON() const
 {
     bson_t bson = ChannelSettings::toBSON();
 
-    bson_init(&bson);
-    BSON_APPEND_UTF8(&bson, "_type", "NOISE");
     BSON_APPEND_UTF8(&bson, "type", noiseTypeToString(_type).toStdString().c_str());
     BSON_APPEND_UTF8(&bson, "shiftRate", shiftRateToString(_rate).toStdString().c_str());
 
@@ -43,20 +41,14 @@ void NoiseChannelSettings::fromBSON(bson_iter_t& bson)
 {
     ChannelSettings::fromBSON(bson);
 
-    bson_iter_t __type;
     bson_iter_t type;
     bson_iter_t rate;
 
-    if (bson_iter_find_descendant(&bson, "_type", &__type) && BSON_ITER_HOLDS_UTF8(&__type)) {
-        if (QString(bson_iter_utf8(&__type, nullptr)) == "NOISE") {
-
-            if (bson_iter_find_descendant(&bson, "type", &type) && BSON_ITER_HOLDS_UTF8(&type)) {
-                _type = noiseTypeFromString(bson_iter_utf8(&type, nullptr));
-            }
-            if (bson_iter_find_descendant(&bson, "shiftRate", &rate) && BSON_ITER_HOLDS_UTF8(&rate)) {
-                _rate = shiftRateFromString(bson_iter_utf8(&rate, nullptr));
-            }
-        }
+    if (bson_iter_find_descendant(&bson, "type", &type) && BSON_ITER_HOLDS_UTF8(&type)) {
+        _type = noiseTypeFromString(bson_iter_utf8(&type, nullptr));
+    }
+    if (bson_iter_find_descendant(&bson, "shiftRate", &rate) && BSON_ITER_HOLDS_UTF8(&rate)) {
+        _rate = shiftRateFromString(bson_iter_utf8(&rate, nullptr));
     }
 }
 
