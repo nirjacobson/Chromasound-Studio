@@ -46,18 +46,24 @@ void FMWidget::feedbackChanged(const int fb)
 void FMWidget::openTriggered()
 {
     const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "YM2612 Patch (*.fm)");
-    FMChannelSettings* settings = BSON::decodePatch(path);
-    *_settings = *settings;
-    delete settings;
 
-    setSettings(_settings);
+    if (!path.isNull()) {
+        FMChannelSettings* settings = BSON::decodePatch(path);
+        *_settings = *settings;
+        delete settings;
+
+        setSettings(_settings);
+    }
 }
 
 void FMWidget::saveTriggered()
 {
     const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "YM2612 Patch (*.fm)");
-    QFile file(path);
-    file.open(QIODevice::WriteOnly);
-    file.write(BSON::encodePatch(_settings));
-    file.close();
+
+    if (!path.isNull()) {
+        QFile file(path);
+        file.open(QIODevice::WriteOnly);
+        file.write(BSON::encodePatch(_settings));
+        file.close();
+    }
 }
