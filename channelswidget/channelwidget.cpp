@@ -213,7 +213,7 @@ void ChannelWidget::buttonPressed()
         emit nameChanged();
     } else {
         bool state = ui->pushButton->isChecked();
-        emit toggled(!state);
+        emit toggled(state);
     }
 }
 
