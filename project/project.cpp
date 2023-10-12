@@ -154,6 +154,7 @@ Project& Project::operator=(Project&& src)
     _channels = src._channels;
     _patterns = src._patterns;
     _frontPattern = src._frontPattern;
+    _playMode = src._playMode;
 
     src._patterns.clear();
 
@@ -171,6 +172,7 @@ Project::Project(Project&& o)
     _channels = o._channels;
     _patterns = o._patterns;
     _frontPattern = o._frontPattern;
+    _playMode = o._playMode;
 
     o._patterns.clear();
 
