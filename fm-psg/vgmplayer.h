@@ -52,6 +52,7 @@ class VGMPlayer : public QThread
 
         QMutex _stopLock;
         QMutex _timeLock;
+        QMutex _vgmLock;
         bool _stop;
         bool _paused;
 
