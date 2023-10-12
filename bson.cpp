@@ -122,6 +122,10 @@ Channel BSON::toChannel(bson_iter_t& b)
         c._type = Channel::channelTypeFromString(bson_iter_utf8(&type, nullptr));
     }
     if (bson_iter_find_descendant(&b, "settings", &settings) && BSON_ITER_HOLDS_DOCUMENT(&settings) && bson_iter_recurse(&settings, &settingsInner)) {
+        if (c._type == Channel::Type::TONE) {
+            c._settings = new ToneChannelSettings;
+            c._settings->fromBSON(settingsInner);
+        }
         if (c._type == Channel::Type::NOISE) {
             c._settings = new NoiseChannelSettings;
             c._settings->fromBSON(settingsInner);
