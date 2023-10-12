@@ -94,6 +94,6 @@ private:
     // QWidget interface
 protected:
     void showEvent(QShowEvent*);
-    void resizeEvent(QResizeEvent* event);
+    void resizeEvent(QResizeEvent*);
 };
 #endif // MAINWINDOW_H
