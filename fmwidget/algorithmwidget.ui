@@ -109,6 +109,9 @@
        <property name="maximum">
         <number>7</number>
        </property>
+       <property name="notchesVisible">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>

@@ -87,7 +87,7 @@
         <bool>false</bool>
        </property>
        <property name="notchesVisible">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -136,7 +136,7 @@
         <bool>false</bool>
        </property>
        <property name="notchesVisible">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -185,7 +185,7 @@
         <bool>false</bool>
        </property>
        <property name="notchesVisible">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -234,7 +234,7 @@
         <bool>false</bool>
        </property>
        <property name="notchesVisible">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -283,7 +283,7 @@
         <bool>false</bool>
        </property>
        <property name="notchesVisible">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -335,7 +335,7 @@
         <bool>false</bool>
        </property>
        <property name="notchesVisible">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -394,7 +394,7 @@
         <bool>false</bool>
        </property>
        <property name="notchesVisible">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -636,15 +636,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>EnvelopeDisplayWidget</class>
-   <extends>QWidget</extends>
-   <header>fmwidget/envelopedisplaywidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>LED</class>
    <extends>QWidget</extends>
    <header>channelswidget/led.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>EnvelopeDisplayWidget</class>
+   <extends>QWidget</extends>
+   <header>fmwidget/envelopedisplaywidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
