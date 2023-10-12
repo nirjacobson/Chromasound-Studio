@@ -1,6 +1,6 @@
 #include "channelwidget.h"
 #include "ui_channelwidget.h"
-#include <QtDebug>
+#include <QDial>
 
 ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     : QWidget(parent)
@@ -37,6 +37,8 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     connect(ui->pushButton, &QPushButton::pressed, this, &ChannelWidget::buttonPressed);
     connect(ui->pushButton, &QWidget::customContextMenuRequested, this, &ChannelWidget::buttonContextMenuRequested);
     connect(ui->led, &LED::clicked, this, &ChannelWidget::ledClicked);
+
+    connect(ui->volumeDial, &QDial::valueChanged, this, &ChannelWidget::volumeDialChanged);
 
     connect(ui->rectLed, &RectLED::clicked, this, &ChannelWidget::rectLedClicked);
     connect(ui->rectLed, &RectLED::doubleClicked, this, &ChannelWidget::rectLedDoubleClicked);
@@ -125,6 +127,7 @@ void ChannelWidget::setIndex(const int idx)
    ui->stepSequencer->setIndex(_index);
    ui->prDisplay->setIndex(_index);
    ui->led->setOn(_app->project().getChannel(_index).enabled());
+   ui->volumeDial->setValue(_app->project().getChannel(_index).settings().volume());
    ui->rectLed->setOnFunction([=](){
        float appPosition = _app->position();
 
@@ -229,6 +232,11 @@ void ChannelWidget::pianoRollWasTriggered()
     ui->pushButton->setChecked(true);
     emit toggled(true);
     emit pianoRollTriggered();
+}
+
+void ChannelWidget::volumeDialChanged(const int val)
+{
+    _app->project().getChannel(_index).settings().setVolume(val);
 }
 
 void ChannelWidget::paintEvent(QPaintEvent* event)

@@ -29,7 +29,7 @@ void NoiseChannelSettings::setShiftRate(const ShiftRate rate)
 
 bson_t NoiseChannelSettings::toBSON() const
 {
-    bson_t bson;
+    bson_t bson = ChannelSettings::toBSON();
 
     bson_init(&bson);
     BSON_APPEND_UTF8(&bson, "_type", "NOISE");
@@ -41,6 +41,8 @@ bson_t NoiseChannelSettings::toBSON() const
 
 void NoiseChannelSettings::fromBSON(bson_iter_t& bson)
 {
+    ChannelSettings::fromBSON(bson);
+
     bson_iter_t __type;
     bson_iter_t type;
     bson_iter_t rate;

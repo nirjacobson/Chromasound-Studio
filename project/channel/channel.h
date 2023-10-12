@@ -3,9 +3,10 @@
 
 #include <QString>
 
-#include "settings.h"
+#include "channelsettings.h"
 #include "noisechannelsettings.h"
 #include "fmchannelsettings.h"
+#include "tonechannelsettings.h"
 
 class Channel
 {
@@ -13,8 +14,7 @@ class Channel
 
     public:
         enum Type {
-            NONE = 0,
-            TONE,
+            TONE = 0,
             NOISE,
             FM,
         };
@@ -31,15 +31,15 @@ class Channel
         QString name() const;
         void setName(const QString& name);
 
-        Settings& settings();
-        const Settings& settings() const;
+        ChannelSettings& settings();
+        const ChannelSettings& settings() const;
 
     private:
         bool _enabled;
         Type _type;
         QString _name;
 
-        Settings* _settings;
+        ChannelSettings* _settings;
 
         static QString channelTypeToString(const Channel::Type type);
         static Channel::Type channelTypeFromString(const QString& str);

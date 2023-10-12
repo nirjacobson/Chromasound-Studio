@@ -75,7 +75,7 @@ bool FM_PSG_Impl::isPlaying() const
     return _vgmPlayer->isPlaying();
 }
 
-void FM_PSG_Impl::keyOn(const Channel::Type channelType, const Settings& settings, const int key, const int velocity)
+void FM_PSG_Impl::keyOn(const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity)
 {
     VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(0, channelType, Note(key, 0, velocity), &settings);
     QList<VGMStream::StreamItem*> items;

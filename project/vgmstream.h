@@ -24,21 +24,21 @@ class VGMStream
 
         class StreamNoteItem : public StreamItem {
             public:
-                StreamNoteItem(const float time, const Channel::Type type, const Note& note, const Settings* channelSettings);
+                StreamNoteItem(const float time, const Channel::Type type, const Note& note, const ChannelSettings* channelSettings);
 
                 void setChannel(const int channel);
                 void setOn(const bool on);
 
                 Channel::Type type() const;
                 const Note& note() const;
-                const Settings* channelSettings() const;
+                const ChannelSettings* channelSettings() const;
                 int channel() const;
                 bool on() const;
             private:
                 Channel::Type _type;
                 int _channel;
                 Note _note;
-                const Settings* _channelSettings;
+                const ChannelSettings* _channelSettings;
                 bool _on;
         };
 

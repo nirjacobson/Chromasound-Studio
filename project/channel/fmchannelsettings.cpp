@@ -39,9 +39,7 @@ void FMChannelSettings::setFeedback(const int fb)
 
 bson_t FMChannelSettings::toBSON() const
 {
-    bson_t bson;
-
-    bson_init(&bson);
+    bson_t bson = ChannelSettings::toBSON();
 
     bson_t operators;
 
@@ -64,6 +62,8 @@ bson_t FMChannelSettings::toBSON() const
 
 void FMChannelSettings::fromBSON(bson_iter_t& bson)
 {
+    ChannelSettings::fromBSON(bson);
+
     bson_iter_t operators;
     bson_iter_t child;
     bson_iter_t op;

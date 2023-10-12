@@ -20,7 +20,7 @@ class FM_PSG_Impl : public FM_PSG
         void stop();
         bool isPlaying() const;
 
-        void keyOn(const Channel::Type channelType, const Settings& settings, const int key, const int velocity);
+        void keyOn(const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity);
         void keyOff(int key);
 
     private:

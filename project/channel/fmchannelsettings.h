@@ -4,9 +4,9 @@
 #include <iterator>
 
 #include "operatorsettings.h"
-#include "settings.h"
+#include "channelsettings.h"
 
-class FMChannelSettings : public Settings
+class FMChannelSettings : public ChannelSettings
 {
     public:
         FMChannelSettings();

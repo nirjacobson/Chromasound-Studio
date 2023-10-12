@@ -214,7 +214,6 @@ void MainWindow::channelSelected(const int index)
 
             _channelWindow->setWidget(_fmWidget);
             break;
-        case Channel::NONE:
         case Channel::TONE:
             break;
     }
@@ -248,9 +247,6 @@ void MainWindow::channelNameChanged(const int index)
 {
     if (index == _selectedChannel) {
         switch(_app->project().getChannel(index).type()) {
-
-            case Channel::NONE:
-                break;
             case Channel::TONE:
                 break;
             case Channel::NOISE:

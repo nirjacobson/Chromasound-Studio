@@ -2,19 +2,18 @@
 
 Channel::Channel()
     : _enabled(true)
-    , _type(Type::NONE)
     , _name("Channel")
     , _settings(nullptr)
 {
-
+    setType(Type::TONE);
 }
+
 Channel::Channel(const QString& name)
     : _enabled(true)
-    , _type(Type::NONE)
     , _name(name)
     , _settings(nullptr)
 {
-
+    setType(Type::TONE);
 }
 
 bool Channel::enabled() const
@@ -39,11 +38,8 @@ void Channel::setType(const Type type)
     if (_settings) delete _settings;
 
     switch (type) {
-        case NONE:
-            _settings = nullptr;
-            break;
         case TONE:
-            _settings = nullptr;
+            _settings = new ToneChannelSettings;
             break;
         case NOISE:
             _settings = new NoiseChannelSettings;
@@ -64,12 +60,12 @@ void Channel::setName(const QString& name)
     _name = name;
 }
 
-Settings& Channel::settings()
+ChannelSettings& Channel::settings()
 {
     return *_settings;
 }
 
-const Settings& Channel::settings() const
+const ChannelSettings& Channel::settings() const
 {
     return *_settings;
 }
@@ -77,8 +73,6 @@ const Settings& Channel::settings() const
 QString Channel::channelTypeToString(const Type type)
 {
     switch (type) {
-        case NONE:
-            return "NONE";
         case TONE:
             return "TONE";
         case NOISE:
@@ -87,15 +81,11 @@ QString Channel::channelTypeToString(const Type type)
             return "FM";
     }
 
-    return "NONE";
+    return "TONE";
 }
 
 Channel::Type Channel::channelTypeFromString(const QString& str)
 {
-    if (str == "NONE") {
-        return Channel::Type::NONE;
-    }
-
     if (str == "TONE") {
         return Channel::Type::TONE;
     }
@@ -108,5 +98,5 @@ Channel::Type Channel::channelTypeFromString(const QString& str)
         return Channel::Type::FM;
     }
 
-    return Channel::Type::NONE;
+    return Channel::Type::TONE;
 }
