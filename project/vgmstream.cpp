@@ -427,8 +427,8 @@ void VGMStream::encodeNoteItem(const StreamNoteItem* item, QByteArray& data)
         addr = (item->channel() * 2) + 1;
         int att;
         if (item->on()) {
-            att = (float)(100 - item->channelSettings()->volume())/100.0f *
-                  (float)(100 - item->note().velocity())/100.0f * 30.0f;
+            att = (30.0f * (float)(100 - item->channelSettings()->volume())/100.0f);
+            att += (30.0f - att) * (float)(100 - item->note().velocity())/100.0f;
             att >>= 1;
         } else {
             att = 0xF;
@@ -439,8 +439,8 @@ void VGMStream::encodeNoteItem(const StreamNoteItem* item, QByteArray& data)
         addr = 7;
         int att;
         if (item->on()) {
-            att = (float)(100 - item->channelSettings()->volume())/100.0f *
-                  (float)(100 - item->note().velocity())/100.0f * 30.0f;
+            att = (30.0f * (float)(100 - item->channelSettings()->volume())/100.0f);
+            att += (30.0f - att) * (float)(100 - item->note().velocity())/100.0f;
             att >>= 1;
         } else {
             att = 0xF;
@@ -470,9 +470,11 @@ void VGMStream::encodeNoteItem(const StreamNoteItem* item, QByteArray& data)
             for (int i = 0; i < sls.size(); i++) {
                 int offset = (sls[i] * 4) + channel;
                 int t1l = fmcs->operators()[sls[i]].envelopeSettings().t1l();
-                int newT1l = t1l + (127 - t1l) *
-                                       (100 - item->channelSettings()->volume())/100.0f *
-                                       (100 - item->note().velocity())/100.0f;
+
+                int amt = (127 - t1l) *
+                          (100 - item->channelSettings()->volume())/100.0f;
+                amt += ((127 - t1l) - amt) * (100 - item->note().velocity())/100.0f;
+                int newT1l = t1l + amt;
 
                 data.append((part == 1) ? 0x52 : 0x53);
                 data.append(0x40 + offset);
