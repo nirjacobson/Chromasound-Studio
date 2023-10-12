@@ -358,7 +358,7 @@ void MainWindow::showEvent(QShowEvent*)
     _pianoRollWindow->move(width, 0);
 }
 
-void MainWindow::resizeEvent(QResizeEvent* event)
+void MainWindow::resizeEvent(QResizeEvent*)
 {
     int width = ui->mdiArea->frameGeometry().width()/2;
     int height = ui->mdiArea->frameGeometry().height();
