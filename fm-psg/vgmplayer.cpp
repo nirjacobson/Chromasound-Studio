@@ -15,7 +15,10 @@ VGMPlayer::VGMPlayer(int spi, QObject *parent)
 
 void VGMPlayer::setVGM(const QByteArray& vgm, const bool loop)
 {
+    _vgmLock.lock();
     _vgm = vgm;
+    _vgmLock.unlock();
+
     _loop = loop;
     _time = 0;
     _position = 0;
@@ -119,6 +122,7 @@ void VGMPlayer::runInteractive()
         space |= (int)rx << 8;
 
         if (space > 0) {
+            _vgmLock.lock();
             int remaining = _vgm.size() - _position;
             long count = space < remaining ? space : remaining;
 
@@ -133,6 +137,7 @@ void VGMPlayer::runInteractive()
                     spi_write(_vgm[_position++]);
                 }
             }
+            _vgmLock.unlock();
         }
     }
 }
@@ -165,6 +170,7 @@ void VGMPlayer::runPlayback()
         space |= (int)rx << 8;
 
         if (space > 0) {
+            _vgmLock.lock();
             int remaining = _vgm.size() - _position;
             long count = space < remaining ? space : remaining;
 
@@ -179,6 +185,7 @@ void VGMPlayer::runPlayback()
                     spi_write(_vgm[_position++]);
                 }
             }
+            _vgmLock.unlock();
 
             if (_loop && count == remaining) {
                 _position = 0;
