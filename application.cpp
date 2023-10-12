@@ -61,7 +61,7 @@ Project& Application::project()
     return _project;
 }
 
-void Application::keyOn(const Channel::Type channelType, const Settings& settings, const int key, const int velocity)
+void Application::keyOn(const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity)
 {
     _fmPSG->keyOn(channelType, settings, key, velocity);
 }

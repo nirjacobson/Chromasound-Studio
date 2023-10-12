@@ -3,9 +3,9 @@
 
 #include <QString>
 
-#include "settings.h"
+#include "channelsettings.h"
 
-class NoiseChannelSettings : public Settings
+class NoiseChannelSettings : public ChannelSettings
 {
     public:
         enum NoiseType {
