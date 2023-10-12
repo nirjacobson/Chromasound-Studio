@@ -55,6 +55,7 @@ private slots:
 
     void channelNameChanged(const int index);
 
+    void newTriggered();
     void openTriggered();
     void saveTriggered();
     void renderTriggered();

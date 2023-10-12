@@ -61,6 +61,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
    connect(_channelsWidget, &ChannelsWidget::noiseTriggered, this, &MainWindow::noiseTriggered);
    connect(_channelsWidget, &ChannelsWidget::fmTriggered, this, &MainWindow::fmTriggered);
 
+   connect(ui->actionNew, &QAction::triggered, this, &MainWindow::newTriggered);
    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openTriggered);
    connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveTriggered);
    connect(ui->actionRender, &QAction::triggered, this, &MainWindow::renderTriggered);
@@ -259,10 +260,9 @@ void MainWindow::channelNameChanged(const int index)
     }
 }
 
-void MainWindow::openTriggered()
+void MainWindow::newTriggered()
 {
-    const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "FM-PSG Studio Projects (*.fsp)");
-    _app->project() = BSON::decode(path);
+    _app->project() = Project();
 
     ui->topWidget->updateFromProject(_app->project());
 
@@ -271,13 +271,31 @@ void MainWindow::openTriggered()
     _playlistWidget->update();
 }
 
+void MainWindow::openTriggered()
+{
+    const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "FM-PSG Studio Projects (*.fsp)");
+
+    if (!path.isNull()) {
+        _app->project() = BSON::decode(path);
+
+        ui->topWidget->updateFromProject(_app->project());
+
+        _channelsWidget->rebuild();
+
+        _playlistWidget->update();
+    }
+}
+
 void MainWindow::saveTriggered()
 {
     const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "FM-PSG Studio Projects (*.fsp)");
-    QFile file(path);
-    file.open(QIODevice::WriteOnly);
-    file.write(BSON::encode(_app->project()));
-    file.close();
+
+    if (!path.isNull()) {
+        QFile file(path);
+        file.open(QIODevice::WriteOnly);
+        file.write(BSON::encode(_app->project()));
+        file.close();
+    }
 }
 
 void MainWindow::renderTriggered()
