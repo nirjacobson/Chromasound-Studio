@@ -414,8 +414,8 @@ void VGMStream::encodeNoteItem(const StreamNoteItem* item, QByteArray& data)
             addr = (item->channel() * 2);
             int octave = item->note().key() / 12;
             int key = item->note().key() % 12;
-            float f = frequencies[key] * qPow(2, octave);
-            int n = 3579545 / (32 * f);
+            float f = frequencies[key] * (float)qPow(2, octave);
+            int n = 3579545.0f / (32.0f * f);
             uint8_t datum1 = n & 0xF;
             uint8_t datum2 = n >> 4;
             data.append(0x50);
