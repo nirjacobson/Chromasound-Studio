@@ -280,15 +280,15 @@ Pattern BSON::toPattern(bson_iter_t& b)
     return p;
 }
 
-void BSON::fromPlaylistItem(bson_t* dst, const Project::Playlist::Item* const item)
+void BSON::fromPlaylistItem(bson_t* dst, const Playlist::Item* const item)
 {
     BSON_APPEND_DOUBLE(dst, "time", item->time());
     BSON_APPEND_INT32(dst, "pattern", item->pattern());
 }
 
-Project::Playlist::Item BSON::toPlaylistItem(bson_iter_t& b)
+Playlist::Item BSON::toPlaylistItem(bson_iter_t& b)
 {
-    Project::Playlist::Item i;
+    Playlist::Item i;
 
     bson_iter_t time;
     bson_iter_t pattern;
@@ -303,14 +303,14 @@ Project::Playlist::Item BSON::toPlaylistItem(bson_iter_t& b)
     return i;
 }
 
-void BSON::fromPlaylist(bson_t* dst, const Project::Playlist& playlist)
+void BSON::fromPlaylist(bson_t* dst, const Playlist& playlist)
 {
     bson_t items;
 
     uint32_t i = 0;
 
     BSON_APPEND_ARRAY_BEGIN(dst, "items", &items);
-    for (const Project::Playlist::Item* const item : playlist._items) {
+    for (const Playlist::Item* const item : playlist._items) {
         bson_t b_item;
         bson_init(&b_item);
         fromPlaylistItem(&b_item, item);
@@ -324,9 +324,9 @@ void BSON::fromPlaylist(bson_t* dst, const Project::Playlist& playlist)
     bson_append_array_end(dst, &items);
 }
 
-Project::Playlist BSON::toPlaylist(bson_iter_t& b, Project* project)
+Playlist BSON::toPlaylist(bson_iter_t& b, Project* project)
 {
-    Project::Playlist p(project);
+    Playlist p(project);
 
     bson_iter_t items;
     bson_iter_t child;
@@ -335,7 +335,7 @@ Project::Playlist BSON::toPlaylist(bson_iter_t& b, Project* project)
     if (bson_iter_find_descendant(&b, "items", &items) && BSON_ITER_HOLDS_ARRAY(&items) && bson_iter_recurse(&items, &child)) {
         while (bson_iter_next(&child)) {
             bson_iter_recurse(&child, &item);
-            p._items.append(new Project::Playlist::Item(toPlaylistItem(item)));
+            p._items.append(new Playlist::Item(toPlaylistItem(item)));
         }
     }
 

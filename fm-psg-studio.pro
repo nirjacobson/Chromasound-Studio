@@ -36,6 +36,7 @@ SOURCES += \
     project/channel/operatorsettings.cpp \
     project/channel/settings.cpp \
     project/channel/tonechannelsettings.cpp \
+    project/playlist.cpp \
     project/track.cpp \
     project/note.cpp \
     project/pattern.cpp \
@@ -94,6 +95,7 @@ HEADERS += \
     project/channel/tonechannelsettings.h \
     project/note.h \
     project/pattern.h \
+    project/playlist.h \
     project/project.h \
     project/track.h \
     ganttwidget/gantteditorwidget.h \
