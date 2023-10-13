@@ -347,13 +347,14 @@ int VGMStream::encode(const QList<StreamItem*>& items, const int tempo, const fl
     int totalSamples = 0;
     bool setLoopOffsetData = false;
     for (int i = 0; i < items.size(); i++) {
+        totalSamples += encodeDelay(tempo, items[i]->time() - lastTime, data);
+        lastTime = items[i]->time();
+
         if (items[i]->time() >= loopTime && !setLoopOffsetData) {
             *loopOffsetData = data.size();
             setLoopOffsetData = true;
         }
 
-        totalSamples += encodeDelay(tempo, items[i]->time() - lastTime, data);
-        lastTime = items[i]->time();
         StreamSettingsItem* ssi;
         StreamNoteItem* sni;
         if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
