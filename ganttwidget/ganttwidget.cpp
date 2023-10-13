@@ -26,7 +26,8 @@ GanttWidget::GanttWidget(QWidget *parent, Application* app) :
     connect(ui->verticalScrollBar, &QScrollBar::valueChanged, this, &GanttWidget::verticalScroll);
     connect(ui->horizontalScrollBar, &QScrollBar::valueChanged, this, &GanttWidget::horizontalScroll);
     connect(ui->snapCheckBox, &QCheckBox::clicked, this, &GanttWidget::snapClicked);
-    connect(ui->editorWidget, &GanttEditorWidget::clicked, this, &GanttWidget::clicked);
+    connect(ui->headerWidget, &GanttHeaderWidget::clicked, this, &GanttWidget::headerClicked);
+    connect(ui->editorWidget, &GanttEditorWidget::clicked, this, &GanttWidget::editorClicked);
     connect(ui->editorWidget, &GanttEditorWidget::itemsChanged, this, &GanttWidget::itemsChanged);
     connect(ui->editorWidget, &GanttEditorWidget::horizontalScroll, this, &GanttWidget::wheelHorizontalScroll);
     connect(ui->editorWidget, &GanttEditorWidget::verticalScroll, this, &GanttWidget::wheelVerticalScroll);
@@ -140,6 +141,7 @@ void GanttWidget::horizontalScroll(int amount)
 
 void GanttWidget::snapClicked()
 {
+    ui->headerWidget->setSnap(ui->snapCheckBox->isChecked());
     ui->editorWidget->setSnap(ui->snapCheckBox->isChecked());
 }
 

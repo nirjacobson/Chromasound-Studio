@@ -49,7 +49,7 @@ class VGMStream
 
         void encode(QList<StreamItem*>& items, QByteArray& data);
 
-        QByteArray compile(const Project& project, bool header = false);
+        QByteArray compile(Project& project, bool header = false, int* loopOffsetData = nullptr);
 
         void reset();
 
@@ -122,6 +122,8 @@ class VGMStream
         void pad(QList<StreamItem*>& items, const float toDuration);
 
         int encode(const QList<StreamItem*>& items, const int tempo, QByteArray& data);
+
+        int encode(const QList<StreamItem*>& items, const int tempo, const float loopTime, QByteArray& data, int* const loopOffsetData);
 
         int encodeDelay(const int tempo, const float beats, QByteArray& data);
         void encodeSettingsItem(const StreamSettingsItem* item, QByteArray& data);

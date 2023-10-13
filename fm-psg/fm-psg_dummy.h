@@ -7,8 +7,9 @@
 class FM_PSG_Dummy : public FM_PSG
 {
     public:
-        FM_PSG_Dummy(const Project& project);
+        FM_PSG_Dummy(Project& project);
 
+        void play(const QByteArray&, const int, const int);
         void play(const QByteArray&, const bool loop);
         void play();
         void pause();
@@ -20,11 +21,11 @@ class FM_PSG_Dummy : public FM_PSG
         void keyOff(int);
 
     private:
-        const Project& _project;
+        Project& _project;
         QElapsedTimer _timer;
         qint64 _ref;
         bool _playing;
-        bool _loop;
+        int _loopOffsetSamples;
 
         qint64 nanosecondsPerBeat() const;
 };

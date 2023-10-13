@@ -30,7 +30,8 @@ class PlaylistWidget : public QWidget
         PlaylistPatternsWidget* _patternsWidget;
 
     private slots:
-        void ganttClicked(Qt::MouseButton button, int row, float time);
+        void ganttHeaderClicked(Qt::MouseButton button, float time);
+        void ganttEditorClicked(Qt::MouseButton button, int row, float time);
         void ganttItemsChanged();
 };
 

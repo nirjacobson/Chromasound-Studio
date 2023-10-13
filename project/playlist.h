@@ -59,11 +59,18 @@ public:
     QMap<int, float> activePatternsAtTime(const float time) const;
     Playlist& operator=(Playlist&& o);
 
+    bool doesLoop() const;
+    float loopOffset() const;
+    int loopOffsetSamples() const;
+    void setLoopOffset(const float offset);
+
 private:
     Playlist();
 
     QList<Item*> _items;
     Project* _project;
+
+    float _loopOffset;
 };
 
 #endif // PLAYLIST_H

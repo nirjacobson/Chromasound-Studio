@@ -4,17 +4,31 @@ float FM_PSG_Dummy::position()
 {
     float beatNS = nanosecondsPerBeat();
 
+    float pos = _ref + _timer.nsecsElapsed() / beatNS;
+
     if (!_playing) {
         return _ref / beatNS;
     }
 
-    if (_loop) {
-        float patternLength = qCeil(_project.getFrontPattern().getLength()/_project.beatsPerBar()) * _project.beatsPerBar();
+    if (_project.playMode() == Project::PlayMode::PATTERN) {
+        if (_loopOffsetSamples >= 0) {
+            float patternLength = _project.getPatternBarLength(_project.frontPattern());
 
-        return fmod( ((_ref + _timer.nsecsElapsed()) / beatNS), patternLength );
+            return fmod(pos, patternLength);
+        }
+    } else {
+        if (_loopOffsetSamples >= 0) {
+            float songLength = _project.getLength();
+            float loopPos = _project.playlist().loopOffset();
+            float loopLength = songLength - loopPos;
+
+            if (pos >= loopPos) {
+                return loopPos + fmod(pos - loopPos, loopLength);
+            }
+        }
     }
 
-    return (_ref + _timer.nsecsElapsed()) / beatNS;
+    return pos;
 }
 
 bool FM_PSG_Dummy::isPlaying() const
@@ -37,18 +51,25 @@ qint64 FM_PSG_Dummy::nanosecondsPerBeat() const
     return 1e9 * 60 / _project.tempo();
 }
 
-FM_PSG_Dummy::FM_PSG_Dummy(const Project& project)
+FM_PSG_Dummy::FM_PSG_Dummy(Project& project)
     : _project(project)
     , _ref(0)
     , _playing(false)
-    , _loop(false)
+    , _loopOffsetSamples(-1)
 {
 
 }
 
+void FM_PSG_Dummy::play(const QByteArray&, const int loopOffsetSamples, const int)
+{
+    _loopOffsetSamples = loopOffsetSamples;
+    _playing = true;
+    _timer.restart();
+}
+
 void FM_PSG_Dummy::play(const QByteArray&, const bool loop)
 {
-    _loop = loop;
+    _loopOffsetSamples = loop ? 0 : -1;
     _playing = true;
     _timer.restart();
 }

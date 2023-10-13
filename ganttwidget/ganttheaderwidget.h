@@ -6,6 +6,7 @@
 
 #include <QPainter>
 #include <QPainterPath>
+#include <QMouseEvent>
 
 class GanttHeaderWidget : public ScrollableWidget
 {
@@ -27,14 +28,19 @@ class GanttHeaderWidget : public ScrollableWidget
 
         void scrollBy(const int pixels);
 
+        void setSnap(const bool snap);
+
     signals:
+        void clicked(Qt::MouseButton button, float time);
 
     protected:
         int length() const;
         void paintEvent(QPaintEvent*);
+        void mousePressEvent(QMouseEvent* event);
 
     private:
         static constexpr QColor BackgroundColor = QColor(64, 64, 64);
+        static constexpr QColor LoopColor = QColor(128, 192, 224);
         static constexpr QColor CursorColor = QColor(64, 192, 64);
 
         Application* _app;
@@ -45,6 +51,7 @@ class GanttHeaderWidget : public ScrollableWidget
 
         int _cellWidth;
         float _cellBeats;
+        bool _snap;
 
         float playlength() const;
 

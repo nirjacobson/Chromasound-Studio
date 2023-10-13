@@ -36,7 +36,7 @@ long Playlist::Item::row() const
 
 float Playlist::Item::duration() const
 {
-    return _project->patterns()[_pattern]->getLength();
+    return _project->getPatternBarLength(_pattern);
 }
 
 int Playlist::Item::velocity() const
@@ -66,6 +66,7 @@ void Playlist::Item::setVelocity(const int)
 }
 
 Playlist::Playlist(Project* const project)
+    : _loopOffset(-1)
 {
     _project = project;
 }
@@ -102,7 +103,7 @@ void Playlist::addItem(const float time, const int pattern)
 
 void Playlist::removeItem(const float time, const int pattern)
 {
-    auto it = std::remove_if(_items.begin(), _items.end(), [=](Playlist::Item* const item){ return (item->pattern() == pattern) && (item->time() <= time) && ((item->time() + _project->patterns()[item->pattern()]->getLength()) >= time); });
+    auto it = std::remove_if(_items.begin(), _items.end(), [=](Playlist::Item* const item){ return (item->pattern() == pattern) && (item->time() <= time) && ((item->time() + _project->getPatternBarLength(item->pattern())) >= time); });
     _items.erase(it, _items.end());
 }
 
@@ -110,7 +111,7 @@ float Playlist::getLength() const
 {
     float end = 0;
     for (const Playlist::Item* item : _items) {
-        float thisEnd = item->time() + _project->getPattern(item->pattern()).getLength();
+        float thisEnd = item->time() + _project->getPatternBarLength(item->pattern());
         if (thisEnd > end) {
             end = thisEnd;
         }
@@ -124,7 +125,7 @@ QMap<int, float> Playlist::activePatternsAtTime(const float time) const
     QMap<int, float> result;
 
     QList<Playlist::Item*>::ConstIterator it = _items.begin();
-    while ((it = std::find_if(it, _items.end(), [=](const Playlist::Item* item){ return (item->time() <= time) && ((item->time() + _project->getPattern(item->pattern()).getLength()) >= time); })) != _items.end()) {
+    while ((it = std::find_if(it, _items.end(), [=](const Playlist::Item* item){ return (item->time() <= time) && ((item->time() + _project->getPatternBarLength(item->pattern())) >= time); })) != _items.end()) {
         result.insert((*it)->pattern(), (*it)->time());
         it++;
     }
@@ -144,6 +145,26 @@ Playlist& Playlist::operator=(Playlist&& o)
     }
 
     return *this;
+}
+
+bool Playlist::doesLoop() const
+{
+    return _loopOffset >= 0;
+}
+
+float Playlist::loopOffset() const
+{
+    return _loopOffset;
+}
+
+int Playlist::loopOffsetSamples() const
+{
+    return _loopOffset / _project->tempo() * 60 * 44100;
+}
+
+void Playlist::setLoopOffset(const float offset)
+{
+    _loopOffset = offset;
 }
 
 Playlist::Playlist()

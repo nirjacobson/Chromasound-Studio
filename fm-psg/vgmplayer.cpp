@@ -8,7 +8,8 @@ VGMPlayer::VGMPlayer(int spi, QObject *parent)
     , _position(0)
     , _stop(false)
     , _paused(false)
-    , _loop(false)
+    , _loopOffsetSamples(0)
+    , _loopOffsetData(0)
 {
 
 }
@@ -19,7 +20,26 @@ void VGMPlayer::setVGM(const QByteArray& vgm, const bool loop)
     _vgm = vgm;
     _vgmLock.unlock();
 
-    _loop = loop;
+    if (loop) {
+        _loopOffsetSamples = 0;
+        _loopOffsetData = 0;
+    } else {
+        _loopOffsetSamples = -1;
+        _loopOffsetData = -1;
+    }
+
+    _time = 0;
+    _position = 0;
+}
+
+void VGMPlayer::setVGM(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData)
+{
+    _vgmLock.lock();
+    _vgm = vgm;
+    _vgmLock.unlock();
+
+    _loopOffsetSamples = loopOffsetSamples;
+    _loopOffsetData = loopOffsetData;
     _time = 0;
     _position = 0;
 }
@@ -147,6 +167,13 @@ void VGMPlayer::runPlayback()
     char rx, tx;
     uint16_t space;
 
+    bool loop = _loopOffsetData >= 0 && _loopOffsetSamples >= 0;
+
+    spi_write(SET_LOOP_TIME);
+    for (int i = 0; i < 4; i++) {
+        spi_write(loop ? ((char*)&_loopOffsetSamples)[i] : 0);
+    }
+
     while (true) {
         _stopLock.lock();
         bool stop = _stop;
@@ -187,8 +214,8 @@ void VGMPlayer::runPlayback()
             }
             _vgmLock.unlock();
 
-            if (_loop && count == remaining) {
-                _position = 0;
+            if (loop && count == remaining) {
+                _position = _loopOffsetData;
             }
         }
 
