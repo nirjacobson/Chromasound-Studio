@@ -250,10 +250,10 @@ void VGMStream::processTrack(const float time, const Channel& channel, const Tra
 
 void VGMStream::generateItems(const Project& project, QList<StreamItem*>& items)
 {
-    QList<Project::Playlist::Item*> itemsCopy(project.playlist().items());
-    std::sort(itemsCopy.begin(), itemsCopy.end(), [](const Project::Playlist::Item* a, const Project::Playlist::Item* b){ return a->time() <= b->time(); });
+    QList<Playlist::Item*> itemsCopy(project.playlist().items());
+    std::sort(itemsCopy.begin(), itemsCopy.end(), [](const Playlist::Item* a, const Playlist::Item* b){ return a->time() <= b->time(); });
 
-    for (const Project::Playlist::Item* item : itemsCopy) {
+    for (const Playlist::Item* item : itemsCopy) {
         processPattern(item->time(), project, project.getPattern(item->pattern()), items);
     }
 }

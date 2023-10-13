@@ -10,6 +10,7 @@
 #include "project/track.h"
 #include "project/pattern.h"
 #include "project/project.h"
+#include "project/playlist.h"
 
 class BSON
 {
@@ -38,11 +39,11 @@ class BSON
         static void fromPattern(bson_t* dst, const Pattern& pattern);
         static Pattern toPattern(bson_iter_t& b);
 
-        static void fromPlaylistItem(bson_t* dst, const Project::Playlist::Item* const item);
-        static Project::Playlist::Item toPlaylistItem(bson_iter_t& b);
+        static void fromPlaylistItem(bson_t* dst, const Playlist::Item* const item);
+        static Playlist::Item toPlaylistItem(bson_iter_t& b);
 
-        static void fromPlaylist(bson_t* dst, const Project::Playlist& playlist);
-        static Project::Playlist toPlaylist(bson_iter_t& b, Project* project);
+        static void fromPlaylist(bson_t* dst, const Playlist& playlist);
+        static Playlist toPlaylist(bson_iter_t& b, Project* project);
 
         static void fromProject(bson_t* dst, const Project& project);
         static Project toProject(bson_iter_t& b);
