@@ -112,6 +112,7 @@ QByteArray VGMStream::compile(Project& project, bool header, int* loopOffsetData
     } else {
         generateItems(project, items);
         assignChannelsAndExpand(items);
+        pad(items, project.getLength());
         if (project.playlist().doesLoop()) {
             totalSamples = encode(items, project.tempo(), project.playlist().loopOffset(), data, &_loopOffsetData);
         } else {
