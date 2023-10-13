@@ -42,6 +42,9 @@ void AlgorithmWidget::setFeedback(const int fb)
     _fb = fb;
 
     ui->displayWidget->setFeedback(_fb);
+    ui->fbDial->blockSignals(true);
+    ui->fbDial->setValue(fb);
+    ui->fbDial->blockSignals(false);
     ui->fbValueLabel->setText(QString::number(_fb));
 }
 
