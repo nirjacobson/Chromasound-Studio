@@ -9,6 +9,7 @@ GanttHeaderWidget::GanttHeaderWidget(QWidget *parent)
     , _left(0)
     , _cellWidth(16)
     , _cellBeats(1)
+    , _snap(true)
     , _positionFunction([](){ return -1; })
 {
 
@@ -62,6 +63,11 @@ void GanttHeaderWidget::scrollBy(const int pixels)
     update();
 }
 
+void GanttHeaderWidget::setSnap(const bool snap)
+{
+    _snap = snap;
+}
+
 float GanttHeaderWidget::playlength() const
 {
     float end = 0;
@@ -108,6 +114,23 @@ void GanttHeaderWidget::paintEvent(QPaintEvent*)
     float leftPosition = _left * beatsPerPixel;
     float rightPosition = leftPosition + (width() * beatsPerPixel);
 
+    if (_app->project().playlist().doesLoop()) {
+        float loopOffset = _app->project().playlist().loopOffset();
+
+        if (leftPosition <= loopOffset && loopOffset <= rightPosition) {
+            int loopOffsetPixel = (loopOffset - leftPosition) / beatsPerPixel;
+
+            QRect rect = QRect(QPoint(loopOffsetPixel, 0), QSize(height(), height()));
+            painter.setPen(QColor(LoopColor).darker());
+            painter.setBrush(QColor(LoopColor));
+
+            QPoint textPoint = rect.bottomLeft() + QPoint(4, -4);
+            painter.fillRect(rect, painter.brush());
+            painter.drawRect(rect);
+            painter.drawText(textPoint, "L");
+        }
+    }
+
     float appPosition = _positionFunction();
 
     if (leftPosition <= appPosition && appPosition <= rightPosition) {
@@ -127,6 +150,16 @@ void GanttHeaderWidget::paintEvent(QPaintEvent*)
         painter.setPen(Qt::NoPen);
         painter.fillPath(path, CursorColor);
     }
+}
+
+void GanttHeaderWidget::mousePressEvent(QMouseEvent* event)
+{
+    float beatsPerPixel = _cellBeats / _cellWidth;
+    float leftPosition = _left * beatsPerPixel;
+    float mousePosition = leftPosition + (event->pos().x() * beatsPerPixel);
+    float mousePositionSnapped = (int)(mousePosition / _cellBeats) * _cellBeats;
+
+    emit clicked(event->button(), _snap ? mousePositionSnapped : mousePosition);
 }
 
 int GanttHeaderWidget::length() const

@@ -56,7 +56,8 @@ class GanttWidget : public QWidget
         void wheelVerticalScroll(int pixels);
 
     signals:
-        void clicked(Qt::MouseButton button, int row, float time);
+        void headerClicked(Qt::MouseButton button, float time);
+        void editorClicked(Qt::MouseButton button, int row, float time);
         void itemsChanged();
         void itemReleased(const GanttItem* item);
 };

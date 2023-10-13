@@ -35,7 +35,18 @@ void Application::play()
     if (_paused) {
         _fmPSG->play();
     } else {
-        _fmPSG->play(VGMStream().compile(_project), _project.playMode() == Project::PlayMode::PATTERN);
+        if (_project.playMode() == Project::PlayMode::PATTERN) {
+            _fmPSG->play(VGMStream().compile(_project), true);
+        } else {
+            if (_project.playlist().doesLoop()) {
+                int loopOffsetData;
+                QByteArray vgm = VGMStream().compile(_project, false, &loopOffsetData);
+                _fmPSG->play(vgm, _project.playlist().loopOffsetSamples(), loopOffsetData);
+            } else {
+                _fmPSG->play(VGMStream().compile(_project), false);
+            }
+        }
+
     }
     _paused = false;
 }

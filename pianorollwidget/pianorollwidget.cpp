@@ -22,8 +22,8 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
     ui->ganttWidget->setItemsMovableX(true);
     ui->ganttWidget->setItemsMovableY(true);
     ui->ganttWidget->scrollVertically(0.25);
-
-    connect(ui->ganttWidget, &GanttWidget::clicked, this, &PianoRollWidget::ganttClicked);
+    
+    connect(ui->ganttWidget, &GanttWidget::editorClicked, this, &PianoRollWidget::ganttClicked);
     connect(ui->ganttWidget, &GanttWidget::itemsChanged, this, &PianoRollWidget::ganttItemsChanged);
     connect(ui->ganttWidget, &GanttWidget::itemReleased, this, &PianoRollWidget::ganttItemReleased);
 

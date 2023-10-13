@@ -19,6 +19,7 @@ class FM_PSG : public QObject
         virtual float position() = 0;
 
         virtual void play(const QByteArray& vgm, const bool loop) = 0;
+        virtual void play(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData) = 0;
         virtual void play() = 0;
         virtual void pause() = 0;
         virtual void stop() = 0;

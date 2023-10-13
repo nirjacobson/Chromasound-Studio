@@ -15,7 +15,8 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
     ui->ganttWidget->setItemsMovableX(true);
     ui->ganttWidget->setPositionFunction([&](){ return _app->project().playMode() == Project::PlayMode::SONG ? _app->position() : 0.0f; });
 
-    connect(ui->ganttWidget, &GanttWidget::clicked, this, &PlaylistWidget::ganttClicked);
+    connect(ui->ganttWidget, &GanttWidget::headerClicked, this, &PlaylistWidget::ganttHeaderClicked);
+    connect(ui->ganttWidget, &GanttWidget::editorClicked, this, &PlaylistWidget::ganttEditorClicked);
     connect(ui->ganttWidget, &GanttWidget::itemsChanged, this, &PlaylistWidget::ganttItemsChanged);
 }
 
@@ -25,7 +26,19 @@ PlaylistWidget::~PlaylistWidget()
     delete _patternsWidget;
 }
 
-void PlaylistWidget::ganttClicked(Qt::MouseButton button, int row, float time)
+void PlaylistWidget::ganttHeaderClicked(Qt::MouseButton button, float time)
+{
+    if (button == Qt::RightButton) {
+        if (time == _app->project().playlist().loopOffset()) {
+            _app->project().playlist().setLoopOffset(-1);
+        } else {
+            _app->project().playlist().setLoopOffset(time);
+        }
+        update();
+    }
+}
+
+void PlaylistWidget::ganttEditorClicked(Qt::MouseButton button, int row, float time)
 {
     if (button == Qt::LeftButton) {
         if (_app->project().getPattern(row).getLength() > 0) {

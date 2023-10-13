@@ -33,8 +33,7 @@ void PRDisplayWidget::paintEvent(QPaintEvent*)
 
 
     painter.setPen(QPen(ItemColor));
-    float length = _app->project().getFrontPattern().getLength();
-    int visibleLength = (qCeil(length /(float) _app->project().beatsPerBar())) * _app->project().beatsPerBar();
+    int visibleLength =  _app->project().getPatternBarLength(_app->project().frontPattern());
     int visibleHeight = (float)height() * 0.8f;
 
     int r = range().second - range().first;

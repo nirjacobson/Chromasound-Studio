@@ -92,17 +92,18 @@ void VGMStream::encode(QList<StreamItem*>& items, QByteArray& data)
     });
 }
 
-QByteArray VGMStream::compile(const Project& project, bool header)
+QByteArray VGMStream::compile(Project& project, bool header, int* loopOffsetData)
 {
     QList<StreamItem*> items;
     QByteArray headerData;
     QByteArray data;
     int totalSamples;
 
+    int _loopOffsetData;
     if (project.playMode() == Project::PlayMode::PATTERN) {
         processPattern(0, project, project.getFrontPattern(), items);
         assignChannelsAndExpand(items);
-        pad(items, qCeil(project.getFrontPattern().getLength() / project.beatsPerBar()) * project.beatsPerBar());
+        pad(items, project.getPatternBarLength(project.frontPattern()));
         totalSamples = encode(items, project.tempo(), data);
 
         for (StreamItem* item : items) {
@@ -111,7 +112,11 @@ QByteArray VGMStream::compile(const Project& project, bool header)
     } else {
         generateItems(project, items);
         assignChannelsAndExpand(items);
-        totalSamples = encode(items, project.tempo(), data);
+        if (project.playlist().doesLoop()) {
+            totalSamples = encode(items, project.tempo(), project.playlist().loopOffset(), data, &_loopOffsetData);
+        } else {
+            totalSamples = encode(items, project.tempo(), data);
+        }
 
         for (StreamItem* item : items) {
             delete item;
@@ -119,6 +124,7 @@ QByteArray VGMStream::compile(const Project& project, bool header)
     }
 
     if (header) {
+        _loopOffsetData += 64;
         headerData = QByteArray(64, 0);
 
         // VGM header
@@ -139,9 +145,25 @@ QByteArray VGMStream::compile(const Project& project, bool header)
         // Total samples
         *(uint32_t*)&headerData[0x18] = totalSamples;
         // Loop offset
-        *(uint32_t*)&headerData[0x1C] = (project.playMode() == Project::PlayMode::PATTERN) ? (0x40 - 0x1C) : 0x0;
+        if (project.playMode() == Project::PlayMode::PATTERN) {
+            *(uint32_t*)&headerData[0x1C] = 0x40 - 0x1C;
+        } else {
+            if (project.playlist().doesLoop()) {
+                *(uint32_t*)&headerData[0x1C] = _loopOffsetData - 0x1C;
+            } else {
+                *(uint32_t*)&headerData[0x1C] = 0;
+            }
+        }
         // Loop # samples
-        *(uint32_t*)&headerData[0x20] = (project.playMode() == Project::PlayMode::PATTERN) ? totalSamples : 0x0;
+        if (project.playMode() == Project::PlayMode::PATTERN) {
+            *(uint32_t*)&headerData[0x20] = totalSamples;
+        } else {
+            if (project.playlist().doesLoop()) {
+                *(uint32_t*)&headerData[0x1C] = totalSamples - project.playlist().loopOffsetSamples();
+            } else {
+                *(uint32_t*)&headerData[0x1C] = 0;
+            }
+        }
         // SN76489AN flags
         *(uint16_t*)&headerData[0x28] = 0x0003;
         headerData[0x2A] = 15;
@@ -152,9 +174,12 @@ QByteArray VGMStream::compile(const Project& project, bool header)
 
         QByteArray result = headerData;
         result.append(data);
-        return result;
+        data = result;
     }
 
+    if (project.playlist().doesLoop() && loopOffsetData) {
+        *loopOffsetData = _loopOffsetData;
+    }
     return data;
 }
 
@@ -308,6 +333,29 @@ int VGMStream::encode(const QList<StreamItem*>& items, const int tempo, QByteArr
             encodeSettingsItem(ssi, data);
         } else if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
             encodeNoteItem(sni, data);
+        }
+    }
+    data.append(0x66);
+
+    return totalSamples;
+}
+
+int VGMStream::encode(const QList<StreamItem*>& items, const int tempo, const float loopTime, QByteArray& data, int* const loopOffsetData)
+{
+    float lastTime = 0.0f;
+    int totalSamples = 0;
+    for (int i = 0; i < items.size(); i++) {
+        totalSamples += encodeDelay(tempo, items[i]->time() - lastTime, data);
+        lastTime = items[i]->time();
+        StreamSettingsItem* ssi;
+        StreamNoteItem* sni;
+        if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
+            encodeSettingsItem(ssi, data);
+        } else if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
+            encodeNoteItem(sni, data);
+        }
+        if (items[i]->time() == loopTime) {
+            *loopOffsetData = data.size();
         }
     }
     data.append(0x66);
