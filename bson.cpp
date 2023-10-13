@@ -305,6 +305,8 @@ Playlist::Item BSON::toPlaylistItem(bson_iter_t& b)
 
 void BSON::fromPlaylist(bson_t* dst, const Playlist& playlist)
 {
+    BSON_APPEND_DOUBLE(dst, "loopOffset", playlist.loopOffset());
+
     bson_t items;
 
     uint32_t i = 0;
@@ -328,9 +330,14 @@ Playlist BSON::toPlaylist(bson_iter_t& b, Project* project)
 {
     Playlist p(project);
 
+    bson_iter_t loopOffset;
     bson_iter_t items;
     bson_iter_t child;
     bson_iter_t item;
+
+    if (bson_iter_find_descendant(&b, "loopOffset", &loopOffset) && BSON_ITER_HOLDS_DOUBLE(&loopOffset)) {
+        p._loopOffset = bson_iter_double(&loopOffset);
+    }
 
     if (bson_iter_find_descendant(&b, "items", &items) && BSON_ITER_HOLDS_ARRAY(&items) && bson_iter_recurse(&items, &child)) {
         while (bson_iter_next(&child)) {

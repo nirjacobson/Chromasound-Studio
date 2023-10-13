@@ -73,6 +73,7 @@ Playlist::Playlist(Project* const project)
 
 Playlist::Playlist(Playlist&& o)
 {
+    _loopOffset = o._loopOffset;
     _items = o._items;
 
     o._items.clear();
@@ -136,6 +137,7 @@ QMap<int, float> Playlist::activePatternsAtTime(const float time) const
 
 Playlist& Playlist::operator=(Playlist&& o)
 {
+    _loopOffset = o._loopOffset;
     _items = o._items;
 
     o._items.clear();
