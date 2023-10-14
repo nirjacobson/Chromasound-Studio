@@ -19,6 +19,7 @@ public:
     QList<QString> devices() const;
 
     void setDevice(const int index);
+    int device() const;
 
     QList<long> read() const;
 
@@ -28,6 +29,8 @@ private:
     static PmError _pmError;
     static PmDeviceID _pmDeviceId;
     static PortMidiStream* _pmStream;
+
+    int _deviceIndex;
 };
 
 #endif // MIDIINPUT_H

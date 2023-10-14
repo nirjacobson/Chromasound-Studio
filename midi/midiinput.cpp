@@ -7,6 +7,7 @@ PmDeviceID MIDIInput::_pmDeviceId = 0;
 PortMidiStream* MIDIInput::_pmStream = nullptr;
 
 MIDIInput::MIDIInput()
+    : _deviceIndex(-1)
 {
 
 }
@@ -94,11 +95,18 @@ void MIDIInput::setDevice(const int index)
                 fprintf(stderr, "[setDevice] PortMIDI error: %s\n", Pm_GetErrorText(_pmError));
             }
 
+            _deviceIndex = index;
+
             return;
         }
 
         inputDevices += info->input;
     }
+}
+
+int MIDIInput::device() const
+{
+    return _deviceIndex;
 }
 
 QList<long> MIDIInput::read() const

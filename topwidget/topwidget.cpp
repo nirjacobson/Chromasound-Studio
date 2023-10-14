@@ -17,6 +17,8 @@ TopWidget::TopWidget(QWidget *parent, Application* app)
         ui->deviceComboBox->addItem(deviceName);
     }
 
+    ui->deviceComboBox->setCurrentIndex(_midiInput->device());
+
     ui->playButton->setIcon(ui->playButton->style()->standardIcon(QStyle::SP_MediaPlay));
     ui->stopButton->setIcon(ui->playButton->style()->standardIcon(QStyle::SP_MediaStop));
 
