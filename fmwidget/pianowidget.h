@@ -15,7 +15,7 @@ public:
     void releaseKey(const int key);
 
 signals:
-    void keyPressed(const char key);
+    void keyPressed(const char key, const int velocity);
     void keyReleased(const char key);
 
 protected:
