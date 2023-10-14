@@ -203,7 +203,7 @@ void PianoWidget::mousePressEvent(QMouseEvent* event)
     } else {
         const char key = keyAt(event->pos());
         pressKey(key);
-        emit keyPressed(key);
+        emit keyPressed(key, 100);
     }
 }
 
