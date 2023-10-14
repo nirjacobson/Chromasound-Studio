@@ -212,14 +212,18 @@ void MainWindow::channelSelected(const int index)
             _noiseWidget = new NoiseWidget(this);
             _noiseWidget->setSettings(dynamic_cast<NoiseChannelSettings*>(&_app->project().getChannel(index).settings()));
             _noiseWidget->setWindowTitle(QString("%1: Noise").arg(_app->project().getChannel(index).name()));
+            _fmWidget = nullptr;
 
             _channelWindow->setWidget(_noiseWidget);
             break;
         case Channel::Type::FM:
             oldWidget = _fmWidget;
             _fmWidget = new FMWidget(this);
+            connect(_fmWidget, &FMWidget::keyPressed, this, &MainWindow::keyOn);
+            connect(_fmWidget, &FMWidget::keyReleased, this, &MainWindow::keyOff);
             _fmWidget->setSettings(dynamic_cast<FMChannelSettings*>(&_app->project().getChannel(index).settings()));
             _fmWidget->setWindowTitle(QString("%1: FM").arg(_app->project().getChannel(index).name()));
+            _noiseWidget = nullptr;
 
             _channelWindow->setWidget(_fmWidget);
             break;
@@ -331,6 +335,7 @@ void MainWindow::keyOn(const int key, const int velocity)
         Channel& channel = _app->project().getChannel(activeChannel);
         _app->keyOn(channel.type(), channel.settings(), key, velocity);
         if (_pianoRollWidget) _pianoRollWidget->pressKey(key);
+        if (_fmWidget) _fmWidget->pressKey(key);
     }
 }
 
@@ -338,6 +343,7 @@ void MainWindow::keyOff(const int key)
 {
     _app->keyOff(key);
     if (_pianoRollWidget) _pianoRollWidget->releaseKey(key);
+    if (_fmWidget) _fmWidget->releaseKey(key);
 }
 
 void MainWindow::handleMIDIMessage(const long message)
