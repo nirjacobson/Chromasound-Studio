@@ -122,7 +122,13 @@ void MainWindow::frame()
 
 void MainWindow::pianoRollTriggered(const int index)
 {
-    _app->project().getFrontPattern().getTrack(index).usePianoRoll();
+    bool doesUsePianoRoll = _app->project().getFrontPattern().getTrack(index).doesUsePianoRoll();
+    if (doesUsePianoRoll) {
+        _app->project().getFrontPattern().getTrack(index).useStepSequencer();
+    } else {
+        _app->project().getFrontPattern().getTrack(index).usePianoRoll();
+    }
+
     _channelsWidget->update();
 
     PianoRollWidget* oldWidget = _pianoRollWidget;

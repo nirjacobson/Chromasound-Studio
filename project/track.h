@@ -59,6 +59,8 @@ class Track
         void usePianoRoll();
         bool doesUsePianoRoll() const;
 
+        void useStepSequencer();
+
     private:
         QList<Item*> _items;
         bool _usePianoRoll;
