@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>995</width>
-    <height>427</height>
+    <height>568</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -36,6 +36,16 @@
     </item>
     <item row="3" column="0">
      <widget class="OperatorWidget" name="operatorWidget4" native="true"/>
+    </item>
+    <item row="4" column="0" colspan="3">
+     <widget class="PianoWidget" name="widget" native="true">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>192</height>
+       </size>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -79,6 +89,12 @@
    <class>AlgorithmWidget</class>
    <extends>QWidget</extends>
    <header>fmwidget/algorithmwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PianoWidget</class>
+   <extends>QWidget</extends>
+   <header>fmwidget/pianowidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

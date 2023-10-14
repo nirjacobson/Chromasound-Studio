@@ -122,7 +122,10 @@ void ChannelsWidget::update(const int index)
 
 void ChannelsWidget::select(const int index)
 {
+    _channelWidgets[index]->blockSignals(true);
     _channelWidgets[index]->setChecked(true);
+    _channelWidgets[index]->blockSignals(false);
+
     handleToggle(_channelWidgets[index], true);
 }
 
@@ -157,7 +160,9 @@ void ChannelsWidget::handleToggle(ChannelWidget* channelWidget, const bool selec
 {
     for (ChannelWidget* cw : _channelWidgets) {
         if (cw != channelWidget) {
+            cw->blockSignals(true);
             cw->setChecked(false);
+            cw->blockSignals(false);
         }
     }
 

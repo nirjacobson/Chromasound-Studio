@@ -122,6 +122,8 @@ void MainWindow::frame()
 
 void MainWindow::pianoRollTriggered(const int index)
 {
+    channelSelected(index);
+
     bool doesUsePianoRoll = _app->project().getFrontPattern().getTrack(index).doesUsePianoRoll();
     if (doesUsePianoRoll) {
         _app->project().getFrontPattern().getTrack(index).useStepSequencer();
@@ -238,16 +240,19 @@ void MainWindow::channelSelected(const int index)
 void MainWindow::toneTriggered(const int index)
 {
     _app->project().getChannel(index).setType(Channel::Type::TONE);
+    _channelsWidget->select(index);
 }
 
 void MainWindow::noiseTriggered(const int index)
 {
     _app->project().getChannel(index).setType(Channel::Type::NOISE);
+    _channelsWidget->select(index);
 }
 
 void MainWindow::fmTriggered(const int index)
 {
     _app->project().getChannel(index).setType(Channel::Type::FM);
+    _channelsWidget->select(index);
 }
 
 void MainWindow::channelNameChanged(const int index)

@@ -21,6 +21,7 @@ SOURCES += \
     fmwidget/envelopedisplaywidget.cpp \
     fmwidget/fmwidget.cpp \
     fmwidget/operatorwidget.cpp \
+    fmwidget/pianowidget.cpp \
     ganttwidget/ganttbottomwidget.cpp \
     midi/midiinput.cpp \
     midi/midipoller.cpp \
@@ -78,6 +79,7 @@ HEADERS += \
     fmwidget/envelopedisplaywidget.h \
     fmwidget/fmwidget.h \
     fmwidget/operatorwidget.h \
+    fmwidget/pianowidget.h \
     ganttwidget/ganttbottomwidget.h \
     midi/midiinput.h \
     midi/midipoller.h \
