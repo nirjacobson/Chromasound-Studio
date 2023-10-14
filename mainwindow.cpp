@@ -12,9 +12,10 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _noiseWidget(nullptr)
     , _fmWidget(nullptr)
 {
+    _midiInput->init();
+
     ui->setupUi(this);
 
-    _midiInput->init();
     connect(&_midiPoller, &MIDIPoller::receivedMessage, this, &MainWindow::handleMIDIMessage);
     _midiPoller.start();
 
