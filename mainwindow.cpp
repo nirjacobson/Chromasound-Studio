@@ -136,6 +136,7 @@ void MainWindow::pianoRollTriggered(const int index)
     PianoRollWidget* oldWidget = _pianoRollWidget;
 
     _pianoRollWidget = new PianoRollWidget(this, _app);
+    _pianoRollWidget->setWindowTitle(QString("%1: Piano Roll").arg(_app->project().getChannel(index).name()));
     connect(_pianoRollWidget, &PianoRollWidget::keyOn, this, &MainWindow::keyOn);
     connect(_pianoRollWidget, &PianoRollWidget::keyOff, this, &MainWindow::keyOff);
 
@@ -202,8 +203,10 @@ void MainWindow::channelSelected(const int index)
     _selectedChannel = index;
 
     _channelWindow->hide();
-    if (_pianoRollWidget)
+    if (_pianoRollWidget) {
         _pianoRollWidget->setTrack(_app->project().frontPattern(), index);
+        _pianoRollWidget->setWindowTitle(QString("%1: Piano Roll").arg(_app->project().getChannel(index).name()));
+    }
 
     QWidget* oldWidget = nullptr;
     switch (_app->project().getChannel(index).type()) {
@@ -272,6 +275,10 @@ void MainWindow::channelNameChanged(const int index)
                 _fmWidget->setWindowTitle(QString("%1: FM").arg(_app->project().getChannel(index).name()));
                 break;
         }
+    }
+
+    if (_pianoRollWidget) {
+        _pianoRollWidget->setWindowTitle(QString("%1: Piano Roll").arg(_app->project().getChannel(index).name()));
     }
 }
 
