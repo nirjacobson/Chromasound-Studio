@@ -11,6 +11,9 @@ class PianoWidget : public QWidget
 public:
     explicit PianoWidget(QWidget *parent = nullptr);
 
+    void pressKey(const int key);
+    void releaseKey(const int key);
+
 signals:
     void keyPressed(const char key);
     void keyReleased(const char key);
@@ -45,9 +48,6 @@ private:
     void drawOctaves(QPaintEvent* event, QPainter& painter);
 
     int keyAt(const QPoint& pos) const;
-
-    void pressKey(const int key);
-    void releaseKey(const int key);
 
 };
 

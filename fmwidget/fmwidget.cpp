@@ -9,6 +9,8 @@ FMWidget::FMWidget(QWidget *parent) :
 
     connect(ui->algorithmWidget, &AlgorithmWidget::algorithmChanged, this, &FMWidget::algorithmChanged);
     connect(ui->algorithmWidget, &AlgorithmWidget::feedbackChanged, this, &FMWidget::feedbackChanged);
+    connect(ui->pianoWidget, &PianoWidget::keyPressed, this, &FMWidget::keyPressed);
+    connect(ui->pianoWidget, &PianoWidget::keyReleased, this, &FMWidget::keyReleased);
 
     connect(ui->actionOpen, &QAction::triggered, this, &FMWidget::openTriggered);
     connect(ui->actionSave, &QAction::triggered, this, &FMWidget::saveTriggered);
@@ -30,6 +32,16 @@ void FMWidget::setSettings(FMChannelSettings* settings)
 
     ui->algorithmWidget->setAlgorithm(_settings->algorithm());
     ui->algorithmWidget->setFeedback(_settings->feedback());
+}
+
+void FMWidget::pressKey(const int key)
+{
+    ui->pianoWidget->pressKey(key);
+}
+
+void FMWidget::releaseKey(const int key)
+{
+    ui->pianoWidget->releaseKey(key);
 }
 
 void FMWidget::algorithmChanged(const int a)

@@ -21,6 +21,13 @@ public:
 
     void setSettings(FMChannelSettings* settings);
 
+    void pressKey(const int key);
+    void releaseKey(const int key);
+
+signals:
+    void keyPressed(const char key);
+    void keyReleased(const char key);
+
 private:
     Ui::FMWidget *ui;
     FMChannelSettings* _settings;
