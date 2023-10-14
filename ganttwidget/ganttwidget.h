@@ -33,6 +33,7 @@ class GanttWidget : public QWidget
         void setItemsMovableY(const bool movable);
 
         void setPositionFunction(std::function<float(void)> func);
+        void setHeaderPaintFunction(std::function<void (QPainter&, QRect, float, float, float)> func);
 
         void scrollVertically(const float percentage);
 

@@ -25,6 +25,7 @@ class GanttHeaderWidget : public ScrollableWidget
         void setCellBeats(float beats);
 
         void setPositionFunction(std::function<float(void)> func);
+        void setHeaderPaintFunction(std::function<void(QPainter&,QRect,float,float,float)> func);
 
         void scrollBy(const int pixels);
 
@@ -40,7 +41,6 @@ class GanttHeaderWidget : public ScrollableWidget
 
     private:
         static constexpr QColor BackgroundColor = QColor(64, 64, 64);
-        static constexpr QColor LoopColor = QColor(128, 192, 224);
         static constexpr QColor CursorColor = QColor(64, 192, 64);
 
         Application* _app;
@@ -56,6 +56,7 @@ class GanttHeaderWidget : public ScrollableWidget
         float playlength() const;
 
         std::function<float(void)> _positionFunction;
+        std::function<void(QPainter& painter, QRect rect, float left, float right, float bpp)> _headerPaintFunction;
 };
 
 #endif // GANTTHEADERWIDGET_H
