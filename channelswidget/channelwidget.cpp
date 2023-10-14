@@ -57,6 +57,9 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
 
     connect(ui->stepSequencer, &StepSequencerWidget::clicked, this, &ChannelWidget::stepSequencerClicked);
 
+    const Pattern& frontPattern = _app->project().getFrontPattern();
+    _pianoRollAction.setCheckable(true);
+    _pianoRollAction.setChecked(frontPattern.hasTrack(index) && frontPattern.getTrack(index).doesUsePianoRoll());
     _contextMenu.addAction(&_pianoRollAction);
 
     _contextMenu.addSeparator();

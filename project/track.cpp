@@ -88,6 +88,11 @@ bool Track::doesUsePianoRoll() const
     return _usePianoRoll;
 }
 
+void Track::useStepSequencer()
+{
+    _usePianoRoll = false;
+}
+
 Track::Item::Item(const float time, const Note& note)
     : _time(time)
     , _note(note)
