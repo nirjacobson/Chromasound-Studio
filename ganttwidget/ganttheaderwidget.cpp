@@ -11,6 +11,7 @@ GanttHeaderWidget::GanttHeaderWidget(QWidget *parent)
     , _cellBeats(1)
     , _snap(true)
     , _positionFunction([](){ return -1; })
+    , _headerPaintFunction([](QPainter&,QRect,float,float,float){})
 {
 
 }
@@ -55,6 +56,11 @@ void GanttHeaderWidget::setCellBeats(float beats)
 void GanttHeaderWidget::setPositionFunction(std::function<float ()> func)
 {
     _positionFunction = func;
+}
+
+void GanttHeaderWidget::setHeaderPaintFunction(std::function<void (QPainter&, QRect, float, float, float)> func)
+{
+    _headerPaintFunction = func;
 }
 
 void GanttHeaderWidget::scrollBy(const int pixels)
@@ -114,22 +120,7 @@ void GanttHeaderWidget::paintEvent(QPaintEvent*)
     float leftPosition = _left * beatsPerPixel;
     float rightPosition = leftPosition + (width() * beatsPerPixel);
 
-    if (_app->project().playlist().doesLoop()) {
-        float loopOffset = _app->project().playlist().loopOffset();
-
-        if (leftPosition <= loopOffset && loopOffset <= rightPosition) {
-            int loopOffsetPixel = (loopOffset - leftPosition) / beatsPerPixel;
-
-            QRect rect = QRect(QPoint(loopOffsetPixel, 0), QSize(height(), height()));
-            painter.setPen(QColor(LoopColor).darker());
-            painter.setBrush(QColor(LoopColor));
-
-            QPoint textPoint = rect.bottomLeft() + QPoint(4, -4);
-            painter.fillRect(rect, painter.brush());
-            painter.drawRect(rect);
-            painter.drawText(textPoint, "L");
-        }
-    }
+    _headerPaintFunction(painter, rect(), leftPosition, rightPosition, beatsPerPixel);
 
     float appPosition = _positionFunction();
 

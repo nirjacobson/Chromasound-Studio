@@ -116,6 +116,11 @@ void GanttWidget::setPositionFunction(std::function<float ()> func)
     ui->editorWidget->setPositionFunction(func);
 }
 
+void GanttWidget::setHeaderPaintFunction(std::function<void (QPainter&, QRect, float, float, float)> func)
+{
+    ui->headerWidget->setHeaderPaintFunction(func);
+}
+
 void GanttWidget::scrollVertically(const float percentage)
 {
     _leftWidget->setScrollPercentage(percentage);

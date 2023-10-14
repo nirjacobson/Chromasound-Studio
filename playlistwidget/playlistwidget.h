@@ -25,6 +25,8 @@ class PlaylistWidget : public QWidget
         void setTempo(int bpm);
 
     private:
+        static constexpr QColor LoopColor = QColor(128, 192, 224);
+
         Application* _app;
         Ui::PlaylistWidget *ui;
         PlaylistPatternsWidget* _patternsWidget;
