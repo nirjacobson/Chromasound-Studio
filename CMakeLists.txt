@@ -18,23 +18,23 @@ set(PROJECT_SOURCES
     channelswidget/channelswidget.cpp
     channelswidget/channelswidget.h
     channelswidget/channelswidget.ui
-    channelswidget/channelwidget.cpp
-    channelswidget/channelwidget.h
-    channelswidget/channelwidget.ui
-    channelswidget/led.cpp
-    channelswidget/led.h
-    channelswidget/prdisplaywidget.cpp
-    channelswidget/prdisplaywidget.h
-    channelswidget/rectled.cpp
-    channelswidget/rectled.h
+    channelswidget/channelwidget/channelwidget.cpp
+    channelswidget/channelwidget/channelwidget.h
+    channelswidget/channelwidget/channelwidget.ui
+    channelswidget/channelwidget/led.cpp
+    channelswidget/channelwidget/led.h
+    channelswidget/channelwidget/prdisplaywidget.cpp
+    channelswidget/channelwidget/prdisplaywidget.h
+    channelswidget/channelwidget/rectled.cpp
+    channelswidget/channelwidget/rectled.h
     channelswidget/stepcursorwidget.cpp
     channelswidget/stepcursorwidget.h
-    channelswidget/stepkeyswidget.cpp
-    channelswidget/stepkeyswidget.h
-    channelswidget/stepsequencerwidget.cpp
-    channelswidget/stepsequencerwidget.h
-    channelswidget/stepvelocitieswidget.cpp
-    channelswidget/stepvelocitieswidget.h
+    channelswidget/channelwidget/stepkeyswidget.cpp
+    channelswidget/channelwidget/stepkeyswidget.h
+    channelswidget/channelwidget/stepsequencerwidget.cpp
+    channelswidget/channelwidget/stepsequencerwidget.h
+    channelswidget/channelwidget/stepvelocitieswidget.cpp
+    channelswidget/channelwidget/stepvelocitieswidget.h
     fm-psg/fm-psg.h
     fm-psg/fm-psg_dummy.cpp
     fm-psg/fm-psg_dummy.h

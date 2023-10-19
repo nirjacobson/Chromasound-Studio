@@ -204,39 +204,39 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>RectLED</class>
+   <class>LED</class>
    <extends>QWidget</extends>
-   <header>channelswidget/rectled.h</header>
+   <header>channelswidget/channelwidget/led.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>LED</class>
+   <class>RectLED</class>
    <extends>QWidget</extends>
-   <header>channelswidget/led.h</header>
+   <header>channelswidget/channelwidget/rectled.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>StepSequencerWidget</class>
    <extends>QWidget</extends>
-   <header>channelswidget/stepsequencerwidget.h</header>
+   <header>channelswidget/channelwidget/stepsequencerwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>PRDisplayWidget</class>
    <extends>QWidget</extends>
-   <header>channelswidget/prdisplaywidget.h</header>
+   <header>channelswidget/channelwidget/prdisplaywidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>StepKeysWidget</class>
    <extends>QWidget</extends>
-   <header>channelswidget/stepkeyswidget.h</header>
+   <header>channelswidget/channelwidget/stepkeyswidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>StepVelocitiesWidget</class>
    <extends>QWidget</extends>
-   <header>channelswidget/stepvelocitieswidget.h</header>
+   <header>channelswidget/channelwidget/stepvelocitieswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
