@@ -7,7 +7,7 @@
 #include <QWindow>
 
 #include "application.h"
-#include "channelwidget.h"
+#include "channelwidget/channelwidget.h"
 #include "stepcursorwidget.h"
 
 namespace Ui {

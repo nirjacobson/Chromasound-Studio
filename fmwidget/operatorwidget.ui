@@ -638,7 +638,7 @@
   <customwidget>
    <class>LED</class>
    <extends>QWidget</extends>
-   <header>channelswidget/led.h</header>
+   <header>channelswidget/channelwidget/led.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

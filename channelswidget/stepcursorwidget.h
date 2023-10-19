@@ -5,7 +5,7 @@
 #include <QPainter>
 
 #include "application.h"
-#include "stepsequencerwidget.h"
+#include "channelwidget/stepsequencerwidget.h"
 
 class StepCursorWidget : public QWidget
 {
