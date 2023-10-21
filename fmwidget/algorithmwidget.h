@@ -4,6 +4,10 @@
 #include <QWidget>
 #include <QCommonStyle>
 
+#include "application.h"
+#include "project/channel/algorithmsettings.h"
+#include "commands/editalgorithmsettingscommand.h"
+
 namespace Ui {
     class AlgorithmWidget;
 }
@@ -16,17 +20,13 @@ class AlgorithmWidget : public QWidget
         explicit AlgorithmWidget(QWidget *parent = nullptr);
         ~AlgorithmWidget();
 
-        void setAlgorithm(const int alg);
-        void setFeedback(const int fb);
-
-    signals:
-        void algorithmChanged(const int a);
-        void feedbackChanged(const int fb);
+        void setApplication(Application* app);
+        void setSettings(AlgorithmSettings* settings);
 
     private:
         Ui::AlgorithmWidget *ui;
-        int _algorithm;
-        int _fb;
+        Application* _app;
+        AlgorithmSettings* _settings;
 
     private slots:
         void prevAlgorithm();

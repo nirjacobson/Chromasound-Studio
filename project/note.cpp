@@ -38,9 +38,9 @@ void Note::setVelocity(const int velocity)
     _velocity = velocity;
 }
 
-bool Note::operator==(const Note& note)
+bool Note::operator==(const Note& note) const
 {
-    return _key == note.key() && _duration == note.duration();
+    return _key == note.key() && _duration == note.duration() && _velocity == note.velocity();
 }
 
 Note::Note()

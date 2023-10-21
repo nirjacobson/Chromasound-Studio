@@ -444,7 +444,7 @@ void VGMStream::encodeSettingsItem(const StreamSettingsItem* item, QByteArray& d
             data.append(datum);
         }
 
-        datum = (fmcs->feedback() << 3) | fmcs->algorithm();
+        datum = (fmcs->algorithm().feedback() << 3) | fmcs->algorithm().algorithm();
         data.append((part == 1) ? 0x52 : 0x53);
         data.append(0xB0 + channel);
         data.append(datum);
@@ -520,7 +520,7 @@ void VGMStream::encodeNoteItem(const StreamNoteItem* item, QByteArray& data)
             data.append(0xA0 + channel);
             data.append(n & 0xFF);
 
-            QList<int> sls = slotsByAlg[fmcs->algorithm()];
+            QList<int> sls = slotsByAlg[fmcs->algorithm().algorithm()];
             for (int i = 0; i < sls.size(); i++) {
                 int offset = (sls[i] * 4) + channel;
                 int t1l = fmcs->operators()[sls[i]].envelopeSettings().t1l();

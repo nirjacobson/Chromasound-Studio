@@ -108,8 +108,10 @@ void PianoRollVelocitiesWidget::mousePressEvent(QMouseEvent* event)
         auto it = std::find_if(_items->begin(), _items->end(), [=](GanttItem* const item){ return item->time() <= mousePosition && mousePosition <= item->time() + barWidth * beatsPerPixel; });
 
         if (it != _items->end()) {
-            (*it)->setVelocity(velocityClicked);
-            update();
+            Track::Item* item = dynamic_cast<Track::Item*>(*it);
+            Note n = item->note();
+            n.setVelocity(velocityClicked);
+            _app->undoStack().push(new EditNoteCommand(_app->window(), item, item->time(), n));
         }
     }
 }

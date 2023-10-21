@@ -7,6 +7,7 @@
 #include "ganttwidget/ganttitem.h"
 #include "ganttwidget/ganttbottomwidget.h"
 #include "application.h"
+#include "commands/editnotecommand.h"
 
 class PianoRollVelocitiesWidget : public GanttBottomWidget
 {

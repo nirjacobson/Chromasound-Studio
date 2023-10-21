@@ -19,6 +19,11 @@
 #include "midi/midiinput.h"
 #include "midi/midipoller.h"
 
+#include "commands/movechanneldowncommand.h"
+#include "commands/movechannelupcommand.h"
+#include "commands/deletechannelcommand.h"
+#include "commands/addchannelcommand.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -30,6 +35,19 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr, Application* app = nullptr);
     ~MainWindow();
+
+    void moveChannelUp(const int index);
+    void moveChannelDown(const int index);
+    Channel deleteChannel(const int index);
+    void addChannel(const int index, const Channel& channel);
+    void addChannel();
+    int getChannelVolume(const int index);
+    void setChannelVolume(const int index, const int volume);
+
+    int channels() const;
+
+    void doUpdate();
+    void channelSettingsUpdated();
 
 private slots:
     void play();
@@ -89,8 +107,6 @@ private:
 
 
     QTimer _timer;
-
-    void doUpdate();
 
     // QWidget interface
 protected:

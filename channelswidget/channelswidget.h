@@ -9,6 +9,9 @@
 #include "application.h"
 #include "channelwidget/channelwidget.h"
 #include "stepcursorwidget.h"
+#include "commands/addnotecommand.h"
+#include "commands/removenotecommand.h"
+#include "commands/editnotecommand.h"
 
 namespace Ui {
     class ChannelsWidget;
@@ -25,6 +28,7 @@ class ChannelsWidget : public QWidget
         void rebuild();
         void remove(const int index);
         void add(const int index);
+        void setVolume(const int index, const int volume);
 
         void update();
         void update(const int index);

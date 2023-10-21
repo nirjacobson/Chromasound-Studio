@@ -35,7 +35,7 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
 
     connect(ui->ganttWidget, &GanttWidget::headerClicked, this, &PlaylistWidget::ganttHeaderClicked);
     connect(ui->ganttWidget, &GanttWidget::editorClicked, this, &PlaylistWidget::ganttEditorClicked);
-    connect(ui->ganttWidget, &GanttWidget::itemsChanged, this, &PlaylistWidget::ganttItemsChanged);
+    connect(ui->ganttWidget, &GanttWidget::itemChanged, this, &PlaylistWidget::ganttItemChanged);
 }
 
 PlaylistWidget::~PlaylistWidget()
@@ -60,15 +60,15 @@ void PlaylistWidget::ganttEditorClicked(Qt::MouseButton button, int row, float t
 {
     if (button == Qt::LeftButton) {
         if (_app->project().getPattern(row).getLength() > 0) {
-            _app->project().playlist().addItem(time, row);
+            _app->undoStack().push(new AddPlaylistItemCommand(_app->window(), _app->project().playlist(), time, row));
         }
     } else {
-        _app->project().playlist().removeItem(time, row);
+        _app->undoStack().push(new RemovePlaylistItemCommand(_app->window(), _app->project().playlist(), time, row));
     }
-    update();
 }
 
-void PlaylistWidget::ganttItemsChanged()
+void PlaylistWidget::ganttItemChanged(GanttItem* item, const float toTime, const int toRow, const float toDuration)
 {
-    update();
+    _app->undoStack().push(new EditPlaylistCommand(_app->window(), dynamic_cast<Playlist::Item*>(item), toTime));
 }
+

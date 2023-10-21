@@ -16,6 +16,14 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
 
     ui->setupUi(this);
 
+    QAction* undoAction = _app->undoStack().createUndoAction(this, "Undo");
+    undoAction->setShortcuts(QKeySequence::Undo);
+    ui->menuEdit->addAction(undoAction);
+
+    QAction* redoAction = _app->undoStack().createRedoAction(this, "Redo");
+    redoAction->setShortcuts(QKeySequence::Redo);
+    ui->menuEdit->addAction(redoAction);
+
     connect(&_midiPoller, &MIDIPoller::receivedMessage, this, &MainWindow::handleMIDIMessage);
     _midiPoller.start();
 
@@ -85,6 +93,83 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::moveChannelUp(const int index)
+{
+    if (index != 0) {
+        bool isSelected = _channelsWidget->selected() == index;
+        bool isOtherSelected = _channelsWidget->selected() == index - 1;
+
+        _app->project().moveChannelUp(index);
+
+        _channelsWidget->update(index);
+        _channelsWidget->update(index-1);
+
+        if (isSelected)
+            _channelsWidget->select(index - 1);
+        if (isOtherSelected)
+            _channelsWidget->select(index);
+    }
+}
+
+void MainWindow::moveChannelDown(const int index)
+{
+    if (index != _app->project().channels()-1) {
+        bool isSelected = _channelsWidget->selected() == index;
+        bool isOtherSelected = _channelsWidget->selected() == index + 1;
+
+        _app->project().moveChannelDown(index);
+
+        _channelsWidget->update(index);
+        _channelsWidget->update(index+1);
+
+        if (isSelected)
+            _channelsWidget->select(index + 1);
+        if (isOtherSelected)
+            _channelsWidget->select(index);
+    }
+}
+
+Channel MainWindow::deleteChannel(const int index)
+{
+    Channel chan = _app->project().getChannel(index);
+
+    _app->project().removeChannel(index);
+    _channelsWidget->remove(index);
+
+    if (_channelsWidget->activeChannel() == index) {
+        _channelsWidget->select(index);
+    }
+
+    return chan;
+}
+
+void MainWindow::addChannel(const int index, const Channel& channel)
+{
+    _app->project().addChannel(index, channel);
+    _channelsWidget->add(index);
+}
+
+void MainWindow::addChannel()
+{
+    _app->project().addChannel();
+    _channelsWidget->add(_app->project().channels() - 1);
+}
+
+int MainWindow::getChannelVolume(const int index)
+{
+    return _app->project().getChannel(index).settings().volume();
+}
+
+void MainWindow::setChannelVolume(const int index, const int volume)
+{
+    _channelsWidget->setVolume(index, volume);
+}
+
+int MainWindow::channels() const
+{
+    return _app->project().channels();
+}
+
 void MainWindow::play()
 {
     _timer.start();
@@ -152,50 +237,25 @@ void MainWindow::pianoRollTriggered(const int index)
 
 void MainWindow::deleteChannelTriggered(const int index)
 {
-    _app->project().removeChannel(index);
-    _channelsWidget->remove(index);
+    _app->undoStack().push(new DeleteChannelCommand(this, _app->project().getChannel(index), index));
 }
 
 void MainWindow::channelAdded()
 {
-    _app->project().addChannel();
-    _channelsWidget->add(_app->project().channels() - 1);
+    _app->undoStack().push(new AddChannelCommand(this));
 }
 
 void MainWindow::moveChannelUpTriggered(const int index)
 {
-
     if (index != 0) {
-        bool isSelected = _channelsWidget->selected() == index;
-        bool isOtherSelected = _channelsWidget->selected() == index - 1;
-
-        _app->project().moveChannelUp(index);
-
-        _channelsWidget->update(index);
-        _channelsWidget->update(index-1);
-
-        if (isSelected)
-            _channelsWidget->select(index - 1);
-        if (isOtherSelected)
-            _channelsWidget->select(index);
+        _app->undoStack().push(new MoveChannelUpCommand(this, index));
     }
 }
 
 void MainWindow::moveChannelDownTriggered(const int index)
 {
     if (index != _app->project().channels()-1) {
-        bool isSelected = _channelsWidget->selected() == index;
-        bool isOtherSelected = _channelsWidget->selected() == index + 1;
-
-        _app->project().moveChannelDown(index);
-
-        _channelsWidget->update(index);
-        _channelsWidget->update(index+1);
-
-        if (isSelected)
-            _channelsWidget->select(index + 1);
-        if (isOtherSelected)
-            _channelsWidget->select(index);
+        _app->undoStack().push(new MoveChannelDownCommand(this, index));
     }
 }
 
@@ -213,7 +273,7 @@ void MainWindow::channelSelected(const int index)
     switch (_app->project().getChannel(index).type()) {
         case Channel::Type::NOISE:
             oldWidget = _noiseWidget;
-            _noiseWidget = new NoiseWidget(this);
+            _noiseWidget = new NoiseWidget(this, _app);
             _noiseWidget->setSettings(dynamic_cast<NoiseChannelSettings*>(&_app->project().getChannel(index).settings()));
             _noiseWidget->setWindowTitle(QString("%1: Noise").arg(_app->project().getChannel(index).name()));
             _fmWidget = nullptr;
@@ -222,7 +282,7 @@ void MainWindow::channelSelected(const int index)
             break;
         case Channel::Type::FM:
             oldWidget = _fmWidget;
-            _fmWidget = new FMWidget(this);
+            _fmWidget = new FMWidget(this, _app);
             connect(_fmWidget, &FMWidget::keyPressed, this, &MainWindow::keyOn);
             connect(_fmWidget, &FMWidget::keyReleased, this, &MainWindow::keyOff);
             _fmWidget->setSettings(dynamic_cast<FMChannelSettings*>(&_app->project().getChannel(index).settings()));
@@ -384,6 +444,12 @@ void MainWindow::doUpdate()
     _channelsWidget->update();
     _playlistWidget->update();
     if (_pianoRollWidget) _pianoRollWidget->update();
+}
+
+void MainWindow::channelSettingsUpdated()
+{
+    if (_noiseWidget) _noiseWidget->doUpdate();
+    if (_fmWidget) _fmWidget->doUpdate();
 }
 
 void MainWindow::showEvent(QShowEvent*)

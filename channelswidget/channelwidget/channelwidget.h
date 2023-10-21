@@ -10,6 +10,7 @@
 #include <iostream>
 
 #include "application.h"
+#include "commands/editchannelvolumecommand.h"
 
 namespace Ui {
     class ChannelWidget;
@@ -32,6 +33,7 @@ class ChannelWidget : public QWidget
 
         int index() const;
         void setIndex(const int idx);
+        void setVolume(const int volume);
 
         void showStepKeysWidget();
         void showStepVelsWidget();
@@ -79,7 +81,6 @@ class ChannelWidget : public QWidget
         void ledClicked(bool shift);
         void buttonPressed();
         void buttonContextMenuRequested(const QPoint& p);
-        void stepSequencerClicked();
         void pianoRollWasTriggered();
         void volumeDialChanged(const int val);
 

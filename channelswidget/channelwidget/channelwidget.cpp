@@ -55,8 +55,6 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     connect(ui->stepKeys, &StepKeysWidget::clicked, this, &ChannelWidget::pianoKeyClicked);
     connect(ui->stepVelocities, &StepVelocitiesWidget::clicked, this, &ChannelWidget::velocityClicked);
 
-    connect(ui->stepSequencer, &StepSequencerWidget::clicked, this, &ChannelWidget::stepSequencerClicked);
-
     const Pattern& frontPattern = _app->project().getFrontPattern();
     _pianoRollAction.setCheckable(true);
     _pianoRollAction.setChecked(frontPattern.hasTrack(index) && frontPattern.getTrack(index).doesUsePianoRoll());
@@ -167,6 +165,14 @@ void ChannelWidget::setIndex(const int idx)
    update();
 }
 
+void ChannelWidget::setVolume(const int volume)
+{
+   _app->project().getChannel(_index).settings().setVolume(volume);
+   ui->volumeDial->blockSignals(true);
+   ui->volumeDial->setValue(volume);
+   ui->volumeDial->blockSignals(false);
+}
+
 void ChannelWidget::showStepKeysWidget()
 {
    ui->stepsStackedWidget->setCurrentIndex(0);
@@ -225,11 +231,6 @@ void ChannelWidget::buttonContextMenuRequested(const QPoint& p)
     _contextMenu.exec(mapToGlobal(p));
 }
 
-void ChannelWidget::stepSequencerClicked()
-{
-    update();
-}
-
 void ChannelWidget::pianoRollWasTriggered()
 {
     ui->pushButton->setChecked(true);
@@ -239,7 +240,7 @@ void ChannelWidget::pianoRollWasTriggered()
 
 void ChannelWidget::volumeDialChanged(const int val)
 {
-    _app->project().getChannel(_index).settings().setVolume(val);
+    _app->undoStack().push(new EditChannelVolumeCommand(_app->window(), _index, val));
 }
 
 void ChannelWidget::paintEvent(QPaintEvent* event)

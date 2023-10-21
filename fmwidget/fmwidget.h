@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QFileDialog>
 
+#include "application.h"
 #include "project/channel/fmchannelsettings.h"
 #include "bson.h"
 
@@ -16,7 +17,7 @@ class FMWidget : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit FMWidget(QWidget *parent = nullptr);
+    explicit FMWidget(QWidget *parent = nullptr, Application* app = nullptr);
     ~FMWidget();
 
     void setSettings(FMChannelSettings* settings);
@@ -24,17 +25,19 @@ public:
     void pressKey(const int key);
     void releaseKey(const int key);
 
+    void doUpdate();
+
 signals:
     void keyPressed(const char key, const int velocity);
     void keyReleased(const char key);
 
 private:
     Ui::FMWidget *ui;
+    Application* _app;
+
     FMChannelSettings* _settings;
 
 private slots:
-    void algorithmChanged(const int a);
-    void feedbackChanged(const int fb);
     void openTriggered();
     void saveTriggered();
 };

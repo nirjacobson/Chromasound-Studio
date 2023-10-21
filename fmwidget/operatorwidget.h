@@ -3,7 +3,9 @@
 
 #include <QWidget>
 
+#include "application.h"
 #include "project/channel/operatorsettings.h"
+#include "commands/editoperatorsettingscommand.h"
 
 namespace Ui {
     class OperatorWidget;
@@ -17,10 +19,14 @@ class OperatorWidget : public QWidget
         explicit OperatorWidget(QWidget *parent = nullptr);
         ~OperatorWidget();
 
+        void setApplication(Application* app);
+
         void setSettings(OperatorSettings* settings);
 
     private:
         Ui::OperatorWidget *ui;
+        Application* _app;
+
         OperatorSettings* _settings;
 
         int dtToIndex(const int dt) const;

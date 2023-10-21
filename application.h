@@ -4,12 +4,15 @@
 #include <QApplication>
 #include <QList>
 #include <QElapsedTimer>
+#include <QUndoStack>
 
 #include "project/project.h"
 #include "project/vgmstream.h"
 #include "fm-psg/fm-psg.h"
 #include "fm-psg/fm-psg_dummy.h"
 #include "fm-psg/fm-psg_impl.h"
+
+class MainWindow;
 
 class Application : public QApplication
 {
@@ -26,13 +29,21 @@ class Application : public QApplication
         float position() const;
         bool isPlaying() const;
 
+        void setWindow(MainWindow* window);
+        void showWindow();
+        MainWindow* window();
+
         Project& project();
 
         void keyOn(const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity);
         void keyOff(int key);
 
+        QUndoStack& undoStack();
+
     private:
-        static Application* _instance;
+        MainWindow* _mainWindow;
+        QUndoStack _undoStack;
+
         FM_PSG* _fmPSG;
 
         Project _project;

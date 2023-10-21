@@ -1,8 +1,6 @@
 #include "fmchannelsettings.h"
 
 FMChannelSettings::FMChannelSettings()
-    : _algorithm(0)
-    , _feedback(0)
 {
 
 }
@@ -17,24 +15,14 @@ const FMChannelSettings::FourOperatorSettings& FMChannelSettings::operators() co
     return _operators;
 }
 
-int FMChannelSettings::algorithm() const
+AlgorithmSettings& FMChannelSettings::algorithm()
 {
     return _algorithm;
 }
 
-int FMChannelSettings::feedback() const
+const AlgorithmSettings& FMChannelSettings::algorithm() const
 {
-    return _feedback;
-}
-
-void FMChannelSettings::setAlgorithm(const int alg)
-{
-    _algorithm = alg;
-}
-
-void FMChannelSettings::setFeedback(const int fb)
-{
-    _feedback = fb;
+    return _algorithm;
 }
 
 bson_t FMChannelSettings::toBSON() const
@@ -54,8 +42,9 @@ bson_t FMChannelSettings::toBSON() const
     }
     bson_append_array_end(&bson, &operators);
 
-    BSON_APPEND_INT32(&bson, "algorithm", _algorithm);
-    BSON_APPEND_INT32(&bson, "feedback", _feedback);
+    bson_t algorithm = _algorithm.toBSON();
+
+    BSON_APPEND_DOCUMENT(&bson, "algorithm", &algorithm);
 
     return bson;
 }
@@ -69,7 +58,6 @@ void FMChannelSettings::fromBSON(bson_iter_t& bson)
     bson_iter_t op;
 
     bson_iter_t algorithm;
-    bson_iter_t feedback;
 
     int i = 0;
     if (bson_iter_find_descendant(&bson, "operators", &operators) && BSON_ITER_HOLDS_ARRAY(&operators) && bson_iter_recurse(&operators, &child)) {
@@ -78,17 +66,14 @@ void FMChannelSettings::fromBSON(bson_iter_t& bson)
             _operators[i++].fromBSON(op);
         }
     }
-    if (bson_iter_find_descendant(&bson, "algorithm", &algorithm) && BSON_ITER_HOLDS_INT(&algorithm)) {
-        _algorithm = bson_iter_int32(&algorithm);
-    }
-    if (bson_iter_find_descendant(&bson, "feedback", &feedback) && BSON_ITER_HOLDS_INT(&feedback)) {
-        _feedback = bson_iter_int32(&feedback);
+
+    if (bson_iter_find_descendant(&bson, "algorithm", &algorithm) && BSON_ITER_HOLDS_DOCUMENT(&algorithm) && bson_iter_recurse(&algorithm, &algorithm)) {
+        _algorithm.fromBSON(algorithm);
     }
 }
 
 bool FMChannelSettings::operator==(const FMChannelSettings& other) const
 {
     return _algorithm == other._algorithm &&
-           _feedback == other._feedback &&
            std::equal(std::begin(_operators), std::end(_operators), std::begin(other._operators));
 }

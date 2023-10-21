@@ -7,6 +7,8 @@
 #include <QMouseEvent>
 
 #include "application.h"
+#include "commands/addnotecommand.h"
+#include "commands/removenotecommand.h"
 
 class StepSequencerWidget : public QWidget
 {
@@ -19,9 +21,6 @@ class StepSequencerWidget : public QWidget
 
         void setApplication(Application* app);
         void setIndex(const int i);
-
-    signals:
-        void clicked();
 
     protected:
         void paintEvent(QPaintEvent*);

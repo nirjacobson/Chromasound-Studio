@@ -39,7 +39,7 @@ class GanttEditorWidget : public QWidget
         void horizontalScroll(const int pixels);
         void verticalScroll(const int pixels);
         void clicked(Qt::MouseButton button, int row, float time);
-        void itemsChanged();
+        void itemChanged(GanttItem* item, const float toTime, const int toRow, const float toDuration);
         void itemReleased(const GanttItem* item);
 
     protected:

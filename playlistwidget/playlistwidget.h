@@ -5,6 +5,9 @@
 
 #include "application.h"
 #include "playlistpatternswidget.h"
+#include "commands/addplaylistitemcommand.h"
+#include "commands/removeplaylistitemcommand.h"
+#include "commands/editplaylistcommand.h"
 
 namespace Ui {
     class PlaylistWidget;
@@ -34,7 +37,7 @@ class PlaylistWidget : public QWidget
     private slots:
         void ganttHeaderClicked(Qt::MouseButton button, float time);
         void ganttEditorClicked(Qt::MouseButton button, int row, float time);
-        void ganttItemsChanged();
+        void ganttItemChanged(GanttItem* item, const float toTime, const int toRow, const float toDuration);
 };
 
 #endif // PLAYLISTWIDGET_H
