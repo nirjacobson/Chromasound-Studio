@@ -224,7 +224,7 @@ void GanttEditorWidget::mousePressEvent(QMouseEvent* event)
         }
         emit clicked(Qt::LeftButton, row, _snap ? mousePositionSnapped : mousePosition);
     } else {
-        emit clicked(Qt::RightButton, row, mousePosition);
+        emit clicked(Qt::RightButton, row, _snap ? mousePositionSnapped : mousePosition);
     }
 }
 
@@ -257,35 +257,38 @@ void GanttEditorWidget::mouseMoveEvent(QMouseEvent* event)
 
     float time;
     float end;
+    int newRow;
     if (_itemUnderCursorSelected) {
         switch (_cursorPositionOverItem) {
             case 0:
                 time = _itemUnderCursor->time();
                 end = time + _itemUnderCursor->duration();
                 if (_itemsResizable) {
-                    _itemUnderCursor->setTime(_snap ? mousePositionSnapped : mousePosition);
-                    _itemUnderCursor->setDuration(end - (_snap ? mousePositionSnapped : mousePosition));
-                    emit itemsChanged();
+                    emit itemChanged(_itemUnderCursor,
+                                     _snap ? mousePositionSnapped : mousePosition,
+                                     _itemUnderCursor->row(),
+                                     end - (_snap ? mousePositionSnapped : mousePosition));
                 }
                 break;
             case 1:
+                time = _itemUnderCursor->time();
+                newRow = _itemUnderCursor->row();
                 if (_itemsMovableX)
-                    _itemUnderCursor->setTime(_snap ? mousePositionSnapped : mousePosition);
+                    time = _snap ? mousePositionSnapped : mousePosition;
                 if (_itemsMovableY)
-                    _itemUnderCursor->setRow(row);
-                if (_itemsMovableX || _itemsMovableY)
-                    emit itemsChanged();
+                    newRow = row;
+
+                if (_itemsMovableX || _itemsMovableY){
+                    emit itemChanged(_itemUnderCursor, time, newRow, _itemUnderCursor->duration());
+                }
                 break;
             case 2:
                 if (_itemsResizable) {
                     time = _itemUnderCursor->time();
-                    _itemUnderCursor->setDuration((_snap ? mousePositionSnapped : mousePosition) - time);
-                    emit itemsChanged();
+                    emit itemChanged(_itemUnderCursor, time, _itemUnderCursor->row(), (_snap ? mousePositionSnapped : mousePosition) - time);
                 }
                 break;
         }
-
-        update();
     } else {
         _itemUnderCursor = nullptr;
         float delta = beatsPerPixel * 4;

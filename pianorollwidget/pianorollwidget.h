@@ -6,6 +6,9 @@
 #include "application.h"
 #include "pianorollkeyswidget.h"
 #include "pianorollvelocitieswidget.h"
+#include "commands/addnotecommand.h"
+#include "commands/removenotecommand.h"
+#include "commands/editnotecommand.h"
 
 namespace Ui {
     class PianoRollWidget;
@@ -43,7 +46,7 @@ class PianoRollWidget : public QWidget
 
     private slots:
         void ganttClicked(Qt::MouseButton button, int row, float time);
-        void ganttItemsChanged();
+        void ganttItemChanged(GanttItem* item, const float toTime, const int toRow, const float toDuration);
         void ganttItemReleased(const GanttItem* item);
 };
 

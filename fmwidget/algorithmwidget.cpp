@@ -4,8 +4,6 @@
 AlgorithmWidget::AlgorithmWidget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::AlgorithmWidget)
-    , _algorithm(0)
-    , _fb(0)
 {
     ui->setupUi(this);
 
@@ -25,57 +23,45 @@ AlgorithmWidget::~AlgorithmWidget()
     delete ui;
 }
 
-void AlgorithmWidget::setAlgorithm(const int alg)
+void AlgorithmWidget::setApplication(Application* app)
 {
-    _algorithm = alg;
-    ui->prevButton->setEnabled(_algorithm != 0);
-    ui->nextButton->setEnabled(_algorithm != 7);
-
-    ui->displayWidget->setAlgorithm(_algorithm);
-    ui->algorithmLabel->setText(QString::number(_algorithm));
-
-    emit algorithmChanged(alg);
+    _app = app;
 }
 
-void AlgorithmWidget::setFeedback(const int fb)
+void AlgorithmWidget::setSettings(AlgorithmSettings* settings)
 {
-    _fb = fb;
+    _settings = settings;
 
-    ui->displayWidget->setFeedback(_fb);
+    ui->prevButton->setEnabled(_settings->algorithm() != 0);
+    ui->nextButton->setEnabled(_settings->algorithm() != 7);
+
+    ui->displayWidget->setAlgorithm(_settings->algorithm());
+    ui->displayWidget->setFeedback(_settings->feedback());
+    ui->algorithmLabel->setText(QString::number(_settings->algorithm()));
+
     ui->fbDial->blockSignals(true);
-    ui->fbDial->setValue(fb);
+    ui->fbDial->setValue(_settings->feedback());
     ui->fbDial->blockSignals(false);
-    ui->fbValueLabel->setText(QString::number(_fb));
+    ui->fbValueLabel->setText(QString::number(_settings->feedback()));
 }
 
 void AlgorithmWidget::prevAlgorithm()
 {
-    ui->nextButton->setEnabled(true);
-    ui->prevButton->setEnabled(--_algorithm != 0);
-
-    ui->displayWidget->setAlgorithm(_algorithm);
-    ui->algorithmLabel->setText(QString::number(_algorithm));
-
-    emit algorithmChanged(_algorithm);
+    AlgorithmSettings newSettings(*_settings);
+    newSettings.setAlgorithm(newSettings.algorithm() - 1);
+    _app->undoStack().push(new EditAlgorithmSettingsCommand(_app->window(), *_settings, newSettings));
 }
 
 void AlgorithmWidget::nextAlgorithm()
 {
-    ui->prevButton->setEnabled(true);
-    ui->nextButton->setEnabled(++_algorithm != 7);
-
-    ui->displayWidget->setAlgorithm(_algorithm);
-    ui->algorithmLabel->setText(QString::number(_algorithm));
-
-    emit algorithmChanged(_algorithm);
+    AlgorithmSettings newSettings(*_settings);
+    newSettings.setAlgorithm(newSettings.algorithm() + 1);
+    _app->undoStack().push(new EditAlgorithmSettingsCommand(_app->window(), *_settings, newSettings));
 }
 
 void AlgorithmWidget::feedbackDialChanged(const int feedback)
 {
-    _fb = feedback;
-
-    ui->displayWidget->setFeedback(_fb);
-    ui->fbValueLabel->setText(QString::number(_fb));
-
-    emit feedbackChanged(_fb);
+    AlgorithmSettings newSettings(*_settings);
+    newSettings.setFeedback(feedback);
+    _app->undoStack().push(new EditAlgorithmSettingsCommand(_app->window(), *_settings, newSettings));
 }

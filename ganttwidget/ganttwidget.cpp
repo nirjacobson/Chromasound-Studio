@@ -28,7 +28,7 @@ GanttWidget::GanttWidget(QWidget *parent, Application* app) :
     connect(ui->snapCheckBox, &QCheckBox::clicked, this, &GanttWidget::snapClicked);
     connect(ui->headerWidget, &GanttHeaderWidget::clicked, this, &GanttWidget::headerClicked);
     connect(ui->editorWidget, &GanttEditorWidget::clicked, this, &GanttWidget::editorClicked);
-    connect(ui->editorWidget, &GanttEditorWidget::itemsChanged, this, &GanttWidget::itemsChanged);
+    connect(ui->editorWidget, &GanttEditorWidget::itemChanged, this, &GanttWidget::itemChanged);
     connect(ui->editorWidget, &GanttEditorWidget::horizontalScroll, this, &GanttWidget::wheelHorizontalScroll);
     connect(ui->editorWidget, &GanttEditorWidget::verticalScroll, this, &GanttWidget::wheelVerticalScroll);
     connect(ui->editorWidget, &GanttEditorWidget::itemReleased, this, &GanttWidget::itemReleased);

@@ -53,6 +53,7 @@ class Project
         const QList<Pattern*>& patterns() const;
 
         void addChannel();
+        void addChannel(const int index, const Channel& channel);
 
         Project& operator=(Project&& src);
         Project(Project&& o);

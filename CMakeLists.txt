@@ -109,6 +109,8 @@ set(PROJECT_SOURCES
     project/channel/settings.h
     project/channel/tonechannelsettings.cpp
     project/channel/tonechannelsettings.h
+    project/channel/algorithmsettings.h
+    project/channel/algorithmsettings.cpp
     project/note.cpp
     project/note.h
     project/pattern.cpp
@@ -128,6 +130,10 @@ set(PROJECT_SOURCES
     topwidget/topwidget.cpp
     topwidget/topwidget.h
     topwidget/topwidget.ui
+    commands/addnotecommand.h
+    commands/addnotecommand.cpp
+    commands/removenotecommand.h
+    commands/removenotecommand.cpp
     application.cpp
     application.h
     bson.cpp
@@ -137,6 +143,30 @@ set(PROJECT_SOURCES
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
+    commands/editnotecommand.h
+    commands/editnotecommand.cpp
+    commands/movechanneldowncommand.h
+    commands/movechanneldowncommand.cpp
+    commands/movechannelupcommand.h
+    commands/movechannelupcommand.cpp
+    commands/deletechannelcommand.h
+    commands/deletechannelcommand.cpp
+    commands/addchannelcommand.h
+    commands/addchannelcommand.cpp
+    commands/editchannelvolumecommand.h
+    commands/editchannelvolumecommand.cpp
+    commands/editplaylistcommand.h
+    commands/editplaylistcommand.cpp
+    commands/addplaylistitemcommand.h
+    commands/addplaylistitemcommand.cpp
+    commands/removeplaylistitemcommand.h
+    commands/removeplaylistitemcommand.cpp
+    commands/editnoisechannelsettingscommand.h
+    commands/editnoisechannelsettingscommand.cpp
+    commands/editoperatorsettingscommand.h
+    commands/editoperatorsettingscommand.cpp
+    commands/editalgorithmsettingscommand.h
+    commands/editalgorithmsettingscommand.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

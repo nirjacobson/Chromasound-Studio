@@ -17,7 +17,7 @@ class Note
         void setDuration(const float duration);
         void setVelocity(const int velocity);
 
-        bool operator==(const Note& note);
+        bool operator==(const Note& note) const;
 
     private:
         Note();

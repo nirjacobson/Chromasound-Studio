@@ -1,12 +1,12 @@
 #include "application.h"
-
-Application* Application::_instance = nullptr;
+#include "mainwindow.h"
 
 Application::Application(int &argc, char **argv, int flags)
     : QApplication(argc, argv, flags)
+    , _undoStack(this)
     , _paused(false)
+    , _mainWindow(nullptr)
 {
-
     const char* dummy_fm_psg = std::getenv("DUMMY_FM_PSG");
     bool dummy = dummy_fm_psg != nullptr;
 
@@ -19,6 +19,7 @@ Application::Application(int &argc, char **argv, int flags)
 
 Application::~Application()
 {
+    delete _mainWindow;
     delete _fmPSG;
 }
 
@@ -67,6 +68,21 @@ bool Application::isPlaying() const
     return _fmPSG->isPlaying();
 }
 
+void Application::setWindow(MainWindow* window)
+{
+    _mainWindow = window;
+}
+
+void Application::showWindow()
+{
+    _mainWindow->show();
+}
+
+MainWindow* Application::window()
+{
+    return _mainWindow;
+}
+
 Project& Application::project()
 {
     return _project;
@@ -80,5 +96,10 @@ void Application::keyOn(const Channel::Type channelType, const ChannelSettings& 
 void Application::keyOff(int key)
 {
     _fmPSG->keyOff(key);
+}
+
+QUndoStack& Application::undoStack()
+{
+    return _undoStack;
 }
 

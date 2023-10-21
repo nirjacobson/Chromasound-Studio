@@ -1,14 +1,20 @@
 #include "fmwidget.h"
 #include "ui_fmwidget.h"
 
-FMWidget::FMWidget(QWidget *parent) :
+FMWidget::FMWidget(QWidget *parent, Application* app) :
     QMainWindow(parent),
-    ui(new Ui::FMWidget)
+    ui(new Ui::FMWidget),
+    _app(app)
 {
     ui->setupUi(this);
 
-    connect(ui->algorithmWidget, &AlgorithmWidget::algorithmChanged, this, &FMWidget::algorithmChanged);
-    connect(ui->algorithmWidget, &AlgorithmWidget::feedbackChanged, this, &FMWidget::feedbackChanged);
+    ui->operatorWidget1->setApplication(app);
+    ui->operatorWidget2->setApplication(app);
+    ui->operatorWidget3->setApplication(app);
+    ui->operatorWidget4->setApplication(app);
+
+    ui->algorithmWidget->setApplication(app);
+
     connect(ui->pianoWidget, &PianoWidget::keyPressed, this, &FMWidget::keyPressed);
     connect(ui->pianoWidget, &PianoWidget::keyReleased, this, &FMWidget::keyReleased);
 
@@ -25,13 +31,25 @@ void FMWidget::setSettings(FMChannelSettings* settings)
 {
     _settings = settings;
 
+    ui->operatorWidget1->blockSignals(true);
     ui->operatorWidget1->setSettings(&settings->operators()[0]);
-    ui->operatorWidget2->setSettings(&settings->operators()[1]);
-    ui->operatorWidget3->setSettings(&settings->operators()[2]);
-    ui->operatorWidget4->setSettings(&settings->operators()[3]);
+    ui->operatorWidget1->blockSignals(false);
 
-    ui->algorithmWidget->setAlgorithm(_settings->algorithm());
-    ui->algorithmWidget->setFeedback(_settings->feedback());
+    ui->operatorWidget2->blockSignals(true);
+    ui->operatorWidget2->setSettings(&settings->operators()[1]);
+    ui->operatorWidget2->blockSignals(false);
+
+    ui->operatorWidget3->blockSignals(true);
+    ui->operatorWidget3->setSettings(&settings->operators()[2]);
+    ui->operatorWidget3->blockSignals(false);
+
+    ui->operatorWidget4->blockSignals(true);
+    ui->operatorWidget4->setSettings(&settings->operators()[3]);
+    ui->operatorWidget4->blockSignals(false);
+
+    ui->algorithmWidget->blockSignals(true);
+    ui->algorithmWidget->setSettings(&settings->algorithm());
+    ui->algorithmWidget->blockSignals(false);
 }
 
 void FMWidget::pressKey(const int key)
@@ -44,16 +62,10 @@ void FMWidget::releaseKey(const int key)
     ui->pianoWidget->releaseKey(key);
 }
 
-void FMWidget::algorithmChanged(const int a)
+void FMWidget::doUpdate()
 {
-    _settings->setAlgorithm(a);
+    setSettings(_settings);
 }
-
-void FMWidget::feedbackChanged(const int fb)
-{
-    _settings->setFeedback(fb);
-}
-
 
 void FMWidget::openTriggered()
 {

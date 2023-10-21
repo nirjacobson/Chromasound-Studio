@@ -97,15 +97,13 @@ void StepSequencerWidget::mousePressEvent(QMouseEvent* event)
 
     int step = event->position().x() / (StepWidth + StepSpacing);
     float time = step * beatsPerStep;
+
     if (event->button() == Qt::LeftButton) {
         track.addItem(time, Note(12 * 5, beatsPerStep));
+        _app->undoStack().push(new AddNoteCommand(_app->window(), track, time, Note(12 * 5, beatsPerStep)));
     } else {
-        track.removeItem(time);
+        _app->undoStack().push(new RemoveNoteCommand(_app->window(), track, time, Note(12 * 5, beatsPerStep)));
     }
-
-    emit clicked();
-
-    update();
 }
 
 void StepSequencerWidget::resizeEvent(QResizeEvent*)

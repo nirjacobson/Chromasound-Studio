@@ -110,6 +110,11 @@ void ChannelsWidget::add(const int index)
     }
 }
 
+void ChannelsWidget::setVolume(const int index, const int volume)
+{
+    _channelWidgets[index]->setVolume(volume);
+}
+
 void ChannelsWidget::update()
 {
     QWidget::update();
@@ -261,14 +266,13 @@ void ChannelsWidget::pianoKeyClicked(const Qt::MouseButton button, const int ste
     if (button == Qt::LeftButton) {
         auto existingItem = std::find_if(track.items().begin(), track.items().end(), [=](const Track::Item* item){ return item->time() == step * beatsPerStep; });
         if (existingItem == track.items().end()) {
-            track.items().append(new Track::Item(step * beatsPerStep, Note(key, beatsPerStep)));
+            _app->undoStack().push(new AddNoteCommand(_app->window(), track, step * beatsPerStep, Note(key, beatsPerStep)));
         } else {
-            (*existingItem)->note().setKey(key);
+            _app->undoStack().push(new EditNoteCommand(_app->window(), *existingItem, step * beatsPerStep, Note(key, beatsPerStep)));
         }
     } else {
-        track.removeItem(step * beatsPerStep, key);
+        _app->undoStack().push(new RemoveNoteCommand(_app->window(), track, step * beatsPerStep, Note(key, beatsPerStep)));
     }
-    _activeChannelWidget->update();
 
 }
 
@@ -279,10 +283,10 @@ void ChannelsWidget::velocityClicked(const int step, const int velocity)
 
     auto existingItem = std::find_if(track.items().begin(), track.items().end(), [=](const Track::Item* item){ return item->time() == step * beatsPerStep; });
     if (existingItem != track.items().end()) {
-        (*existingItem)->note().setVelocity(velocity);
+        Note newNote = (*existingItem)->note();
+        newNote.setVelocity(velocity);
+        _app->undoStack().push(new EditNoteCommand(_app->window(), *existingItem, step * beatsPerStep, newNote));
     }
-
-    _activeChannelWidget->update();
 }
 
 void ChannelsWidget::showEvent(QShowEvent*)

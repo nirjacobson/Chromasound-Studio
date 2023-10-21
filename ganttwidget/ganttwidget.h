@@ -59,7 +59,7 @@ class GanttWidget : public QWidget
     signals:
         void headerClicked(Qt::MouseButton button, float time);
         void editorClicked(Qt::MouseButton button, int row, float time);
-        void itemsChanged();
+        void itemChanged(GanttItem* item, const float toTime, const int toRow, const float toDuration);
         void itemReleased(const GanttItem* item);
 };
 

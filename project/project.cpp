@@ -154,6 +154,11 @@ void Project::addChannel()
     _channels.append(Channel(QString("Channel %1").arg(_channels.size()+1)));
 }
 
+void Project::addChannel(const int index, const Channel& channel)
+{
+    _channels.insert(index, channel);
+}
+
 Project& Project::operator=(Project&& src)
 {
     _channels = src._channels;

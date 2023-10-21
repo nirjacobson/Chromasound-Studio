@@ -24,7 +24,7 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
     ui->ganttWidget->scrollVertically(0.25);
     
     connect(ui->ganttWidget, &GanttWidget::editorClicked, this, &PianoRollWidget::ganttClicked);
-    connect(ui->ganttWidget, &GanttWidget::itemsChanged, this, &PianoRollWidget::ganttItemsChanged);
+    connect(ui->ganttWidget, &GanttWidget::itemChanged, this, &PianoRollWidget::ganttItemChanged);
     connect(ui->ganttWidget, &GanttWidget::itemReleased, this, &PianoRollWidget::ganttItemReleased);
 
     connect(_keysWidget, &PianoRollKeysWidget::keyOn, this, &PianoRollWidget::keyOn);
@@ -79,16 +79,16 @@ void PianoRollWidget::releaseKey(const int key)
 void PianoRollWidget::ganttClicked(Qt::MouseButton button, int row, float time)
 {
     if (button == Qt::LeftButton) {
-        _itemLastClicked = _track->addItem(time, Note(row, (_itemLastClicked ? _itemLastClicked->duration() : 1)));
+        _app->undoStack().push(new AddNoteCommand(_app->window(), *_track, time, Note(row, (_itemLastClicked ? _itemLastClicked->duration() : 1))));
     } else {
         _track->removeItem(time, row);
+        _app->undoStack().push(new RemoveNoteCommand(_app->window(), *_track, time, Note(row, (_itemLastClicked ? _itemLastClicked->duration() : 1))));
     }
-    update();
 }
 
-void PianoRollWidget::ganttItemsChanged()
+void PianoRollWidget::ganttItemChanged(GanttItem* item, const float toTime, const int toRow, const float toDuration)
 {
-    update();
+    _app->undoStack().push(new EditNoteCommand(_app->window(), dynamic_cast<Track::Item*>(item), toTime, Note(toRow, toDuration, item->velocity())));
 }
 
 void PianoRollWidget::ganttItemReleased(const GanttItem* item)
