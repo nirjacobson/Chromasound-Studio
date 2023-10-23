@@ -3,6 +3,8 @@
 
 #include <QWidget>
 #include <QComboBox>
+#include <QStyleOption>
+#include <QPainter>
 
 #include "application.h"
 #include "project/channel/noisechannelsettings.h"
@@ -31,6 +33,10 @@ class NoiseWidget : public QWidget
     private slots:
         void typeChanged(int idx);
         void shiftRateChanged(int idx);
+
+        // QWidget interface
+    protected:
+        void paintEvent(QPaintEvent* event);
 };
 
 #endif // NOISEWIDGET_H

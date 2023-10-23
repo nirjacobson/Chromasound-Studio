@@ -1,25 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>StyleDialog</class>
+ <widget class="QMainWindow" name="StyleDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1900</width>
-    <height>1123</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>FM-PSG Studio</string>
+   <string>Edit Styles</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="TopWidget" name="topWidget" native="true"/>
+     <widget class="QPlainTextEdit" name="styleTextEdit">
+      <property name="font">
+       <font>
+        <family>Monospace</family>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
     </item>
     <item>
-     <widget class="QMdiArea" name="mdiArea"/>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="resetButton">
+        <property name="text">
+         <string>Reset</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="applyButton">
+        <property name="text">
+         <string>Apply</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
@@ -28,7 +63,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1900</width>
+     <width>800</width>
      <height>20</height>
     </rect>
    </property>
@@ -41,19 +76,9 @@
     <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
     <addaction name="separator"/>
-    <addaction name="actionRender"/>
-    <addaction name="separator"/>
-    <addaction name="actionExit"/>
-   </widget>
-   <widget class="QMenu" name="menuEdit">
-    <property name="title">
-     <string>Edit</string>
-    </property>
-    <addaction name="separator"/>
-    <addaction name="actionStyles"/>
+    <addaction name="actionClose"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuEdit"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionNew">
@@ -71,30 +96,12 @@
     <string>Save</string>
    </property>
   </action>
-  <action name="actionRender">
+  <action name="actionClose">
    <property name="text">
-    <string>Render</string>
-   </property>
-  </action>
-  <action name="actionStyles">
-   <property name="text">
-    <string>Styles...</string>
-   </property>
-  </action>
-  <action name="actionExit">
-   <property name="text">
-    <string>Exit</string>
+    <string>Close</string>
    </property>
   </action>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>TopWidget</class>
-   <extends>QWidget</extends>
-   <header>topwidget/topwidget.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>
