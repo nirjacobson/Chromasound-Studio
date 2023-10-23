@@ -12,6 +12,9 @@
 class PlaylistPatternsWidget : public GanttLeftWidget
 {
         Q_OBJECT
+        Q_PROPERTY(QColor foregroundColor READ foregroundColor WRITE setForegroundColor)
+        Q_PROPERTY(QColor ledColor READ ledColor WRITE setLEDColor);
+
     public:
         explicit PlaylistPatternsWidget(QWidget *parent = nullptr, Application* app = nullptr);
 
@@ -29,7 +32,15 @@ class PlaylistPatternsWidget : public GanttLeftWidget
 
     private:
         static constexpr int LED_WIDTH = 8;
-        static QColor LED_COLOR;
+
+        QColor _foregroundColor;
+        QColor _ledColor;
+
+        const QColor& foregroundColor() const;
+        const QColor& ledColor() const;
+
+        void setForegroundColor(const QColor& color);
+        void setLEDColor(const QColor& color);
 
         Application* _app;
 

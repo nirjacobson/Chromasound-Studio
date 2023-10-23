@@ -2,8 +2,8 @@
 
 LED::LED(QWidget *parent, const QColor& color)
     : QWidget{parent}
-    , _color(color)
     , _on(false)
+    , _color(color)
 {
 
 }
@@ -40,4 +40,14 @@ void LED::mousePressEvent(QMouseEvent* event)
     if (drawRect.contains(event->pos())) {
         emit clicked(Qt::ShiftModifier == QApplication::keyboardModifiers());
     }
+}
+
+const QColor& LED::color() const
+{
+    return _color;
+}
+
+void LED::setColor(const QColor& color)
+{
+    _color = color;
 }

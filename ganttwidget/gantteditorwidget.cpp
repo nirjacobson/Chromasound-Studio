@@ -1,8 +1,5 @@
 #include "gantteditorwidget.h"
 
-constexpr QColor GanttEditorWidget::CursorColor;
-constexpr QColor GanttEditorWidget::ItemColor;
-
 GanttEditorWidget::GanttEditorWidget(QWidget *parent)
     : QWidget{parent}
     , _top(0)
@@ -20,6 +17,11 @@ GanttEditorWidget::GanttEditorWidget(QWidget *parent)
     , _itemsMovableX(false)
     , _itemsMovableY(false)
     , _positionFunction([](){ return -1; })
+    , _backgroundColor(Qt::white)
+    , _borderColor(Qt::gray)
+    , _lightBorderColor(Qt::lightGray)
+    , _itemColor(QColor(128, 128, 255))
+    , _cursorColor(QColor(64, 192, 64))
 {
     setMouseTracking(true);
 }
@@ -125,9 +127,9 @@ void GanttEditorWidget::setPositionFunction(std::function<float ()> func)
 void GanttEditorWidget::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
-    painter.setPen(QColor(Qt::gray));
+    painter.setPen(_borderColor);
 
-    painter.fillRect(rect(), QBrush(QColor(Qt::white)));
+    painter.fillRect(rect(), QBrush(_backgroundColor));
 
     int firstRow = _top / _rowHeight;
     int firstRowStart = firstRow * _rowHeight - _top;
@@ -153,9 +155,9 @@ void GanttEditorWidget::paintEvent(QPaintEvent*)
         QPoint thisTopRight = topLeft + QPoint((i + 1) * _cellWidth, 0);
         QPoint thisBottomRight = thisTopRight + QPoint(0, height());
         if ((firstCell + i) % beatsPerBar == (beatsPerBar-1)) {
-            painter.setPen(QPen(Qt::gray, 2));
+            painter.setPen(QPen(_borderColor, 2));
         } else {
-            painter.setPen(Qt::lightGray);
+            painter.setPen(_lightBorderColor);
         }
         painter.drawLine(thisTopRight, thisBottomRight);
     }
@@ -178,8 +180,8 @@ void GanttEditorWidget::paintEvent(QPaintEvent*)
 
             QRect rect(QPoint(startPixelX - _left, startPixelY - _top), QPoint(endPixelX - _left, endPixelY - _top));
 
-            painter.setPen(ItemColor.darker());
-            painter.setBrush(ItemColor);
+            painter.setPen(_itemColor.darker());
+            painter.setBrush(_itemColor);
             painter.drawRect(rect.adjusted(0, 0, -1, -1));
         }
     }
@@ -196,7 +198,7 @@ void GanttEditorWidget::paintEvent(QPaintEvent*)
         QPoint p1(appPositionPixel, 0);
         QPoint p2(appPositionPixel, height());
 
-        painter.setPen(CursorColor);
+        painter.setPen(_cursorColor);
         painter.drawLine(p1, p2);
     }
 }
@@ -362,4 +364,54 @@ void GanttEditorWidget::wheelEvent(QWheelEvent* event)
         emit horizontalScroll(_left - oldLeft);
     }
     update();
+}
+
+const QColor& GanttEditorWidget::backgroundColor() const
+{
+    return _backgroundColor;
+}
+
+const QColor& GanttEditorWidget::borderColor() const
+{
+    return _borderColor;
+}
+
+const QColor& GanttEditorWidget::lightBorderColor() const
+{
+    return _lightBorderColor;
+}
+
+const QColor& GanttEditorWidget::itemColor() const
+{
+    return _itemColor;
+}
+
+const QColor& GanttEditorWidget::cursorColor() const
+{
+    return _cursorColor;
+}
+
+void GanttEditorWidget::setBackgroundColor(const QColor& color)
+{
+    _backgroundColor = color;
+}
+
+void GanttEditorWidget::setBorderColor(const QColor& color)
+{
+    _borderColor = color;
+}
+
+void GanttEditorWidget::setLightBorderColor(const QColor& color)
+{
+    _lightBorderColor = color;
+}
+
+void GanttEditorWidget::setItemColor(const QColor& color)
+{
+    _itemColor = color;
+}
+
+void GanttEditorWidget::setCursorColor(const QColor& color)
+{
+    _cursorColor = color;
 }

@@ -10,6 +10,8 @@
 class LED : public QWidget
 {
         Q_OBJECT
+        Q_PROPERTY(QColor color READ color WRITE setColor)
+
     public:
         explicit LED(QWidget *parent = nullptr, const QColor& color = Qt::GlobalColor::green);
 
@@ -26,6 +28,9 @@ class LED : public QWidget
     private:
         QColor _color;
         bool _on;
+
+        const QColor& color() const;
+        void setColor(const QColor& color);
 };
 
 #endif // LED_H

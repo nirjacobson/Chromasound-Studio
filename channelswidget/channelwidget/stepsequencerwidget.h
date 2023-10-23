@@ -13,6 +13,11 @@
 class StepSequencerWidget : public QWidget
 {
         Q_OBJECT
+        Q_PROPERTY(QColor stepColor READ stepColor WRITE setStepColor)
+        Q_PROPERTY(QColor otherStepColor READ otherStepColor WRITE setOtherStepColor)
+        Q_PROPERTY(QColor activeStepLightColor READ activeStepLightColor WRITE setActiveStepLightColor)
+        Q_PROPERTY(int stepRadius READ stepRadius WRITE setStepRadius)
+
     public:
         explicit StepSequencerWidget(QWidget *parent = nullptr, Application* app = nullptr, int index = 0);
 
@@ -27,14 +32,24 @@ class StepSequencerWidget : public QWidget
         void mousePressEvent(QMouseEvent* event);
 
     private:
-        static constexpr QColor StepColor = QColor(192,192,255);
-        static constexpr QColor AltStepColor = QColor(255,192,192);
-        static constexpr QColor ActiveStepLightColor = QColor(255, 192, 0);
-        static constexpr int StepRadius = 2;
-
         Application* _app;
 
         int _index;
+
+        QColor _stepColor;
+        QColor _otherStepColor;
+        QColor _activeStepLightColor;
+        int _stepRadius;
+
+        const QColor& stepColor() const;
+        const QColor& otherStepColor() const;
+        const QColor& activeStepLightColor() const;
+        int stepRadius() const;
+
+        void setStepColor(const QColor& color);
+        void setOtherStepColor(const QColor& color);
+        void setActiveStepLightColor(const QColor& color);
+        void setStepRadius(const int radius);
 
         // QWidget interface
     protected:

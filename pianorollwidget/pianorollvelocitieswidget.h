@@ -12,6 +12,8 @@
 class PianoRollVelocitiesWidget : public GanttBottomWidget
 {
         Q_OBJECT
+        Q_PROPERTY(QColor barColor READ barColor WRITE setBarColor)
+
     public:
         PianoRollVelocitiesWidget(QWidget *parent = nullptr);
 
@@ -32,7 +34,11 @@ class PianoRollVelocitiesWidget : public GanttBottomWidget
         void mousePressEvent(QMouseEvent* event);
 
     private:
-        static constexpr QColor BarColor = QColor(192, 192, 255);
+        QColor _barColor;
+
+        const QColor& barColor() const;
+
+        void setBarColor(const QColor& color);
 
         Application* _app;
         QList<GanttItem*>* _items;

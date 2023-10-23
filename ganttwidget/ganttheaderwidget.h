@@ -11,6 +11,12 @@
 class GanttHeaderWidget : public ScrollableWidget
 {
         Q_OBJECT
+        Q_PROPERTY(QColor activeColor READ activeColor WRITE setActiveColor)
+        Q_PROPERTY(QColor inactiveColor READ inactiveColor WRITE setInactiveColor)
+        Q_PROPERTY(QColor activeForegroundColor READ activeForegroundColor WRITE setActiveForegroundColor)
+        Q_PROPERTY(QColor inactiveForegroundColor READ inactiveForegroundColor WRITE setInactiveForegroundColor)
+        Q_PROPERTY(QColor cursorColor READ cursorColor WRITE setCursorColor)
+
     public:
         explicit GanttHeaderWidget(QWidget *parent = nullptr);
 
@@ -40,9 +46,6 @@ class GanttHeaderWidget : public ScrollableWidget
         void mousePressEvent(QMouseEvent* event);
 
     private:
-        static constexpr QColor BackgroundColor = QColor(64, 64, 64);
-        static constexpr QColor CursorColor = QColor(64, 192, 64);
-
         Application* _app;
 
         QList<GanttItem*>* _items;
@@ -52,6 +55,24 @@ class GanttHeaderWidget : public ScrollableWidget
         int _cellWidth;
         float _cellBeats;
         bool _snap;
+
+        QColor _activeColor;
+        QColor _inactiveColor;
+        QColor _activeForegroundColor;
+        QColor _inactiveForegroundColor;
+        QColor _cursorColor;
+
+        const QColor& activeColor() const;
+        const QColor& inactiveColor() const;
+        const QColor& activeForegroundColor() const;
+        const QColor& inactiveForegroundColor() const;
+        const QColor& cursorColor() const;
+
+        void setActiveColor(const QColor& color);
+        void setInactiveColor(const QColor& color);
+        void setActiveForegroundColor(const QColor& color);
+        void setInactiveForegroundColor(const QColor& color);
+        void setCursorColor(const QColor& color);
 
         float playlength() const;
 

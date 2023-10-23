@@ -11,10 +11,17 @@ QList<AlgorithmGraph> AlgorithmDisplayWidget::GRAPHS = {
     AlgorithmGraph(1, 4, "1,2,3,4", "")
 };
 
-AlgorithmDisplayWidget::AlgorithmDisplayWidget(QWidget *parent) :
-    QWidget(parent),
-    _algorithm(0),
-    _feedback(0)
+AlgorithmDisplayWidget::AlgorithmDisplayWidget(QWidget *parent)
+    : QWidget(parent)
+    , _algorithm(0)
+    , _feedback(0)
+    , _backgroundColor(Qt::white)
+    , _borderColor(Qt::gray)
+    , _operatorColor(Qt::cyan)
+    , _operatorTextColor(Qt::blue)
+    , _slotColor(Qt::blue)
+    , _slotTextColor(Qt::white)
+    , _edgeColor(Qt::blue)
 {
 
 }
@@ -65,10 +72,10 @@ void AlgorithmDisplayWidget::drawNodes(QPaintEvent* event, QPainter& painter, co
         const QRect opRect(centered(event->rect(), graph.rect(), graph.topLeft(i)),
                             QSize(AlgorithmGraph::OP_SIZE, AlgorithmGraph::OP_SIZE));
 
-        painter.setPen(graph.slotOps().contains(i) ? Qt::white : Qt::blue);
-        painter.fillRect(opRect, QBrush(graph.slotOps().contains(i) ? Qt::blue : Qt::cyan, Qt::SolidPattern));
+        painter.setPen(graph.slotOps().contains(i) ? _slotTextColor : _operatorTextColor);
+        painter.fillRect(opRect, QBrush(graph.slotOps().contains(i) ? _slotColor : _operatorColor, Qt::SolidPattern));
         painter.drawText(opRect, Qt::AlignHCenter | Qt::AlignVCenter, QString::number(i));
-        painter.setPen(Qt::blue);
+        painter.setPen(_edgeColor);
         painter.drawRect(opRect);
     }
 }
@@ -105,7 +112,7 @@ void AlgorithmDisplayWidget::drawFeedback(QPaintEvent* event, QPainter& painter,
     QLine top = QLine(right.p2(), QPoint(right.p2().x() - AlgorithmGraph::OP_SIZE, right.p2().y()));
     QLine left = QLine(top.p2(), QPoint(top.p2().x(), op1Left.y()));
 
-    painter.setPen(Qt::blue);
+    painter.setPen(_edgeColor);
     painter.drawLine(right);
     painter.drawLine(top);
     painter.drawLine(left);
@@ -122,8 +129,8 @@ void AlgorithmDisplayWidget::paintEvent(QPaintEvent* event)
 
     painter.setRenderHint(QPainter::Antialiasing);
 
-    painter.fillRect(event->rect(), QBrush(Qt::white, Qt::SolidPattern));
-    painter.setPen(Qt::gray);
+    painter.fillRect(event->rect(), QBrush(_backgroundColor, Qt::SolidPattern));
+    painter.setPen(_borderColor);
     painter.drawRect(event->rect());
 
     const AlgorithmGraph& graph = GRAPHS[_algorithm];
@@ -131,6 +138,76 @@ void AlgorithmDisplayWidget::paintEvent(QPaintEvent* event)
     drawEdges(event, painter, graph);
     drawFeedback(event, painter, graph);
     drawOutputEdges(event, painter, graph);
+}
+
+const QColor& AlgorithmDisplayWidget::backgroundColor() const
+{
+    return _backgroundColor;
+}
+
+const QColor& AlgorithmDisplayWidget::borderColor() const
+{
+    return _borderColor;
+}
+
+const QColor& AlgorithmDisplayWidget::operatorColor() const
+{
+    return _operatorColor;
+}
+
+const QColor& AlgorithmDisplayWidget::operatorTextColor() const
+{
+    return _operatorTextColor;
+}
+
+const QColor& AlgorithmDisplayWidget::slotColor() const
+{
+    return _slotColor;
+}
+
+const QColor& AlgorithmDisplayWidget::slotTextColor() const
+{
+    return _slotTextColor;
+}
+
+const QColor& AlgorithmDisplayWidget::edgeColor() const
+{
+    return _edgeColor;
+}
+
+void AlgorithmDisplayWidget::setBackgroundColor(const QColor& color)
+{
+    _backgroundColor = color;
+}
+
+void AlgorithmDisplayWidget::setBorderColor(const QColor& color)
+{
+    _borderColor = color;
+}
+
+void AlgorithmDisplayWidget::setOperatorColor(const QColor& color)
+{
+    _operatorColor = color;
+}
+
+void AlgorithmDisplayWidget::setOperatorTextColor(const QColor& color)
+{
+    _operatorTextColor = color;
+}
+
+void AlgorithmDisplayWidget::setSlotColor(const QColor& color)
+{
+    _slotColor = color;
+}
+
+void AlgorithmDisplayWidget::setSlotTextColor(const QColor& color)
+{
+    _slotTextColor = color;
+}
+
+void AlgorithmDisplayWidget::setEdgeColor(const QColor& color)
+{
+    _edgeColor = color;
 }
 
 QPoint AlgorithmDisplayWidget::centered(const QRect& oRect, const QRect& iRect, const QPoint& point) const {

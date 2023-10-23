@@ -1,7 +1,5 @@
 #include "pianorollvelocitieswidget.h"
 
-constexpr QColor PianoRollVelocitiesWidget::BarColor;
-
 PianoRollVelocitiesWidget::PianoRollVelocitiesWidget(QWidget* parent)
     : GanttBottomWidget(parent)
     , _app(nullptr)
@@ -9,6 +7,7 @@ PianoRollVelocitiesWidget::PianoRollVelocitiesWidget(QWidget* parent)
     , _left(0)
     , _cellWidth(16)
     , _cellBeats(1)
+    , _barColor(192, 192, 255)
 {
     setMinimumHeight(128);
     setMaximumHeight(128);
@@ -69,8 +68,8 @@ void PianoRollVelocitiesWidget::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
 
-    painter.setPen(BarColor.darker());
-    painter.setBrush(BarColor);
+    painter.setPen(_barColor.darker());
+    painter.setBrush(_barColor);
 
     int barWidth = 4;
 
@@ -114,6 +113,16 @@ void PianoRollVelocitiesWidget::mousePressEvent(QMouseEvent* event)
             _app->undoStack().push(new EditNoteCommand(_app->window(), item, item->time(), n));
         }
     }
+}
+
+const QColor& PianoRollVelocitiesWidget::barColor() const
+{
+    return _barColor;
+}
+
+void PianoRollVelocitiesWidget::setBarColor(const QColor& color)
+{
+    _barColor = color;
 }
 
 float PianoRollVelocitiesWidget::playlength() const

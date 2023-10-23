@@ -9,6 +9,11 @@
 class PianoRollKeysWidget : public GanttLeftWidget
 {
         Q_OBJECT
+        Q_PROPERTY(QColor outlineColor READ outlineColor WRITE setOutlineColor)
+        Q_PROPERTY(QColor whiteKeyColor READ whiteKeyColor WRITE setWhiteKeyColor)
+        Q_PROPERTY(QColor blackKeyColor READ blackKeyColor WRITE setBlackKeyColor)
+        Q_PROPERTY(QColor activeKeyColor READ activeKeyColor WRITE setActiveKeyColor)
+
     public:
         explicit PianoRollKeysWidget(QWidget *parent = nullptr);
 
@@ -42,6 +47,21 @@ class PianoRollKeysWidget : public GanttLeftWidget
         int _rowHeight;
 
         QList<int> _onKeys;
+
+        QColor _outlineColor;
+        QColor _whiteKeyColor;
+        QColor _blackKeyColor;
+        QColor _activeKeyColor;
+
+        const QColor& outlineColor() const;
+        const QColor& whiteKeyColor() const;
+        const QColor& blackKeyColor() const;
+        const QColor& activeKeyColor() const;
+
+        void setOutlineColor(const QColor& color);
+        void setWhiteKeyColor(const QColor& color);
+        void setBlackKeyColor(const QColor& color);
+        void setActiveKeyColor(const QColor& color);
 };
 
 #endif // PIANOROLLKEYSWIDGET_H

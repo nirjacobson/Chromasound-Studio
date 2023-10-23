@@ -16,6 +16,7 @@ namespace Ui {
 class PlaylistWidget : public QWidget
 {
         Q_OBJECT
+        Q_PROPERTY(QColor loopColor READ loopColor WRITE setLoopColor)
 
     public:
         explicit PlaylistWidget(QWidget *parent = nullptr, Application* app = nullptr);
@@ -28,7 +29,10 @@ class PlaylistWidget : public QWidget
         void setTempo(int bpm);
 
     private:
-        static constexpr QColor LoopColor = QColor(128, 192, 224);
+        QColor _loopColor;
+
+        const QColor& loopColor() const;
+        void setLoopColor(const QColor& color);
 
         Application* _app;
         Ui::PlaylistWidget *ui;

@@ -11,6 +11,12 @@
 class GanttEditorWidget : public QWidget
 {
         Q_OBJECT
+        Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
+        Q_PROPERTY(QColor borderColor READ borderColor WRITE setBorderColor)
+        Q_PROPERTY(QColor lightBorderColor READ lightBorderColor WRITE setLightBorderColor)
+        Q_PROPERTY(QColor itemColor READ itemColor WRITE setItemColor)
+        Q_PROPERTY(QColor cursorColor READ cursorColor WRITE setCursorColor)
+
     public:
         explicit GanttEditorWidget(QWidget *parent = nullptr);
 
@@ -50,8 +56,23 @@ class GanttEditorWidget : public QWidget
         void wheelEvent(QWheelEvent* event);
 
     private:
-        static constexpr QColor CursorColor = QColor(64, 192, 64);
-        static constexpr QColor ItemColor = QColor(128, 128, 255);
+        QColor _backgroundColor;
+        QColor _borderColor;
+        QColor _lightBorderColor;
+        QColor _itemColor;
+        QColor _cursorColor;
+
+        const QColor& backgroundColor() const;
+        const QColor& borderColor() const;
+        const QColor& lightBorderColor() const;
+        const QColor& itemColor() const;
+        const QColor& cursorColor() const;
+
+        void setBackgroundColor(const QColor& color);
+        void setBorderColor(const QColor& color);
+        void setLightBorderColor(const QColor& color);
+        void setItemColor(const QColor& color);
+        void setCursorColor(const QColor& color);
 
         Application* _app;
 

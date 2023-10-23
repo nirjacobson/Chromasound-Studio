@@ -1,13 +1,13 @@
 #include "stepsequencerwidget.h"
 
-constexpr QColor StepSequencerWidget::StepColor;
-constexpr QColor StepSequencerWidget::AltStepColor;
-constexpr QColor StepSequencerWidget::ActiveStepLightColor;
-
 StepSequencerWidget::StepSequencerWidget(QWidget *parent, Application* app, int index)
     : QWidget(parent)
     , _app(app)
     , _index(index)
+    , _stepColor(QColor(192,192,255))
+    , _otherStepColor(QColor(255,192,192))
+    , _activeStepLightColor(QColor(255,192,0))
+    , _stepRadius(2)
 {
 
 }
@@ -61,8 +61,8 @@ void StepSequencerWidget::paintEvent(QPaintEvent*)
     painter.setRenderHint(QPainter::Antialiasing);
     for (int i = 0; i < numSteps; i++) {
         bool isAlt = (i % 8) >= 4;
-
-        QColor stepColor = isAlt ? steps[i] ? AltStepColor : AltStepColor.darker() : steps[i] ? StepColor : StepColor.darker();
+        
+        QColor stepColor = isAlt ? steps[i] ? _otherStepColor : _otherStepColor.darker() : steps[i] ? _stepColor : _stepColor.darker();
         QColor borderColor = stepColor.darker();
 
         painter.setBrush(QBrush(stepColor, Qt::SolidPattern));
@@ -73,12 +73,12 @@ void StepSequencerWidget::paintEvent(QPaintEvent*)
         QRect stepRect(stepTopLeft, stepBottomRight);
 
         QPainterPath path;
-        path.addRoundedRect(stepRect, StepRadius, StepRadius);
+        path.addRoundedRect(stepRect, _stepRadius, _stepRadius);
         painter.fillPath(path, painter.brush());
         painter.drawPath(path);
 
         if (_app->isPlaying() && _app->project().getChannel(_index).enabled() && steps[i] && step >= 0 && i == step) {
-            painter.setPen(QPen(ActiveStepLightColor, 2));
+            painter.setPen(QPen(_activeStepLightColor, 2));
         } else {
             painter.setPen(QPen(borderColor, 2));
         }
@@ -104,6 +104,46 @@ void StepSequencerWidget::mousePressEvent(QMouseEvent* event)
     } else {
         _app->undoStack().push(new RemoveNoteCommand(_app->window(), track, time, Note(12 * 5, beatsPerStep)));
     }
+}
+
+const QColor& StepSequencerWidget::stepColor() const
+{
+    return _stepColor;
+}
+
+const QColor& StepSequencerWidget::otherStepColor() const
+{
+    return _otherStepColor;
+}
+
+const QColor& StepSequencerWidget::activeStepLightColor() const
+{
+    return _activeStepLightColor;
+}
+
+int StepSequencerWidget::stepRadius() const
+{
+    return _stepRadius;
+}
+
+void StepSequencerWidget::setStepColor(const QColor& color)
+{
+    _stepColor = color;
+}
+
+void StepSequencerWidget::setOtherStepColor(const QColor& color)
+{
+    _otherStepColor = color;
+}
+
+void StepSequencerWidget::setActiveStepLightColor(const QColor& color)
+{
+    _activeStepLightColor = color;
+}
+
+void StepSequencerWidget::setStepRadius(const int radius)
+{
+    _stepRadius = radius;
 }
 
 void StepSequencerWidget::resizeEvent(QResizeEvent*)

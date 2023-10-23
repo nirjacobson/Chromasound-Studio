@@ -1,13 +1,13 @@
 #include "playlistpatternswidget.h"
 
-QColor PlaylistPatternsWidget::LED_COLOR = QColor(Qt::GlobalColor::green);
-
 PlaylistPatternsWidget::PlaylistPatternsWidget(QWidget *parent, Application* app)
     : GanttLeftWidget{parent}
     , _app(app)
     , _rows(0)
     , _top(0)
     , _rowHeight(16)
+    , _ledColor(Qt::green)
+    , _foregroundColor(Qt::gray)
 {
     setMinimumWidth(128);
     setMaximumWidth(128);
@@ -88,7 +88,7 @@ void PlaylistPatternsWidget::paintEvent(QPaintEvent*)
         QPoint thisTopLeft = topLeft + QPoint(0, i * _rowHeight);
         QRect rect(thisTopLeft, thisTopLeft + QPoint(width() - 2, _rowHeight));
 
-        painter.setPen(QColor(Qt::gray));
+        painter.setPen(_foregroundColor);
         painter.setBrush(QColor(QWidget::palette().color(QWidget::backgroundRole())));
         painter.fillRect(rect, painter.brush());
         painter.drawRect(rect);
@@ -96,11 +96,31 @@ void PlaylistPatternsWidget::paintEvent(QPaintEvent*)
 
         rect.setTopLeft(QPoint(width() - 2 - LED_WIDTH, thisTopLeft.y()));
 
-        QColor ledColor = on ? LED_COLOR : LED_COLOR.darker();
+        QColor ledColor = on ? _ledColor : _ledColor.darker();
 
         painter.setPen(ledColor.darker());
         painter.setBrush(ledColor);
         painter.fillRect(rect, painter.brush());
         painter.drawRect(rect);
     }
+}
+
+const QColor& PlaylistPatternsWidget::foregroundColor() const
+{
+    return _foregroundColor;
+}
+
+const QColor& PlaylistPatternsWidget::ledColor() const
+{
+    return _ledColor;
+}
+
+void PlaylistPatternsWidget::setForegroundColor(const QColor& color)
+{
+    _foregroundColor = color;
+}
+
+void PlaylistPatternsWidget::setLEDColor(const QColor& color)
+{
+    _ledColor = color;
 }

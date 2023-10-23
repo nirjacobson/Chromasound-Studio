@@ -5,6 +5,11 @@ QPointF EnvelopeDisplayWidget::NULL_POINTF = QPointF(-1, -1);
 EnvelopeDisplayWidget::EnvelopeDisplayWidget(QWidget *parent)
     : QWidget(parent)
     , _settings(nullptr)
+    , _backgroundColor(Qt::white)
+    , _borderColor(Qt::gray)
+    , _envelopeColor(Qt::blue)
+    , _levelColor(Qt::gray)
+    , _releaseColor(Qt::cyan)
 {
 
 }
@@ -21,17 +26,17 @@ void EnvelopeDisplayWidget::paintEvent(QPaintEvent* event)
     painter.setRenderHint(QPainter::Antialiasing);
 
     if (!_settings) {
-        painter.fillRect(event->rect(), QBrush(Qt::white, Qt::SolidPattern));
-        painter.setPen(Qt::gray);
+        painter.fillRect(event->rect(), QBrush(_backgroundColor, Qt::SolidPattern));
+        painter.setPen(_borderColor);
         painter.drawRect(event->rect());
         return;
     }
 
     const QList<QPointF> points = getPoints();
 
-    painter.fillRect(event->rect(), QBrush(Qt::white, Qt::SolidPattern));
+    painter.fillRect(event->rect(), QBrush(_backgroundColor, Qt::SolidPattern));
 
-    painter.setPen(Qt::blue);
+    painter.setPen(_envelopeColor);
 
     if (points[0] == NULL_POINTF) {
         painter.drawLine(0, rect().height(), rect().width(), rect().height());
@@ -39,9 +44,9 @@ void EnvelopeDisplayWidget::paintEvent(QPaintEvent* event)
         QPoint p1(points[0].x() * rect().height(), points[0].y() * rect().height());
         painter.drawLine(QPoint(0, rect().height()), p1);
 
-        painter.setPen(Qt::gray);
+        painter.setPen(_levelColor);
         painter.drawLine(p1, QPoint(p1.x(), rect().height()));
-        painter.setPen(Qt::blue);
+        painter.setPen(_envelopeColor);
 
         if (points[1] == NULL_POINTF) {
             painter.drawLine(p1, QPoint(rect().width(), p1.y()));
@@ -49,9 +54,9 @@ void EnvelopeDisplayWidget::paintEvent(QPaintEvent* event)
             QPoint p2(points[1].x() * rect().height(), points[1].y() * rect().height());
             painter.drawLine(p1, p2);
 
-            painter.setPen(Qt::gray);
+            painter.setPen(_levelColor);
             painter.drawLine(p2, QPoint(p2.x(), rect().height()));
-            painter.setPen(Qt::blue);
+            painter.setPen(_envelopeColor);
 
             if (points[2] == NULL_POINTF) {
                 painter.drawLine(p2, QPoint(rect().width(), p2.y()));
@@ -60,7 +65,7 @@ void EnvelopeDisplayWidget::paintEvent(QPaintEvent* event)
                 painter.drawLine(p2, p3);
             }
 
-            painter.setPen(Qt::cyan);
+            painter.setPen(_releaseColor);
 
             if (points[3] == NULL_POINTF) {
                 painter.drawLine(p2, QPoint(rect().width(), p2.y()));
@@ -125,4 +130,54 @@ QList<QPointF> EnvelopeDisplayWidget::getPoints() const
     }
 
     return QList<QPointF>({p1, p2, p3, p4});
+}
+
+const QColor& EnvelopeDisplayWidget::backgroundColor() const
+{
+    return _backgroundColor;
+}
+
+const QColor& EnvelopeDisplayWidget::borderColor() const
+{
+    return _borderColor;
+}
+
+const QColor& EnvelopeDisplayWidget::envelopeColor() const
+{
+    return _envelopeColor;
+}
+
+const QColor& EnvelopeDisplayWidget::levelColor() const
+{
+    return _levelColor;
+}
+
+const QColor& EnvelopeDisplayWidget::releaseColor() const
+{
+    return _releaseColor;
+}
+
+void EnvelopeDisplayWidget::setBackgroundColor(const QColor& color)
+{
+    _backgroundColor = color;
+}
+
+void EnvelopeDisplayWidget::setBorderColor(const QColor& color)
+{
+    _borderColor = color;
+}
+
+void EnvelopeDisplayWidget::setEnvelopeColor(const QColor& color)
+{
+    _envelopeColor = color;
+}
+
+void EnvelopeDisplayWidget::setLevelColor(const QColor& color)
+{
+    _levelColor = color;
+}
+
+void EnvelopeDisplayWidget::setReleaseColor(const QColor& color)
+{
+    _releaseColor = color;
 }
