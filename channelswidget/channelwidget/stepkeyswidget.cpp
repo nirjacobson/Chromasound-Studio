@@ -1,12 +1,14 @@
 #include "stepkeyswidget.h"
 
-constexpr QColor StepKeysWidget::HIGHLIGHT_COLOR;
-
 StepKeysWidget::StepKeysWidget(QWidget *parent, Application* app)
     : QWidget{parent}
     , _top(2 * ROW_HEIGHT * KEYS_PER_OCTAVE)
     , _app(app)
     , _index(0)
+    , _outlineColor(QColor(Qt::gray))
+    , _whiteKeyColor(QColor(Qt::white))
+    , _blackKeyColor(QColor(Qt::black))
+    , _activeKeyColor(QColor(255, 192, 192))
 {
 
 }
@@ -71,8 +73,8 @@ void StepKeysWidget::paintEvent(QPaintEvent*)
     }
 
     for (int x = 0; x < numSteps; x++) {
-        painter.setPen(QColor(Qt::gray));
-        painter.setBrush(QColor(Qt::white));
+        painter.setPen(_outlineColor);
+        painter.setBrush(_whiteKeyColor);
 
         QPoint topLeft = QPoint(x*width, octaveStart - whiteKeyWidth);
 
@@ -81,7 +83,7 @@ void StepKeysWidget::paintEvent(QPaintEvent*)
                 int key = ((bottomOctave + i) * KEYS_PER_OCTAVE) + whiteKeys[j];
                 QPoint thisTopLeft = topLeft - QPoint(0, (j*whiteKeyWidth));
                 QRect rect(thisTopLeft, thisTopLeft + QPoint(width, whiteKeyWidth));
-                painter.setBrush(steps[x] == key ? HIGHLIGHT_COLOR : QColor(Qt::white));
+                painter.setBrush(steps[x] == key ? _activeKeyColor : _whiteKeyColor);
                 painter.fillRect(rect, painter.brush());
                 painter.drawRect(rect);
                 if (x == 0 && j == 0) {
@@ -94,8 +96,8 @@ void StepKeysWidget::paintEvent(QPaintEvent*)
             topLeft -= QPoint(0, octaveHeight);
         }
 
-        painter.setPen(QColor(Qt::black));
-        painter.setBrush(QColor(Qt::black));
+        painter.setPen(_blackKeyColor);
+        painter.setBrush(_blackKeyColor);
 
         topLeft = QPoint(x*width, octaveStart - 2 * ROW_HEIGHT);
 
@@ -105,7 +107,7 @@ void StepKeysWidget::paintEvent(QPaintEvent*)
                 int offset = j > 1 ? 1 : 0;
                 QPoint thisTopLeft = topLeft - QPoint(0, (offset + (j * 2)) * ROW_HEIGHT);
                 QRect rect(thisTopLeft, thisTopLeft + QPoint(width/2, ROW_HEIGHT));
-                painter.setBrush(steps[x] == key ? HIGHLIGHT_COLOR : QColor(Qt::black));
+                painter.setBrush(steps[x] == key ? _activeKeyColor : _blackKeyColor);
                 painter.fillRect(rect, painter.brush());
                 painter.drawRect(rect);
             }
@@ -114,6 +116,46 @@ void StepKeysWidget::paintEvent(QPaintEvent*)
         }
     }
 
+}
+
+const QColor& StepKeysWidget::outlineColor() const
+{
+    return _outlineColor;
+}
+
+const QColor& StepKeysWidget::whiteKeyColor() const
+{
+    return _whiteKeyColor;
+}
+
+const QColor& StepKeysWidget::blackKeyColor() const
+{
+    return _blackKeyColor;
+}
+
+const QColor& StepKeysWidget::activeKeyColor() const
+{
+    return _activeKeyColor;
+}
+
+void StepKeysWidget::setOutlineColor(const QColor& color)
+{
+    _outlineColor = color;
+}
+
+void StepKeysWidget::setWhiteKeyColor(const QColor& color)
+{
+    _whiteKeyColor = color;
+}
+
+void StepKeysWidget::setBlackKeyColor(const QColor& color)
+{
+    _blackKeyColor = color;
+}
+
+void StepKeysWidget::setActiveKeyColor(const QColor& color)
+{
+    _activeKeyColor = color;
 }
 
 void StepKeysWidget::wheelEvent(QWheelEvent* event)

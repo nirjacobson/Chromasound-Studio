@@ -1,11 +1,10 @@
 #include "stepvelocitieswidget.h"
 
-constexpr QColor StepVelocitiesWidget::BarColor;
-
 StepVelocitiesWidget::StepVelocitiesWidget(QWidget* parent, Application* app)
     : QWidget{parent}
     , _app(app)
     , _index(0)
+    , _barColor(QColor(192, 192, 255))
 {
 
 }
@@ -18,6 +17,16 @@ void StepVelocitiesWidget::setApplication(Application* app)
 void StepVelocitiesWidget::setChannel(const int idx)
 {
     _index = idx;
+}
+
+const QColor& StepVelocitiesWidget::barColor() const
+{
+    return _barColor;
+}
+
+void StepVelocitiesWidget::setBarColor(const QColor& color)
+{
+    _barColor = color;
 }
 
 void StepVelocitiesWidget::paintEvent(QPaintEvent*)
@@ -53,8 +62,8 @@ void StepVelocitiesWidget::paintEvent(QPaintEvent*)
 
 
     if (pattern.hasTrack(_index)) {
-        painter.setPen(BarColor.darker());
-        painter.setBrush(BarColor);
+        painter.setPen(_barColor.darker());
+        painter.setBrush(_barColor);
         for (int x = 0; x < numSteps; x++) {
             if (steps[x] < 0)
                 continue;

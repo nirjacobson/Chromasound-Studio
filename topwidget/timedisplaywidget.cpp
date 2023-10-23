@@ -38,7 +38,8 @@ void TimeDisplayWidget::paintEvent(QPaintEvent* event)
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.setPen(QPen(QColor(Qt::GlobalColor::gray)));
+    painter.setPen(QWidget::palette().color(QWidget::backgroundRole()).darker());
+
     painter.drawText(4, 16, _mode == BS ? "B:S" : "M:S:Z");
 }
 

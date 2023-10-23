@@ -8,9 +8,15 @@ int PianoWidget::BLACK_KEY_INTERVALS[] = {
     1, 3, 6, 8, 10
 };
 
-PianoWidget::PianoWidget(QWidget *parent) :
-    QWidget(parent),
-    _baseOctave(DEFAULT_BASE_OCTAVE)
+PianoWidget::PianoWidget(QWidget *parent)
+    : QWidget(parent)
+    , _baseOctave(DEFAULT_BASE_OCTAVE)
+    , _outlineColor(Qt::gray)
+    , _whiteKeyColor(Qt::white)
+    , _blackKeyColor(Qt::black)
+    , _activeKeyColor(QColor(255, 192, 192))
+    , _headerColor(Qt::gray)
+    , _headerTextColor(Qt::black)
 {
 
 }
@@ -78,8 +84,8 @@ void PianoWidget::drawBlackKey(const int octave, const int key, QPaintEvent* eve
     QRect keyRectTranslated = keyRect.translated(QPoint(startX + x, 0));
     bool selected = _pressedKeys.contains(octave * 12 + BLACK_KEY_INTERVALS[key]);
     painter.fillRect(keyRectTranslated,
-                     QBrush(selected ? QColor(255, 192, 192) : Qt::black, Qt::SolidPattern));
-    painter.setPen(Qt::gray);
+                     QBrush(selected ? _activeKeyColor : _blackKeyColor, Qt::SolidPattern));
+    painter.setPen(_outlineColor);
     painter.drawRect(keyRectTranslated);
 }
 
@@ -96,11 +102,11 @@ void PianoWidget::drawWhiteKeys(const int octave, QPaintEvent* event, QPainter& 
 
     int startX = (octave - _baseOctave) * (whiteWidth * WHITE_KEYS_PER_OCTAVE);
 
-    painter.setPen(Qt::gray);
+    painter.setPen(_outlineColor);
     for (int i = 0; i < WHITE_KEYS_PER_OCTAVE; i++) {
         bool selected = _pressedKeys.contains(octave * KEYS_PER_OCTAVE + WHITE_KEY_INTERVALS[i]);
         QRect keyRect(QPoint(startX + i * whiteWidth, 0), QSize(whiteWidth, event->rect().height()));
-        painter.fillRect(keyRect, QBrush(selected ? QColor(255, 192, 192) : Qt::white, Qt::SolidPattern));
+        painter.fillRect(keyRect, QBrush(selected ? _activeKeyColor : _whiteKeyColor, Qt::SolidPattern));
         painter.drawRect(keyRect);
     }
 }
@@ -113,10 +119,10 @@ void PianoWidget::drawOctaveHeader(const int octave, QPaintEvent* event, QPainte
     QRect rect = QRect(QPoint(), QSize(octaveWidth, HEADER_HEIGHT))
                      .translated(QPoint((octave - _baseOctave) * octaveWidth, 0));
 
-    painter.setPen(Qt::darkGray);
-    painter.fillRect(rect, QBrush(Qt::gray, Qt::SolidPattern));
+    painter.setPen(_headerColor.darker());
+    painter.fillRect(rect, QBrush(_headerColor, Qt::SolidPattern));
     painter.drawRect(rect);
-    painter.setPen(Qt::black);
+    painter.setPen(_headerTextColor);
     painter.drawText(rect, Qt::AlignHCenter | Qt::AlignVCenter, "C"+QString::number(octave));
 }
 
@@ -184,6 +190,66 @@ int PianoWidget::keyAt(const QPoint& pos) const
     }
 
     return octave * KEYS_PER_OCTAVE + interval;
+}
+
+const QColor& PianoWidget::outlineColor() const
+{
+    return _outlineColor;
+}
+
+const QColor& PianoWidget::whiteKeyColor() const
+{
+    return _whiteKeyColor;
+}
+
+const QColor& PianoWidget::blackKeyColor() const
+{
+    return _blackKeyColor;
+}
+
+const QColor& PianoWidget::activeKeyColor() const
+{
+    return _activeKeyColor;
+}
+
+const QColor& PianoWidget::headerColor() const
+{
+    return _headerColor;
+}
+
+const QColor& PianoWidget::headerTextColor() const
+{
+    return _headerTextColor;
+}
+
+void PianoWidget::setOutlineColor(const QColor& color)
+{
+    _outlineColor = color;
+}
+
+void PianoWidget::setWhiteKeyColor(const QColor& color)
+{
+    _whiteKeyColor = color;
+}
+
+void PianoWidget::setBlackKeyColor(const QColor& color)
+{
+    _blackKeyColor = color;
+}
+
+void PianoWidget::setActiveKeyColor(const QColor& color)
+{
+    _activeKeyColor = color;
+}
+
+void PianoWidget::setHeaderColor(const QColor& color)
+{
+    _headerColor = color;
+}
+
+void PianoWidget::setHeaderTextColor(const QColor& color)
+{
+    _headerTextColor = color;
 }
 
 void PianoWidget::mousePressEvent(QMouseEvent* event)

@@ -48,6 +48,11 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
    ui->mdiArea->addSubWindow(_channelWindow);
    _channelWindow->hide();
 
+   _channelsWindow->setWindowIcon(QIcon(QPixmap(1,1)));
+   _playlistWindow->setWindowIcon(QIcon(QPixmap(1,1)));
+   _pianoRollWindow->setWindowIcon(QIcon(QPixmap(1,1)));
+   _channelWindow->setWindowIcon(QIcon(QPixmap(1,1)));
+
    _timer.setInterval(1000 / 30);
    connect(&_timer, &QTimer::timeout, this, &MainWindow::frame);
 

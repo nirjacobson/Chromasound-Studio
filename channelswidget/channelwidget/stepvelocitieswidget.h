@@ -10,6 +10,8 @@
 class StepVelocitiesWidget : public QWidget
 {
         Q_OBJECT
+        Q_PROPERTY(QColor barColor READ barColor WRITE setBarColor)
+
     public:
         explicit StepVelocitiesWidget(QWidget *parent = nullptr, Application* app = nullptr);
 
@@ -21,11 +23,15 @@ class StepVelocitiesWidget : public QWidget
         void clicked(const int step, const int velocity);
 
     private:
-        static constexpr QColor BarColor = QColor(192, 192, 255);
-
         Application* _app;
 
         int _index;
+
+        QColor _barColor;
+
+        const QColor& barColor() const;
+
+        void setBarColor(const QColor& color);
 
     protected:
         void paintEvent(QPaintEvent*);

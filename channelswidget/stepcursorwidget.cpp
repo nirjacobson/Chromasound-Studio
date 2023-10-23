@@ -3,6 +3,7 @@
 StepCursorWidget::StepCursorWidget(QWidget *parent, Application* app)
     : QWidget{parent}
     , _app(app)
+    , _color(QColor(Qt::darkGray))
 {
 
 }
@@ -31,14 +32,24 @@ void StepCursorWidget::paintEvent(QPaintEvent*)
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.setBrush(QBrush(QColor(Qt::darkGray), Qt::SolidPattern));
-    painter.setPen(QPen(QColor(Qt::darkGray)));
+    painter.setBrush(QBrush(_color, Qt::SolidPattern));
+    painter.setPen(QPen(_color));
 
     QPoint stepTopLeft = QPoint(step * (StepSequencerWidget::StepWidth + StepSequencerWidget::StepSpacing) + 1, 1);
     QPoint stepBottomRight = stepTopLeft + QPoint(StepSequencerWidget::StepWidth, rect().height() - 3);
     QRect stepRect(stepTopLeft, stepBottomRight);
 
     painter.drawRect(stepRect);
+}
+
+const QColor& StepCursorWidget::color() const
+{
+    return _color;
+}
+
+void StepCursorWidget::setColor(const QColor& color)
+{
+    _color = color;
 }
 
 void StepCursorWidget::resizeEvent(QResizeEvent*)

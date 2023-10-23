@@ -8,6 +8,13 @@
 class PianoWidget : public QWidget
 {
     Q_OBJECT
+    Q_PROPERTY(QColor outlineColor READ outlineColor WRITE setOutlineColor)
+    Q_PROPERTY(QColor whiteKeyColor READ whiteKeyColor WRITE setWhiteKeyColor)
+    Q_PROPERTY(QColor blackKeyColor READ blackKeyColor WRITE setBlackKeyColor)
+    Q_PROPERTY(QColor activeKeyColor READ activeKeyColor WRITE setActiveKeyColor)
+    Q_PROPERTY(QColor headerColor READ headerColor WRITE setHeaderColor)
+    Q_PROPERTY(QColor headerTextColor READ headerTextColor WRITE setHeaderTextColor)
+
 public:
     explicit PianoWidget(QWidget *parent = nullptr);
 
@@ -49,6 +56,26 @@ private:
 
     int keyAt(const QPoint& pos) const;
 
+    QColor _outlineColor;
+    QColor _whiteKeyColor;
+    QColor _blackKeyColor;
+    QColor _activeKeyColor;
+    QColor _headerColor;
+    QColor _headerTextColor;
+
+    const QColor& outlineColor() const;
+    const QColor& whiteKeyColor() const;
+    const QColor& blackKeyColor() const;
+    const QColor& activeKeyColor() const;
+    const QColor& headerColor() const;
+    const QColor& headerTextColor() const;
+
+    void setOutlineColor(const QColor& color);
+    void setWhiteKeyColor(const QColor& color);
+    void setBlackKeyColor(const QColor& color);
+    void setActiveKeyColor(const QColor& color);
+    void setHeaderColor(const QColor& color);
+    void setHeaderTextColor(const QColor& color);
 };
 
 #endif // PIANOWIDGET_H

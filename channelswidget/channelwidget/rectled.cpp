@@ -55,3 +55,23 @@ void RectLED::mouseDoubleClickEvent(QMouseEvent*)
         emit doubleClicked();
     }
 }
+
+const QColor& RectLED::color() const
+{
+    return _color;
+}
+
+void RectLED::setColor(const QColor& color)
+{
+    _color = color;
+}
+
+const QColor& RectLED::selectedColor() const
+{
+    return _selectedColor;
+}
+
+void RectLED::setSelectedColor(const QColor& color)
+{
+    _selectedColor = color;
+}

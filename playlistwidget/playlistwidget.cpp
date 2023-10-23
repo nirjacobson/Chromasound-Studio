@@ -5,7 +5,8 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
     QWidget(parent),
     _app(app),
     ui(new Ui::PlaylistWidget),
-    _patternsWidget(new PlaylistPatternsWidget(this, app))
+    _patternsWidget(new PlaylistPatternsWidget(this, app)),
+    _loopColor(128, 192, 224)
 {
     ui->setupUi(this);
     ui->ganttWidget->setApplication(_app);
@@ -22,8 +23,8 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
                 int loopOffsetPixel = (loopOffset - leftPosition) / beatsPerPixel;
 
                 QRect loopRect = QRect(QPoint(loopOffsetPixel, 0), QSize(rect.height(), rect.height()));
-                painter.setPen(QColor(LoopColor).darker());
-                painter.setBrush(QColor(LoopColor));
+                painter.setPen(QColor(_loopColor).darker());
+                painter.setBrush(QColor(_loopColor));
 
                 QPoint textPoint = loopRect.bottomLeft() + QPoint(4, -4);
                 painter.fillRect(loopRect, painter.brush());
@@ -42,6 +43,16 @@ PlaylistWidget::~PlaylistWidget()
 {
     delete ui;
     delete _patternsWidget;
+}
+
+const QColor& PlaylistWidget::loopColor() const
+{
+    return _loopColor;
+}
+
+void PlaylistWidget::setLoopColor(const QColor& color)
+{
+    _loopColor = color;
 }
 
 void PlaylistWidget::ganttHeaderClicked(Qt::MouseButton button, float time)

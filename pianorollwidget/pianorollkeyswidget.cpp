@@ -5,6 +5,10 @@ PianoRollKeysWidget::PianoRollKeysWidget(QWidget* parent)
     , _rows(0)
     , _top(0)
     , _rowHeight(16)
+    , _outlineColor(QColor(Qt::gray))
+    , _whiteKeyColor(QColor(Qt::white))
+    , _blackKeyColor(QColor(Qt::black))
+    , _activeKeyColor(QColor(255, 192, 192))
 {
     setMinimumWidth(128);
     setMaximumWidth(128);
@@ -60,8 +64,7 @@ int PianoRollKeysWidget::length() const
 void PianoRollKeysWidget::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
-    painter.setPen(QColor(Qt::gray));
-    painter.setBrush(QColor(Qt::white));
+    painter.setPen(_outlineColor);
 
     int absBottom = _rowHeight * _rows;
     int bottom = _top + height() + 1;
@@ -87,9 +90,9 @@ void PianoRollKeysWidget::paintEvent(QPaintEvent*)
             key = (octave * 12) + key;
 
             if (_onKeys.contains(key)) {
-                painter.setBrush(QColor(255, 192, 192));
+                painter.setBrush(_activeKeyColor);
             } else {
-                painter.setBrush(QColor(Qt::white));
+                painter.setBrush(_whiteKeyColor);
             }
 
             QPoint thisTopLeft = topLeft - QPoint(0, (j * whiteKeyWidth));
@@ -106,8 +109,7 @@ void PianoRollKeysWidget::paintEvent(QPaintEvent*)
         topLeft -= QPoint(0, octaveHeight);
     }
 
-    painter.setPen(QColor(Qt::black));
-    painter.setBrush(QColor(Qt::black));
+    painter.setPen(_blackKeyColor);
 
     topLeft = QPoint(0, octaveStart - 2 * _rowHeight);
 
@@ -120,9 +122,9 @@ void PianoRollKeysWidget::paintEvent(QPaintEvent*)
             key = (octave * 12) + key;
 
             if (_onKeys.contains(key)) {
-                painter.setBrush(QColor(255, 192, 192));
+                painter.setBrush(_activeKeyColor);
             } else {
-                painter.setBrush(QColor(Qt::black));
+                painter.setBrush(_blackKeyColor);
             }
 
             int offset = j > 1 ? 1 : 0;
@@ -200,4 +202,44 @@ void PianoRollKeysWidget::mouseReleaseEvent(QMouseEvent* event)
     update();
 
     emit keyOff(key);
+}
+
+const QColor& PianoRollKeysWidget::outlineColor() const
+{
+    return _outlineColor;
+}
+
+const QColor& PianoRollKeysWidget::whiteKeyColor() const
+{
+    return _whiteKeyColor;
+}
+
+const QColor& PianoRollKeysWidget::blackKeyColor() const
+{
+    return _blackKeyColor;
+}
+
+const QColor& PianoRollKeysWidget::activeKeyColor() const
+{
+    return _activeKeyColor;
+}
+
+void PianoRollKeysWidget::setOutlineColor(const QColor& color)
+{
+    _outlineColor = color;
+}
+
+void PianoRollKeysWidget::setWhiteKeyColor(const QColor& color)
+{
+    _whiteKeyColor = color;
+}
+
+void PianoRollKeysWidget::setBlackKeyColor(const QColor& color)
+{
+    _blackKeyColor = color;
+}
+
+void PianoRollKeysWidget::setActiveKeyColor(const QColor& color)
+{
+    _activeKeyColor = color;
 }

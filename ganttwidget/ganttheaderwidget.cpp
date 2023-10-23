@@ -1,8 +1,5 @@
 #include "ganttheaderwidget.h"
 
-constexpr QColor GanttHeaderWidget::BackgroundColor;
-constexpr QColor GanttHeaderWidget::CursorColor;
-
 GanttHeaderWidget::GanttHeaderWidget(QWidget *parent)
     : ScrollableWidget{parent}
     , _items(nullptr)
@@ -12,6 +9,11 @@ GanttHeaderWidget::GanttHeaderWidget(QWidget *parent)
     , _snap(true)
     , _positionFunction([](){ return -1; })
     , _headerPaintFunction([](QPainter&,QRect,float,float,float){})
+    , _activeColor(QColor(64, 64, 64))
+    , _inactiveColor(Qt::lightGray)
+    , _activeForegroundColor(Qt::gray)
+    , _inactiveForegroundColor(Qt::gray)
+    , _cursorColor(QColor(64, 192, 64))
 {
 
 }
@@ -93,9 +95,6 @@ void GanttHeaderWidget::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
 
-    painter.setPen(QColor(Qt::gray));
-    painter.setBrush(QColor(BackgroundColor));
-
     int beatsPerBar = _app->project().beatsPerBar();
 
     int barWidth = _cellWidth / _cellBeats * beatsPerBar;
@@ -108,8 +107,10 @@ void GanttHeaderWidget::paintEvent(QPaintEvent*)
     for (int i = 0; i < numBars; i++) {
         QPoint thisTopLeft = topLeft + QPoint(i * barWidth, 0);
         QPoint thisBottomRight = thisTopLeft + QPoint(barWidth, height());
+        bool active = ((firstBar + i) * beatsPerBar) < playlength();
 
-        painter.setBrush(((firstBar + i) * beatsPerBar) < playlength() ? QColor(BackgroundColor) : QColor(Qt::lightGray));
+        painter.setPen(active ? _activeForegroundColor : _inactiveForegroundColor);
+        painter.setBrush(active ? _activeColor : _inactiveColor);
         painter.drawRect(QRect(thisTopLeft, thisBottomRight));
 
         QPoint thisBottomLeft = QPoint(thisTopLeft.x(), thisBottomRight.y());
@@ -139,7 +140,7 @@ void GanttHeaderWidget::paintEvent(QPaintEvent*)
         path.lineTo(p1);
 
         painter.setPen(Qt::NoPen);
-        painter.fillPath(path, CursorColor);
+        painter.fillPath(path, _cursorColor);
     }
 }
 
@@ -151,6 +152,56 @@ void GanttHeaderWidget::mousePressEvent(QMouseEvent* event)
     float mousePositionSnapped = (int)(mousePosition / _cellBeats) * _cellBeats;
 
     emit clicked(event->button(), _snap ? mousePositionSnapped : mousePosition);
+}
+
+const QColor& GanttHeaderWidget::activeColor() const
+{
+    return _activeColor;
+}
+
+const QColor& GanttHeaderWidget::inactiveColor() const
+{
+    return _inactiveColor;
+}
+
+const QColor& GanttHeaderWidget::activeForegroundColor() const
+{
+    return _activeForegroundColor;
+}
+
+const QColor& GanttHeaderWidget::inactiveForegroundColor() const
+{
+    return _inactiveColor;
+}
+
+const QColor& GanttHeaderWidget::cursorColor() const
+{
+    return _cursorColor;
+}
+
+void GanttHeaderWidget::setActiveColor(const QColor& color)
+{
+    _activeColor = color;
+}
+
+void GanttHeaderWidget::setInactiveColor(const QColor& color)
+{
+    _inactiveColor = color;
+}
+
+void GanttHeaderWidget::setActiveForegroundColor(const QColor& color)
+{
+    _activeForegroundColor = color;
+}
+
+void GanttHeaderWidget::setInactiveForegroundColor(const QColor& color)
+{
+    _inactiveForegroundColor = color;
+}
+
+void GanttHeaderWidget::setCursorColor(const QColor& color)
+{
+    _cursorColor = color;
 }
 
 int GanttHeaderWidget::length() const

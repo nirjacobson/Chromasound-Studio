@@ -11,6 +11,9 @@
 class RectLED : public QWidget
 {
         Q_OBJECT
+        Q_PROPERTY(QColor color READ color WRITE setColor)
+        Q_PROPERTY(QColor selectedColor READ selectedColor WRITE setSelectedColor)
+
     public:
         explicit RectLED(QWidget *parent = nullptr, const QColor& color = Qt::GlobalColor::green, const QColor& selectedColor = Qt::GlobalColor::cyan);
 
@@ -33,6 +36,12 @@ class RectLED : public QWidget
         QColor _selectedColor;
         bool _selected;
         std::function<bool(void)> _onFunction;
+
+        const QColor& color() const;
+        void setColor(const QColor& color);
+
+        const QColor& selectedColor() const;
+        void setSelectedColor(const QColor& color);
 };
 
 #endif // RECTLED_H

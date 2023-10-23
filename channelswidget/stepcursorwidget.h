@@ -10,6 +10,8 @@
 class StepCursorWidget : public QWidget
 {
         Q_OBJECT
+        Q_PROPERTY(QColor color READ color WRITE setColor)
+
     public:
         explicit StepCursorWidget(QWidget *parent = nullptr, Application* app = nullptr);
 
@@ -20,6 +22,12 @@ class StepCursorWidget : public QWidget
 
     private:
         Application* _app;
+
+        QColor _color;
+
+        const QColor& color() const;
+
+        void setColor(const QColor& color);
 
     protected:
         void resizeEvent(QResizeEvent*);
