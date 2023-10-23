@@ -83,3 +83,11 @@ void PlaylistWidget::ganttItemChanged(GanttItem* item, const float toTime, const
     _app->undoStack().push(new EditPlaylistCommand(_app->window(), dynamic_cast<Playlist::Item*>(item), toTime));
 }
 
+void PlaylistWidget::paintEvent(QPaintEvent* event)
+{
+    QStyleOption opt;
+    opt.initFrom(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+

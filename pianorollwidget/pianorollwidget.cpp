@@ -96,3 +96,11 @@ void PianoRollWidget::ganttItemReleased(const GanttItem* item)
     _itemLastClicked = item;
 }
 
+void PianoRollWidget::paintEvent(QPaintEvent* event)
+{
+    QStyleOption opt;
+    opt.initFrom(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+

@@ -2,6 +2,7 @@
 #define PIANOROLLWIDGET_H
 
 #include <QWidget>
+#include <QStyleOption>
 
 #include "application.h"
 #include "pianorollkeyswidget.h"
@@ -48,6 +49,10 @@ class PianoRollWidget : public QWidget
         void ganttClicked(Qt::MouseButton button, int row, float time);
         void ganttItemChanged(GanttItem* item, const float toTime, const int toRow, const float toDuration);
         void ganttItemReleased(const GanttItem* item);
+
+        // QWidget interface
+    protected:
+        void paintEvent(QPaintEvent* event);
 };
 
 #endif // PIANOROLLWIDGET_H

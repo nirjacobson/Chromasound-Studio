@@ -2,6 +2,7 @@
 #define PLAYLISTWIDGET_H
 
 #include <QWidget>
+#include <QStyleOption>
 
 #include "application.h"
 #include "playlistpatternswidget.h"
@@ -42,6 +43,10 @@ class PlaylistWidget : public QWidget
         void ganttHeaderClicked(Qt::MouseButton button, float time);
         void ganttEditorClicked(Qt::MouseButton button, int row, float time);
         void ganttItemChanged(GanttItem* item, const float toTime, const int toRow, const float toDuration);
+
+        // QWidget interface
+    protected:
+        void paintEvent(QPaintEvent* event);
 };
 
 #endif // PLAYLISTWIDGET_H

@@ -47,6 +47,10 @@ class TopWidget : public QWidget
         void beatsPerBarDidChange(int beats);
         void patModeSelected();
         void songModeSelected();
+
+        // QWidget interface
+    protected:
+        void paintEvent(QPaintEvent* event);
 };
 
 #endif // TOPWIDGET_H

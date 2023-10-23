@@ -115,3 +115,11 @@ void TopWidget::songModeSelected()
     _app->project().setPlayMode(Project::PlayMode::SONG);
 }
 
+void TopWidget::paintEvent(QPaintEvent* event)
+{
+    QStyleOption opt;
+    opt.initFrom(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+

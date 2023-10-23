@@ -16,13 +16,15 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
 
     ui->setupUi(this);
 
+    QAction* menuEditFirstAction = ui->menuEdit->actions()[0];
+
     QAction* undoAction = _app->undoStack().createUndoAction(this, "Undo");
     undoAction->setShortcuts(QKeySequence::Undo);
-    ui->menuEdit->addAction(undoAction);
+    ui->menuEdit->insertAction(menuEditFirstAction, undoAction);
 
     QAction* redoAction = _app->undoStack().createRedoAction(this, "Redo");
     redoAction->setShortcuts(QKeySequence::Redo);
-    ui->menuEdit->addAction(redoAction);
+    ui->menuEdit->insertAction(menuEditFirstAction, redoAction);
 
     connect(&_midiPoller, &MIDIPoller::receivedMessage, this, &MainWindow::handleMIDIMessage);
     _midiPoller.start();
@@ -79,6 +81,10 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openTriggered);
    connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveTriggered);
    connect(ui->actionRender, &QAction::triggered, this, &MainWindow::renderTriggered);
+   connect(ui->actionExit, &QAction::triggered, this, &MainWindow::close);
+   connect(ui->actionStyles, &QAction::triggered, this, &MainWindow::stylesTriggered);
+
+   _styleDialog.setApplication(_app);
 }
 
 MainWindow::~MainWindow()
@@ -443,6 +449,11 @@ void MainWindow::setMIDIDevice(const int device)
     _midiPoller.start();
 }
 
+void MainWindow::stylesTriggered()
+{
+    _styleDialog.show();
+}
+
 void MainWindow::doUpdate()
 {
     update();
@@ -483,6 +494,11 @@ void MainWindow::resizeEvent(QResizeEvent*)
 
     _pianoRollWindow->resize(width, height);
     _pianoRollWindow->move(width, 0);
+}
+
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    _styleDialog.hide();
 }
 
 

@@ -18,6 +18,7 @@
 #include "project/vgmstream.h"
 #include "midi/midiinput.h"
 #include "midi/midipoller.h"
+#include "style/styledialog.h"
 
 #include "commands/movechanneldowncommand.h"
 #include "commands/movechannelupcommand.h"
@@ -83,6 +84,8 @@ private slots:
     void handleMIDIMessage(const long msg);
     void setMIDIDevice(const int device);
 
+    void stylesTriggered();
+
 private:
     Ui::MainWindow* ui;
 
@@ -102,6 +105,7 @@ private:
     QMdiSubWindow* _playlistWindow;
     QMdiSubWindow* _pianoRollWindow;
     QMdiSubWindow* _channelWindow;
+    StyleDialog _styleDialog;
 
     int _selectedChannel;
 
@@ -112,5 +116,6 @@ private:
 protected:
     void showEvent(QShowEvent*);
     void resizeEvent(QResizeEvent*);
+    void closeEvent(QCloseEvent* event);
 };
 #endif // MAINWINDOW_H

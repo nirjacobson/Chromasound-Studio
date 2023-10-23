@@ -5,6 +5,8 @@
 #include <QLayout>
 #include <QList>
 #include <QWindow>
+#include <QStyle>
+#include <QStyleOption>
 
 #include "application.h"
 #include "channelwidget/channelwidget.h"
@@ -71,6 +73,7 @@ class ChannelsWidget : public QWidget
         // QWidget interface
     protected:
         void showEvent(QShowEvent*);
+        void paintEvent(QPaintEvent* event);
 };
 
 #endif // CHANNELSWIDGET_H

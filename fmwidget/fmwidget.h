@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QFileDialog>
+#include <QStyleOption>
 
 #include "application.h"
 #include "project/channel/fmchannelsettings.h"
@@ -40,6 +41,10 @@ private:
 private slots:
     void openTriggered();
     void saveTriggered();
+
+    // QWidget interface
+protected:
+    void paintEvent(QPaintEvent* event);
 };
 
 #endif // FMWIDGET_H
