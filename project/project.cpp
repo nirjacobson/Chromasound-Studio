@@ -21,6 +21,7 @@ Project::Project()
     addChannel();
     addChannel();
     addChannel();
+    _channels.last().setType(Channel::Type::NOISE);
 }
 
 Project::~Project()

@@ -128,7 +128,9 @@ Channel MainWindow::deleteChannel(const int index)
     _channelsWidget->remove(index);
 
     if (_channelsWidget->activeChannel() == index) {
-        _channelsWidget->select(index);
+        if (_app->project().channels() > index) {
+            _channelsWidget->select(index);
+        }
     }
 
     for (MdiSubWindow* window : _channelWindows[index]) {
