@@ -16,8 +16,23 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     , _toneAction("Tone", this)
     , _noiseAction("Noise", this)
     , _fmAction("FM", this)
+    , _toneColor(Qt::cyan)
+    , _noiseColor(Qt::lightGray)
+    , _fmColor(Qt::magenta)
 {
     ui->setupUi(this);
+
+    switch (_app->project().getChannel(_index).type()) {
+        case Channel::TONE:
+            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_toneColor.name()));
+            break;
+        case Channel::NOISE:
+            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_noiseColor.name()));
+            break;
+        case Channel::FM:
+            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_fmColor.name()));
+            break;
+    }
 
     ui->trackStackedWidget->setMinimumHeight(32);
     ui->stepsStackedWidget->setMinimumHeight(128);
@@ -50,9 +65,9 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     connect(&_moveDownAction, &QAction::triggered, this, &ChannelWidget::moveDownTriggered);
     connect(&_deleteAction, &QAction::triggered, this, &ChannelWidget::deleteTriggered);
 
-    connect(&_toneAction, &QAction::triggered, this, &ChannelWidget::toneTriggered);
-    connect(&_noiseAction, &QAction::triggered, this, &ChannelWidget::noiseTriggered);
-    connect(&_fmAction, &QAction::triggered, this, &ChannelWidget::fmTriggered);
+    connect(&_toneAction, &QAction::triggered, this, &ChannelWidget::toneWasTriggered);
+    connect(&_noiseAction, &QAction::triggered, this, &ChannelWidget::noiseWasTriggered);
+    connect(&_fmAction, &QAction::triggered, this, &ChannelWidget::fmWasTriggered);
 
     connect(ui->stepKeys, &StepKeysWidget::clicked, this, &ChannelWidget::pianoKeyClicked);
     connect(ui->stepVelocities, &StepVelocitiesWidget::clicked, this, &ChannelWidget::velocityClicked);
@@ -125,6 +140,18 @@ int ChannelWidget::index() const
 void ChannelWidget::setIndex(const int idx)
 {
     _index = idx;
+
+    switch (_app->project().getChannel(_index).type()) {
+        case Channel::TONE:
+                ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_toneColor.name()));
+                break;
+        case Channel::NOISE:
+                ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_noiseColor.name()));
+                break;
+        case Channel::FM:
+                ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_fmColor.name()));
+                break;
+    }
 
    ui->pushButton->setText(_app->project().getChannel(_index).name());
    ui->stepSequencer->setIndex(_index);
@@ -204,6 +231,49 @@ const QRect ChannelWidget::getSequencerGeometry()
     return rect;
 }
 
+const QColor& ChannelWidget::fmColor() const
+{
+    return _fmColor;
+}
+
+const QColor& ChannelWidget::toneColor() const
+{
+    return _toneColor;
+}
+
+const QColor& ChannelWidget::noiseColor() const
+{
+    return _noiseColor;
+}
+
+void ChannelWidget::setFMColor(const QColor& color)
+{
+    _fmColor = color;
+
+    if (_app->project().getChannel(_index).type() == Channel::FM) {
+        ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_fmColor.name()));
+    }
+}
+
+void ChannelWidget::setToneColor(const QColor& color)
+{
+    _toneColor = color;
+
+    if (_app->project().getChannel(_index).type() == Channel::TONE) {
+        ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_toneColor.name()));
+    }
+}
+
+void ChannelWidget::setNoiseColor(const QColor& color)
+{
+    _noiseColor = color;
+
+
+    if (_app->project().getChannel(_index).type() == Channel::NOISE) {
+        ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_noiseColor.name()));
+    }
+}
+
 void ChannelWidget::ledClicked(bool shift)
 {
     Channel& channel = _app->project().getChannel(_index);
@@ -252,6 +322,24 @@ void ChannelWidget::pianoRollWasTriggered()
 {
     emit toggled(true);
     emit pianoRollTriggered(true);
+}
+
+void ChannelWidget::toneWasTriggered()
+{
+    ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_toneColor.name()));
+    emit toneTriggered();
+}
+
+void ChannelWidget::noiseWasTriggered()
+{
+    ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_noiseColor.name()));
+    emit noiseTriggered();
+}
+
+void ChannelWidget::fmWasTriggered()
+{
+    ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_fmColor.name()));
+    emit fmTriggered();
 }
 
 void ChannelWidget::volumeDialChanged(const int val)

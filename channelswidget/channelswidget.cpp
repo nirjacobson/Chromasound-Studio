@@ -97,6 +97,7 @@ void ChannelsWidget::add(const int index)
     connect(cw, &ChannelWidget::deleteTriggered, this, [=](){ emit deleteTriggered(cw->index()); });
     connect(cw, &ChannelWidget::toneTriggered, this, [=](){ emit toneTriggered(cw->index()); });
     connect(cw, &ChannelWidget::noiseTriggered, this, [=](){ emit noiseTriggered(cw->index()); });
+    connect(cw, &ChannelWidget::fmTriggered, this, [=](){ emit fmTriggered(cw->index()); });
     connect(cw, &ChannelWidget::nameChanged, this, [=](){ emit nameChanged(cw->index()); });
     connect(cw, &ChannelWidget::pianoKeyClicked, this, &ChannelsWidget::pianoKeyClicked);
     connect(cw, &ChannelWidget::velocityClicked, this, &ChannelsWidget::velocityClicked);

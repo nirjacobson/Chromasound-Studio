@@ -19,6 +19,9 @@ namespace Ui {
 class ChannelWidget : public QWidget
 {
         Q_OBJECT
+        Q_PROPERTY(QColor fmColor READ fmColor WRITE setFMColor)
+        Q_PROPERTY(QColor toneColor READ toneColor WRITE setToneColor)
+        Q_PROPERTY(QColor noiseColor READ noiseColor WRITE setNoiseColor)
 
     public:
         explicit ChannelWidget(QWidget *parent = nullptr, Application* app = nullptr, int index = 0);
@@ -57,6 +60,18 @@ class ChannelWidget : public QWidget
         QAction _noiseAction;
         QAction _fmAction;
 
+        QColor _fmColor;
+        QColor _toneColor;
+        QColor _noiseColor;
+
+        const QColor& fmColor() const;
+        const QColor& toneColor() const;
+        const QColor& noiseColor() const;
+
+        void setFMColor(const QColor& color);
+        void setToneColor(const QColor& color);
+        void setNoiseColor(const QColor& color);
+
     signals:
         void pianoKeyClicked(const Qt::MouseButton button, const int step, const int key);
         void velocityClicked(const int step, const int velocity);
@@ -83,6 +98,9 @@ class ChannelWidget : public QWidget
         void buttonContextMenuRequested(const QPoint& p);
         void pianoRollWasToggled();
         void pianoRollWasTriggered();
+        void toneWasTriggered();
+        void noiseWasTriggered();
+        void fmWasTriggered();
         void volumeDialChanged(const int val);
 
     protected:
