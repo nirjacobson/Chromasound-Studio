@@ -69,7 +69,6 @@ void ChannelsWidget::rebuild()
         widget->layout()->addWidget(stepCursorWidget);
         ui->verticalLayout->addWidget(widget);
     }
-
 }
 
 void ChannelsWidget::remove(const int index)
@@ -287,11 +286,6 @@ void ChannelsWidget::velocityClicked(const int step, const int velocity)
         newNote.setVelocity(velocity);
         _app->undoStack().push(new EditNoteCommand(_app->window(), *existingItem, step * beatsPerStep, newNote));
     }
-}
-
-void ChannelsWidget::showEvent(QShowEvent*)
-{
-    adjustSize();
 }
 
 void ChannelsWidget::paintEvent(QPaintEvent* event)

@@ -72,7 +72,6 @@ class ChannelsWidget : public QWidget
 
         // QWidget interface
     protected:
-        void showEvent(QShowEvent*);
         void paintEvent(QPaintEvent* event);
 };
 

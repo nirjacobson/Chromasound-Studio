@@ -6,11 +6,8 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , ui(new Ui::MainWindow)
     , _app(app)
     , _midiInput(MIDIInput::instance())
-    , _channelsWidget(new ChannelsWidget(this, app))
-    , _playlistWidget(new PlaylistWidget(this, app))
-    , _pianoRollWidget(nullptr)
-    , _noiseWidget(nullptr)
-    , _fmWidget(nullptr)
+    , _channelsWindow(nullptr)
+    , _playlistWindow(nullptr)
 {
     _midiInput->init();
 
@@ -31,30 +28,6 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
 
     ui->topWidget->setApplication(app);
 
-   _channelsWindow = new QMdiSubWindow(ui->mdiArea);
-   _channelsWindow->setWidget(_channelsWidget);
-   _channelsWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
-   ui->mdiArea->addSubWindow(_channelsWindow);
-   _channelsWindow->show();
-
-   _playlistWindow = new QMdiSubWindow(ui->mdiArea);
-   _playlistWindow->setWidget(_playlistWidget);
-   ui->mdiArea->addSubWindow(_playlistWindow);
-   _playlistWindow->show();
-
-   _pianoRollWindow = new QMdiSubWindow(ui->mdiArea);
-   ui->mdiArea->addSubWindow(_pianoRollWindow);
-   _pianoRollWindow->hide();
-
-   _channelWindow = new QMdiSubWindow(ui->mdiArea);
-   ui->mdiArea->addSubWindow(_channelWindow);
-   _channelWindow->hide();
-
-   _channelsWindow->setWindowIcon(QIcon(QPixmap(1,1)));
-   _playlistWindow->setWindowIcon(QIcon(QPixmap(1,1)));
-   _pianoRollWindow->setWindowIcon(QIcon(QPixmap(1,1)));
-   _channelWindow->setWindowIcon(QIcon(QPixmap(1,1)));
-
    _timer.setInterval(1000 / 30);
    connect(&_timer, &QTimer::timeout, this, &MainWindow::frame);
 
@@ -65,17 +38,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
    connect(ui->topWidget, &TopWidget::beatsPerBarChanged, this, &MainWindow::beatsPerBarChanged);
    connect(ui->topWidget, &TopWidget::midiDeviceSet, this, &MainWindow::setMIDIDevice);
 
-   connect(_channelsWidget, &ChannelsWidget::pianoRollTriggered, this, &MainWindow::pianoRollTriggered);
-   connect(_channelsWidget, &ChannelsWidget::deleteTriggered, this, &MainWindow::deleteChannelTriggered);
-   connect(_channelsWidget, &ChannelsWidget::channelAdded, this, &MainWindow::channelAdded);
-   connect(_channelsWidget, &ChannelsWidget::moveUpTriggered, this, &MainWindow::moveChannelUpTriggered);
-   connect(_channelsWidget, &ChannelsWidget::moveDownTriggered, this, &MainWindow::moveChannelDownTriggered);
-   connect(_channelsWidget, &ChannelsWidget::channelSelected, this, &MainWindow::channelSelected);
-   connect(_channelsWidget, &ChannelsWidget::nameChanged, this, &MainWindow::channelNameChanged);
-
-   connect(_channelsWidget, &ChannelsWidget::toneTriggered, this, &MainWindow::toneTriggered);
-   connect(_channelsWidget, &ChannelsWidget::noiseTriggered, this, &MainWindow::noiseTriggered);
-   connect(_channelsWidget, &ChannelsWidget::fmTriggered, this, &MainWindow::fmTriggered);
+   connect(ui->mdiArea, &MdiArea::viewModeChanged, this, &MainWindow::mdiViewModeChanged);
 
    connect(ui->actionNew, &QAction::triggered, this, &MainWindow::newTriggered);
    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openTriggered);
@@ -83,18 +46,17 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
    connect(ui->actionRender, &QAction::triggered, this, &MainWindow::renderTriggered);
    connect(ui->actionExit, &QAction::triggered, this, &MainWindow::close);
    connect(ui->actionStyles, &QAction::triggered, this, &MainWindow::stylesTriggered);
+   connect(ui->actionChannels, &QAction::triggered, this, &MainWindow::showChannelsWindow);
+   connect(ui->actionPlaylist, &QAction::triggered, this, &MainWindow::showPlaylistWindow);
 
    _styleDialog.setApplication(_app);
+
+   showChannelsWindow();
+   showPlaylistWindow();
 }
 
 MainWindow::~MainWindow()
 {
-    if (_pianoRollWidget) delete _pianoRollWidget;
-    delete _playlistWindow;
-    delete _channelsWindow;
-    delete _channelWindow;
-    delete _pianoRollWindow;
-
     _midiPoller.stop();
     _midiPoller.quit();
     _midiPoller.wait();
@@ -230,20 +192,35 @@ void MainWindow::pianoRollTriggered(const int index)
 
     _channelsWidget->update();
 
-    PianoRollWidget* oldWidget = _pianoRollWidget;
+    doesUsePianoRoll = !doesUsePianoRoll;
 
-    _pianoRollWidget = new PianoRollWidget(this, _app);
-    _pianoRollWidget->setWindowTitle(QString("%1: Piano Roll").arg(_app->project().getChannel(index).name()));
-    connect(_pianoRollWidget, &PianoRollWidget::keyOn, this, &MainWindow::keyOn);
-    connect(_pianoRollWidget, &PianoRollWidget::keyOff, this, &MainWindow::keyOff);
+    if (doesUsePianoRoll) {
+        auto it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window){ return dynamic_cast<PianoRollWidget*>(window->widget()); });
+        if (it != _channelWindows[index].end()) {
+            ui->mdiArea->setActiveSubWindow(*it);
+        } else {
+            PianoRollWidget* pianoRollWidget = new PianoRollWidget(this, _app);
+            pianoRollWidget->setWindowTitle(QString("%1: Piano Roll").arg(_app->project().getChannel(index).name()));
+            connect(pianoRollWidget, &PianoRollWidget::keyOn, this, &MainWindow::keyOn);
+            connect(pianoRollWidget, &PianoRollWidget::keyOff, this, &MainWindow::keyOff);
 
-    _pianoRollWidget->setTrack(_app->project().frontPattern(), index);
+            pianoRollWidget->setTrack(_app->project().frontPattern(), index);
 
-    _pianoRollWindow->setWidget(_pianoRollWidget);
-    delete oldWidget;
+            MdiSubWindow* pianoRollWindow = new MdiSubWindow(ui->mdiArea);
 
-    _pianoRollWindow->show();
-    _pianoRollWindow->setFocus();
+            pianoRollWindow->setAttribute(Qt::WA_DeleteOnClose);
+            ui->mdiArea->addSubWindow(pianoRollWindow);
+            pianoRollWindow->setWindowIcon(QIcon(QPixmap(1,1)));
+
+            pianoRollWindow->setWidget(pianoRollWidget);
+            connect(pianoRollWindow, &MdiSubWindow::closed, this, [=](){ windowClosed(pianoRollWindow); });
+
+            pianoRollWindow->show();
+            ui->mdiArea->setActiveSubWindow(pianoRollWindow);
+
+            _channelWindows[index].append(pianoRollWindow);
+        }
+    }
 }
 
 void MainWindow::deleteChannelTriggered(const int index)
@@ -274,45 +251,72 @@ void MainWindow::channelSelected(const int index)
 {
     _selectedChannel = index;
 
-    _channelWindow->hide();
-    if (_pianoRollWidget) {
-        _pianoRollWidget->setTrack(_app->project().frontPattern(), index);
-        _pianoRollWidget->setWindowTitle(QString("%1: Piano Roll").arg(_app->project().getChannel(index).name()));
+    MdiSubWindow* channelWindow;
+
+    if (_app->project().getChannel(index).type() > Channel::Type::TONE) {
+        channelWindow = new MdiSubWindow(ui->mdiArea);
+        channelWindow->setAttribute(Qt::WA_DeleteOnClose);
+        ui->mdiArea->addSubWindow(channelWindow);
+        channelWindow->setWindowIcon(QIcon(QPixmap(1,1)));
     }
 
-    QWidget* oldWidget = nullptr;
+    MdiSubWindow* noiseWindow;
+    NoiseWidget* noiseWidget;
+    MdiSubWindow* fmWindow;
+    FMWidget* fmWidget;
+    QList<MdiSubWindow*>::Iterator it;
+
+    it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window){
+        return dynamic_cast<NoiseWidget*>(window->widget()) || dynamic_cast<FMWidget*>(window->widget()); });
+
+    if (it != _channelWindows[index].end()) {
+        (*it)->close();
+    }
+
     switch (_app->project().getChannel(index).type()) {
         case Channel::Type::NOISE:
-            oldWidget = _noiseWidget;
-            _noiseWidget = new NoiseWidget(this, _app);
-            _noiseWidget->setSettings(dynamic_cast<NoiseChannelSettings*>(&_app->project().getChannel(index).settings()));
-            _noiseWidget->setWindowTitle(QString("%1: Noise").arg(_app->project().getChannel(index).name()));
-            _fmWidget = nullptr;
+            it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window){ return dynamic_cast<NoiseWidget*>(window->widget()); });
+            if (it != _channelWindows[index].end()) {
+                ui->mdiArea->setActiveSubWindow(*it);
+            } else {
+                noiseWidget = new NoiseWidget(this, _app);
+                noiseWidget->setSettings(dynamic_cast<NoiseChannelSettings*>(&_app->project().getChannel(index).settings()));
+                noiseWidget->setWindowTitle(QString("%1: Noise").arg(_app->project().getChannel(index).name()));
 
-            _channelWindow->setWidget(_noiseWidget);
+                channelWindow->setWidget(noiseWidget);
+                if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
+                    channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
+                }
+                _channelWindows[index].append(channelWindow);
+                connect(channelWindow, &MdiSubWindow::closed, this, [=](){ windowClosed(channelWindow); });
+            }
             break;
         case Channel::Type::FM:
-            oldWidget = _fmWidget;
-            _fmWidget = new FMWidget(this, _app);
-            connect(_fmWidget, &FMWidget::keyPressed, this, &MainWindow::keyOn);
-            connect(_fmWidget, &FMWidget::keyReleased, this, &MainWindow::keyOff);
-            _fmWidget->setSettings(dynamic_cast<FMChannelSettings*>(&_app->project().getChannel(index).settings()));
-            _fmWidget->setWindowTitle(QString("%1: FM").arg(_app->project().getChannel(index).name()));
-            _noiseWidget = nullptr;
+            it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window){ return dynamic_cast<FMWidget*>(window->widget()); });
+            if (it != _channelWindows[index].end()) {
+                ui->mdiArea->setActiveSubWindow(*it);
+            } else {
+                fmWidget = new FMWidget(this, _app);
+                connect(fmWidget, &FMWidget::keyPressed, this, &MainWindow::keyOn);
+                connect(fmWidget, &FMWidget::keyReleased, this, &MainWindow::keyOff);
+                fmWidget->setSettings(dynamic_cast<FMChannelSettings*>(&_app->project().getChannel(index).settings()));
+                fmWidget->setWindowTitle(QString("%1: FM").arg(_app->project().getChannel(index).name()));
 
-            _channelWindow->setWidget(_fmWidget);
+                channelWindow->setWidget(fmWidget);
+                if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
+                    channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
+                }
+                _channelWindows[index].append(channelWindow);
+                connect(channelWindow, &MdiSubWindow::closed, this, [=](){ windowClosed(channelWindow); });
+            }
             break;
         case Channel::TONE:
             break;
     }
 
     if (_app->project().getChannel(index).type() > Channel::Type::TONE) {
-        delete oldWidget;
-
-        _channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
-
-        _channelWindow->show();
-        _channelWindow->setFocus();
+        channelWindow->show();
+        ui->mdiArea->setActiveSubWindow(channelWindow);
     }
 }
 
@@ -336,21 +340,17 @@ void MainWindow::fmTriggered(const int index)
 
 void MainWindow::channelNameChanged(const int index)
 {
-    if (index == _selectedChannel) {
-        switch(_app->project().getChannel(index).type()) {
-            case Channel::TONE:
-                break;
-            case Channel::NOISE:
-                _noiseWidget->setWindowTitle(QString("%1: Noise").arg(_app->project().getChannel(index).name()));
-                break;
-            case Channel::FM:
-                _fmWidget->setWindowTitle(QString("%1: FM").arg(_app->project().getChannel(index).name()));
-                break;
+    QString tail = "Window";
+    for (MdiSubWindow* window : _channelWindows[index]) {
+        if (dynamic_cast<PianoRollWidget*>(window->widget())) {
+            tail = "Piano Roll";
+        } else if (dynamic_cast<NoiseWidget*>(window->widget())) {
+            tail = "Noise";
+        } else if (dynamic_cast<FMWidget*>(window->widget())) {
+            tail = "FM";
         }
-    }
 
-    if (_pianoRollWidget) {
-        _pianoRollWidget->setWindowTitle(QString("%1: Piano Roll").arg(_app->project().getChannel(index).name()));
+        window->setWindowTitle(QString("%1: %2").arg(_app->project().getChannel(index).name()).arg(tail));
     }
 }
 
@@ -413,16 +413,32 @@ void MainWindow::keyOn(const int key, const int velocity)
     if (activeChannel >= 0) {
         Channel& channel = _app->project().getChannel(activeChannel);
         _app->keyOn(channel.type(), channel.settings(), key, velocity);
-        if (_pianoRollWidget) _pianoRollWidget->pressKey(key);
-        if (_fmWidget) _fmWidget->pressKey(key);
+
+        for (MdiSubWindow* window : _channelWindows[activeChannel]) {
+            PianoRollWidget* prw;
+            FMWidget* fmw;
+            if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
+                prw->pressKey(key);
+            } else if ((fmw = dynamic_cast<FMWidget*>(window->widget()))) {
+                fmw->pressKey(key);
+            }
+        }
     }
 }
 
 void MainWindow::keyOff(const int key)
 {
+    int activeChannel = _channelsWidget->activeChannel();
     _app->keyOff(key);
-    if (_pianoRollWidget) _pianoRollWidget->releaseKey(key);
-    if (_fmWidget) _fmWidget->releaseKey(key);
+    for (MdiSubWindow* window : _channelWindows[activeChannel]) {
+        PianoRollWidget* prw;
+        FMWidget* fmw;
+        if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
+            prw->releaseKey(key);
+        } else if ((fmw = dynamic_cast<FMWidget*>(window->widget()))) {
+            fmw->releaseKey(key);
+        }
+    }
 }
 
 void MainWindow::handleMIDIMessage(const long message)
@@ -454,46 +470,136 @@ void MainWindow::stylesTriggered()
     _styleDialog.show();
 }
 
+void MainWindow::showChannelsWindow()
+{
+    if (_channelsWindow == nullptr) {
+        _channelsWidget = new ChannelsWidget(this, _app);
+
+        connect(_channelsWidget, &ChannelsWidget::pianoRollTriggered, this, &MainWindow::pianoRollTriggered);
+        connect(_channelsWidget, &ChannelsWidget::deleteTriggered, this, &MainWindow::deleteChannelTriggered);
+        connect(_channelsWidget, &ChannelsWidget::channelAdded, this, &MainWindow::channelAdded);
+        connect(_channelsWidget, &ChannelsWidget::moveUpTriggered, this, &MainWindow::moveChannelUpTriggered);
+        connect(_channelsWidget, &ChannelsWidget::moveDownTriggered, this, &MainWindow::moveChannelDownTriggered);
+        connect(_channelsWidget, &ChannelsWidget::channelSelected, this, &MainWindow::channelSelected);
+        connect(_channelsWidget, &ChannelsWidget::nameChanged, this, &MainWindow::channelNameChanged);
+
+        connect(_channelsWidget, &ChannelsWidget::toneTriggered, this, &MainWindow::toneTriggered);
+        connect(_channelsWidget, &ChannelsWidget::noiseTriggered, this, &MainWindow::noiseTriggered);
+        connect(_channelsWidget, &ChannelsWidget::fmTriggered, this, &MainWindow::fmTriggered);
+
+        MdiSubWindow* channelsWindow = new MdiSubWindow(ui->mdiArea);
+        connect(channelsWindow, &MdiSubWindow::closed, this, [&](){ _channelsWindow = nullptr; });
+        channelsWindow->setAttribute(Qt::WA_DeleteOnClose);
+        channelsWindow->setWidget(_channelsWidget);
+        if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
+            channelsWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
+        }
+        ui->mdiArea->addSubWindow(channelsWindow);
+        channelsWindow->show();
+        _channelsWindow = channelsWindow;
+    } else {
+        ui->mdiArea->setActiveSubWindow(_channelsWindow);
+    }
+}
+
+void MainWindow::showPlaylistWindow()
+{
+    if (_playlistWindow == nullptr) {
+        _playlistWidget = new PlaylistWidget(this, _app);
+
+        MdiSubWindow* playlistWindow = new MdiSubWindow(ui->mdiArea);
+        connect(playlistWindow, &MdiSubWindow::closed, this, [&](){ _playlistWindow = nullptr; });
+        playlistWindow->setAttribute(Qt::WA_DeleteOnClose);
+        playlistWindow->setWidget(_playlistWidget);
+
+        if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
+            int width = ui->mdiArea->frameGeometry().width()/2;
+            int height = ui->mdiArea->frameGeometry().height();
+
+            playlistWindow->resize(width, height);
+            playlistWindow->move(width, 0);
+        }
+
+        ui->mdiArea->addSubWindow(playlistWindow);
+        playlistWindow->show();
+        _playlistWindow = playlistWindow;
+    } else {
+        ui->mdiArea->setActiveSubWindow(_playlistWindow);
+    }
+}
+
+void MainWindow::mdiViewModeChanged(const QString& viewMode)
+{
+    if (viewMode == "windows") {
+        MdiArea* mdiArea = new MdiArea(this);
+        ui->centralwidget->layout()->replaceWidget(ui->mdiArea, mdiArea);
+        ui->mdiArea = mdiArea;
+    }
+}
+
+void MainWindow::windowClosed(MdiSubWindow* window)
+{
+    for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
+        (*it).removeAll(window);
+    }
+}
+
 void MainWindow::doUpdate()
 {
     update();
     _channelsWidget->update();
     _playlistWidget->update();
-    if (_pianoRollWidget) _pianoRollWidget->update();
+
+    for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
+        for (MdiSubWindow* window : (*it)) {
+            PianoRollWidget* prw;
+            if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
+                prw->update();
+            }
+        }
+    }
 }
 
 void MainWindow::channelSettingsUpdated()
 {
-    if (_noiseWidget) _noiseWidget->doUpdate();
-    if (_fmWidget) _fmWidget->doUpdate();
+    for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
+        for (MdiSubWindow* window : (*it)) {
+            NoiseWidget* nw;
+            FMWidget* fmw;
+
+            if ((nw = dynamic_cast<NoiseWidget*>(window->widget()))) {
+                nw->doUpdate();
+            } else if ((fmw = dynamic_cast<FMWidget*>(window->widget()))) {
+                fmw->doUpdate();
+            }
+        }
+    }
 }
 
 void MainWindow::showEvent(QShowEvent*)
 {
-    int width = ui->mdiArea->frameGeometry().width()/2;
-    int height = ui->mdiArea->frameGeometry().height();
+    if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
+        int width = ui->mdiArea->frameGeometry().width()/2;
+        int height = ui->mdiArea->frameGeometry().height();
 
-    _channelsWindow->move(0, 0);
+        _channelsWindow->move(0, 0);
 
-    _playlistWindow->resize(width, height);
-    _playlistWindow->move(width, 0);
-
-    _pianoRollWindow->resize(width, height);
-    _pianoRollWindow->move(width, 0);
+        _playlistWindow->resize(width, height);
+        _playlistWindow->move(width, 0);
+    }
 }
 
 void MainWindow::resizeEvent(QResizeEvent*)
 {
-    int width = ui->mdiArea->frameGeometry().width()/2;
-    int height = ui->mdiArea->frameGeometry().height();
+    if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
+        int width = ui->mdiArea->frameGeometry().width()/2;
+        int height = ui->mdiArea->frameGeometry().height();
 
-    _channelsWindow->move(0, 0);
+        _channelsWindow->move(0, 0);
 
-    _playlistWindow->resize(width, height);
-    _playlistWindow->move(width, 0);
-
-    _pianoRollWindow->resize(width, height);
-    _pianoRollWindow->move(width, 0);
+        _playlistWindow->resize(width, height);
+        _playlistWindow->move(width, 0);
+    }
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)
