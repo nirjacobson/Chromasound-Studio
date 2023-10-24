@@ -21,9 +21,11 @@ class PRDisplayWidget : public QWidget
         void setIndex(const int i);
 
     signals:
+        void pianoRollTriggered();
 
     protected:
         void paintEvent(QPaintEvent*);
+        void mousePressEvent(QMouseEvent* event);
 
     private:
         QColor _borderColor = QColor(128,128,128);

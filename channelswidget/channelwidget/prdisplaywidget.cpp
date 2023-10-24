@@ -73,6 +73,11 @@ void PRDisplayWidget::paintEvent(QPaintEvent*)
     }
 }
 
+void PRDisplayWidget::mousePressEvent(QMouseEvent* event)
+{
+    emit pianoRollTriggered();
+}
+
 const QColor& PRDisplayWidget::borderColor() const
 {
     return _borderColor;
