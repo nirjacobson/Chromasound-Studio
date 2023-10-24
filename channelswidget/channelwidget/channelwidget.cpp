@@ -43,7 +43,9 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     connect(ui->rectLed, &RectLED::clicked, this, &ChannelWidget::rectLedClicked);
     connect(ui->rectLed, &RectLED::doubleClicked, this, &ChannelWidget::rectLedDoubleClicked);
 
-    connect(&_pianoRollAction, &QAction::triggered, this, &ChannelWidget::pianoRollWasTriggered);
+    connect(ui->prDisplay, &PRDisplayWidget::pianoRollTriggered, this, &ChannelWidget::pianoRollWasTriggered);
+
+    connect(&_pianoRollAction, &QAction::triggered, this, &ChannelWidget::pianoRollWasToggled);
     connect(&_moveUpAction, &QAction::triggered, this, &ChannelWidget::moveUpTriggered);
     connect(&_moveDownAction, &QAction::triggered, this, &ChannelWidget::moveDownTriggered);
     connect(&_deleteAction, &QAction::triggered, this, &ChannelWidget::deleteTriggered);
@@ -235,11 +237,21 @@ void ChannelWidget::buttonContextMenuRequested(const QPoint& p)
     _contextMenu.exec(mapToGlobal(p));
 }
 
+void ChannelWidget::pianoRollWasToggled()
+{
+    bool on = _pianoRollAction.isChecked();
+
+    if (on) {
+        emit toggled(true);
+    }
+
+    emit pianoRollTriggered(on);
+}
+
 void ChannelWidget::pianoRollWasTriggered()
 {
-    ui->pushButton->setChecked(true);
     emit toggled(true);
-    emit pianoRollTriggered();
+    emit pianoRollTriggered(true);
 }
 
 void ChannelWidget::volumeDialChanged(const int val)

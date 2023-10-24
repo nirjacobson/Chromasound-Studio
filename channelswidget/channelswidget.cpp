@@ -49,7 +49,7 @@ void ChannelsWidget::rebuild()
         connect(channelWidget, &ChannelWidget::toggled, this, [=](bool selected){ handleToggle(channelWidget, selected); });
         connect(channelWidget, &ChannelWidget::rectLedClicked, this, [=](){ handleSelect(channelWidget); });
         connect(channelWidget, &ChannelWidget::rectLedDoubleClicked, this, &ChannelsWidget::handleSelectAll);
-        connect(channelWidget, &ChannelWidget::pianoRollTriggered, this, [=](){ emit pianoRollTriggered(channelWidget->index()); });
+        connect(channelWidget, &ChannelWidget::pianoRollTriggered, this, [=](bool on){ emit pianoRollTriggered(channelWidget->index(), on); });
         connect(channelWidget, &ChannelWidget::moveUpTriggered, this, [=](){ emit moveUpTriggered(channelWidget->index()); });
         connect(channelWidget, &ChannelWidget::moveDownTriggered, this, [=](){ emit moveDownTriggered(channelWidget->index()); });
         connect(channelWidget, &ChannelWidget::deleteTriggered, this, [=](){ emit deleteTriggered(channelWidget->index()); });
@@ -91,7 +91,7 @@ void ChannelsWidget::add(const int index)
     connect(cw, &ChannelWidget::toggled, this, [=](bool selected){ handleToggle(cw, selected); });
     connect(cw, &ChannelWidget::rectLedClicked, this, [=](){ handleSelect(cw); });
     connect(cw, &ChannelWidget::rectLedDoubleClicked, this, &ChannelsWidget::handleSelectAll);
-    connect(cw, &ChannelWidget::pianoRollTriggered, this, [=](){ emit pianoRollTriggered(cw->index()); });
+    connect(cw, &ChannelWidget::pianoRollTriggered, this, [=](bool on){ emit pianoRollTriggered(cw->index(), on); });
     connect(cw, &ChannelWidget::moveUpTriggered, this, [=](){ emit moveUpTriggered(cw->index()); });
     connect(cw, &ChannelWidget::moveDownTriggered, this, [=](){ emit moveDownTriggered(cw->index()); });
     connect(cw, &ChannelWidget::deleteTriggered, this, [=](){ emit deleteTriggered(cw->index()); });

@@ -60,7 +60,7 @@ private slots:
 
     void frame();
 
-    void pianoRollTriggered(const int index);
+    void pianoRollTriggered(const int index, const bool on);
     void deleteChannelTriggered(const int index);
     void channelAdded();
     void moveChannelUpTriggered(const int index);

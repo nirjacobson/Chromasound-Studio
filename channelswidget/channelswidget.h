@@ -41,7 +41,7 @@ class ChannelsWidget : public QWidget
         int activeChannel() const;
 
     signals:
-        void pianoRollTriggered(const int index);
+        void pianoRollTriggered(const int index, const bool on);
         void deleteTriggered(const int index);
         void channelAdded();
         void moveUpTriggered(const int index);

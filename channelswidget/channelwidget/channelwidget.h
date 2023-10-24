@@ -66,7 +66,7 @@ class ChannelWidget : public QWidget
 
         void rectLedClicked();
         void rectLedDoubleClicked();
-        void pianoRollTriggered();
+        void pianoRollTriggered(bool on);
         void deleteTriggered();
         void moveUpTriggered();
         void moveDownTriggered();
@@ -81,6 +81,7 @@ class ChannelWidget : public QWidget
         void ledClicked(bool shift);
         void buttonPressed();
         void buttonContextMenuRequested(const QPoint& p);
+        void pianoRollWasToggled();
         void pianoRollWasTriggered();
         void volumeDialChanged(const int val);
 

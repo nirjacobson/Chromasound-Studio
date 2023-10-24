@@ -218,46 +218,48 @@ void MainWindow::frame()
     doUpdate();
 }
 
-void MainWindow::pianoRollTriggered(const int index)
+void MainWindow::pianoRollTriggered(const int index, const bool on)
 {
-    _channelsWidget->select(index);
+    if (on)
+        _channelsWidget->select(index);
 
-    bool doesUsePianoRoll = _app->project().getFrontPattern().getTrack(index).doesUsePianoRoll();
-    if (doesUsePianoRoll) {
-        _app->project().getFrontPattern().getTrack(index).useStepSequencer();
-    } else {
+    if (on) {
         _app->project().getFrontPattern().getTrack(index).usePianoRoll();
+    } else {
+        _app->project().getFrontPattern().getTrack(index).useStepSequencer();
     }
 
     _channelsWidget->update();
 
-    doesUsePianoRoll = !doesUsePianoRoll;
-
-    if (doesUsePianoRoll) {
-        auto it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window){ return dynamic_cast<PianoRollWidget*>(window->widget()); });
-        if (it != _channelWindows[index].end()) {
+    auto it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window){ return dynamic_cast<PianoRollWidget*>(window->widget()); });
+    if (it != _channelWindows[index].end()) {
+        if (on) {
             ui->mdiArea->setActiveSubWindow(*it);
         } else {
-            PianoRollWidget* pianoRollWidget = new PianoRollWidget(this, _app);
-            pianoRollWidget->setWindowTitle(QString("%1: Piano Roll").arg(_app->project().getChannel(index).name()));
-            connect(pianoRollWidget, &PianoRollWidget::keyOn, this, &MainWindow::keyOn);
-            connect(pianoRollWidget, &PianoRollWidget::keyOff, this, &MainWindow::keyOff);
-
-            pianoRollWidget->setTrack(_app->project().frontPattern(), index);
-
-            MdiSubWindow* pianoRollWindow = new MdiSubWindow(ui->mdiArea);
-
-            pianoRollWindow->setAttribute(Qt::WA_DeleteOnClose);
-            ui->mdiArea->addSubWindow(pianoRollWindow);
-
-            pianoRollWindow->setWidget(pianoRollWidget);
-            connect(pianoRollWindow, &MdiSubWindow::closed, this, [=](){ windowClosed(pianoRollWindow); });
-
-            pianoRollWindow->show();
-            ui->mdiArea->setActiveSubWindow(pianoRollWindow);
-
-            _channelWindows[index].append(pianoRollWindow);
+            (*it)->close();
+            _channelWindows[index].removeAll(*it);
         }
+    } else if (on) {
+        PianoRollWidget* pianoRollWidget = new PianoRollWidget(this, _app);
+        pianoRollWidget->setWindowTitle(QString("%1: Piano Roll").arg(_app->project().getChannel(index).name()));
+        connect(pianoRollWidget, &PianoRollWidget::keyOn, this, &MainWindow::keyOn);
+        connect(pianoRollWidget, &PianoRollWidget::keyOff, this, &MainWindow::keyOff);
+
+        pianoRollWidget->setTrack(_app->project().frontPattern(), index);
+
+        MdiSubWindow* pianoRollWindow = new MdiSubWindow(ui->mdiArea);
+        pianoRollWindow->resize(pianoRollWidget->size());
+
+        pianoRollWindow->setAttribute(Qt::WA_DeleteOnClose);
+        ui->mdiArea->addSubWindow(pianoRollWindow);
+
+        pianoRollWindow->setWidget(pianoRollWidget);
+        connect(pianoRollWindow, &MdiSubWindow::closed, this, [=](){ windowClosed(pianoRollWindow); });
+
+        pianoRollWindow->show();
+        ui->mdiArea->setActiveSubWindow(pianoRollWindow);
+
+        _channelWindows[index].append(pianoRollWindow);
     }
 }
 
