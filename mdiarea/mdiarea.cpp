@@ -20,10 +20,9 @@ QString MdiArea::viewModeName() const
 
 void MdiArea::setViewModeName(const QString& name)
 {
-    closeAllSubWindows();
-
     if (name == "windows") {
-
+        // cannot dynamically change view mode
+        // rely on signal below to cause replacement with a new MdiArea
     } else if (name == "tabs") {
         setViewMode(QMdiArea::TabbedView);
         setTabsClosable(true);
