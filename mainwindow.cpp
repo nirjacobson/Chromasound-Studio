@@ -249,7 +249,6 @@ void MainWindow::pianoRollTriggered(const int index)
 
             pianoRollWindow->setAttribute(Qt::WA_DeleteOnClose);
             ui->mdiArea->addSubWindow(pianoRollWindow);
-            pianoRollWindow->setWindowIcon(QIcon(QPixmap(1,1)));
 
             pianoRollWindow->setWidget(pianoRollWidget);
             connect(pianoRollWindow, &MdiSubWindow::closed, this, [=](){ windowClosed(pianoRollWindow); });
@@ -296,7 +295,6 @@ void MainWindow::channelSelected(const int index)
         channelWindow = new MdiSubWindow(ui->mdiArea);
         channelWindow->setAttribute(Qt::WA_DeleteOnClose);
         ui->mdiArea->addSubWindow(channelWindow);
-        channelWindow->setWindowIcon(QIcon(QPixmap(1,1)));
     }
 
     MdiSubWindow* noiseWindow;
@@ -569,6 +567,8 @@ void MainWindow::showPlaylistWindow()
 
 void MainWindow::mdiViewModeChanged(const QString& viewMode)
 {
+    ui->mdiArea->closeAllSubWindows();
+
     if (viewMode == "windows") {
         MdiArea* mdiArea = new MdiArea(this);
         ui->centralwidget->layout()->replaceWidget(ui->mdiArea, mdiArea);
