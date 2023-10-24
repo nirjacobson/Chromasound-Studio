@@ -162,6 +162,10 @@ void ChannelWidget::setIndex(const int idx)
    ui->stepKeys->setChannel(_index);
    ui->stepVelocities->setChannel(_index);
 
+   _noiseAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::NOISE);
+   _toneAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::TONE);
+   _fmAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::FM);
+
    update();
 }
 

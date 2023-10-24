@@ -74,6 +74,15 @@ void MainWindow::moveChannelUp(const int index)
 
         _app->project().moveChannelUp(index);
 
+        QList<MdiSubWindow*> channelWindows = _channelWindows[index];
+        QList<MdiSubWindow*> otherChannelWindows = _channelWindows[index - 1];
+
+        _channelWindows.remove(index);
+        _channelWindows.remove(index - 1);
+
+        _channelWindows[index - 1] = channelWindows;
+        _channelWindows[index] = otherChannelWindows;
+
         _channelsWidget->update(index);
         _channelsWidget->update(index-1);
 
@@ -91,6 +100,15 @@ void MainWindow::moveChannelDown(const int index)
         bool isOtherSelected = _channelsWidget->selected() == index + 1;
 
         _app->project().moveChannelDown(index);
+
+        QList<MdiSubWindow*> channelWindows = _channelWindows[index];
+        QList<MdiSubWindow*> otherChannelWindows = _channelWindows[index + 1];
+
+        _channelWindows.remove(index);
+        _channelWindows.remove(index + 1);
+
+        _channelWindows[index + 1] = channelWindows;
+        _channelWindows[index] = otherChannelWindows;
 
         _channelsWidget->update(index);
         _channelsWidget->update(index+1);
@@ -111,6 +129,27 @@ Channel MainWindow::deleteChannel(const int index)
 
     if (_channelsWidget->activeChannel() == index) {
         _channelsWidget->select(index);
+    }
+
+    for (MdiSubWindow* window : _channelWindows[index]) {
+        window->close();
+    }
+
+    _channelWindows.remove(index);
+
+    QList<int> toDecrement;
+
+    for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
+        if (it.key() > index) {
+            toDecrement.append(it.key());
+        }
+    }
+
+    std::sort(toDecrement.begin(), toDecrement.end());
+
+    for (const int i : toDecrement) {
+        _channelWindows[i-1] = _channelWindows[i];
+        _channelWindows.remove(i);
     }
 
     return chan;
@@ -582,10 +621,14 @@ void MainWindow::showEvent(QShowEvent*)
         int width = ui->mdiArea->frameGeometry().width()/2;
         int height = ui->mdiArea->frameGeometry().height();
 
-        _channelsWindow->move(0, 0);
+        if (_channelsWindow) {
+            _channelsWindow->move(0, 0);
+        }
 
-        _playlistWindow->resize(width, height);
-        _playlistWindow->move(width, 0);
+        if (_playlistWindow) {
+            _playlistWindow->resize(width, height);
+            _playlistWindow->move(width, 0);
+        }
     }
 }
 
@@ -595,10 +638,14 @@ void MainWindow::resizeEvent(QResizeEvent*)
         int width = ui->mdiArea->frameGeometry().width()/2;
         int height = ui->mdiArea->frameGeometry().height();
 
-        _channelsWindow->move(0, 0);
+        if (_channelsWindow) {
+            _channelsWindow->move(0, 0);
+        }
 
-        _playlistWindow->resize(width, height);
-        _playlistWindow->move(width, 0);
+        if (_playlistWindow) {
+            _playlistWindow->resize(width, height);
+            _playlistWindow->move(width, 0);
+        }
     }
 }
 
