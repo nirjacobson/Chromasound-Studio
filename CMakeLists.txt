@@ -167,14 +167,19 @@ set(PROJECT_SOURCES
     commands/editoperatorsettingscommand.cpp
     commands/editalgorithmsettingscommand.h
     commands/editalgorithmsettingscommand.cpp
+    style/styledialog.h
+    style/styledialog.cpp
+    style/styledialog.ui
+    mdiarea/mdiarea.h
+    mdiarea/mdiarea.cpp
+    mdiarea/mdisubwindow.h
+    mdiarea/mdisubwindow.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(FM-PSG-Studio
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        style/styledialog.h style/styledialog.cpp style/styledialog.ui
-        style/styledialog.h style/styledialog.cpp style/styledialog.ui
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET FM-PSG-Studio APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

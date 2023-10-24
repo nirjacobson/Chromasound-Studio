@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QMdiSubWindow>
 #include <QTimer>
 #include <QRect>
 #include <QFile>
@@ -19,6 +18,7 @@
 #include "midi/midiinput.h"
 #include "midi/midipoller.h"
 #include "style/styledialog.h"
+#include "mdiarea/mdisubwindow.h"
 
 #include "commands/movechanneldowncommand.h"
 #include "commands/movechannelupcommand.h"
@@ -86,6 +86,11 @@ private slots:
 
     void stylesTriggered();
 
+    void showChannelsWindow();
+    void showPlaylistWindow();
+
+    void mdiViewModeChanged(const QString& viewMode);
+
 private:
     Ui::MainWindow* ui;
 
@@ -96,21 +101,20 @@ private:
 
     ChannelsWidget* _channelsWidget;
     PlaylistWidget* _playlistWidget;
-    PianoRollWidget* _pianoRollWidget;
 
-    NoiseWidget* _noiseWidget;
-    FMWidget* _fmWidget;
+    MdiSubWindow* _channelsWindow;
+    MdiSubWindow* _playlistWindow;
 
-    QMdiSubWindow* _channelsWindow;
-    QMdiSubWindow* _playlistWindow;
-    QMdiSubWindow* _pianoRollWindow;
-    QMdiSubWindow* _channelWindow;
+    QMap<int, QList<MdiSubWindow*>> _channelWindows;
+
     StyleDialog _styleDialog;
 
     int _selectedChannel;
 
 
     QTimer _timer;
+
+    void windowClosed(MdiSubWindow* window);
 
     // QWidget interface
 protected:
