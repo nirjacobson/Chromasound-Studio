@@ -53,9 +53,9 @@ void PianoWidget::paintEvent(QPaintEvent* event)
 
 void PianoWidget::drawBlackKey(const int octave, const int key, QPaintEvent* event, QPainter& painter)
 {
-    int whiteWidth = event->rect().height() * WHITE_WIDTH_RATIO;
-    int blackWidth = event->rect().height() * BLACK_WIDTH_RATIO;
-    int blackHeight = event->rect().height() * BLACK_HEIGHT_RATIO;
+    int whiteWidth = height() * WHITE_WIDTH_RATIO;
+    int blackWidth = height() * BLACK_WIDTH_RATIO;
+    int blackHeight = height() * BLACK_HEIGHT_RATIO;
 
     int startX = (octave - _baseOctave) * (whiteWidth * WHITE_KEYS_PER_OCTAVE);
 
@@ -98,14 +98,14 @@ void PianoWidget::drawBlackKeys(const int octave, QPaintEvent* event, QPainter& 
 
 void PianoWidget::drawWhiteKeys(const int octave, QPaintEvent* event, QPainter& painter)
 {
-    int whiteWidth = event->rect().height() * WHITE_WIDTH_RATIO;
+    int whiteWidth = height() * WHITE_WIDTH_RATIO;
 
     int startX = (octave - _baseOctave) * (whiteWidth * WHITE_KEYS_PER_OCTAVE);
 
     painter.setPen(_outlineColor);
     for (int i = 0; i < WHITE_KEYS_PER_OCTAVE; i++) {
         bool selected = _pressedKeys.contains(octave * KEYS_PER_OCTAVE + WHITE_KEY_INTERVALS[i]);
-        QRect keyRect(QPoint(startX + i * whiteWidth, 0), QSize(whiteWidth, event->rect().height()));
+        QRect keyRect(QPoint(startX + i * whiteWidth, 0), QSize(whiteWidth, height()));
         painter.fillRect(keyRect, QBrush(selected ? _activeKeyColor : _whiteKeyColor, Qt::SolidPattern));
         painter.drawRect(keyRect);
     }
@@ -113,7 +113,7 @@ void PianoWidget::drawWhiteKeys(const int octave, QPaintEvent* event, QPainter& 
 
 void PianoWidget::drawOctaveHeader(const int octave, QPaintEvent* event, QPainter& painter)
 {
-    int whiteWidth = event->rect().height() * WHITE_WIDTH_RATIO;
+    int whiteWidth = height() * WHITE_WIDTH_RATIO;
     int octaveWidth = whiteWidth * WHITE_KEYS_PER_OCTAVE;
 
     QRect rect = QRect(QPoint(), QSize(octaveWidth, HEADER_HEIGHT))
@@ -135,7 +135,7 @@ void PianoWidget::drawOctave(const int octave, QPaintEvent* event, QPainter& pai
 
 void PianoWidget::drawOctaves(QPaintEvent* event, QPainter& painter)
 {
-    int whiteWidth = event->rect().height() * WHITE_WIDTH_RATIO;
+    int whiteWidth = height() * WHITE_WIDTH_RATIO;
     int octaveWidth = whiteWidth * WHITE_KEYS_PER_OCTAVE;
 
     int octaves = qCeil((float)event->rect().width() / octaveWidth);
