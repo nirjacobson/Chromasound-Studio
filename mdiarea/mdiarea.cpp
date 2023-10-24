@@ -43,7 +43,3 @@ void MdiArea::setBackgroundColor(const QColor& color)
     setBackground(QBrush(color));
 }
 
-void MdiArea::resetBackgroundColor()
-{
-    setBackground(QBrush(Qt::gray));
-}

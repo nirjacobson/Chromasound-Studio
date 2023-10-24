@@ -9,7 +9,7 @@ class MdiArea : public QMdiArea
 {
     Q_OBJECT
     Q_PROPERTY(QString viewMode READ viewModeName WRITE setViewModeName)
-    Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor RESET resetBackgroundColor);
+    Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor);
 
 public:
     MdiArea(QWidget* parent = nullptr);
@@ -23,7 +23,6 @@ private:
 
     const QColor& backgroundColor() const;
     void setBackgroundColor(const QColor& color);
-    void resetBackgroundColor();
 };
 
 #endif // MDIAREA_H
