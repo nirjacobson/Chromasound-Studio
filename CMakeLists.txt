@@ -174,6 +174,8 @@ set(PROJECT_SOURCES
     mdiarea/mdiarea.cpp
     mdiarea/mdisubwindow.h
     mdiarea/mdisubwindow.cpp
+    commands/resetfmchannelsettingscommand.h
+    commands/resetfmchannelsettingscommand.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

@@ -18,8 +18,10 @@ FMWidget::FMWidget(QWidget *parent, Application* app) :
     connect(ui->pianoWidget, &PianoWidget::keyPressed, this, &FMWidget::keyPressed);
     connect(ui->pianoWidget, &PianoWidget::keyReleased, this, &FMWidget::keyReleased);
 
+    connect(ui->actionNew, &QAction::triggered, this, &FMWidget::newTriggered);
     connect(ui->actionOpen, &QAction::triggered, this, &FMWidget::openTriggered);
     connect(ui->actionSave, &QAction::triggered, this, &FMWidget::saveTriggered);
+    connect(ui->actionClose, &QAction::triggered, this, &QMainWindow::close);
 }
 
 FMWidget::~FMWidget()
@@ -65,6 +67,11 @@ void FMWidget::releaseKey(const int key)
 void FMWidget::doUpdate()
 {
     setSettings(_settings);
+}
+
+void FMWidget::newTriggered()
+{
+    _app->undoStack().push(new ResetFMChannelSettingsCommand(_app->window(), *_settings));
 }
 
 void FMWidget::openTriggered()

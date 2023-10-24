@@ -8,6 +8,7 @@
 #include "application.h"
 #include "project/channel/fmchannelsettings.h"
 #include "bson.h"
+#include "commands/resetfmchannelsettingscommand.h"
 
 namespace Ui {
 class FMWidget;
@@ -39,6 +40,7 @@ private:
     FMChannelSettings* _settings;
 
 private slots:
+    void newTriggered();
     void openTriggered();
     void saveTriggered();
 
