@@ -61,6 +61,7 @@ class GanttWidget : public QWidget
         void editorClicked(Qt::MouseButton button, int row, float time);
         void itemChanged(GanttItem* item, const float toTime, const int toRow, const float toDuration);
         void itemReleased(const GanttItem* item);
+        void contextMenuRequested(GanttItem* item, const QPoint& location);
 };
 
 #endif // GANTTWIDGET_H

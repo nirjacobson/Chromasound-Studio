@@ -8,6 +8,8 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
     , _keysWidget(new PianoRollKeysWidget(this))
     , _velocitiesWidget(new PianoRollVelocitiesWidget(this))
     , _itemLastClicked(nullptr)
+    , _noteMenu(tr("Context menu"), this)
+    , _velocityAction("Velocity", this)
 {    
     _velocitiesWidget->setApplication(app);
 
@@ -22,10 +24,15 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
     ui->ganttWidget->setItemsMovableX(true);
     ui->ganttWidget->setItemsMovableY(true);
     ui->ganttWidget->scrollVertically(0.25);
+
+    _noteMenu.addAction(&_velocityAction);
     
+    connect(&_velocityAction, &QAction::triggered, this, &PianoRollWidget::velocityTriggered);
+
     connect(ui->ganttWidget, &GanttWidget::editorClicked, this, &PianoRollWidget::ganttClicked);
     connect(ui->ganttWidget, &GanttWidget::itemChanged, this, &PianoRollWidget::ganttItemChanged);
     connect(ui->ganttWidget, &GanttWidget::itemReleased, this, &PianoRollWidget::ganttItemReleased);
+    connect(ui->ganttWidget, &GanttWidget::contextMenuRequested, this, &PianoRollWidget::contextMenuRequested);
 
     connect(_keysWidget, &PianoRollKeysWidget::keyOn, this, &PianoRollWidget::keyOn);
     connect(_keysWidget, &PianoRollKeysWidget::keyOff, this, &PianoRollWidget::keyOff);
@@ -94,6 +101,20 @@ void PianoRollWidget::ganttItemChanged(GanttItem* item, const float toTime, cons
 void PianoRollWidget::ganttItemReleased(const GanttItem* item)
 {
     _itemLastClicked = item;
+}
+
+void PianoRollWidget::contextMenuRequested(GanttItem* item, const QPoint& location)
+{
+    _contextItem = dynamic_cast<Track::Item*>(item);
+    _noteMenu.exec(location);
+}
+
+void PianoRollWidget::velocityTriggered()
+{
+    int velocity = QInputDialog::getInt(this, "Edit velocity", "Velocity", _contextItem->velocity(), 0, 100);
+
+    _contextItem->setVelocity(velocity);
+    ui->ganttWidget->update();
 }
 
 void PianoRollWidget::paintEvent(QPaintEvent* event)
