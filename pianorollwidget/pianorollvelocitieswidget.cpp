@@ -80,14 +80,19 @@ void PianoRollVelocitiesWidget::paintEvent(QPaintEvent*)
     int fullBarHeight = height() - 16;
 
     if (_items) {
+        QList<QRect> rects;
         for (const GanttItem* item : *_items) {
             if (leftPosition <= item->time() && item->time() <= rightPosition) {
                 int positionPixel = (item->time() - leftPosition) / beatsPerPixel;
                 QPoint topLeft = QPoint(positionPixel, height() - fullBarHeight * (float)item->velocity()/float(100));
-                QRect rect(topLeft, topLeft + QPoint(barWidth, height() - topLeft.y()));
-                painter.fillRect(rect, painter.brush());
-                painter.drawRect(rect);
+                rects.append(QRect(topLeft, topLeft + QPoint(barWidth, height() - topLeft.y())));
             }
+        }
+        std::sort(rects.begin(), rects.end(), [](QRect& a, QRect& b){ return a.height() > b.height(); });
+
+        for (const QRect& rect : rects) {
+            painter.fillRect(rect, painter.brush());
+            painter.drawRect(rect);
         }
     }
 

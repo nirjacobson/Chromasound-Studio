@@ -7,6 +7,7 @@
 #include <QWidget>
 #include <QPainter>
 #include <QMouseEvent>
+#include <QMenu>
 
 class GanttEditorWidget : public QWidget
 {
@@ -47,11 +48,12 @@ class GanttEditorWidget : public QWidget
         void clicked(Qt::MouseButton button, int row, float time);
         void itemChanged(GanttItem* item, const float toTime, const int toRow, const float toDuration);
         void itemReleased(const GanttItem* item);
+        void contextMenuRequested(GanttItem* item, const QPoint& location);
 
     protected:
         void paintEvent(QPaintEvent*);
         void mousePressEvent(QMouseEvent* event);
-        void mouseReleaseEvent(QMouseEvent*);
+        void mouseReleaseEvent(QMouseEvent*event);
         void mouseMoveEvent(QMouseEvent* event);
         void wheelEvent(QWheelEvent* event);
 
@@ -61,6 +63,8 @@ class GanttEditorWidget : public QWidget
         QColor _lightBorderColor;
         QColor _itemColor;
         QColor _cursorColor;
+        QColor _selectionColor;
+        QColor _selectedColor;
 
         const QColor& backgroundColor() const;
         const QColor& borderColor() const;
@@ -92,11 +96,15 @@ class GanttEditorWidget : public QWidget
 
         GanttItem* _itemUnderCursor;
         int _cursorPositionOverItem;
-        bool _itemUnderCursorSelected;
 
         bool _itemsResizable;
         bool _itemsMovableX;
         bool _itemsMovableY;
+
+        bool _selecting;
+        QPoint _fromPoint;
+        QPoint _toPoint;
+        QList<GanttItem*> _selectedItems;
 
         std::function<float(void)> _positionFunction;
 

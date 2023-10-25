@@ -12,7 +12,6 @@ GanttEditorWidget::GanttEditorWidget(QWidget *parent)
     , _invertRows(false)
     , _items(nullptr)
     , _itemUnderCursor(nullptr)
-    , _itemUnderCursorSelected(false)
     , _itemsResizable(false)
     , _itemsMovableX(false)
     , _itemsMovableY(false)
@@ -22,6 +21,9 @@ GanttEditorWidget::GanttEditorWidget(QWidget *parent)
     , _lightBorderColor(Qt::lightGray)
     , _itemColor(QColor(128, 128, 255))
     , _cursorColor(QColor(64, 192, 64))
+    , _selectionColor(QColor(192, 192, 255))
+    , _selectedColor(_selectionColor.darker(-200))
+    , _selecting(false)
 {
     setMouseTracking(true);
 }
@@ -180,8 +182,8 @@ void GanttEditorWidget::paintEvent(QPaintEvent*)
 
             QRect rect(QPoint(startPixelX - _left, startPixelY - _top), QPoint(endPixelX - _left, endPixelY - _top));
 
-            painter.setPen(_itemColor.darker());
-            painter.setBrush(_itemColor);
+            painter.setPen(_selectedItems.contains(item) ? _selectedColor.darker() : _itemColor.darker());
+            painter.setBrush(_selectedItems.contains(item) ? _selectedColor : _itemColor);
             painter.drawRect(rect.adjusted(0, 0, -1, -1));
         }
     }
@@ -201,42 +203,112 @@ void GanttEditorWidget::paintEvent(QPaintEvent*)
         painter.setPen(_cursorColor);
         painter.drawLine(p1, p2);
     }
+
+    if (_selecting) {
+        QRect rect(_fromPoint, QSize(_toPoint.x() - _fromPoint.x(), _toPoint.y() - _fromPoint.y()));
+        QColor selectionColorWithAlpha = _selectionColor;
+        selectionColorWithAlpha.setAlpha(128);
+        painter.setPen(selectionColorWithAlpha.darker());
+        painter.setBrush(selectionColorWithAlpha);
+
+        painter.drawRect(rect);
+    }
 }
 
 void GanttEditorWidget::mousePressEvent(QMouseEvent* event)
 {
-    int firstRow = _top / _rowHeight;
-    int firstRowStart = firstRow * _rowHeight - _top;
-    int row = firstRow + ((event->pos().y() - firstRowStart) / _rowHeight);
-
-    if (_invertRows) {
-        row = _rows - 1 - row;
-    }
-
-    float beatsPerPixel = _cellBeats / _cellWidth;
-    float leftPosition = _left * beatsPerPixel;
-    float mousePosition = leftPosition + (event->pos().x() * beatsPerPixel);
-    float mousePositionSnapped = (int)(mousePosition / _cellBeats) * _cellBeats;
-
-
-    if (event->button() == Qt::LeftButton) {
-        if (_itemUnderCursor) {
-            _itemUnderCursorSelected = true;
-            return;
-        }
-        emit clicked(Qt::LeftButton, row, _snap ? mousePositionSnapped : mousePosition);
-    } else {
-        emit clicked(Qt::RightButton, row, _snap ? mousePositionSnapped : mousePosition);
-    }
+    _fromPoint = event->pos();
 }
 
-void GanttEditorWidget::mouseReleaseEvent(QMouseEvent*)
+void GanttEditorWidget::mouseReleaseEvent(QMouseEvent* event)
 {
-    if (_itemUnderCursor)
-        emit itemReleased(_itemUnderCursor);
+    if (_selecting) {
+        _selecting = false;
 
-    _itemUnderCursorSelected = false;
-    _itemUnderCursor = nullptr;
+        int firstRow = _top / _rowHeight;
+        int firstRowStart = firstRow * _rowHeight - _top;
+        int fromRow = firstRow + ((_fromPoint.y() - firstRowStart) / _rowHeight);
+        int toRow = firstRow + ((_toPoint.y() - firstRowStart) / _rowHeight);
+
+        if (_invertRows) {
+            fromRow = _rows - 1 - fromRow;
+            toRow = _rows - 1 - toRow;
+        }
+
+        if (fromRow > toRow) {
+            int a = fromRow;
+            fromRow = toRow;
+            toRow = a;
+        }
+
+        float beatsPerPixel = _cellBeats / _cellWidth;
+        float leftPosition = _left * beatsPerPixel;
+        float fromPosition = leftPosition + (_fromPoint.x() * beatsPerPixel);
+        float toPosition = leftPosition + (_toPoint.x() * beatsPerPixel);
+
+        if (fromPosition > toPosition) {
+            float a = fromPosition;
+            fromPosition = toPosition;
+            toPosition = a;
+        }
+
+        QList<GanttItem*> selectedItems = *_items;
+        selectedItems.erase(std::remove_if(selectedItems.begin(), selectedItems.end(), [=](GanttItem* item){
+            return (item->row() < fromRow || item->row() > toRow) ||
+                   ((item->time() + item->duration()) <= fromPosition || item->time() > toPosition);
+        }), selectedItems.end());
+
+        if (Qt::ShiftModifier == QApplication::keyboardModifiers()) {
+            std::for_each(selectedItems.begin(), selectedItems.end(), [&](GanttItem* item){
+                if (!_selectedItems.contains(item)) {
+                    _selectedItems.append(item);
+                }
+            });
+        } else {
+            _selectedItems = selectedItems;
+        }
+    } else {
+        int firstRow = _top / _rowHeight;
+        int firstRowStart = firstRow * _rowHeight - _top;
+        int row = firstRow + ((event->pos().y() - firstRowStart) / _rowHeight);
+
+        if (_invertRows) {
+            row = _rows - 1 - row;
+        }
+
+        float beatsPerPixel = _cellBeats / _cellWidth;
+        float leftPosition = _left * beatsPerPixel;
+        float mousePosition = leftPosition + (event->pos().x() * beatsPerPixel);
+        float mousePositionSnapped = (int)(mousePosition / _cellBeats) * _cellBeats;
+
+
+        if (event->button() == Qt::LeftButton) {
+            if (_itemUnderCursor) {
+                if (!_selectedItems.contains(_itemUnderCursor)) {
+                    _selectedItems = QList<GanttItem*>({_itemUnderCursor});
+                    update();
+                }
+                return;
+            } else {
+                _selectedItems.clear();
+            }
+            emit clicked(Qt::LeftButton, row, _snap ? mousePositionSnapped : mousePosition);
+        } else {
+            if (_itemUnderCursor && Qt::ShiftModifier == QApplication::keyboardModifiers()) {
+                emit contextMenuRequested(_itemUnderCursor, mapToGlobal(event->pos()));
+                return;
+            }
+            emit clicked(Qt::RightButton, row, _snap ? mousePositionSnapped : mousePosition);
+        }
+
+        if (_itemUnderCursor)
+            emit itemReleased(_itemUnderCursor);
+
+        _selectedItems.removeAll(_itemUnderCursor);
+        _itemUnderCursor = nullptr;
+    }
+
+    update();
 }
 
 void GanttEditorWidget::mouseMoveEvent(QMouseEvent* event)
@@ -260,36 +332,57 @@ void GanttEditorWidget::mouseMoveEvent(QMouseEvent* event)
     float time;
     float end;
     int newRow;
-    if (_itemUnderCursorSelected) {
-        switch (_cursorPositionOverItem) {
-            case 0:
-                time = _itemUnderCursor->time();
-                end = time + _itemUnderCursor->duration();
-                if (_itemsResizable) {
-                    emit itemChanged(_itemUnderCursor,
-                                     _snap ? mousePositionSnapped : mousePosition,
-                                     _itemUnderCursor->row(),
-                                     end - (_snap ? mousePositionSnapped : mousePosition));
-                }
-                break;
-            case 1:
-                time = _itemUnderCursor->time();
-                newRow = _itemUnderCursor->row();
-                if (_itemsMovableX)
-                    time = _snap ? mousePositionSnapped : mousePosition;
-                if (_itemsMovableY)
-                    newRow = row;
 
-                if (_itemsMovableX || _itemsMovableY){
-                    emit itemChanged(_itemUnderCursor, time, newRow, _itemUnderCursor->duration());
-                }
-                break;
-            case 2:
-                if (_itemsResizable) {
-                    time = _itemUnderCursor->time();
-                    emit itemChanged(_itemUnderCursor, time, _itemUnderCursor->row(), (_snap ? mousePositionSnapped : mousePosition) - time);
-                }
-                break;
+    float timeDelta;
+    int rowDelta;
+    if (event->buttons() & Qt::LeftButton) {
+        if (_selectedItems.contains(_itemUnderCursor)) {
+            switch (_cursorPositionOverItem) {
+                case 0:
+                    timeDelta = (_snap ? mousePositionSnapped : mousePosition) - _itemUnderCursor->time();
+
+                    for (GanttItem* item : _selectedItems) {
+                        time = item->time();
+                        end = time + item->duration();
+                        if (_itemsResizable) {
+                            emit itemChanged(item,
+                                             item->time() + timeDelta,
+                                             item->row(),
+                                             end - (item->time() + timeDelta));
+                        }
+                    }
+                    break;
+                case 1:
+                    timeDelta = (_snap ? mousePositionSnapped : mousePosition) - _itemUnderCursor->time();
+                    rowDelta = row - _itemUnderCursor->row();
+
+                    for (GanttItem* item : _selectedItems) {
+                        time = item->time();
+                        newRow = item->row();
+                        if (_itemsMovableX)
+                            time = time + timeDelta;
+                        if (_itemsMovableY)
+                            newRow = newRow + rowDelta;
+
+                        if (_itemsMovableX || _itemsMovableY){
+                            emit itemChanged(item, time, newRow, item->duration());
+                        }
+                    }
+                    break;
+                case 2:
+                    timeDelta = (_snap ? mousePositionSnapped : mousePosition) - (_itemUnderCursor->time() + _itemUnderCursor->duration());
+
+                    for (GanttItem* item : _selectedItems) {
+                        if (_itemsResizable) {
+                            emit itemChanged(item, item->time(), item->row(), item->duration() + timeDelta);
+                        }
+                    }
+                    break;
+            }
+        } else {
+            _selecting = true;
+            _toPoint = event->pos();
+            update();
         }
     } else {
         _itemUnderCursor = nullptr;
@@ -415,3 +508,4 @@ void GanttEditorWidget::setCursorColor(const QColor& color)
 {
     _cursorColor = color;
 }
+
