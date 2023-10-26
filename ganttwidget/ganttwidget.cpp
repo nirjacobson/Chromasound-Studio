@@ -141,6 +141,11 @@ void GanttWidget::selectItems(const QList<GanttItem*>& items)
     ui->editorWidget->selectItems(items);
 }
 
+void GanttWidget::selectAllItems()
+{
+    ui->editorWidget->selectAllItems();
+}
+
 float GanttWidget::mousePosition() const
 {
     return ui->editorWidget->mousePosition();

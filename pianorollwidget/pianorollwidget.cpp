@@ -17,6 +17,7 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
 
     ui->actionCopy->setShortcuts(QKeySequence::Copy);
     ui->actionPaste->setShortcuts(QKeySequence::Paste);
+    ui->actionSelectAll->setShortcuts(QKeySequence::SelectAll);
     ui->actionDelete->setShortcuts(QKeySequence::Delete);
 
     ui->ganttWidget->setApplication(_app);
@@ -33,6 +34,7 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
 
     connect(ui->actionCopy, &QAction::triggered, this, &PianoRollWidget::copy);
     connect(ui->actionPaste, &QAction::triggered, this, &PianoRollWidget::paste);
+    connect(ui->actionSelectAll, &QAction::triggered, this, &PianoRollWidget::selectAll);
     connect(ui->actionDelete, &QAction::triggered, this, &PianoRollWidget::deleteTriggered);
 
     connect(&_velocityAction, &QAction::triggered, this, &PianoRollWidget::velocityTriggered);
@@ -209,6 +211,11 @@ void PianoRollWidget::paste()
 
     ui->ganttWidget->selectItems(reinterpret_cast<QList<GanttItem*>&>(pastedItems));
     ui->ganttWidget->update();
+}
+
+void PianoRollWidget::selectAll()
+{
+    ui->ganttWidget->selectAllItems();
 }
 
 void PianoRollWidget::deleteTriggered()

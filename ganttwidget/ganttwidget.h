@@ -39,8 +39,10 @@ class GanttWidget : public QWidget
 
         const QList<GanttItem*>& selectedItems() const;
         void selectItems(const QList<GanttItem*>& items);
+        void selectAllItems();
 
         float mousePosition() const;
+
 
     private:
         Ui::GanttWidget *ui;
