@@ -228,9 +228,6 @@ void MainWindow::frame()
 
 void MainWindow::pianoRollTriggered(const int index, const bool on)
 {
-    if (on)
-        _channelsWidget->select(index);
-
     if (on) {
         _app->project().getFrontPattern().getTrack(index).usePianoRoll();
     } else {
