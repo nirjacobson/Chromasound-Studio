@@ -17,7 +17,7 @@ EditNoteCommand::EditNoteCommand(MainWindow* window, Track::Item* item, const fl
 
 void EditNoteCommand::undo()
 {
-    for (auto it = _commandChain.rbegin(); it != _commandChain.rend(); ++it) {
+    for (auto it = _groupCommands.begin(); it != _groupCommands.end(); ++it) {
         (*it)->undo();
     }
 
@@ -32,7 +32,7 @@ void EditNoteCommand::redo()
     _item->setTime(_toTime);
     _item->note() = _note;
 
-    for (auto it = _commandChain.begin(); it != _commandChain.end(); ++it) {
+    for (auto it = _groupCommands.begin(); it != _groupCommands.end(); ++it) {
         (*it)->redo();
     }
 
@@ -68,17 +68,22 @@ bool EditNoteCommand::mergeWith(const QUndoCommand* other)
             }
         } else {
             if (_group.contains(enc->_item)) {
-                EditNoteCommand* enc2 = new EditNoteCommand(
-                    enc->_mainWindow,
-                    enc->_item,
-                    enc->_toTime,
-                    enc->_note,
-                    enc->_group);
-                enc2->_fromTime = enc->_fromTime;
-                enc2->_fromNote = enc->_fromNote;
-                enc2->_mergedDuration = enc->_mergedDuration;
-                enc2->_mergedKey = enc->_mergedKey;
-                _commandChain.append(enc2);
+                if (_groupCommands.contains(enc->_item)) {
+                    _groupCommands[enc->_item]->mergeWith(other);
+                } else {
+                    EditNoteCommand* enc2 = new EditNoteCommand(
+                        enc->_mainWindow,
+                        enc->_item,
+                        enc->_toTime,
+                        enc->_note,
+                        enc->_group);
+                    enc2->_fromTime = enc->_fromTime;
+                    enc2->_fromNote = enc->_fromNote;
+                    enc2->_mergedDuration = enc->_mergedDuration;
+                    enc2->_mergedKey = enc->_mergedKey;
+
+                    _groupCommands.insert(enc->_item, enc2);
+                }
                 return true;
             }
         }
