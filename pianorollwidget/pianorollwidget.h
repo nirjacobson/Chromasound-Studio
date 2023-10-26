@@ -17,6 +17,7 @@
 #include "commands/addtrackitemscommand.h"
 #include "commands/removetrackitemscommand.h"
 #include "bson.h"
+#include "mdiarea/mdisubwindow.h"
 
 namespace Ui {
 class PianoRollWidget;
@@ -70,6 +71,7 @@ private slots:
     // QWidget interface
 protected:
     void paintEvent(QPaintEvent* event);
+    void closeEvent(QCloseEvent* event);
 };
 
 #endif // PIANOROLLWIDGET_H
