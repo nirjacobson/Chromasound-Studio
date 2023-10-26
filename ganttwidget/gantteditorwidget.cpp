@@ -283,14 +283,13 @@ void GanttEditorWidget::mouseReleaseEvent(QMouseEvent* event)
 
 
         if (event->button() == Qt::LeftButton) {
+            _selectedItems.clear();
             if (_itemUnderCursor) {
                 if (!_selectedItems.contains(_itemUnderCursor)) {
                     _selectedItems = QList<GanttItem*>({_itemUnderCursor});
                     update();
                 }
                 return;
-            } else {
-                _selectedItems.clear();
             }
             emit clicked(Qt::LeftButton, row, _snap ? mousePositionSnapped : mousePosition);
         } else {
@@ -338,6 +337,10 @@ void GanttEditorWidget::mouseMoveEvent(QMouseEvent* event)
     float timeDelta;
     int rowDelta;
     if (event->buttons() & Qt::LeftButton) {
+        if (_itemUnderCursor && !_selectedItems.contains(_itemUnderCursor)) {
+            _selectedItems = QList({ _itemUnderCursor });
+        }
+
         if (_selectedItems.contains(_itemUnderCursor)) {
             switch (_cursorPositionOverItem) {
                 case 0:
