@@ -64,6 +64,7 @@ private slots:
     void velocityTriggered();
     void copy();
     void paste();
+    void selectAll();
     void deleteTriggered();
 
     // QWidget interface

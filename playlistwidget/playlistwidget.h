@@ -50,6 +50,7 @@ private slots:
     void ganttItemChanged(GanttItem* item, const float toTime, const int toRow, const float toDuration);
     void copy();
     void paste();
+    void selectAll();
     void deleteTriggered();
 
     // QWidget interface

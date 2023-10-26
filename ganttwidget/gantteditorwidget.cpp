@@ -526,6 +526,11 @@ void GanttEditorWidget::selectItems(const QList<GanttItem*>& items)
     update();
 }
 
+void GanttEditorWidget::selectAllItems()
+{
+    selectItems(*_items);
+}
+
 float GanttEditorWidget::mousePosition() const
 {
     return _mousePosition;
