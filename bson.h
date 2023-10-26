@@ -23,15 +23,15 @@ class BSON
         static QByteArray encodePatch(const FMChannelSettings* settings);
         static FMChannelSettings* decodePatch(const QString& file);
 
+        static void fromTrackItem(bson_t* dst, const Track::Item* const item);
+        static Track::Item toTrackItem(bson_iter_t& b);
+
     private:
         static void fromChannel(bson_t* dst, const Channel& channel);
         static Channel toChannel(bson_iter_t& b);
 
         static void fromNote(bson_t* dst, const Note& note);
         static Note toNote(bson_iter_t& b);
-
-        static void fromTrackItem(bson_t* dst, const Track::Item* const item);
-        static Track::Item toTrackItem(bson_iter_t& b);
 
         static void fromTrack(bson_t* dst, const Track& track);
         static Track toTrack(bson_iter_t& b);

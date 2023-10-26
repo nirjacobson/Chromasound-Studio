@@ -1,8 +1,9 @@
 #include "editnotecommand.h"
 #include "mainwindow.h"
 
-EditNoteCommand::EditNoteCommand(MainWindow* window, Track::Item* item, const float toTime, const Note& note)
+EditNoteCommand::EditNoteCommand(MainWindow* window, Track::Item* item, const float toTime, const Note& note, const QList<Track::Item*>& group)
     : _mainWindow(window)
+    , _group(group)
     , _toTime(toTime)
     , _note(note)
     , _item(item)
@@ -16,6 +17,10 @@ EditNoteCommand::EditNoteCommand(MainWindow* window, Track::Item* item, const fl
 
 void EditNoteCommand::undo()
 {
+    for (auto it = _commandChain.rbegin(); it != _commandChain.rend(); ++it) {
+        (*it)->undo();
+    }
+
     _item->setTime(_fromTime);
     _item->note() = _fromNote;
 
@@ -26,6 +31,10 @@ void EditNoteCommand::redo()
 {
     _item->setTime(_toTime);
     _item->note() = _note;
+
+    for (auto it = _commandChain.begin(); it != _commandChain.end(); ++it) {
+        (*it)->redo();
+    }
 
     _mainWindow->doUpdate();
 }
@@ -55,6 +64,21 @@ bool EditNoteCommand::mergeWith(const QUndoCommand* other)
                 _toTime = enc->_toTime;
                 _note = enc->_note;
                 _mergedKey = true;
+                return true;
+            }
+        } else {
+            if (_group.contains(enc->_item)) {
+                EditNoteCommand* enc2 = new EditNoteCommand(
+                    enc->_mainWindow,
+                    enc->_item,
+                    enc->_toTime,
+                    enc->_note,
+                    enc->_group);
+                enc2->_fromTime = enc->_fromTime;
+                enc2->_fromNote = enc->_fromNote;
+                enc2->_mergedDuration = enc->_mergedDuration;
+                enc2->_mergedKey = enc->_mergedKey;
+                _commandChain.append(enc2);
                 return true;
             }
         }

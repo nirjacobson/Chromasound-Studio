@@ -313,6 +313,13 @@ void GanttEditorWidget::mouseReleaseEvent(QMouseEvent* event)
 
 void GanttEditorWidget::mouseMoveEvent(QMouseEvent* event)
 {
+    float beatsPerPixel = _cellBeats / _cellWidth;
+    float leftPosition = _left * beatsPerPixel;
+    float mousePosition = qMax(leftPosition + (event->pos().x() * beatsPerPixel), 0.0f);
+    float mousePositionSnapped = (int)(mousePosition / _cellBeats) * _cellBeats;
+
+    _mousePosition = (_snap ? mousePositionSnapped : mousePosition);
+
     if (!_items)
         return;
 
@@ -323,11 +330,6 @@ void GanttEditorWidget::mouseMoveEvent(QMouseEvent* event)
     if (_invertRows) {
         row = _rows - 1 - row;
     }
-
-    float beatsPerPixel = _cellBeats / _cellWidth;
-    float leftPosition = _left * beatsPerPixel;
-    float mousePosition = qMax(leftPosition + (event->pos().x() * beatsPerPixel), 0.0f);
-    float mousePositionSnapped = (int)(mousePosition / _cellBeats) * _cellBeats;
 
     float time;
     float end;
@@ -507,5 +509,22 @@ void GanttEditorWidget::setItemColor(const QColor& color)
 void GanttEditorWidget::setCursorColor(const QColor& color)
 {
     _cursorColor = color;
+}
+
+const QList<GanttItem*>& GanttEditorWidget::selectedItems() const
+{
+    return _selectedItems;
+}
+
+void GanttEditorWidget::selectItems(const QList<GanttItem*>& items)
+{
+    _selectedItems = items;
+
+    update();
+}
+
+float GanttEditorWidget::mousePosition() const
+{
+    return _mousePosition;
 }
 

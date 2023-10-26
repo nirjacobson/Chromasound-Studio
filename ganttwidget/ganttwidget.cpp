@@ -131,6 +131,21 @@ void GanttWidget::scrollVertically(const float percentage)
     ui->horizontalScrollBar->blockSignals(false);
 }
 
+const QList<GanttItem*>& GanttWidget::selectedItems() const
+{
+    return ui->editorWidget->selectedItems();
+}
+
+void GanttWidget::selectItems(const QList<GanttItem*>& items)
+{
+    ui->editorWidget->selectItems(items);
+}
+
+float GanttWidget::mousePosition() const
+{
+    return ui->editorWidget->mousePosition();
+}
+
 void GanttWidget::verticalScroll(int amount)
 {
     float vscroll = (float)amount / ui->verticalScrollBar->maximum();

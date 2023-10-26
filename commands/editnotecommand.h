@@ -10,7 +10,7 @@ class MainWindow;
 class EditNoteCommand : public QUndoCommand
 {
 public:
-    EditNoteCommand(MainWindow* window, Track::Item* item, const float toTime, const Note& note);
+    EditNoteCommand(MainWindow* window, Track::Item* item, const float toTime, const Note& note, const QList<Track::Item*>& group);
 
 private:
     MainWindow* _mainWindow;
@@ -24,6 +24,9 @@ private:
 
     bool _mergedDuration;
     bool _mergedKey;
+
+    QList<EditNoteCommand*> _commandChain;
+    QList<Track::Item*> _group;
 
     // QUndoCommand interface
 public:

@@ -66,16 +66,38 @@ Track::Item* Track::addItem(const float time, const Note& note)
     return ret;
 }
 
-void Track::removeItem(const float time, const int key)
+void Track::addItems(const QList<Item*>& items)
 {
-    auto it = std::remove_if(_items.begin(), _items.end(), [=](Item* const item){ return (item->note().key() == key) && (item->time() <= time) && ((item->time() + item->note().duration()) >= time); });
-    _items.erase(it, _items.end());
+    _items.append(items);
 }
 
-void Track::removeItem(const float time)
+float Track::removeItem(const float time, const int key)
 {
-    auto it = std::remove_if(_items.begin(), _items.end(), [=](Item* const item){ return (item->time() <= time) && ((item->time() + item->note().duration()) >= time); });
+    float tt;
+    auto it = std::remove_if(_items.begin(), _items.end(), [=](Item* const item){ return (item->note().key() == key) && (item->time() <= time) && ((item->time() + item->note().duration()) >= time); });
+    if (it != _items.end()) {
+        tt = (*it)->time();
+    }
     _items.erase(it, _items.end());
+
+    return tt;
+}
+
+float Track::removeItem(const float time)
+{
+    float tt;
+    auto it = std::remove_if(_items.begin(), _items.end(), [=](Item* const item){ return (item->time() <= time) && ((item->time() + item->note().duration()) >= time); });
+    if (it != _items.end()) {
+        tt = (*it)->time();
+    }
+    _items.erase(it, _items.end());
+
+    return tt;
+}
+
+void Track::removeItems(const QList<Item*>& items)
+{
+    _items.erase(std::remove_if(_items.begin(), _items.end(), [&](const Track::Item* item){ return items.contains(item); }), _items.end());
 }
 
 void Track::usePianoRoll()

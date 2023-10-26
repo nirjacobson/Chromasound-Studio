@@ -42,6 +42,11 @@ class GanttEditorWidget : public QWidget
 
         void setPositionFunction(std::function<float(void)> func);
 
+        const QList<GanttItem*>& selectedItems() const;
+        void selectItems(const QList<GanttItem*>& items);
+        
+        float mousePosition() const;
+
     signals:
         void horizontalScroll(const int pixels);
         void verticalScroll(const int pixels);
@@ -79,6 +84,8 @@ class GanttEditorWidget : public QWidget
         void setCursorColor(const QColor& color);
 
         Application* _app;
+
+        float _mousePosition;
 
         long _top;
         long _left;

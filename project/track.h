@@ -53,8 +53,10 @@ class Track
         float length() const;
 
         Item* addItem(const float time, const Note& note);
-        void removeItem(const float time, const int key);
-        void removeItem(const float time);
+        void addItems(const QList<Item*>& items);
+        float removeItem(const float time, const int key);
+        float removeItem(const float time);
+        void removeItems(const QList<Item*>& items);
 
         void usePianoRoll();
         bool doesUsePianoRoll() const;
