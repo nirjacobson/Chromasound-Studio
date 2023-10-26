@@ -73,42 +73,42 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionNew">
    <property name="text">
-    <string>New</string>
+    <string>&amp;New</string>
    </property>
   </action>
   <action name="actionOpen">
    <property name="text">
-    <string>Open</string>
+    <string>&amp;Open</string>
    </property>
   </action>
   <action name="actionSave">
    <property name="text">
-    <string>Save</string>
+    <string>&amp;Save</string>
    </property>
   </action>
   <action name="actionRender">
    <property name="text">
-    <string>Render</string>
+    <string>&amp;Render</string>
    </property>
   </action>
   <action name="actionStyles">
    <property name="text">
-    <string>Styles...</string>
+    <string>&amp;Styles...</string>
    </property>
   </action>
   <action name="actionExit">
    <property name="text">
-    <string>Exit</string>
+    <string>E&amp;xit</string>
    </property>
   </action>
   <action name="actionChannels">
    <property name="text">
-    <string>Channels</string>
+    <string>&amp;Channels</string>
    </property>
   </action>
   <action name="actionPlaylist">
    <property name="text">
-    <string>Playlist</string>
+    <string>&amp;Playlist</string>
    </property>
   </action>
  </widget>

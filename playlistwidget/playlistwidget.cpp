@@ -178,7 +178,6 @@ void PlaylistWidget::paste()
 
     ui->ganttWidget->selectItems(reinterpret_cast<QList<GanttItem*>&>(pastedItems));
     ui->ganttWidget->update();
-
 }
 
 void PlaylistWidget::selectAll()
