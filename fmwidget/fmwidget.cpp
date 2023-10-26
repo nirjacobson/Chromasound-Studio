@@ -8,10 +8,6 @@ FMWidget::FMWidget(QWidget *parent, Application* app) :
 {
     ui->setupUi(this);
 
-    ui->actionNew->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_N);
-    ui->actionOpen->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_O);
-    ui->actionSave->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_S);
-
     ui->operatorWidget1->setApplication(app);
     ui->operatorWidget2->setApplication(app);
     ui->operatorWidget3->setApplication(app);
