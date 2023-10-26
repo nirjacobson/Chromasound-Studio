@@ -27,8 +27,17 @@ void LED::paintEvent(QPaintEvent*)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
     QColor color = _on ? _color : _color.darker();
+
     painter.setBrush(QBrush(color, Qt::SolidPattern));
-    painter.setPen(QPen(color.darker(), 2));
+    painter.setPen(QPen(color, 2));
+    painter.drawEllipse(drawRect.adjusted(1, 1, -1, -1));
+
+    painter.setBrush(QBrush(color.lighter(), Qt::SolidPattern));
+    painter.setPen(QPen(color.lighter(), 2));
+    painter.drawEllipse(drawRect.adjusted(5, 1, -1, -5));
+
+    painter.setBrush(QBrush(Qt::NoBrush));
+    painter.setPen(QPen(color.darker(), 1));
     painter.drawEllipse(drawRect.adjusted(1, 1, -1, -1));
 }
 
