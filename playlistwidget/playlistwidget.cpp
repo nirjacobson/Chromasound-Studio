@@ -89,7 +89,7 @@ void PlaylistWidget::ganttEditorClicked(Qt::MouseButton button, int row, float t
 
 void PlaylistWidget::ganttItemChanged(GanttItem* item, const float toTime, const int toRow, const float toDuration)
 {
-    _app->undoStack().push(new EditPlaylistCommand(_app->window(), dynamic_cast<Playlist::Item*>(item), toTime));
+    _app->undoStack().push(new EditPlaylistCommand(_app->window(), dynamic_cast<Playlist::Item*>(item), toTime, reinterpret_cast<const QList<Playlist::Item*>&>(ui->ganttWidget->selectedItems())));
 }
 
 void PlaylistWidget::copy()
