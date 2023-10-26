@@ -22,7 +22,7 @@ GanttEditorWidget::GanttEditorWidget(QWidget *parent)
     , _itemColor(QColor(128, 128, 255))
     , _cursorColor(QColor(64, 192, 64))
     , _selectionColor(QColor(192, 192, 255))
-    , _selectedColor(_selectionColor.darker(-200))
+    , _selectedColor(_selectionColor.lighter())
     , _selecting(false)
 {
     setMouseTracking(true);
