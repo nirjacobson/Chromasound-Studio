@@ -36,7 +36,7 @@ void RectLED::paintEvent(QPaintEvent*)
     QColor color = on ? _selected ? _selectedColor : _color : _color.darker();
     painter.setBrush(QBrush(color, Qt::SolidPattern));
     painter.setPen(QPen(_selected ? _selectedColor : color.darker(), _selected ? 2 : 1));
-    painter.drawRect(rect());
+    painter.drawRect(rect().adjusted(1, 1, -1, -1));
 }
 
 void RectLED::mousePressEvent(QMouseEvent*)
