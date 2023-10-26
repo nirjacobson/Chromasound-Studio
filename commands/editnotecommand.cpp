@@ -9,8 +9,6 @@ EditNoteCommand::EditNoteCommand(MainWindow* window, Track::Item* item, const fl
     , _item(item)
     , _fromTime(_item->time())
     , _fromNote(_item->note())
-    , _mergedDuration(false)
-    , _mergedKey(false)
 {
     setText("edit note");
 }
@@ -54,7 +52,6 @@ bool EditNoteCommand::mergeWith(const QUndoCommand* other)
             if (enc->_note == n) {
                 _toTime = enc->_toTime;
                 _note = enc->_note;
-                _mergedDuration = true;
                 return true;
             }
 
@@ -63,7 +60,6 @@ bool EditNoteCommand::mergeWith(const QUndoCommand* other)
             if (enc->_note == n) {
                 _toTime = enc->_toTime;
                 _note = enc->_note;
-                _mergedKey = true;
                 return true;
             }
         } else {
@@ -79,8 +75,6 @@ bool EditNoteCommand::mergeWith(const QUndoCommand* other)
                         enc->_group);
                     enc2->_fromTime = enc->_fromTime;
                     enc2->_fromNote = enc->_fromNote;
-                    enc2->_mergedDuration = enc->_mergedDuration;
-                    enc2->_mergedKey = enc->_mergedKey;
 
                     _groupCommands.insert(enc->_item, enc2);
                 }

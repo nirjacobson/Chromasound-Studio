@@ -22,9 +22,6 @@ private:
     float _fromTime;
     Note _fromNote;
 
-    bool _mergedDuration;
-    bool _mergedKey;
-
     QMap<Track::Item*, EditNoteCommand*> _groupCommands;
     QList<Track::Item*> _group;
 
