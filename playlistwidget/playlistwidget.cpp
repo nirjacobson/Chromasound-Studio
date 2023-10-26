@@ -10,6 +10,11 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
 {
     ui->setupUi(this);
 
+    ui->actionCopy->setShortcuts(QKeySequence::Copy);
+    ui->actionPaste->setShortcuts(QKeySequence::Paste);
+    ui->actionSelectAll->setShortcuts(QKeySequence::SelectAll);
+    ui->actionDelete->setShortcuts(QKeySequence::Delete);
+
     ui->ganttWidget->setApplication(_app);
     ui->ganttWidget->setLeftWidget(_patternsWidget);
     ui->ganttWidget->setItems(reinterpret_cast<QList<GanttItem*>*>(&app->project().playlist()));
@@ -43,11 +48,6 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
     connect(ui->actionPaste, &QAction::triggered, this, &PlaylistWidget::paste);
     connect(ui->actionSelectAll, &QAction::triggered, this, &PlaylistWidget::selectAll);
     connect(ui->actionDelete, &QAction::triggered, this, &PlaylistWidget::deleteTriggered);
-
-    ui->actionCopy->setShortcuts(QKeySequence::Copy);
-    ui->actionPaste->setShortcuts(QKeySequence::Paste);
-    ui->actionSelectAll->setShortcuts(QKeySequence::SelectAll);
-    ui->actionDelete->setShortcuts(QKeySequence::Delete);
 }
 
 PlaylistWidget::~PlaylistWidget()
