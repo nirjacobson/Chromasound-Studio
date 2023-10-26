@@ -160,9 +160,9 @@ QByteArray VGMStream::compile(Project& project, bool header, int* loopOffsetData
             *(uint32_t*)&headerData[0x20] = totalSamples;
         } else {
             if (project.playlist().doesLoop()) {
-                *(uint32_t*)&headerData[0x1C] = totalSamples - project.playlist().loopOffsetSamples();
+                *(uint32_t*)&headerData[0x20] = totalSamples - project.playlist().loopOffsetSamples();
             } else {
-                *(uint32_t*)&headerData[0x1C] = 0;
+                *(uint32_t*)&headerData[0x20] = 0;
             }
         }
         // SN76489AN flags
