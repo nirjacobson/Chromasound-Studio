@@ -25,7 +25,7 @@ private:
     bool _mergedDuration;
     bool _mergedKey;
 
-    QList<EditNoteCommand*> _commandChain;
+    QMap<Track::Item*, EditNoteCommand*> _groupCommands;
     QList<Track::Item*> _group;
 
     // QUndoCommand interface
