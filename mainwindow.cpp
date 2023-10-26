@@ -13,13 +13,19 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
 
     ui->setupUi(this);
 
+    ui->actionNew->setShortcuts(QKeySequence::New);
+    ui->actionOpen->setShortcuts(QKeySequence::Open);
+    ui->actionSave->setShortcuts(QKeySequence::Save);
+    ui->actionRender->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_R));
+    ui->actionExit->setShortcuts(QKeySequence::Quit);
+
     QAction* menuEditFirstAction = ui->menuEdit->actions()[0];
 
-    QAction* undoAction = _app->undoStack().createUndoAction(this, "Undo");
+    QAction* undoAction = _app->undoStack().createUndoAction(this, "&Undo");
     undoAction->setShortcuts(QKeySequence::Undo);
     ui->menuEdit->insertAction(menuEditFirstAction, undoAction);
 
-    QAction* redoAction = _app->undoStack().createRedoAction(this, "Redo");
+    QAction* redoAction = _app->undoStack().createRedoAction(this, "&Redo");
     redoAction->setShortcuts(QKeySequence::Redo);
     ui->menuEdit->insertAction(menuEditFirstAction, redoAction);
 
