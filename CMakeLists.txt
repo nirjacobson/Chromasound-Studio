@@ -179,14 +179,20 @@ set(PROJECT_SOURCES
     pianorollwidget/pianorollwidget.h
     pianorollwidget/pianorollwidget.cpp
     pianorollwidget/pianorollwidget.ui
+    commands/addtrackitemscommand.h
+    commands/addtrackitemscommand.cpp
+    commands/removetrackitemscommand.h
+    commands/removetrackitemscommand.cpp
+    commands/addplaylistitemscommand.h
+    commands/addplaylistitemscommand.cpp
+    commands/removeplaylistitemscommand.h
+    commands/removeplaylistitemscommand.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(FM-PSG-Studio
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        commands/addtrackitemscommand.h commands/addtrackitemscommand.cpp
-        commands/removetrackitemscommand.h commands/removetrackitemscommand.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET FM-PSG-Studio APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

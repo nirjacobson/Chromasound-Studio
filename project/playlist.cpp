@@ -102,6 +102,16 @@ void Playlist::addItem(const float time, const int pattern)
     }
 }
 
+void Playlist::addItems(const QList<Item*>& items)
+{
+    _items.append(items);
+}
+
+void Playlist::removeItems(const QList<Item*>& items)
+{
+    _items.erase(std::remove_if(_items.begin(), _items.end(), [&](const Playlist::Item* item){ return items.contains(item); }), _items.end());
+}
+
 void Playlist::removeItem(const float time, const int pattern)
 {
     auto it = std::remove_if(_items.begin(), _items.end(), [=](Playlist::Item* const item){ return (item->pattern() == pattern) && (item->time() <= time) && ((item->time() + _project->getPatternBarLength(item->pattern())) >= time); });

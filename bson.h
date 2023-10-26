@@ -26,6 +26,9 @@ class BSON
         static void fromTrackItem(bson_t* dst, const Track::Item* const item);
         static Track::Item toTrackItem(bson_iter_t& b);
 
+        static void fromPlaylistItem(bson_t* dst, const Playlist::Item* const item);
+        static Playlist::Item toPlaylistItem(bson_iter_t& b, Project* project = nullptr);
+
     private:
         static void fromChannel(bson_t* dst, const Channel& channel);
         static Channel toChannel(bson_iter_t& b);
@@ -38,9 +41,6 @@ class BSON
 
         static void fromPattern(bson_t* dst, const Pattern& pattern);
         static Pattern toPattern(bson_iter_t& b);
-
-        static void fromPlaylistItem(bson_t* dst, const Playlist::Item* const item);
-        static Playlist::Item toPlaylistItem(bson_iter_t& b);
 
         static void fromPlaylist(bson_t* dst, const Playlist& playlist);
         static Playlist toPlaylist(bson_iter_t& b, Project* project);

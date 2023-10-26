@@ -52,6 +52,8 @@ public:
 
     const QList<Item*>& items() const;
     void addItem(const float time, const int pattern);
+    void addItems(const QList<Item*>& items);
+    void removeItems(const QList<Item*>& items);
     void removeItem(const float time, const int pattern);
 
     float getLength() const;
