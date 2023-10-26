@@ -19,7 +19,6 @@ Application::Application(int &argc, char **argv, int flags)
 
 Application::~Application()
 {
-    delete _mainWindow;
     delete _fmPSG;
 }
 
