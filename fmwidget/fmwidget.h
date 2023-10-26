@@ -9,6 +9,7 @@
 #include "project/channel/fmchannelsettings.h"
 #include "bson.h"
 #include "commands/resetfmchannelsettingscommand.h"
+#include "mdiarea/mdisubwindow.h"
 
 namespace Ui {
 class FMWidget;
@@ -47,6 +48,10 @@ private slots:
     // QWidget interface
 protected:
     void paintEvent(QPaintEvent* event);
+
+    // QWidget interface
+protected:
+    void closeEvent(QCloseEvent* event);
 };
 
 #endif // FMWIDGET_H

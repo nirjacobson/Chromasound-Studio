@@ -44,6 +44,7 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
     connect(ui->ganttWidget, &GanttWidget::editorClicked, this, &PlaylistWidget::ganttEditorClicked);
     connect(ui->ganttWidget, &GanttWidget::itemChanged, this, &PlaylistWidget::ganttItemChanged);
 
+    connect(ui->actionClose, &QAction::triggered, this, &QMainWindow::close);
     connect(ui->actionCopy, &QAction::triggered, this, &PlaylistWidget::copy);
     connect(ui->actionPaste, &QAction::triggered, this, &PlaylistWidget::paste);
     connect(ui->actionSelectAll, &QAction::triggered, this, &PlaylistWidget::selectAll);
@@ -196,5 +197,11 @@ void PlaylistWidget::paintEvent(QPaintEvent* event)
     opt.initFrom(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
+void PlaylistWidget::closeEvent(QCloseEvent* event)
+{
+    MdiSubWindow* subwindow = dynamic_cast<MdiSubWindow*>(parent());
+    subwindow->close();
 }
 

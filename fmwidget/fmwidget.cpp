@@ -21,6 +21,7 @@ FMWidget::FMWidget(QWidget *parent, Application* app) :
     connect(ui->actionNew, &QAction::triggered, this, &FMWidget::newTriggered);
     connect(ui->actionOpen, &QAction::triggered, this, &FMWidget::openTriggered);
     connect(ui->actionSave, &QAction::triggered, this, &FMWidget::saveTriggered);
+    connect(ui->actionClose, &QAction::triggered, this, &QMainWindow::close);
 }
 
 FMWidget::~FMWidget()
@@ -104,4 +105,10 @@ void FMWidget::paintEvent(QPaintEvent* event)
     opt.initFrom(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
+void FMWidget::closeEvent(QCloseEvent* event)
+{
+    MdiSubWindow* subwindow = dynamic_cast<MdiSubWindow*>(parent());
+    subwindow->close();
 }

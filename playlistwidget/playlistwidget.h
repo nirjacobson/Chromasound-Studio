@@ -14,6 +14,7 @@
 #include "commands/removeplaylistitemscommand.h"
 #include "commands/editplaylistcommand.h"
 #include "bson.h"
+#include "mdiarea/mdisubwindow.h"
 
 namespace Ui {
 class PlaylistWidget;
@@ -56,6 +57,7 @@ private slots:
     // QWidget interface
 protected:
     void paintEvent(QPaintEvent* event);
+    void closeEvent(QCloseEvent* event);
 };
 
 #endif // PLAYLISTWIDGET_H

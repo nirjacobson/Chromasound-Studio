@@ -32,6 +32,7 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
 
     _noteMenu.addAction(&_velocityAction);
 
+    connect(ui->actionClose, &QAction::triggered, this, &QMainWindow::close);
     connect(ui->actionCopy, &QAction::triggered, this, &PianoRollWidget::copy);
     connect(ui->actionPaste, &QAction::triggered, this, &PianoRollWidget::paste);
     connect(ui->actionSelectAll, &QAction::triggered, this, &PianoRollWidget::selectAll);
@@ -229,5 +230,11 @@ void PianoRollWidget::paintEvent(QPaintEvent* event)
     opt.initFrom(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
+void PianoRollWidget::closeEvent(QCloseEvent* event)
+{
+    MdiSubWindow* subwindow = dynamic_cast<MdiSubWindow*>(parent());
+    subwindow->close();
 }
 
