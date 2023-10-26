@@ -311,10 +311,6 @@ void ChannelWidget::pianoRollWasToggled()
 {
     bool on = _pianoRollAction.isChecked();
 
-    if (on) {
-        emit toggled(true);
-    }
-
     emit pianoRollTriggered(on);
 }
 
