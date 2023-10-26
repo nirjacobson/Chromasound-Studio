@@ -286,7 +286,7 @@ void BSON::fromPlaylistItem(bson_t* dst, const Playlist::Item* const item)
     BSON_APPEND_INT32(dst, "pattern", item->pattern());
 }
 
-Playlist::Item BSON::toPlaylistItem(bson_iter_t& b)
+Playlist::Item BSON::toPlaylistItem(bson_iter_t& b, Project* project)
 {
     Playlist::Item i;
 
@@ -299,6 +299,8 @@ Playlist::Item BSON::toPlaylistItem(bson_iter_t& b)
     if (bson_iter_find_descendant(&b, "pattern", &pattern) && BSON_ITER_HOLDS_INT32(&pattern)) {
         i._pattern = bson_iter_int32(&pattern);
     }
+
+    i._project = project;
 
     return i;
 }

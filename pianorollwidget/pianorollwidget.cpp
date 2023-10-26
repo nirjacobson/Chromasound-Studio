@@ -128,7 +128,6 @@ void PianoRollWidget::velocityTriggered()
 
 void PianoRollWidget::copy()
 {
-
     bson_writer_t* writer;
 
     uint8_t* buf = nullptr;
@@ -143,10 +142,9 @@ void PianoRollWidget::copy()
 
     uint32_t i = 0;
 
-    BSON_APPEND_ARRAY_BEGIN(doc, "items", &items);
+    BSON_APPEND_ARRAY_BEGIN(doc, "trackItems", &items);
     for (const GanttItem* const item : ui->ganttWidget->selectedItems()) {
         const Track::Item* trackItem = dynamic_cast<const Track::Item*>(item);
-
 
         bson_t b_item;
         bson_init(&b_item);
@@ -198,7 +196,7 @@ void PianoRollWidget::paste()
 
     QList<Track::Item*> pastedItems;
 
-    if (bson_iter_find_descendant(&iter, "items", &items) && BSON_ITER_HOLDS_ARRAY(&items) && bson_iter_recurse(&items, &child)) {
+    if (bson_iter_find_descendant(&iter, "trackItems", &items) && BSON_ITER_HOLDS_ARRAY(&items) && bson_iter_recurse(&items, &child)) {
         while (bson_iter_next(&child)) {
             bson_iter_recurse(&child, &item);
             pastedItems.append(new Track::Item(BSON::toTrackItem(item)));
