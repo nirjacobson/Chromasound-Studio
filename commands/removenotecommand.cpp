@@ -12,14 +12,14 @@ RemoveNoteCommand::RemoveNoteCommand(MainWindow* window, Track& track, const flo
 
 void RemoveNoteCommand::undo()
 {
-    _track.addItem(_time, _note);
+    _track.addItem(_originalTime, _note);
 
     _mainWindow->doUpdate();
 }
 
 void RemoveNoteCommand::redo()
 {
-    _track.removeItem(_time, _note.key());
+    _originalTime = _track.removeItem(_time, _note.key());
 
     _mainWindow->doUpdate();
 }

@@ -1,23 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>PianoRollWidget</class>
- <widget class="QWidget" name="PianoRollWidget">
+ <widget class="QMainWindow" name="PianoRollWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>836</width>
-    <height>474</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Piano Roll</string>
+   <string>MainWindow</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="GanttWidget" name="ganttWidget" native="true"/>
-   </item>
-  </layout>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="GanttWidget" name="ganttWidget" native="true"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="actionCopy"/>
+    <addaction name="actionPaste"/>
+    <addaction name="separator"/>
+    <addaction name="actionDelete"/>
+   </widget>
+   <addaction name="menuEdit"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionCopy">
+   <property name="text">
+    <string>Copy</string>
+   </property>
+  </action>
+  <action name="actionPaste">
+   <property name="text">
+    <string>Paste</string>
+   </property>
+  </action>
+  <action name="actionDelete">
+   <property name="text">
+    <string>Delete</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

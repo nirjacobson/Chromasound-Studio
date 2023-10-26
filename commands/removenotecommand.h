@@ -18,6 +18,7 @@ private:
 
     Track& _track;
     float _time;
+    float _originalTime;
     Note _note;
 
     // QUndoCommand interface

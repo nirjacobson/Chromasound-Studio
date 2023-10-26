@@ -85,9 +85,9 @@ set(PROJECT_SOURCES
     pianorollwidget/pianorollkeyswidget.h
     pianorollwidget/pianorollvelocitieswidget.cpp
     pianorollwidget/pianorollvelocitieswidget.h
-    pianorollwidget/pianorollwidget.cpp
-    pianorollwidget/pianorollwidget.h
-    pianorollwidget/pianorollwidget.ui
+
+
+
     playlistwidget/playlistpatternswidget.cpp
     playlistwidget/playlistpatternswidget.h
     playlistwidget/playlistwidget.cpp
@@ -176,12 +176,17 @@ set(PROJECT_SOURCES
     mdiarea/mdisubwindow.cpp
     commands/resetfmchannelsettingscommand.h
     commands/resetfmchannelsettingscommand.cpp
+    pianorollwidget/pianorollwidget.h
+    pianorollwidget/pianorollwidget.cpp
+    pianorollwidget/pianorollwidget.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(FM-PSG-Studio
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        commands/addtrackitemscommand.h commands/addtrackitemscommand.cpp
+        commands/removetrackitemscommand.h commands/removetrackitemscommand.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET FM-PSG-Studio APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

@@ -37,6 +37,11 @@ class GanttWidget : public QWidget
 
         void scrollVertically(const float percentage);
 
+        const QList<GanttItem*>& selectedItems() const;
+        void selectItems(const QList<GanttItem*>& items);
+
+        float mousePosition() const;
+
     private:
         Ui::GanttWidget *ui;
         Application* _app;
