@@ -14,9 +14,9 @@ class GanttEditorWidget : public QWidget
         Q_OBJECT
         Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
         Q_PROPERTY(QColor borderColor READ borderColor WRITE setBorderColor)
-        Q_PROPERTY(QColor lightBorderColor READ lightBorderColor WRITE setLightBorderColor)
         Q_PROPERTY(QColor itemColor READ itemColor WRITE setItemColor)
         Q_PROPERTY(QColor cursorColor READ cursorColor WRITE setCursorColor)
+        Q_PROPERTY(QColor selectionColor READ selectionColor WRITE setSelectionColor);
 
     public:
         explicit GanttEditorWidget(QWidget *parent = nullptr);
@@ -45,6 +45,9 @@ class GanttEditorWidget : public QWidget
         const QList<GanttItem*>& selectedItems() const;
         void selectItems(const QList<GanttItem*>& items);
         void selectAllItems();
+
+        void setCellMajors(const QList<int>& majors);
+        void setRowMajors(const QList<int>& majors);
         
         float mousePosition() const;
 
@@ -66,23 +69,21 @@ class GanttEditorWidget : public QWidget
     private:
         QColor _backgroundColor;
         QColor _borderColor;
-        QColor _lightBorderColor;
         QColor _itemColor;
         QColor _cursorColor;
         QColor _selectionColor;
-        QColor _selectedColor;
 
         const QColor& backgroundColor() const;
         const QColor& borderColor() const;
-        const QColor& lightBorderColor() const;
         const QColor& itemColor() const;
         const QColor& cursorColor() const;
+        const QColor& selectionColor() const;
 
         void setBackgroundColor(const QColor& color);
         void setBorderColor(const QColor& color);
-        void setLightBorderColor(const QColor& color);
         void setItemColor(const QColor& color);
         void setCursorColor(const QColor& color);
+        void setSelectionColor(const QColor& color);
 
         Application* _app;
 
@@ -96,6 +97,8 @@ class GanttEditorWidget : public QWidget
 
         int _cellWidth;
         float _cellBeats;
+        QList<int> _cellMajors;
+        QList<int> _rowMajors;
 
         bool _snap;
         bool _invertRows;

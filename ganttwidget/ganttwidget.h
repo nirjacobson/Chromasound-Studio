@@ -41,6 +41,9 @@ class GanttWidget : public QWidget
         void selectItems(const QList<GanttItem*>& items);
         void selectAllItems();
 
+        void setCellMajors(const QList<int>& majors);
+        void setRowMajors(const QList<int>& majors);
+
         float mousePosition() const;
 
 

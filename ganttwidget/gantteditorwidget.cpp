@@ -18,12 +18,11 @@ GanttEditorWidget::GanttEditorWidget(QWidget *parent)
     , _positionFunction([](){ return -1; })
     , _backgroundColor(Qt::white)
     , _borderColor(Qt::gray)
-    , _lightBorderColor(Qt::lightGray)
     , _itemColor(QColor(128, 128, 255))
     , _cursorColor(QColor(64, 192, 64))
     , _selectionColor(QColor(192, 192, 255))
-    , _selectedColor(_selectionColor.lighter())
     , _selecting(false)
+    , _cellMajors({ 4 })
 {
     setMouseTracking(true);
 }
@@ -129,7 +128,6 @@ void GanttEditorWidget::setPositionFunction(std::function<float ()> func)
 void GanttEditorWidget::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
-    painter.setPen(_borderColor);
 
     painter.fillRect(rect(), QBrush(_backgroundColor));
 
@@ -143,6 +141,17 @@ void GanttEditorWidget::paintEvent(QPaintEvent*)
         QPoint thisBottomLeft = topLeft + QPoint(0, i * _rowHeight);
         QPoint thisBottomRight = thisBottomLeft + QPoint(width(), 0);
 
+        painter.setPen(_borderColor.lighter(140));
+        for (int j = _rowMajors.size() - 1; j >= 0 ; j--) {
+            int r = firstRow + i;
+            if (_invertRows) r = _rows - 1 - r;
+
+            if (r % _rowMajors[j] == (_rowMajors[j] - 1)) {
+                painter.setPen(QPen(_borderColor.lighter(140), pow(2, j+1)));
+                break;
+            }
+        }
+
         painter.drawLine(thisBottomLeft, thisBottomRight);
     }
 
@@ -152,14 +161,16 @@ void GanttEditorWidget::paintEvent(QPaintEvent*)
 
     topLeft = QPoint(firstCellStart, 0);
 
-    int beatsPerBar = _app->project().beatsPerBar();
     for (int i = 0; i < numCells; i++) {
         QPoint thisTopRight = topLeft + QPoint((i + 1) * _cellWidth, 0);
         QPoint thisBottomRight = thisTopRight + QPoint(0, height());
-        if ((firstCell + i) % beatsPerBar == (beatsPerBar-1)) {
-            painter.setPen(QPen(_borderColor, 2));
-        } else {
-            painter.setPen(_lightBorderColor);
+
+        painter.setPen(_borderColor.lighter(140));
+        for (int j = _cellMajors.size() - 1; j >= 0 ; j--) {
+            if ((firstCell + i) % _cellMajors[j] == (_cellMajors[j] - 1)) {
+                painter.setPen(QPen(_borderColor, pow(2, j+1)));
+                break;
+            }
         }
         painter.drawLine(thisTopRight, thisBottomRight);
     }
@@ -182,8 +193,8 @@ void GanttEditorWidget::paintEvent(QPaintEvent*)
 
             QRect rect(QPoint(startPixelX - _left, startPixelY - _top), QPoint(endPixelX - _left, endPixelY - _top));
 
-            painter.setPen(_selectedItems.contains(item) ? _selectedColor.darker() : _itemColor.darker());
-            painter.setBrush(_selectedItems.contains(item) ? _selectedColor : _itemColor);
+            painter.setPen(_selectedItems.contains(item) ? _selectionColor.darker() : _itemColor.darker());
+            painter.setBrush(_selectedItems.contains(item) ? _selectionColor : _itemColor);
             painter.drawRect(rect.adjusted(0, 0, -1, -1));
         }
     }
@@ -474,11 +485,6 @@ const QColor& GanttEditorWidget::borderColor() const
     return _borderColor;
 }
 
-const QColor& GanttEditorWidget::lightBorderColor() const
-{
-    return _lightBorderColor;
-}
-
 const QColor& GanttEditorWidget::itemColor() const
 {
     return _itemColor;
@@ -487,6 +493,11 @@ const QColor& GanttEditorWidget::itemColor() const
 const QColor& GanttEditorWidget::cursorColor() const
 {
     return _cursorColor;
+}
+
+const QColor& GanttEditorWidget::selectionColor() const
+{
+    return _selectionColor;
 }
 
 void GanttEditorWidget::setBackgroundColor(const QColor& color)
@@ -499,11 +510,6 @@ void GanttEditorWidget::setBorderColor(const QColor& color)
     _borderColor = color;
 }
 
-void GanttEditorWidget::setLightBorderColor(const QColor& color)
-{
-    _lightBorderColor = color;
-}
-
 void GanttEditorWidget::setItemColor(const QColor& color)
 {
     _itemColor = color;
@@ -512,6 +518,11 @@ void GanttEditorWidget::setItemColor(const QColor& color)
 void GanttEditorWidget::setCursorColor(const QColor& color)
 {
     _cursorColor = color;
+}
+
+void GanttEditorWidget::setSelectionColor(const QColor& color)
+{
+    _selectionColor = color;
 }
 
 const QList<GanttItem*>& GanttEditorWidget::selectedItems() const
@@ -529,6 +540,18 @@ void GanttEditorWidget::selectItems(const QList<GanttItem*>& items)
 void GanttEditorWidget::selectAllItems()
 {
     selectItems(*_items);
+}
+
+void GanttEditorWidget::setCellMajors(const QList<int>& majors)
+{
+    _cellMajors = majors;
+    std::sort(_cellMajors.begin(), _cellMajors.end());
+}
+
+void GanttEditorWidget::setRowMajors(const QList<int>& majors)
+{
+    _rowMajors = majors;
+    std::sort(_rowMajors.begin(), _rowMajors.end());
 }
 
 float GanttEditorWidget::mousePosition() const
