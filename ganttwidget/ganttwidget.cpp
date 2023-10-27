@@ -146,6 +146,16 @@ void GanttWidget::selectAllItems()
     ui->editorWidget->selectAllItems();
 }
 
+void GanttWidget::setCellMajors(const QList<int>& majors)
+{
+    ui->editorWidget->setCellMajors(majors);
+}
+
+void GanttWidget::setRowMajors(const QList<int>& majors)
+{
+    ui->editorWidget->setRowMajors(majors);
+}
+
 float GanttWidget::mousePosition() const
 {
     return ui->editorWidget->mousePosition();
