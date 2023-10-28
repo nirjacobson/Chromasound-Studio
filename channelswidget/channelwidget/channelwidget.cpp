@@ -251,7 +251,7 @@ void ChannelWidget::setFMColor(const QColor& color)
     _fmColor = color;
 
     if (_app->project().getChannel(_index).type() == Channel::FM) {
-        ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_fmColor.name()));
+        ui->pushButton->setStyleSheet(QString("background-color: %1; color: %2;").arg(_fmColor.name()).arg(_fmColor.lightness() <= 96 ? "white" : "default"));
     }
 }
 
@@ -260,7 +260,7 @@ void ChannelWidget::setToneColor(const QColor& color)
     _toneColor = color;
 
     if (_app->project().getChannel(_index).type() == Channel::TONE) {
-        ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_toneColor.name()));
+        ui->pushButton->setStyleSheet(QString("background-color: %1; color: %2;").arg(_toneColor.name()).arg(_toneColor.lightness() <= 96 ? "white" : "default"));
     }
 }
 
@@ -268,9 +268,8 @@ void ChannelWidget::setNoiseColor(const QColor& color)
 {
     _noiseColor = color;
 
-
     if (_app->project().getChannel(_index).type() == Channel::NOISE) {
-        ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_noiseColor.name()));
+        ui->pushButton->setStyleSheet(QString("background-color: %1; color: %2;").arg(_noiseColor.name()).arg(_noiseColor.lightness() <= 96 ? "white" : "default"));
     }
 }
 
