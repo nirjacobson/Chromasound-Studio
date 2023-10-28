@@ -206,14 +206,14 @@ void PianoRollWidget::paste()
             bson_iter_recurse(&child, &item);
             pastedItems.append(new Track::Item(BSON::toTrackItem(item)));
         }
+
+        _app->undoStack().push(new AddTrackItemsCommand(_app->window(), *_track, ui->ganttWidget->mousePosition(), pastedItems));
+
+        ui->ganttWidget->selectItems(reinterpret_cast<QList<GanttItem*>&>(pastedItems));
+        ui->ganttWidget->update();
     }
 
     bson_reader_destroy(reader);
-
-    _app->undoStack().push(new AddTrackItemsCommand(_app->window(), *_track, ui->ganttWidget->mousePosition(), pastedItems));
-
-    ui->ganttWidget->selectItems(reinterpret_cast<QList<GanttItem*>&>(pastedItems));
-    ui->ganttWidget->update();
 }
 
 void PianoRollWidget::selectAll()
