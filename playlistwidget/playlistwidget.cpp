@@ -171,14 +171,14 @@ void PlaylistWidget::paste()
             Playlist::Item* playlistItem = new Playlist::Item(BSON::toPlaylistItem(item, &_app->project()));
             pastedItems.append(playlistItem);
         }
+
+        _app->undoStack().push(new AddPlaylistItemsCommand(_app->window(), _app->project().playlist(), ui->ganttWidget->mousePosition(), pastedItems));
+
+        ui->ganttWidget->selectItems(reinterpret_cast<QList<GanttItem*>&>(pastedItems));
+        ui->ganttWidget->update();
     }
 
     bson_reader_destroy(reader);
-
-    _app->undoStack().push(new AddPlaylistItemsCommand(_app->window(), _app->project().playlist(), ui->ganttWidget->mousePosition(), pastedItems));
-
-    ui->ganttWidget->selectItems(reinterpret_cast<QList<GanttItem*>&>(pastedItems));
-    ui->ganttWidget->update();
 }
 
 void PlaylistWidget::selectAll()
