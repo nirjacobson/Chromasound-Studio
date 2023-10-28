@@ -34,7 +34,7 @@ void LED::paintEvent(QPaintEvent*)
 
     painter.setBrush(QBrush(color.lighter(), Qt::SolidPattern));
     painter.setPen(QPen(color.lighter(), 2));
-    painter.drawEllipse(drawRect.adjusted(5, 1, -1, -5));
+    painter.drawEllipse(drawRect.adjusted(5, 2, -2, -5));
 
     painter.setBrush(QBrush(Qt::NoBrush));
     painter.setPen(QPen(color.darker(), 1));
