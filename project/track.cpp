@@ -74,7 +74,7 @@ void Track::addItems(const QList<Item*>& items)
 float Track::removeItem(const float time, const int key)
 {
     float tt;
-    auto it = std::remove_if(_items.begin(), _items.end(), [=](Item* const item){ return (item->note().key() == key) && (item->time() <= time) && ((item->time() + item->note().duration()) >= time); });
+    auto it = std::remove_if(_items.begin(), _items.end(), [=](Item* const item){ return (item->note().key() == key) && (item->time() <= time) && (time < (item->time() + item->note().duration())); });
     if (it != _items.end()) {
         tt = (*it)->time();
     }
@@ -86,7 +86,7 @@ float Track::removeItem(const float time, const int key)
 float Track::removeItem(const float time)
 {
     float tt;
-    auto it = std::remove_if(_items.begin(), _items.end(), [=](Item* const item){ return (item->time() <= time) && ((item->time() + item->note().duration()) >= time); });
+    auto it = std::remove_if(_items.begin(), _items.end(), [=](Item* const item){ return (item->time() <= time) && (time < (item->time() + item->note().duration())); });
     if (it != _items.end()) {
         tt = (*it)->time();
     }

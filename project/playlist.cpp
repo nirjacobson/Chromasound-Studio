@@ -114,7 +114,7 @@ void Playlist::removeItems(const QList<Item*>& items)
 
 void Playlist::removeItem(const float time, const int pattern)
 {
-    auto it = std::remove_if(_items.begin(), _items.end(), [=](Playlist::Item* const item){ return (item->pattern() == pattern) && (item->time() <= time) && ((item->time() + _project->getPatternBarLength(item->pattern())) >= time); });
+    auto it = std::remove_if(_items.begin(), _items.end(), [=](Playlist::Item* const item){ return (item->pattern() == pattern) && (item->time() <= time) && (time < (item->time() + _project->getPatternBarLength(item->pattern()))); });
     _items.erase(it, _items.end());
 }
 
