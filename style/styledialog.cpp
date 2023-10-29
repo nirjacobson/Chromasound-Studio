@@ -60,7 +60,7 @@ void StyleDialog::saveTriggered()
             stream << ui->styleTextEdit->toPlainText();
             file.close();
             QFileInfo info(file);
-            ui->statusbar->showMessage(QString("Opened %1.%2.").arg(info.baseName(), info.completeSuffix()));
+            ui->statusbar->showMessage(QString("Saved %1.%2.").arg(info.baseName(), info.completeSuffix()));
         }
     }
 }
