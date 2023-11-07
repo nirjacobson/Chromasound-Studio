@@ -91,6 +91,8 @@ void PlaylistWidget::ganttHeaderClicked(Qt::MouseButton button, float time)
             _app->project().playlist().setLoopOffset(time);
         }
         update();
+    } else if (_app->project().playMode() == Project::PlayMode::SONG) {
+        _app->setPosition(time);
     }
 }
 

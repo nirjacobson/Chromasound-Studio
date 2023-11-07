@@ -9,8 +9,8 @@ class FM_PSG_Dummy : public FM_PSG
     public:
         FM_PSG_Dummy(Project& project);
 
-        void play(const QByteArray&, const int, const int, const float duration);
-        void play(const QByteArray&, const bool loop);
+        void play(const QByteArray&, const int, const int,  const int, const float duration);
+        void play(const QByteArray&, const bool loop, const int);
         void play();
         void pause();
         void stop();

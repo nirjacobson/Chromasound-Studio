@@ -15,8 +15,8 @@ class FM_PSG_Impl : public FM_PSG
 
         float position();
         void setPosition(const float pos);
-        void play(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData, const float);
-        void play(const QByteArray& vgm, const bool loop);
+        void play(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData, const int currentOffsetData, const float);
+        void play(const QByteArray& vgm, const bool loop, const int currentOffsetData);
         void play();
         void pause();
         void stop();

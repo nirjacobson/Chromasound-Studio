@@ -49,9 +49,9 @@ class VGMStream
 
         void encode(QList<StreamItem*>& items, QByteArray& data);
 
-        QByteArray compile(Project& project, bool header = false, int* loopOffsetData = nullptr);
-        QByteArray compile(const Project& project, const Pattern& pattern, const float loopStart, const float loopEnd);
-        QByteArray compile(const Project& project, const float loopStart, const float loopEnd);
+        QByteArray compile(Project& project, bool header = false, int* loopOffsetData = nullptr, const float currentOffset = 0, int* const currentOffsetData = nullptr);
+        QByteArray compile(const Project& project, const Pattern& pattern, const float loopStart, const float loopEnd, const float currentOffset = 0, int* const currentOffsetData = nullptr);
+        QByteArray compile(const Project& project, const float loopStart, const float loopEnd, const float currentOffset = 0, int* const currentOffsetData = nullptr);
 
         void reset();
 
@@ -123,9 +123,9 @@ class VGMStream
 
         void pad(QList<StreamItem*>& items, const float toDuration);
 
-        int encode(const QList<StreamItem*>& items, const int tempo, QByteArray& data);
+        int encode(const QList<StreamItem*>& items, const int tempo, QByteArray& data, const float currentTime, int* const currentOffsetData);
 
-        int encode(const QList<StreamItem*>& items, const int tempo, const float loopTime, QByteArray& data, int* const loopOffsetData, const bool startAtLoop);
+        int encode(const QList<StreamItem*>& items, QByteArray& data, const int tempo, const float loopTime, int* const loopOffsetData, const float currentTime, int* const currentOffsetData, const bool startAtLoop);
 
         int encodeDelay(const int tempo, const float beats, QByteArray& data);
         void encodeSettingsItem(const StreamSettingsItem* item, QByteArray& data);

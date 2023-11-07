@@ -69,7 +69,7 @@ FM_PSG_Dummy::FM_PSG_Dummy(Project& project)
 
 }
 
-void FM_PSG_Dummy::play(const QByteArray&, const int loopOffsetSamples, const int, const float duration)
+void FM_PSG_Dummy::play(const QByteArray&, const int loopOffsetSamples, const int, const int, const float duration)
 {
     _loopOffsetSamples = loopOffsetSamples;
     _duration = duration;
@@ -77,7 +77,7 @@ void FM_PSG_Dummy::play(const QByteArray&, const int loopOffsetSamples, const in
     _timer.restart();
 }
 
-void FM_PSG_Dummy::play(const QByteArray&, const bool loop)
+void FM_PSG_Dummy::play(const QByteArray&, const bool loop, const int)
 {
     _loopOffsetSamples = loop ? 0 : -1;
     _playing = true;

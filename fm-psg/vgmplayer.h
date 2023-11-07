@@ -17,8 +17,8 @@ class VGMPlayer : public QThread
 
         explicit VGMPlayer(int spi, QObject *parent = nullptr);
 
-        void setVGM(const QByteArray& vgm, const bool loop);
-        void setVGM(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData);
+        void setVGM(const QByteArray& vgm, const bool loop, const int currentOffsetData);
+        void setVGM(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData, const int currentOffsetData);
         void setMode(const Mode mode);
 
         bool isPlaying() const;
