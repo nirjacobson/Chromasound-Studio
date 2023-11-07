@@ -4,6 +4,8 @@ GanttEditorWidget::GanttEditorWidget(QWidget *parent)
     : QWidget{parent}
     , _top(0)
     , _left(0)
+    , _loopStart(-1)
+    , _loopEnd(-1)
     , _rows(0)
     , _rowHeight(16)
     , _cellWidth(16)
@@ -21,6 +23,7 @@ GanttEditorWidget::GanttEditorWidget(QWidget *parent)
     , _itemColor(QColor(128, 128, 255))
     , _cursorColor(QColor(64, 192, 64))
     , _selectionColor(QColor(192, 192, 255))
+    , _loopColor(QColor(255, 192, 0))
     , _selecting(false)
     , _cellMajors({ 4 })
 {
@@ -223,6 +226,20 @@ void GanttEditorWidget::paintEvent(QPaintEvent*)
         painter.setBrush(selectionColorWithAlpha);
 
         painter.drawRect(rect);
+    }
+
+    if (_loopStart >= 0 && _loopEnd >=0) {
+        if (leftPosition <= _loopEnd && _loopStart <= rightPosition) {
+            int loopFromPixel = (_loopStart - leftPosition) / beatsPerPixel;
+            int width = (_loopEnd - _loopStart) / beatsPerPixel;
+
+
+            QColor loopColorWithAlpha = _loopColor;
+            loopColorWithAlpha.setAlpha(128);
+            painter.setPen(loopColorWithAlpha.darker());
+            painter.setBrush(loopColorWithAlpha);
+            painter.drawRect(QRect(QPoint(loopFromPixel, 0), QSize(width, height() - 1)));
+        }
     }
 }
 
@@ -557,5 +574,12 @@ void GanttEditorWidget::setRowMajors(const QList<int>& majors)
 float GanttEditorWidget::mousePosition() const
 {
     return _mousePosition;
+}
+
+void GanttEditorWidget::setLoop(const float start, const float end)
+{
+    _loopStart = start;
+    _loopEnd = end;
+    update();
 }
 

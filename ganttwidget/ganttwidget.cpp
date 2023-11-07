@@ -26,6 +26,7 @@ GanttWidget::GanttWidget(QWidget *parent, Application* app) :
     connect(ui->verticalScrollBar, &QScrollBar::valueChanged, this, &GanttWidget::verticalScroll);
     connect(ui->horizontalScrollBar, &QScrollBar::valueChanged, this, &GanttWidget::horizontalScroll);
     connect(ui->snapCheckBox, &QCheckBox::clicked, this, &GanttWidget::snapClicked);
+    connect(ui->headerWidget, &GanttHeaderWidget::loopChanged, this, &GanttWidget::loopChanged);
     connect(ui->headerWidget, &GanttHeaderWidget::clicked, this, &GanttWidget::headerClicked);
     connect(ui->editorWidget, &GanttEditorWidget::clicked, this, &GanttWidget::editorClicked);
     connect(ui->editorWidget, &GanttEditorWidget::itemChanged, this, &GanttWidget::itemChanged);
@@ -161,6 +162,21 @@ float GanttWidget::mousePosition() const
     return ui->editorWidget->mousePosition();
 }
 
+bool GanttWidget::hasLoop() const
+{
+    return ui->headerWidget->hasLoop();
+}
+
+float GanttWidget::loopStart() const
+{
+    return ui->headerWidget->loopStart();
+}
+
+float GanttWidget::loopEnd() const
+{
+    return ui->headerWidget->loopEnd();
+}
+
 void GanttWidget::verticalScroll(int amount)
 {
     float vscroll = (float)amount / ui->verticalScrollBar->maximum();
@@ -201,4 +217,9 @@ void GanttWidget::wheelVerticalScroll(int pixels)
     ui->verticalScrollBar->blockSignals(true);
     ui->verticalScrollBar->setValue(_leftWidget->getScrollPercentage()*ui->verticalScrollBar->maximum());
     ui->verticalScrollBar->blockSignals(false);
+}
+
+void GanttWidget::loopChanged()
+{
+    ui->editorWidget->setLoop(ui->headerWidget->loopStart(), ui->headerWidget->loopEnd());
 }

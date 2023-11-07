@@ -46,6 +46,10 @@ class GanttWidget : public QWidget
 
         float mousePosition() const;
 
+        bool hasLoop() const;
+        float loopStart() const;
+        float loopEnd() const;
+
 
     private:
         Ui::GanttWidget *ui;
@@ -65,6 +69,7 @@ class GanttWidget : public QWidget
         void snapClicked();
         void wheelHorizontalScroll(int pixels);
         void wheelVerticalScroll(int pixels);
+        void loopChanged();
 
     signals:
         void headerClicked(Qt::MouseButton button, float time);
