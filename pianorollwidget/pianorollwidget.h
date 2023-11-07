@@ -36,6 +36,7 @@ public:
     static constexpr int CellWidth = 16;
 
     void setTrack(const int pattern, const int track);
+    int channel() const;
 
     void pressKey(const int key);
     void releaseKey(const int key);
@@ -50,6 +51,7 @@ private:
     PianoRollKeysWidget* _keysWidget;
     PianoRollVelocitiesWidget* _velocitiesWidget;
 
+    int _channel;
     Track* _track;
     const GanttItem* _itemLastClicked;
 
