@@ -242,6 +242,11 @@ const QColor& GanttHeaderWidget::cursorColor() const
     return _cursorColor;
 }
 
+const QColor& GanttHeaderWidget::loopColor() const
+{
+    return _loopColor;
+}
+
 void GanttHeaderWidget::setActiveColor(const QColor& color)
 {
     _activeColor = color;
@@ -265,6 +270,11 @@ void GanttHeaderWidget::setInactiveForegroundColor(const QColor& color)
 void GanttHeaderWidget::setCursorColor(const QColor& color)
 {
     _cursorColor = color;
+}
+
+void GanttHeaderWidget::setLoopColor(const QColor& color)
+{
+    _loopColor = color;
 }
 
 int GanttHeaderWidget::length() const
