@@ -26,6 +26,7 @@ class Application : public QApplication
         bool paused() const;
         void play();
         void play(const Pattern& pattern, const float loopStart, const float loopEnd);
+        void play(const float loopStart, const float loopEnd);
         void stop();
 
         float position() const;

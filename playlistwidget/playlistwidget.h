@@ -33,7 +33,9 @@ public:
     static constexpr int RowHeight = 24;
     static constexpr int CellWidth = 24;
 
-    void setTempo(int bpm);
+    bool hasLoop() const;
+    float loopStart() const;
+    float loopEnd() const;
 
 private:
     QColor _loopColor;
