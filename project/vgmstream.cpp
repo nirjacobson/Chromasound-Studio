@@ -114,7 +114,7 @@ QByteArray VGMStream::compile(Project& project, bool header, int* loopOffsetData
         assignChannelsAndExpand(items);
         pad(items, project.getLength());
         if (project.playlist().doesLoop()) {
-            totalSamples = encode(items, project.tempo(), project.playlist().loopOffset(), data, &_loopOffsetData);
+            totalSamples = encode(items, project.tempo(), project.playlist().loopOffset(), data, &_loopOffsetData, false);
         } else {
             totalSamples = encode(items, project.tempo(), data);
         }
@@ -181,6 +181,24 @@ QByteArray VGMStream::compile(Project& project, bool header, int* loopOffsetData
     if (project.playlist().doesLoop() && loopOffsetData) {
         *loopOffsetData = _loopOffsetData;
     }
+    return data;
+}
+
+QByteArray VGMStream::compile(const Project& project, const Pattern& pattern, const float loopStart, const float loopEnd)
+{
+    QList<StreamItem*> items;
+    QByteArray data;
+    int totalSamples;
+
+    processPattern(0, project, pattern, items, loopStart, loopEnd);
+    assignChannelsAndExpand(items);
+    pad(items, loopEnd - loopStart);
+    totalSamples = encode(items, project.tempo(), loopStart, data, nullptr, true);
+
+    for (StreamItem* item : items) {
+        delete item;
+    }
+
     return data;
 }
 
@@ -252,24 +270,33 @@ int VGMStream::acquireFMChannel(const float time, const float duration, const FM
     return -1;
 }
 
-void VGMStream::processPattern(const float time, const Project& project, const Pattern& pattern, QList<StreamItem*>& items)
+void VGMStream::processPattern(const float time, const Project& project, const Pattern& pattern, QList<StreamItem*>& items, const float loopStart, const float loopEnd)
 {
     for (auto it = pattern.tracks().cbegin(); it != pattern.tracks().cend(); ++it) {
         const Channel& channel = project.getChannel(it.key());
         const Track* track = it.value();
 
         if (channel.enabled()) {
-            processTrack(time, channel, track, items);
+            processTrack(time, channel, track, items, loopStart, loopEnd);
         }
     }
 }
 
-void VGMStream::processTrack(const float time, const Channel& channel, const Track* track, QList<StreamItem*>& items)
+void VGMStream::processTrack(const float time, const Channel& channel, const Track* track, QList<StreamItem*>& items, const float loopStart, const float loopEnd)
 {
     QList<Track::Item*> itemsCopy = track->items();
     std::sort(itemsCopy.begin(), itemsCopy.end(), [](const Track::Item* a, const Track::Item* b){ return a->time() <= b->time(); });
 
-    for (const Track::Item* item : itemsCopy) {
+    for (Track::Item* item : itemsCopy) {
+        if (loopStart >= 0 && loopEnd >= 0) {
+            if (item->time() < loopStart || item->time() >= loopEnd) {
+                continue;
+            }
+
+            if (item->time() + item->duration() > loopEnd) {
+                item->setDuration(loopEnd - item->time());
+            }
+        }
         items.append(new StreamNoteItem(time + item->time(), channel.type(), item->note(), &channel.settings()));
     }
 }
@@ -341,17 +368,18 @@ int VGMStream::encode(const QList<StreamItem*>& items, const int tempo, QByteArr
     return totalSamples;
 }
 
-int VGMStream::encode(const QList<StreamItem*>& items, const int tempo, const float loopTime, QByteArray& data, int* const loopOffsetData)
+int VGMStream::encode(const QList<StreamItem*>& items, const int tempo, const float loopTime, QByteArray& data, int* const loopOffsetData, const bool startAtLoop)
 {
-    float lastTime = 0.0f;
+    float lastTime = startAtLoop ? loopTime : 0.0f;
     int totalSamples = 0;
     bool setLoopOffsetData = false;
+    int _loopOffsetData;
     for (int i = 0; i < items.size(); i++) {
         totalSamples += encodeDelay(tempo, items[i]->time() - lastTime, data);
         lastTime = items[i]->time();
 
         if (items[i]->time() >= loopTime && !setLoopOffsetData) {
-            *loopOffsetData = data.size();
+            _loopOffsetData = data.size();
             setLoopOffsetData = true;
         }
 
@@ -364,6 +392,10 @@ int VGMStream::encode(const QList<StreamItem*>& items, const int tempo, const fl
         }
     }
     data.append(0x66);
+
+    if (setLoopOffsetData && loopOffsetData) {
+        *loopOffsetData = _loopOffsetData;
+    }
 
     return totalSamples;
 }

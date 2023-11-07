@@ -35,7 +35,12 @@ float FM_PSG_Impl::position()
     return ((float)_vgmPlayer->time() / 44100.0f) / 60.0f * _project.tempo();
 }
 
-void FM_PSG_Impl::play(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData)
+void FM_PSG_Impl::setPosition(const float pos)
+{
+    _vgmPlayer->setTime(pos / _project.tempo() * 60 * 44100);
+}
+
+void FM_PSG_Impl::play(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData, const float)
 {
     _vgmPlayer->stop();
     _vgmPlayer->quit();
