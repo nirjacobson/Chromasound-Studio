@@ -30,6 +30,7 @@ class Application : public QApplication
         void stop();
 
         float position() const;
+        void setPosition(const float pos);
         bool isPlaying() const;
 
         void setWindow(MainWindow* window);

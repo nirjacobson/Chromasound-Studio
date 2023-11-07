@@ -40,7 +40,7 @@ void FM_PSG_Impl::setPosition(const float pos)
     _vgmPlayer->setTime(pos / _project.tempo() * 60 * 44100);
 }
 
-void FM_PSG_Impl::play(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData, const float)
+void FM_PSG_Impl::play(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData, const int currentOffsetData, const float)
 {
     _vgmPlayer->stop();
     _vgmPlayer->quit();
@@ -49,11 +49,11 @@ void FM_PSG_Impl::play(const QByteArray& vgm, const int loopOffsetSamples, const
     reset();
 
     _vgmPlayer->setMode(VGMPlayer::Mode::Playback);
-    _vgmPlayer->setVGM(vgm, loopOffsetSamples, loopOffsetData);
+    _vgmPlayer->setVGM(vgm, loopOffsetSamples, loopOffsetData, currentOffsetData);
     _vgmPlayer->start();
 }
 
-void FM_PSG_Impl::play(const QByteArray& vgm, const bool loop)
+void FM_PSG_Impl::play(const QByteArray& vgm, const bool loop, const int currentOffsetData)
 {
     _vgmPlayer->stop();
     _vgmPlayer->quit();
@@ -62,7 +62,7 @@ void FM_PSG_Impl::play(const QByteArray& vgm, const bool loop)
     reset();
 
     _vgmPlayer->setMode(VGMPlayer::Mode::Playback);
-    _vgmPlayer->setVGM(vgm, loop);
+    _vgmPlayer->setVGM(vgm, loop, currentOffsetData);
     _vgmPlayer->start();
 }
 
@@ -102,7 +102,7 @@ void FM_PSG_Impl::keyOn(const Channel::Type channelType, const ChannelSettings& 
     _vgmStream.assignChannel(sni, items);
     _vgmStream.encode(items, data);
     _keys[key] = sni;
-    _vgmPlayer->setVGM(data, false);
+    _vgmPlayer->setVGM(data, false, 0);
 }
 
 void FM_PSG_Impl::keyOff(int key)
@@ -116,7 +116,7 @@ void FM_PSG_Impl::keyOff(int key)
     _vgmStream.encode(items, data);
     _keys.remove(key);
     delete sni;
-    _vgmPlayer->setVGM(data, false);
+    _vgmPlayer->setVGM(data, false, 0);
 }
 
 void FM_PSG_Impl::reset()

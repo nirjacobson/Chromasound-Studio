@@ -92,7 +92,7 @@ void VGMStream::encode(QList<StreamItem*>& items, QByteArray& data)
     });
 }
 
-QByteArray VGMStream::compile(Project& project, bool header, int* loopOffsetData)
+QByteArray VGMStream::compile(Project& project, bool header, int* loopOffsetData, const float currentOffset, int* const currentOffsetData)
 {
     QList<StreamItem*> items;
     QByteArray headerData;
@@ -100,11 +100,12 @@ QByteArray VGMStream::compile(Project& project, bool header, int* loopOffsetData
     int totalSamples;
 
     int _loopOffsetData;
+    int _currentOffsetData;
     if (project.playMode() == Project::PlayMode::PATTERN) {
         processPattern(0, project, project.getFrontPattern(), items);
         assignChannelsAndExpand(items);
         pad(items, project.getPatternBarLength(project.frontPattern()));
-        totalSamples = encode(items, project.tempo(), data);
+        totalSamples = encode(items, project.tempo(), data, currentOffset, &_currentOffsetData);
 
         for (StreamItem* item : items) {
             delete item;
@@ -114,9 +115,9 @@ QByteArray VGMStream::compile(Project& project, bool header, int* loopOffsetData
         assignChannelsAndExpand(items);
         pad(items, project.getLength());
         if (project.playlist().doesLoop()) {
-            totalSamples = encode(items, project.tempo(), project.playlist().loopOffset(), data, &_loopOffsetData, false);
+            totalSamples = encode(items, data, project.tempo(), project.playlist().loopOffset(), &_loopOffsetData, currentOffset, &_currentOffsetData, false);
         } else {
-            totalSamples = encode(items, project.tempo(), data);
+            totalSamples = encode(items, project.tempo(), data, currentOffset, &_currentOffsetData);
         }
 
         for (StreamItem* item : items) {
@@ -181,40 +182,57 @@ QByteArray VGMStream::compile(Project& project, bool header, int* loopOffsetData
     if (project.playlist().doesLoop() && loopOffsetData) {
         *loopOffsetData = _loopOffsetData;
     }
-    return data;
-}
 
-QByteArray VGMStream::compile(const Project& project, const Pattern& pattern, const float loopStart, const float loopEnd)
-{
-    QList<StreamItem*> items;
-    QByteArray data;
-    int totalSamples;
-
-    processPattern(0, project, pattern, items, loopStart, loopEnd);
-    assignChannelsAndExpand(items);
-    pad(items, loopEnd - loopStart);
-    totalSamples = encode(items, project.tempo(), loopStart, data, nullptr, true);
-
-    for (StreamItem* item : items) {
-        delete item;
+    if (currentOffsetData) {
+        *currentOffsetData = _currentOffsetData;
     }
 
     return data;
 }
 
-QByteArray VGMStream::compile(const Project& project, const float loopStart, const float loopEnd)
+QByteArray VGMStream::compile(const Project& project, const Pattern& pattern, const float loopStart, const float loopEnd, const float currentOffset, int* const currentOffsetData)
 {
     QList<StreamItem*> items;
     QByteArray data;
     int totalSamples;
 
-    generateItems(project, items, loopStart, loopEnd);
+    int _currentOffsetData;
+
+    processPattern(0, project, pattern, items, loopStart, loopEnd);
     assignChannelsAndExpand(items);
     pad(items, loopEnd - loopStart);
-    totalSamples = encode(items, project.tempo(), loopStart, data, nullptr, true);
+    totalSamples = encode(items, data, project.tempo(), loopStart, nullptr, currentOffset, &_currentOffsetData, true);
 
     for (StreamItem* item : items) {
         delete item;
+    }
+
+    if (currentOffsetData) {
+        *currentOffsetData = _currentOffsetData;
+    }
+
+    return data;
+}
+
+QByteArray VGMStream::compile(const Project& project, const float loopStart, const float loopEnd, const float currentOffset, int* const currentOffsetData)
+{
+    QList<StreamItem*> items;
+    QByteArray data;
+    int totalSamples;
+
+    int _currentOffsetData;
+
+    generateItems(project, items, loopStart, loopEnd);
+    assignChannelsAndExpand(items);
+    pad(items, loopEnd - loopStart);
+    totalSamples = encode(items, data, project.tempo(), loopStart, nullptr, currentOffset, &_currentOffsetData, true);
+
+    for (StreamItem* item : items) {
+        delete item;
+    }
+
+    if (currentOffsetData) {
+        *currentOffsetData = _currentOffsetData;
     }
 
     return data;
@@ -374,13 +392,21 @@ void VGMStream::pad(QList<StreamItem*>& items, const float toDuration)
     items.append(sei);
 }
 
-int VGMStream::encode(const QList<StreamItem*>& items, const int tempo, QByteArray& data)
+int VGMStream::encode(const QList<StreamItem*>& items, const int tempo, QByteArray& data, const float currentTime, int* const currentOffsetData)
 {
     float lastTime = 0.0f;
     int totalSamples = 0;
+    bool setCurrentOffsetData = false;
+    int _currentOffsetData;
     for (int i = 0; i < items.size(); i++) {
         totalSamples += encodeDelay(tempo, items[i]->time() - lastTime, data);
         lastTime = items[i]->time();
+
+        if (items[i]->time() >= currentTime && !setCurrentOffsetData) {
+            _currentOffsetData = data.size();
+            setCurrentOffsetData = true;
+        }
+
         StreamSettingsItem* ssi;
         StreamNoteItem* sni;
         if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
@@ -391,15 +417,21 @@ int VGMStream::encode(const QList<StreamItem*>& items, const int tempo, QByteArr
     }
     data.append(0x66);
 
+    if (setCurrentOffsetData && currentOffsetData) {
+        *currentOffsetData = _currentOffsetData;
+    }
+
     return totalSamples;
 }
 
-int VGMStream::encode(const QList<StreamItem*>& items, const int tempo, const float loopTime, QByteArray& data, int* const loopOffsetData, const bool startAtLoop)
+int VGMStream::encode(const QList<StreamItem*>& items,  QByteArray& data, const int tempo, const float loopTime, int* const loopOffsetData, const float currentTime, int* const currentOffsetData, const bool startAtLoop)
 {
     float lastTime = startAtLoop ? loopTime : 0.0f;
     int totalSamples = 0;
     bool setLoopOffsetData = false;
     int _loopOffsetData;
+    bool setCurrentOffsetData = false;
+    int _currentOffsetData;
     for (int i = 0; i < items.size(); i++) {
         totalSamples += encodeDelay(tempo, items[i]->time() - lastTime, data);
         lastTime = items[i]->time();
@@ -407,6 +439,11 @@ int VGMStream::encode(const QList<StreamItem*>& items, const int tempo, const fl
         if (items[i]->time() >= loopTime && !setLoopOffsetData) {
             _loopOffsetData = data.size();
             setLoopOffsetData = true;
+        }
+
+        if (items[i]->time() >= currentTime && !setCurrentOffsetData) {
+            _currentOffsetData = data.size();
+            setCurrentOffsetData = true;
         }
 
         StreamSettingsItem* ssi;
@@ -421,6 +458,10 @@ int VGMStream::encode(const QList<StreamItem*>& items, const int tempo, const fl
 
     if (setLoopOffsetData && loopOffsetData) {
         *loopOffsetData = _loopOffsetData;
+    }
+
+    if (setCurrentOffsetData && currentOffsetData) {
+        *currentOffsetData = _currentOffsetData;
     }
 
     return totalSamples;

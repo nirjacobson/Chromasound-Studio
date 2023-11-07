@@ -42,7 +42,8 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
 
     connect(&_velocityAction, &QAction::triggered, this, &PianoRollWidget::velocityTriggered);
 
-    connect(ui->ganttWidget, &GanttWidget::editorClicked, this, &PianoRollWidget::ganttClicked);
+    connect(ui->ganttWidget, &GanttWidget::headerClicked, this, &PianoRollWidget::ganttHeaderClicked);
+    connect(ui->ganttWidget, &GanttWidget::editorClicked, this, &PianoRollWidget::ganttEditorClicked);
     connect(ui->ganttWidget, &GanttWidget::itemChanged, this, &PianoRollWidget::ganttItemChanged);
     connect(ui->ganttWidget, &GanttWidget::itemReleased, this, &PianoRollWidget::ganttItemReleased);
     connect(ui->ganttWidget, &GanttWidget::contextMenuRequested, this, &PianoRollWidget::contextMenuRequested);
@@ -123,7 +124,14 @@ float PianoRollWidget::loopEnd() const
     return ui->ganttWidget->loopEnd();
 }
 
-void PianoRollWidget::ganttClicked(Qt::MouseButton button, int row, float time)
+void PianoRollWidget::ganttHeaderClicked(Qt::MouseButton button, float time)
+{
+    if (button == Qt::LeftButton && _app->project().playMode() == Project::PlayMode::PATTERN) {
+        _app->setPosition(time);
+    }
+}
+
+void PianoRollWidget::ganttEditorClicked(Qt::MouseButton button, int row, float time)
 {
     if (button == Qt::LeftButton) {
         _app->undoStack().push(new AddNoteCommand(_app->window(), *_track, time, Note(row, (_itemLastClicked ? _itemLastClicked->duration() : 1))));
