@@ -124,6 +124,7 @@ void FM_PSG_Impl::reset()
     gpioWrite(2, 0);
     gpioDelay(100);
     gpioWrite(2, 1);
+    gpioDelay(100);
 
     _vgmStream.reset();
 }
