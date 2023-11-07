@@ -16,6 +16,7 @@ class GanttHeaderWidget : public ScrollableWidget
         Q_PROPERTY(QColor activeForegroundColor READ activeForegroundColor WRITE setActiveForegroundColor)
         Q_PROPERTY(QColor inactiveForegroundColor READ inactiveForegroundColor WRITE setInactiveForegroundColor)
         Q_PROPERTY(QColor cursorColor READ cursorColor WRITE setCursorColor)
+        Q_PROPERTY(QColor loopColor READ loopColor WRITE setLoopColor)
 
     public:
         explicit GanttHeaderWidget(QWidget *parent = nullptr);
@@ -78,12 +79,14 @@ class GanttHeaderWidget : public ScrollableWidget
         const QColor& activeForegroundColor() const;
         const QColor& inactiveForegroundColor() const;
         const QColor& cursorColor() const;
+        const QColor& loopColor() const;
 
         void setActiveColor(const QColor& color);
         void setInactiveColor(const QColor& color);
         void setActiveForegroundColor(const QColor& color);
         void setInactiveForegroundColor(const QColor& color);
         void setCursorColor(const QColor& color);
+        void setLoopColor(const QColor& color);
 
         float playlength() const;
 
