@@ -29,6 +29,11 @@ void Application::pause()
     _paused = true;
 }
 
+bool Application::paused() const
+{
+    return _paused;
+}
+
 
 void Application::play()
 {
@@ -49,6 +54,16 @@ void Application::play()
 
     }
     _paused = false;
+}
+
+void Application::play(const Pattern& pattern, const float loopStart, const float loopEnd)
+{
+    int loopOffsetData = 0;
+    int loopOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
+    QByteArray vgm = VGMStream().compile(_project, pattern, loopStart, loopEnd);
+
+    _fmPSG->setPosition(loopStart);
+    _fmPSG->play(vgm, loopOffsetSamples, loopOffsetData, loopEnd - loopStart);
 }
 
 void Application::stop()

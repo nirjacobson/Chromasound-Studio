@@ -9,12 +9,13 @@ class FM_PSG_Dummy : public FM_PSG
     public:
         FM_PSG_Dummy(Project& project);
 
-        void play(const QByteArray&, const int, const int);
+        void play(const QByteArray&, const int, const int, const float duration);
         void play(const QByteArray&, const bool loop);
         void play();
         void pause();
         void stop();
         float position();
+        void setPosition(const float pos);
         bool isPlaying() const;
 
         void keyOn(const Channel::Type, const ChannelSettings&, const int, const int);
@@ -26,6 +27,7 @@ class FM_PSG_Dummy : public FM_PSG
         qint64 _ref;
         bool _playing;
         int _loopOffsetSamples;
+        float _duration;
 
         qint64 nanosecondsPerBeat() const;
 };

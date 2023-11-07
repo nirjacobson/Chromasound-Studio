@@ -27,6 +27,7 @@ class VGMPlayer : public QThread
         void pause();
 
         uint32_t time();
+        void setTime(const uint32_t time);
 
     public slots:
         void start(Priority p = InheritPriority);
@@ -41,7 +42,8 @@ class VGMPlayer : public QThread
             REPORT_TIME,
             PAUSE_RESUME,
             STOP_START,
-            SET_LOOP_TIME
+            SET_LOOP_TIME,
+            SET_TIME
         } Command;
 
         Mode _mode;

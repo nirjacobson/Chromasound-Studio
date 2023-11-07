@@ -61,6 +61,7 @@ PianoRollWidget::~PianoRollWidget()
 
 void PianoRollWidget::setTrack(const int pattern, const int track)
 {
+    _pattern = &_app->project().getPattern(pattern);
     _channel = track;
     _track = &_app->project().getPattern(pattern).getTrack(track);
     ui->ganttWidget->setItems(reinterpret_cast<QList<GanttItem*>*>(&_track->items()));
@@ -92,6 +93,11 @@ int PianoRollWidget::channel() const
     return _channel;
 }
 
+Pattern& PianoRollWidget::pattern() const
+{
+    return *_pattern;
+}
+
 void PianoRollWidget::pressKey(const int key)
 {
     _keysWidget->pressKey(key);
@@ -100,6 +106,21 @@ void PianoRollWidget::pressKey(const int key)
 void PianoRollWidget::releaseKey(const int key)
 {
     _keysWidget->releaseKey(key);
+}
+
+bool PianoRollWidget::hasLoop() const
+{
+    return ui->ganttWidget->hasLoop();
+}
+
+float PianoRollWidget::loopStart() const
+{
+    return ui->ganttWidget->loopStart();
+}
+
+float PianoRollWidget::loopEnd() const
+{
+    return ui->ganttWidget->loopEnd();
 }
 
 void PianoRollWidget::ganttClicked(Qt::MouseButton button, int row, float time)

@@ -193,6 +193,20 @@ int MainWindow::channels() const
 void MainWindow::play()
 {
     _timer.start();
+
+    if (_app->paused()) {
+        _app->play();
+        return;
+    }
+
+    PianoRollWidget* prw;
+    if ((prw = dynamic_cast<PianoRollWidget*>(ui->mdiArea->activeSubWindow()->widget()))) {
+        if (prw->hasLoop()) {
+            _app->play(prw->pattern(), prw->loopStart(), prw->loopEnd());
+            return;
+        }
+    }
+
     _app->play();
 }
 

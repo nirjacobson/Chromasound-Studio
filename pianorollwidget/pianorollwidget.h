@@ -37,9 +37,14 @@ public:
 
     void setTrack(const int pattern, const int track);
     int channel() const;
+    Pattern& pattern() const;
 
     void pressKey(const int key);
     void releaseKey(const int key);
+
+    bool hasLoop() const;
+    float loopStart() const;
+    float loopEnd() const;
 
 signals:
     void keyOn(const int key, const int velocity);
@@ -52,6 +57,7 @@ private:
     PianoRollVelocitiesWidget* _velocitiesWidget;
 
     int _channel;
+    Pattern* _pattern;
     Track* _track;
     const GanttItem* _itemLastClicked;
 

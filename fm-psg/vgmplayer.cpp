@@ -85,6 +85,13 @@ uint32_t VGMPlayer::time()
     return time;
 }
 
+void VGMPlayer::setTime(const uint32_t time)
+{
+    _timeLock.lock();
+    _time = time;
+    _timeLock.unlock();
+}
+
 void VGMPlayer::start(Priority p)
 {
     if (_paused) {
@@ -166,6 +173,11 @@ void VGMPlayer::runPlayback()
 {
     char rx, tx;
     uint16_t space;
+
+    spi_write(SET_TIME);
+    for (int i = 0; i < 4; i++) {
+        spi_write(((char*)&_time)[i]);
+    }
 
     bool loop = _loopOffsetData >= 0 && _loopOffsetSamples >= 0;
 
