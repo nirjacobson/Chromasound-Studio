@@ -255,7 +255,15 @@ void MainWindow::pianoRollTriggered(const int index, const bool on)
 
     _channelsWidget->update();
 
-    auto it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window){ return dynamic_cast<PianoRollWidget*>(window->widget()); });
+    auto it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [&](MdiSubWindow* window){
+        PianoRollWidget* prw;
+        if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
+            if (&prw->pattern() == &_app->project().getFrontPattern()) {
+                return true;
+            }
+        }
+        return false;
+    });
     if (it != _channelWindows[index].end()) {
         if (on) {
             ui->mdiArea->setActiveSubWindow(*it);
