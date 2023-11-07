@@ -28,7 +28,6 @@ void VGMPlayer::setVGM(const QByteArray& vgm, const bool loop)
         _loopOffsetData = -1;
     }
 
-    _time = 0;
     _position = 0;
 }
 
@@ -40,7 +39,6 @@ void VGMPlayer::setVGM(const QByteArray& vgm, const int loopOffsetSamples, const
 
     _loopOffsetSamples = loopOffsetSamples;
     _loopOffsetData = loopOffsetData;
-    _time = 0;
     _position = 0;
 }
 
