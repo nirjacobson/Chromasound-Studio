@@ -453,7 +453,14 @@ void MainWindow::renderTriggered()
 
 void MainWindow::keyOn(const int key, const int velocity)
 {
-    int activeChannel = _channelsWidget->activeChannel();
+    int activeChannel;
+    PianoRollWidget* prw;
+    if ((prw = dynamic_cast<PianoRollWidget*>(ui->mdiArea->activeSubWindow()->widget()))) {
+        activeChannel = prw->channel();
+    } else {
+        activeChannel = _channelsWidget->activeChannel();
+    }
+
     if (activeChannel >= 0) {
         Channel& channel = _app->project().getChannel(activeChannel);
         _app->keyOn(channel.type(), channel.settings(), key, velocity);

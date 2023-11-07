@@ -61,6 +61,7 @@ PianoRollWidget::~PianoRollWidget()
 
 void PianoRollWidget::setTrack(const int pattern, const int track)
 {
+    _channel = track;
     _track = &_app->project().getPattern(pattern).getTrack(track);
     ui->ganttWidget->setItems(reinterpret_cast<QList<GanttItem*>*>(&_track->items()));
     ui->ganttWidget->setPositionFunction([=](){
@@ -84,6 +85,11 @@ void PianoRollWidget::setTrack(const int pattern, const int track)
         return -1.0f;
     });
     update();
+}
+
+int PianoRollWidget::channel() const
+{
+    return _channel;
 }
 
 void PianoRollWidget::pressKey(const int key)
