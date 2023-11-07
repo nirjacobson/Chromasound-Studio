@@ -174,17 +174,19 @@ void VGMPlayer::runPlayback()
     char rx, tx;
     uint16_t space;
 
-    spi_write(SET_TIME);
-    for (int i = 0; i < 4; i++) {
-        spi_write(((char*)&_time)[i]);
-    }
-
     bool loop = _loopOffsetData >= 0 && _loopOffsetSamples >= 0;
 
     spi_write(SET_LOOP_TIME);
     for (int i = 0; i < 4; i++) {
         spi_write(loop ? ((char*)&_loopOffsetSamples)[i] : 0);
     }
+
+    _timeLock.lock();
+    spi_write(SET_TIME);
+    for (int i = 0; i < 4; i++) {
+        spi_write(((char*)&_time)[i]);
+    }
+    _timeLock.unlock();
 
     while (true) {
         _stopLock.lock();
