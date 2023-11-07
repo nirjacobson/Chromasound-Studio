@@ -202,6 +202,24 @@ QByteArray VGMStream::compile(const Project& project, const Pattern& pattern, co
     return data;
 }
 
+QByteArray VGMStream::compile(const Project& project, const float loopStart, const float loopEnd)
+{
+    QList<StreamItem*> items;
+    QByteArray data;
+    int totalSamples;
+
+    generateItems(project, items, loopStart, loopEnd);
+    assignChannelsAndExpand(items);
+    pad(items, loopEnd - loopStart);
+    totalSamples = encode(items, project.tempo(), loopStart, data, nullptr, true);
+
+    for (StreamItem* item : items) {
+        delete item;
+    }
+
+    return data;
+}
+
 void VGMStream::reset()
 {
     for (int i = 0; i < TONE_CHANNELS; i++) {
@@ -289,11 +307,11 @@ void VGMStream::processTrack(const float time, const Channel& channel, const Tra
 
     for (Track::Item* item : itemsCopy) {
         if (loopStart >= 0 && loopEnd >= 0) {
-            if (item->time() < loopStart || item->time() >= loopEnd) {
+            if ((time + item->time()) < loopStart || (time + item->time()) >= loopEnd) {
                 continue;
             }
 
-            if (item->time() + item->duration() > loopEnd) {
+            if ((time + item->time() + item->duration()) > loopEnd) {
                 item->setDuration(loopEnd - item->time());
             }
         }
@@ -301,13 +319,21 @@ void VGMStream::processTrack(const float time, const Channel& channel, const Tra
     }
 }
 
-void VGMStream::generateItems(const Project& project, QList<StreamItem*>& items)
+void VGMStream::generateItems(const Project& project, QList<StreamItem*>& items, const float loopStart, const float loopEnd)
 {
     QList<Playlist::Item*> itemsCopy(project.playlist().items());
     std::sort(itemsCopy.begin(), itemsCopy.end(), [](const Playlist::Item* a, const Playlist::Item* b){ return a->time() <= b->time(); });
 
-    for (const Playlist::Item* item : itemsCopy) {
-        processPattern(item->time(), project, project.getPattern(item->pattern()), items);
+    for (Playlist::Item* item : itemsCopy) {
+        if (loopStart >= 0 && loopEnd >= 0) {
+            if (loopEnd < item->time() || loopStart > (item->time() + item->duration())) {
+                continue;
+            }
+
+            processPattern(item->time(), project, project.getPattern(item->pattern()), items, loopStart, loopEnd);
+        } else {
+            processPattern(item->time(), project, project.getPattern(item->pattern()), items);
+        }
     }
 }
 

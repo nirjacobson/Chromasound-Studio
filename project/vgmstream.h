@@ -51,6 +51,7 @@ class VGMStream
 
         QByteArray compile(Project& project, bool header = false, int* loopOffsetData = nullptr);
         QByteArray compile(const Project& project, const Pattern& pattern, const float loopStart, const float loopEnd);
+        QByteArray compile(const Project& project, const float loopStart, const float loopEnd);
 
         void reset();
 
@@ -117,7 +118,7 @@ class VGMStream
         void processPattern(const float time, const Project& project, const Pattern& pattern, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
         void processTrack(const float time, const Channel& channel, const Track* track, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
 
-        void generateItems(const Project& project, QList<StreamItem*>& items);
+        void generateItems(const Project& project, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
         void assignChannelsAndExpand(QList<StreamItem*>& items);
 
         void pad(QList<StreamItem*>& items, const float toDuration);

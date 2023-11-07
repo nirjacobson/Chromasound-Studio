@@ -57,6 +57,21 @@ PlaylistWidget::~PlaylistWidget()
     delete _patternsWidget;
 }
 
+bool PlaylistWidget::hasLoop() const
+{
+    return ui->ganttWidget->hasLoop();
+}
+
+float PlaylistWidget::loopStart() const
+{
+    return ui->ganttWidget->loopStart();
+}
+
+float PlaylistWidget::loopEnd() const
+{
+    return ui->ganttWidget->loopEnd();
+}
+
 const QColor& PlaylistWidget::loopColor() const
 {
     return _loopColor;
