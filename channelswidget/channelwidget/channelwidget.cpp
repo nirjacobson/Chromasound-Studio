@@ -303,6 +303,8 @@ void ChannelWidget::buttonPressed()
 
 void ChannelWidget::buttonContextMenuRequested(const QPoint& p)
 {
+    const Pattern& frontPattern = _app->project().getFrontPattern();
+    _pianoRollAction.setChecked(frontPattern.hasTrack(_index) && frontPattern.getTrack(_index).doesUsePianoRoll());
     _contextMenu.exec(mapToGlobal(p));
 }
 
