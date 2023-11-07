@@ -51,6 +51,8 @@ class GanttEditorWidget : public QWidget
         
         float mousePosition() const;
 
+        void setLoop(const float start, const float end);
+
     signals:
         void horizontalScroll(const int pixels);
         void verticalScroll(const int pixels);
@@ -72,6 +74,7 @@ class GanttEditorWidget : public QWidget
         QColor _itemColor;
         QColor _cursorColor;
         QColor _selectionColor;
+        QColor _loopColor;
 
         const QColor& backgroundColor() const;
         const QColor& borderColor() const;
@@ -91,6 +94,9 @@ class GanttEditorWidget : public QWidget
 
         long _top;
         long _left;
+
+        float _loopStart;
+        float _loopEnd;
 
         int _rows;
         int _rowHeight;

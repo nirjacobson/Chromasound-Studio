@@ -37,13 +37,20 @@ class GanttHeaderWidget : public ScrollableWidget
 
         void setSnap(const bool snap);
 
+        bool hasLoop() const;
+        float loopStart() const;
+        float loopEnd() const;
+
     signals:
         void clicked(Qt::MouseButton button, float time);
+        void loopChanged();
 
     protected:
         int length() const;
         void paintEvent(QPaintEvent*);
         void mousePressEvent(QMouseEvent* event);
+        void mouseReleaseEvent(QMouseEvent* event);
+        void mouseMoveEvent(QMouseEvent* event);
 
     private:
         Application* _app;
@@ -51,6 +58,9 @@ class GanttHeaderWidget : public ScrollableWidget
         QList<GanttItem*>* _items;
 
         int _left;
+
+        float _loopStart;
+        float _loopEnd;
 
         int _cellWidth;
         float _cellBeats;
@@ -61,6 +71,7 @@ class GanttHeaderWidget : public ScrollableWidget
         QColor _activeForegroundColor;
         QColor _inactiveForegroundColor;
         QColor _cursorColor;
+        QColor _loopColor;
 
         const QColor& activeColor() const;
         const QColor& inactiveColor() const;

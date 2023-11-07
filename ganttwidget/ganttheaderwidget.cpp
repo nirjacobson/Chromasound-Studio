@@ -4,6 +4,8 @@ GanttHeaderWidget::GanttHeaderWidget(QWidget *parent)
     : ScrollableWidget{parent}
     , _items(nullptr)
     , _left(0)
+    , _loopStart(-1)
+    , _loopEnd(-1)
     , _cellWidth(16)
     , _cellBeats(1)
     , _snap(true)
@@ -14,6 +16,7 @@ GanttHeaderWidget::GanttHeaderWidget(QWidget *parent)
     , _activeForegroundColor(Qt::gray)
     , _inactiveForegroundColor(Qt::gray)
     , _cursorColor(QColor(64, 192, 64))
+    , _loopColor(QColor(255, 192, 0))
 {
 
 }
@@ -74,6 +77,21 @@ void GanttHeaderWidget::scrollBy(const int pixels)
 void GanttHeaderWidget::setSnap(const bool snap)
 {
     _snap = snap;
+}
+
+bool GanttHeaderWidget::hasLoop() const
+{
+    return _loopStart >=0 && _loopEnd >=0;
+}
+
+float GanttHeaderWidget::loopStart() const
+{
+    return _loopStart;
+}
+
+float GanttHeaderWidget::loopEnd() const
+{
+    return _loopEnd;
 }
 
 float GanttHeaderWidget::playlength() const
@@ -142,6 +160,20 @@ void GanttHeaderWidget::paintEvent(QPaintEvent*)
         painter.setPen(Qt::NoPen);
         painter.fillPath(path, _cursorColor);
     }
+
+    if (hasLoop()) {
+        if (leftPosition <= _loopEnd && _loopStart <= rightPosition) {
+            int loopFromPixel = (_loopStart - leftPosition) / beatsPerPixel;
+            int width = (_loopEnd - _loopStart) / beatsPerPixel;
+
+
+            QColor loopColorWithAlpha = _loopColor;
+            loopColorWithAlpha.setAlpha(128);
+            painter.setPen(loopColorWithAlpha.darker());
+            painter.setBrush(loopColorWithAlpha);
+            painter.drawRect(QRect(QPoint(loopFromPixel, 0), QSize(width, height() - 1)));
+        }
+    }
 }
 
 void GanttHeaderWidget::mousePressEvent(QMouseEvent* event)
@@ -151,7 +183,38 @@ void GanttHeaderWidget::mousePressEvent(QMouseEvent* event)
     float mousePosition = leftPosition + (event->pos().x() * beatsPerPixel);
     float mousePositionSnapped = (int)(mousePosition / _cellBeats) * _cellBeats;
 
+    _loopStart = _snap ? mousePositionSnapped : mousePosition;
+    _loopEnd = -1;
+
+    update();
+
     emit clicked(event->button(), _snap ? mousePositionSnapped : mousePosition);
+    emit loopChanged();
+}
+
+void GanttHeaderWidget::mouseReleaseEvent(QMouseEvent* event)
+{
+    if (_loopStart > _loopEnd) {
+        float temp = _loopStart;
+        _loopStart = _loopEnd;
+        _loopEnd = temp;
+        emit loopChanged();
+    }
+}
+
+void GanttHeaderWidget::mouseMoveEvent(QMouseEvent* event)
+{
+    if (event->buttons() & Qt::LeftButton) {
+        float beatsPerPixel = _cellBeats / _cellWidth;
+        float leftPosition = _left * beatsPerPixel;
+        float mousePosition = leftPosition + (event->pos().x() * beatsPerPixel);
+        float mousePositionSnapped = (int)(mousePosition / _cellBeats) * _cellBeats;
+
+        _loopEnd = _snap ? mousePositionSnapped : mousePosition;
+        update();
+
+        emit loopChanged();
+    }
 }
 
 const QColor& GanttHeaderWidget::activeColor() const
