@@ -100,4 +100,5 @@ void FM_PSG_Dummy::stop()
 {
     _playing = false;
     _ref = 0;
+    _duration = -1;
 }
