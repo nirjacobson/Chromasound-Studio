@@ -10,6 +10,7 @@
 class Track
 {
         friend class BSON;
+        friend class MIDI;
 
     public:
         Track();
@@ -20,6 +21,7 @@ class Track
 
         class Item : public GanttItem {
                friend class BSON;
+                friend class MIDI;
 
             public:
                 Item(const float time, const Note& note);

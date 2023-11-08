@@ -34,6 +34,10 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
 
     _noteMenu.addAction(&_velocityAction);
 
+    setAcceptDrops(true);
+
+    connect(ui->actionNew, &QAction::triggered, this, &PianoRollWidget::newTriggered);
+    connect(ui->actionOpen, &QAction::triggered, this, &PianoRollWidget::openTriggered);
     connect(ui->actionClose, &QAction::triggered, this, &QMainWindow::close);
     connect(ui->actionCopy, &QAction::triggered, this, &PianoRollWidget::copy);
     connect(ui->actionPaste, &QAction::triggered, this, &PianoRollWidget::paste);
@@ -124,6 +128,26 @@ float PianoRollWidget::loopEnd() const
     return ui->ganttWidget->loopEnd();
 }
 
+void PianoRollWidget::loadMIDI(const MIDIFile& file)
+{
+    auto it1 = std::find_if(file.chunks().begin(), file.chunks().end(), [](const MIDIChunk* chunk){ return dynamic_cast<const MIDIHeader*>(chunk); });
+
+    if (it1 != file.chunks().end()) {
+        const MIDIHeader* header = dynamic_cast<const MIDIHeader*>(*it1);
+
+        auto it2 = std::find_if(file.chunks().begin(), file.chunks().end(), [](const MIDIChunk* chunk){ return dynamic_cast<const MIDITrack*>(chunk); });
+
+        if (it2 != file.chunks().end()) {
+            const MIDITrack* track = dynamic_cast<const MIDITrack*>(*it2);
+
+            QList<Track::Item*> items = MIDI::toTrackItems(*track, header->division());
+
+            _app->undoStack().push(new RemoveTrackItemsCommand(_app->window(), *_track, _track->items()));
+            _app->undoStack().push(new AddTrackItemsCommand(_app->window(), *_track, 0, items));
+        }
+    }
+}
+
 void PianoRollWidget::ganttHeaderClicked(Qt::MouseButton button, float time)
 {
     if (button == Qt::LeftButton && _app->project().playMode() == Project::PlayMode::PATTERN) {
@@ -164,6 +188,23 @@ void PianoRollWidget::velocityTriggered()
     n.setVelocity(velocity);
 
     _app->undoStack().push(new EditNoteCommand(_app->window(), _contextItem, _contextItem->time(), n, QList<Track::Item*>()));
+}
+
+void PianoRollWidget::newTriggered()
+{
+    _app->undoStack().push(new RemoveTrackItemsCommand(_app->window(), *_track, _track->items()));
+}
+
+void PianoRollWidget::openTriggered()
+{
+    const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "MIDI File (*.mid)");
+
+    if (!path.isNull()) {
+        QFile file(path);
+        MIDIFile mfile(file);
+
+        loadMIDI(mfile);
+    }
 }
 
 void PianoRollWidget::copy()
@@ -273,5 +314,29 @@ void PianoRollWidget::closeEvent(QCloseEvent* event)
 {
     MdiSubWindow* subwindow = dynamic_cast<MdiSubWindow*>(parent());
     subwindow->close();
+}
+
+void PianoRollWidget::dragEnterEvent(QDragEnterEvent* event)
+{
+    if (event->mimeData()->hasFormat("text/uri-list")) {
+        event->acceptProposedAction();
+    }
+}
+
+void PianoRollWidget::dropEvent(QDropEvent* event)
+{
+    QByteArray data = event->mimeData()->data("text/uri-list");
+    QString path(data);
+    path = path.mid(QString("file://").length());
+    path = path.replace("%20", " ");
+    path = path.replace("\r\n", "");
+    qDebug() << path;
+    QFile file(path);
+
+    MIDIFile mfile(file);
+
+    loadMIDI(mfile);
+
+    event->acceptProposedAction();
 }
 

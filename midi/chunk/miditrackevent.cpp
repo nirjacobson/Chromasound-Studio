@@ -47,9 +47,14 @@ MIDITrackEvent& MIDITrackEvent::operator<<(QDataStream& stream)
     return *this;
 }
 
-const Event* MIDITrackEvent::event() const
+quint32 MIDITrackEvent::deltaTime() const
 {
-    return _event;
+    return _deltaTime;
+}
+
+const Event& MIDITrackEvent::event() const
+{
+    return *_event;
 }
 
 bool MIDITrackEvent::isMIDIStatus(const quint8 datum)

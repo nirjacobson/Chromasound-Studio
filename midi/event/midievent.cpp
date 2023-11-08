@@ -30,3 +30,23 @@ quint8 MIDIEvent::status() const
 {
     return _status;
 }
+
+quint8 MIDIEvent::data1() const
+{
+    return _data1;
+}
+
+quint8 MIDIEvent::data2() const
+{
+    return _data2;
+}
+
+bool MIDIEvent::isKeyOn() const
+{
+    return (_status >> 4) == 0x9;
+}
+
+bool MIDIEvent::isKeyOff() const
+{
+    return (_status >> 4) == 0x8;
+}

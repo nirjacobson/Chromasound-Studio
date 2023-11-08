@@ -7,6 +7,7 @@
 #include <QInputDialog>
 #include <QMimeData>
 #include <QClipboard>
+#include <QFileDialog>
 
 #include "application.h"
 #include "pianorollkeyswidget.h"
@@ -17,6 +18,8 @@
 #include "commands/addtrackitemscommand.h"
 #include "commands/removetrackitemscommand.h"
 #include "bson.h"
+#include "midi/midi.h"
+#include "midi/midifile.h"
 #include "mdiarea/mdisubwindow.h"
 
 namespace Ui {
@@ -65,6 +68,8 @@ private:
     QAction _velocityAction;
     Track::Item* _contextItem;
 
+    void loadMIDI(const MIDIFile& file);
+
 private slots:
     void ganttHeaderClicked(Qt::MouseButton button, float time);
     void ganttEditorClicked(Qt::MouseButton button, int row, float time);
@@ -72,6 +77,8 @@ private slots:
     void ganttItemReleased(const GanttItem* item);
     void contextMenuRequested(GanttItem* item, const QPoint& location);
     void velocityTriggered();
+    void newTriggered();
+    void openTriggered();
     void copy();
     void paste();
     void selectAll();
@@ -81,6 +88,8 @@ private slots:
 protected:
     void paintEvent(QPaintEvent* event);
     void closeEvent(QCloseEvent* event);
+    void dragEnterEvent(QDragEnterEvent* event);
+    void dropEvent(QDropEvent* event);
 };
 
 #endif // PIANOROLLWIDGET_H
