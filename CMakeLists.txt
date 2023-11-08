@@ -74,10 +74,6 @@ set(PROJECT_SOURCES
     ganttwidget/ganttwidget.ui
     ganttwidget/scrollablewidget.cpp
     ganttwidget/scrollablewidget.h
-    midi/midiinput.cpp
-    midi/midiinput.h
-    midi/midipoller.cpp
-    midi/midipoller.h
     noisewidget/noisewidget.cpp
     noisewidget/noisewidget.h
     noisewidget/noisewidget.ui
@@ -85,9 +81,6 @@ set(PROJECT_SOURCES
     pianorollwidget/pianorollkeyswidget.h
     pianorollwidget/pianorollvelocitieswidget.cpp
     pianorollwidget/pianorollvelocitieswidget.h
-
-
-
     playlistwidget/playlistpatternswidget.cpp
     playlistwidget/playlistpatternswidget.h
     playlistwidget/playlistwidget.cpp
@@ -187,6 +180,30 @@ set(PROJECT_SOURCES
     commands/addplaylistitemscommand.cpp
     commands/removeplaylistitemscommand.h
     commands/removeplaylistitemscommand.cpp
+    midi/chunk/midichunk.cpp
+    midi/chunk/midichunk.h
+    midi/chunk/midiheader.cpp
+    midi/chunk/midiheader.h
+    midi/chunk/miditrack.cpp
+    midi/chunk/miditrack.h
+    midi/chunk/miditrackevent.cpp
+    midi/chunk/miditrackevent.h
+    midi/event/event.cpp
+    midi/event/event.h
+    midi/event/metaevent.cpp
+    midi/event/metaevent.h
+    midi/event/midievent.cpp
+    midi/event/midievent.h
+    midi/event/sysexevent.cpp
+    midi/event/sysexevent.h
+    midi/midifile.cpp
+    midi/midifile.h
+    midi/midiinput.cpp
+    midi/midiinput.h
+    midi/midipoller.cpp
+    midi/midipoller.h
+    midi/util.cpp
+    midi/util.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
