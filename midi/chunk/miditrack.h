@@ -14,6 +14,9 @@ public:
 
     MIDITrack& operator<<(QDataStream& stream);
 
+    int events() const;
+    const MIDITrackEvent& event(const int idx) const;
+
 private:
     QList<MIDITrackEvent*> _events;
     std::function<qint64(void)> _pos;

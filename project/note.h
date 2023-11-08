@@ -5,9 +5,11 @@
 class Note
 {
         friend class BSON;
+        friend class MIDI;
 
     public:
         Note(const int key, const float duration, const int velocity = 100);
+        Note();
 
         int key() const;
         float duration() const;
@@ -20,7 +22,6 @@ class Note
         bool operator==(const Note& note) const;
 
     private:
-        Note();
 
         int _key;
         float _duration;

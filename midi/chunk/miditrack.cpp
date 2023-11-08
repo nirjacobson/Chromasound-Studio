@@ -21,10 +21,9 @@ MIDITrack& MIDITrack::operator<<(QDataStream& stream)
     MIDITrackEvent* lastMIDITrackEvent = nullptr;
     while ((_pos() - startingPos) < length()) {
         MIDITrackEvent* trackEvent;
-        const MIDIEvent* midiEvent;
         if (lastMIDITrackEvent) {
-            midiEvent = dynamic_cast<const MIDIEvent*>(lastMIDITrackEvent->event());
-            trackEvent = new MIDITrackEvent(midiEvent->status());
+            const MIDIEvent& midiEvent = dynamic_cast<const MIDIEvent&>(lastMIDITrackEvent->event());
+            trackEvent = new MIDITrackEvent(midiEvent.status());
         } else {
             trackEvent = new MIDITrackEvent;
         }
@@ -32,10 +31,21 @@ MIDITrack& MIDITrack::operator<<(QDataStream& stream)
 
         _events.append(trackEvent);
 
-        if (dynamic_cast<const MIDIEvent*>(trackEvent->event())) {
+        try {
+            const MIDIEvent& result = dynamic_cast<const MIDIEvent&>(trackEvent->event());
             lastMIDITrackEvent = trackEvent;
-        }
+        } catch (std::exception e) { }
     }
 
     return *this;
+}
+
+int MIDITrack::events() const
+{
+    return _events.size();
+}
+
+const MIDITrackEvent& MIDITrack::event(const int idx) const
+{
+    return *_events[idx];
 }

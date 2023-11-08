@@ -20,7 +20,8 @@ public:
 
     MIDITrackEvent& operator<<(QDataStream& stream);
 
-    const Event* event() const;
+    quint32 deltaTime() const;
+    const Event& event() const;
 
 private:
     quint32 _deltaTime;

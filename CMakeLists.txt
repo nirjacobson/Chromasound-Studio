@@ -204,6 +204,8 @@ set(PROJECT_SOURCES
     midi/midipoller.h
     midi/util.cpp
     midi/util.h
+    midi/midi.h
+    midi/midi.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

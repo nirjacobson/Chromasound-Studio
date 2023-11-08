@@ -15,6 +15,11 @@ public:
     MIDIEvent& operator<<(QDataStream& stream);
 
     quint8 status() const;
+    quint8 data1() const;
+    quint8 data2() const;
+
+    bool isKeyOn() const;
+    bool isKeyOff() const;
 
 private:
     quint8 _status;
