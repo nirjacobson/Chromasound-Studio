@@ -38,6 +38,7 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
 
     connect(ui->actionNew, &QAction::triggered, this, &PianoRollWidget::newTriggered);
     connect(ui->actionOpen, &QAction::triggered, this, &PianoRollWidget::openTriggered);
+    connect(ui->actionSave, &QAction::triggered, this, &PianoRollWidget::saveTriggered);
     connect(ui->actionClose, &QAction::triggered, this, &QMainWindow::close);
     connect(ui->actionCopy, &QAction::triggered, this, &PianoRollWidget::copy);
     connect(ui->actionPaste, &QAction::triggered, this, &PianoRollWidget::paste);
@@ -207,6 +208,26 @@ void PianoRollWidget::openTriggered()
     }
 }
 
+void PianoRollWidget::saveTriggered()
+{
+    const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "MIDI File (*.mid)");
+
+    if (!path.isNull()) {
+        MIDIFile midiFile;
+        MIDI::fromTrack(*_track, midiFile, 480);
+
+        QByteArray data = midiFile.encode();
+
+        QFile file(path);
+        file.open(QIODevice::WriteOnly);
+        QDataStream stream(&file);
+
+        stream.writeRawData(data.constData(), data.size());
+
+        file.close();
+    }
+}
+
 void PianoRollWidget::copy()
 {
     bson_writer_t* writer;
@@ -330,7 +351,7 @@ void PianoRollWidget::dropEvent(QDropEvent* event)
     path = path.mid(QString("file://").length());
     path = path.replace("%20", " ");
     path = path.replace("\r\n", "");
-    qDebug() << path;
+
     QFile file(path);
 
     MIDIFile mfile(file);

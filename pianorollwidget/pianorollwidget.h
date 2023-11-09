@@ -79,6 +79,7 @@ private slots:
     void velocityTriggered();
     void newTriggered();
     void openTriggered();
+    void saveTriggered();
     void copy();
     void paste();
     void selectAll();

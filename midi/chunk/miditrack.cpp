@@ -1,7 +1,7 @@
 #include "miditrack.h"
 
-MIDITrack::MIDITrack(quint32 offset, const QString& chunkType, quint32 length, const std::function<qint64 ()>& posFunc)
-    : MIDIChunk(offset, chunkType, length)
+MIDITrack::MIDITrack(const QString& chunkType, quint32 length, const std::function<qint64 ()>& posFunc)
+    : MIDIChunk(chunkType, length)
     , _pos(posFunc)
 {
 
@@ -48,4 +48,24 @@ int MIDITrack::events() const
 const MIDITrackEvent& MIDITrack::event(const int idx) const
 {
     return *_events[idx];
+}
+
+QByteArray MIDITrack::encode() const
+{
+    QByteArray data;
+    QDataStream stream(&data, QIODevice::WriteOnly);
+    stream.setByteOrder(QDataStream::BigEndian);
+
+    QByteArray chunkData;
+    for (const MIDITrackEvent* event : _events) {
+        chunkData.append(event->encode());
+    }
+
+    stream << 'M';
+    stream << 'T';
+    stream << 'r';
+    stream << 'k';
+    stream << (quint32)chunkData.size();
+    stream.writeRawData(chunkData.constData(), chunkData.size());
+    return data;
 }

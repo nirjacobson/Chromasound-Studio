@@ -3,6 +3,7 @@
 
 #include <QByteArray>
 #include <QDataStream>
+#include <QIODevice>
 
 #include "event.h"
 #include "qtypes.h"
@@ -19,6 +20,10 @@ private:
     quint8 _event;
     quint32 _length;
     QByteArray _data;
+
+    // Event interface
+public:
+    QByteArray encode() const;
 };
 
 #endif // SYSEXEVENT_H

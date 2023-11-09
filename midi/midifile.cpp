@@ -1,13 +1,14 @@
 #include "midifile.h"
 #include <QtDebug>
+
+MIDIFile::MIDIFile()
+{
+
+}
+
 MIDIFile::MIDIFile(QFile& file)
 {
     readFile(file);
-}
-
-MIDIFile::MIDIFile(QBuffer& data)
-{
-    readFile(data);
 }
 
 MIDIFile::~MIDIFile()
@@ -20,6 +21,19 @@ MIDIFile::~MIDIFile()
 const QList<MIDIChunk*>& MIDIFile::chunks() const
 {
     return _chunks;
+}
+
+QByteArray MIDIFile::encode() const
+{
+    QByteArray data;
+    QDataStream stream(&data, QIODevice::WriteOnly);
+
+    for (const MIDIChunk* chunk : _chunks) {
+        QByteArray d = chunk->encode();
+        stream.writeRawData(d.constData(), d.size());
+    }
+
+    return data;
 }
 
 void MIDIFile::readFile(QIODevice& device)
@@ -46,11 +60,11 @@ void MIDIFile::readFile(QIODevice& device)
         stream >> length;
 
         if (QString(chunkType) == "MThd") {
-            MIDIHeader* header = new MIDIHeader(offset, chunkType, length);
+            MIDIHeader* header = new MIDIHeader(chunkType, length);
             *header << stream;
             chunk = header;
         } else if (QString(chunkType) == "MTrk") {
-            MIDITrack* track = new MIDITrack(offset, chunkType, length, [&](){ return device.pos(); });
+            MIDITrack* track = new MIDITrack(chunkType, length, [&](){ return device.pos(); });
             *track << stream;
             chunk = track;
         }

@@ -2,12 +2,15 @@
 #define MIDIEVENT_H
 
 #include <QDataStream>
+#include <QIODevice>
 
 #include "event.h"
 #include "qtypes.h"
 
 class MIDIEvent : public Event
 {
+    friend class MIDI;
+
 public:
     MIDIEvent(const quint8 status);
     MIDIEvent(const quint8 status, const quint8 data1);
@@ -27,6 +30,10 @@ private:
     quint8 _data2;
 
     bool _haveData1;
+
+    // Event interface
+public:
+    QByteArray encode() const;
 };
 
 #endif // MIDIEVENT_H

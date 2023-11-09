@@ -1,9 +1,7 @@
 #include "midichunk.h"
 
-MIDIChunk::MIDIChunk(quint32 offset, const QString& chunkType, quint32 length)
-    : _offset(offset)
-    , _length(length)
-    , _chunkType(chunkType)
+MIDIChunk::MIDIChunk(const QString& chunkType, quint32 length)
+    : _length(length)
 {
 
 }
@@ -13,10 +11,6 @@ MIDIChunk::~MIDIChunk()
 
 }
 
-unsigned long MIDIChunk::offset() const
-{
-    return _offset;
-}
 
 const QString& MIDIChunk::chunkType() const
 {

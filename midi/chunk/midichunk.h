@@ -9,15 +9,15 @@
 class MIDIChunk
 {
 public:
-    MIDIChunk(quint32 offset, const QString& chunkType, quint32 length);
+    MIDIChunk(const QString& chunkType, quint32 length);
     virtual ~MIDIChunk();
 
-    unsigned long offset() const;
     const QString& chunkType() const;
     quint32 length() const;
 
+    virtual QByteArray encode() const = 0;
+
 private:
-    unsigned long _offset;
     QString _chunkType;
     quint32 _length;
 };

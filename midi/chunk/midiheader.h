@@ -2,19 +2,24 @@
 #define MIDIHEADER_H
 
 #include <QDataStream>
+#include <QIODevice>
 
 #include "midichunk.h"
 
 class MIDIHeader : public MIDIChunk
 {
+    friend class MIDI;
+
 public:
-    MIDIHeader(quint32 offset, const QString& chunkType, quint32 length);
+    MIDIHeader(const QString& chunkType, quint32 length);
 
     quint16 format() const;
     quint16 numTracks() const;
     quint16 division() const;
 
     MIDIHeader& operator<<(QDataStream& stream);
+
+    QByteArray encode() const;
 
 private:
     quint16 _format;

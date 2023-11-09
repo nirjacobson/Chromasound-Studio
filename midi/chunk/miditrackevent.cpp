@@ -57,6 +57,21 @@ const Event& MIDITrackEvent::event() const
     return *_event;
 }
 
+QByteArray MIDITrackEvent::encode() const
+{
+    QByteArray data;
+    QDataStream stream(&data, QIODevice::WriteOnly);
+    stream.setByteOrder(QDataStream::BigEndian);
+
+    QByteArray deltaTime = Util::toVariableLengthQuantity(_deltaTime);
+    stream.writeRawData(deltaTime.constData(), deltaTime.size());
+
+    QByteArray eventData = _event->encode();
+    stream.writeRawData(eventData.constData(), eventData.size());
+
+    return data;
+}
+
 bool MIDITrackEvent::isMIDIStatus(const quint8 datum)
 {
     quint8 highNibble = datum >> 4;
