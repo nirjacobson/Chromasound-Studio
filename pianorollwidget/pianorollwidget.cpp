@@ -185,10 +185,14 @@ void PianoRollWidget::velocityTriggered()
 {
     int velocity = QInputDialog::getInt(this, "Edit velocity", "Velocity", _contextItem->velocity(), 0, 100);
 
-    Note n = _contextItem->note();
-    n.setVelocity(velocity);
+    const QList<Track::Item*>& selectedItems = reinterpret_cast<const QList<Track::Item*>&>(ui->ganttWidget->selectedItems());
 
-    _app->undoStack().push(new EditNoteCommand(_app->window(), _contextItem, _contextItem->time(), n, QList<Track::Item*>()));
+    for (Track::Item* item : selectedItems) {
+        Note n = item->note();
+        n.setVelocity(velocity);
+
+        _app->undoStack().push(new EditNoteCommand(_app->window(), item, item->time(), n, selectedItems));
+    }
 }
 
 void PianoRollWidget::newTriggered()
