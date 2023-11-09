@@ -2,6 +2,7 @@
 #define MIDITRACKEVENT_H
 
 #include <QDataStream>
+#include <QIODevice>
 
 #include "qtypes.h"
 
@@ -13,6 +14,8 @@
 
 class MIDITrackEvent
 {
+    friend class MIDI;
+
 public:
     MIDITrackEvent(const quint8 lastMIDIStatus);
     MIDITrackEvent();
@@ -22,6 +25,8 @@ public:
 
     quint32 deltaTime() const;
     const Event& event() const;
+
+    QByteArray encode() const;
 
 private:
     quint32 _deltaTime;

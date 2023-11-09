@@ -50,3 +50,16 @@ bool MIDIEvent::isKeyOff() const
 {
     return (_status >> 4) == 0x8;
 }
+
+QByteArray MIDIEvent::encode() const
+{
+    QByteArray data;
+    QDataStream stream(&data, QIODevice::WriteOnly);
+    stream.setByteOrder(QDataStream::BigEndian);
+
+    stream << _status;
+    stream << _data1;
+    stream << _data2;
+
+    return data;
+}

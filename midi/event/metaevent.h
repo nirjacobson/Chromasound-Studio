@@ -3,6 +3,7 @@
 
 #include <QDataStream>
 #include <QByteArray>
+#include <QIODevice>
 
 #include "event.h"
 #include "qtypes.h"
@@ -10,6 +11,8 @@
 
 class MetaEvent : public Event
 {
+    friend class MIDI;
+
 public:
     MetaEvent(quint8 type);
 
@@ -19,6 +22,10 @@ private:
     quint8 _type;
     quint32 _length;
     QByteArray _data;
+
+    // Event interface
+public:
+    QByteArray encode() const;
 };
 
 #endif // METAEVENT_H

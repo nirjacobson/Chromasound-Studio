@@ -2,20 +2,25 @@
 #define MIDITRACK_H
 
 #include <QList>
+#include <QIODevice>
 
 #include "midichunk.h"
 #include "miditrackevent.h"
 
 class MIDITrack : public MIDIChunk
 {
+    friend class MIDI;
+
 public:
-    MIDITrack(quint32 offset, const QString& chunkType, quint32 length, const std::function<qint64 ()>& posFunc);
+    MIDITrack(const QString& chunkType, quint32 length, const std::function<qint64 ()>& posFunc);
     ~MIDITrack();
 
     MIDITrack& operator<<(QDataStream& stream);
 
     int events() const;
     const MIDITrackEvent& event(const int idx) const;
+
+    QByteArray encode() const;
 
 private:
     QList<MIDITrackEvent*> _events;

@@ -3,7 +3,6 @@
 
 #include <QList>
 #include <QFile>
-#include <QBuffer>
 
 #include "chunk/midichunk.h"
 #include "chunk/midiheader.h"
@@ -11,12 +10,16 @@
 
 class MIDIFile
 {
+    friend class MIDI;
+
 public:
+    MIDIFile();
     MIDIFile(QFile& file);
-    MIDIFile(QBuffer& data);
     ~MIDIFile();
 
     const QList<MIDIChunk*>& chunks() const;
+
+    QByteArray encode() const;
 
 private:
     QList<MIDIChunk*> _chunks;

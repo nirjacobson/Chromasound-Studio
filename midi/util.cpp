@@ -21,3 +21,17 @@ quint32 Util::getVariableLengthQuantity(QDataStream& stream)
 
     return value;
 }
+
+QByteArray Util::toVariableLengthQuantity(quint32 value)
+{
+    QByteArray result;
+
+    while (true) {
+        result.prepend((value & 0x7F) | (result.isEmpty() ? 0x00 : 0x80));
+        value >>= 7;
+
+        if (value == 0) break;
+    }
+
+    return result;
+}

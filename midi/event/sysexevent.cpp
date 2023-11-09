@@ -19,3 +19,19 @@ SysexEvent& SysexEvent::operator<<(QDataStream& stream)
 
     return *this;
 }
+
+QByteArray SysexEvent::encode() const
+{
+    QByteArray data;
+    QDataStream stream(&data, QIODevice::WriteOnly);
+    stream.setByteOrder(QDataStream::BigEndian);
+
+    stream << _event;
+
+    QByteArray length = Util::toVariableLengthQuantity(_data.size());
+    stream.writeRawData(length.constData(), length.size());
+
+    stream.writeRawData(_data.constData(), _data.size());
+
+    return data;
+}
