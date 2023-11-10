@@ -71,7 +71,7 @@ void FMWidget::doUpdate()
 
 void FMWidget::newTriggered()
 {
-    _app->undoStack().push(new ResetFMChannelSettingsCommand(_app->window(), *_settings));
+    _app->undoStack().push(new SetFMChannelSettingsCommand(_app->window(), *_settings, FMChannelSettings()));
 }
 
 void FMWidget::openTriggered()
@@ -80,7 +80,7 @@ void FMWidget::openTriggered()
 
     if (!path.isNull()) {
         FMChannelSettings* settings = BSON::decodePatch(path);
-        *_settings = *settings;
+        _app->undoStack().push(new SetFMChannelSettingsCommand(_app->window(), *_settings, *settings));
         delete settings;
 
         setSettings(_settings);

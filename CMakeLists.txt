@@ -167,8 +167,8 @@ set(PROJECT_SOURCES
     mdiarea/mdiarea.cpp
     mdiarea/mdisubwindow.h
     mdiarea/mdisubwindow.cpp
-    commands/resetfmchannelsettingscommand.h
-    commands/resetfmchannelsettingscommand.cpp
+    commands/setfmchannelsettingscommand.h
+    commands/setfmchannelsettingscommand.cpp
     pianorollwidget/pianorollwidget.h
     pianorollwidget/pianorollwidget.cpp
     pianorollwidget/pianorollwidget.ui
