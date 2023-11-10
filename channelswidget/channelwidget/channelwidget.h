@@ -59,18 +59,22 @@ class ChannelWidget : public QWidget
         QAction _toneAction;
         QAction _noiseAction;
         QAction _fmAction;
+        QAction _pcmAction;
 
         QColor _fmColor;
         QColor _toneColor;
         QColor _noiseColor;
+        QColor _pcmColor;
 
         const QColor& fmColor() const;
         const QColor& toneColor() const;
         const QColor& noiseColor() const;
+        const QColor& pcmColor() const;
 
         void setFMColor(const QColor& color);
         void setToneColor(const QColor& color);
         void setNoiseColor(const QColor& color);
+        void setPCMColor(const QColor& color);
 
     signals:
         void pianoKeyClicked(const Qt::MouseButton button, const int step, const int key);
@@ -89,6 +93,7 @@ class ChannelWidget : public QWidget
         void toneTriggered();
         void noiseTriggered();
         void fmTriggered();
+        void pcmTriggered();
 
         void nameChanged();
 
@@ -101,6 +106,7 @@ class ChannelWidget : public QWidget
         void toneWasTriggered();
         void noiseWasTriggered();
         void fmWasTriggered();
+        void pcmWasTriggered();
         void volumeDialChanged(const int val);
 
     protected:

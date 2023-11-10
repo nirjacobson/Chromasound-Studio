@@ -7,6 +7,7 @@
 #include "noisechannelsettings.h"
 #include "fmchannelsettings.h"
 #include "tonechannelsettings.h"
+#include "pcmchannelsettings.h"
 
 class Channel
 {
@@ -17,6 +18,7 @@ class Channel
             TONE = 0,
             NOISE,
             FM,
+            PCM
         };
 
         Channel();

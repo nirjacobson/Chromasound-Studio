@@ -49,6 +49,7 @@ class ChannelsWidget : public QWidget
         void toneTriggered(const int index);
         void noiseTriggered(const int index);
         void fmTriggered(const int index);
+        void pcmTriggered(const int index);
         void channelSelected(const int index);
         void nameChanged(const int index);
 
