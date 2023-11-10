@@ -357,11 +357,14 @@ void PianoRollWidget::dropEvent(QDropEvent* event)
     path = path.replace("\r\n", "");
 
     QFile file(path);
+    QFileInfo fileInfo(file);
 
-    MIDIFile mfile(file);
+    if (fileInfo.suffix() == "mid") {
+        MIDIFile mfile(file);
 
-    loadMIDI(mfile);
+        loadMIDI(mfile);
 
-    event->acceptProposedAction();
+        event->acceptProposedAction();
+    }
 }
 
