@@ -8,7 +8,7 @@
 #include "application.h"
 #include "project/channel/fmchannelsettings.h"
 #include "bson.h"
-#include "commands/resetfmchannelsettingscommand.h"
+#include "commands/setfmchannelsettingscommand.h"
 #include "mdiarea/mdisubwindow.h"
 
 namespace Ui {
