@@ -399,13 +399,13 @@ int VGMStream::encode(const QList<StreamItem*>& items, const int tempo, QByteArr
     bool setCurrentOffsetData = false;
     int _currentOffsetData;
     for (int i = 0; i < items.size(); i++) {
-        totalSamples += encodeDelay(tempo, items[i]->time() - lastTime, data);
-        lastTime = items[i]->time();
-
         if (items[i]->time() >= currentTime && !setCurrentOffsetData) {
             _currentOffsetData = data.size();
             setCurrentOffsetData = true;
         }
+
+        totalSamples += encodeDelay(tempo, items[i]->time() - lastTime, data);
+        lastTime = items[i]->time();
 
         StreamSettingsItem* ssi;
         StreamNoteItem* sni;
@@ -433,9 +433,6 @@ int VGMStream::encode(const QList<StreamItem*>& items,  QByteArray& data, const 
     bool setCurrentOffsetData = false;
     int _currentOffsetData;
     for (int i = 0; i < items.size(); i++) {
-        totalSamples += encodeDelay(tempo, items[i]->time() - lastTime, data);
-        lastTime = items[i]->time();
-
         if (items[i]->time() >= loopTime && !setLoopOffsetData) {
             _loopOffsetData = data.size();
             setLoopOffsetData = true;
@@ -445,6 +442,9 @@ int VGMStream::encode(const QList<StreamItem*>& items,  QByteArray& data, const 
             _currentOffsetData = data.size();
             setCurrentOffsetData = true;
         }
+
+        totalSamples += encodeDelay(tempo, items[i]->time() - lastTime, data);
+        lastTime = items[i]->time();
 
         StreamSettingsItem* ssi;
         StreamNoteItem* sni;
