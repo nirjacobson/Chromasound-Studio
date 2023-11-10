@@ -15,6 +15,8 @@ FMWidget::FMWidget(QWidget *parent, Application* app) :
 
     ui->algorithmWidget->setApplication(app);
 
+    setAcceptDrops(true);
+
     connect(ui->pianoWidget, &PianoWidget::keyPressed, this, &FMWidget::keyPressed);
     connect(ui->pianoWidget, &PianoWidget::keyReleased, this, &FMWidget::keyReleased);
 
@@ -111,4 +113,33 @@ void FMWidget::closeEvent(QCloseEvent* event)
 {
     MdiSubWindow* subwindow = dynamic_cast<MdiSubWindow*>(parent());
     subwindow->close();
+}
+
+void FMWidget::dragEnterEvent(QDragEnterEvent* event)
+{
+    if (event->mimeData()->hasFormat("text/uri-list")) {
+        event->acceptProposedAction();
+    }
+}
+
+void FMWidget::dropEvent(QDropEvent* event)
+{
+    QByteArray data = event->mimeData()->data("text/uri-list");
+    QString path(data);
+    path = path.mid(QString("file://").length());
+    path = path.replace("%20", " ");
+    path = path.replace("\r\n", "");
+
+    QFile file(path);
+    QFileInfo fileInfo(file);
+
+    if (fileInfo.suffix() == "fm") {
+        FMChannelSettings* settings = BSON::decodePatch(path);
+        _app->undoStack().push(new SetFMChannelSettingsCommand(_app->window(), *_settings, *settings));
+        delete settings;
+
+        setSettings(_settings);
+
+        event->acceptProposedAction();
+    }
 }
