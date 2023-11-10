@@ -47,7 +47,10 @@ void Channel::setType(const Type type)
         case FM:
             _settings = new FMChannelSettings;
             break;
-    }
+        case PCM:
+            _settings = new PCMChannelSettings;
+            break;
+        }
 }
 
 QString Channel::name() const
@@ -79,6 +82,8 @@ QString Channel::channelTypeToString(const Type type)
             return "NOISE";
         case FM:
             return "FM";
+        case PCM:
+            return "PCM";
     }
 
     return "TONE";
@@ -96,6 +101,10 @@ Channel::Type Channel::channelTypeFromString(const QString& str)
 
     if (str == "FM") {
         return Channel::Type::FM;
+    }
+
+    if (str == "PCM") {
+        return Channel::Type::PCM;
     }
 
     return Channel::Type::TONE;

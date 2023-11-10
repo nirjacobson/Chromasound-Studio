@@ -206,6 +206,11 @@ set(PROJECT_SOURCES
     midi/util.h
     midi/midi.h
     midi/midi.cpp
+    project/channel/pcmchannelsettings.h
+    project/channel/pcmchannelsettings.cpp
+    pcmwidget/pcmwidget.h
+    pcmwidget/pcmwidget.cpp
+    pcmwidget/pcmwidget.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

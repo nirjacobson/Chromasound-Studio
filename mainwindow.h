@@ -14,6 +14,7 @@
 #include "playlistwidget/playlistwidget.h"
 #include "pianorollwidget/pianorollwidget.h"
 #include "fmwidget/fmwidget.h"
+#include "pcmwidget/pcmwidget.h"
 #include "project/vgmstream.h"
 #include "midi/midiinput.h"
 #include "midi/midipoller.h"
@@ -71,6 +72,7 @@ private slots:
     void toneTriggered(const int index);
     void noiseTriggered(const int index);
     void fmTriggered(const int index);
+    void pcmTriggered(const int index);
 
     void channelNameChanged(const int index);
 

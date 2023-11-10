@@ -16,9 +16,11 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     , _toneAction("Tone", this)
     , _noiseAction("Noise", this)
     , _fmAction("FM", this)
+    , _pcmAction("PCM", this)
     , _toneColor(Qt::cyan)
     , _noiseColor(Qt::lightGray)
     , _fmColor(Qt::magenta)
+    , _pcmColor(Qt::blue)
 {
     ui->setupUi(this);
 
@@ -31,6 +33,9 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
             break;
         case Channel::FM:
             ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_fmColor.name()));
+            break;
+        case Channel::PCM:
+            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_pcmColor.name()));
             break;
     }
 
@@ -68,6 +73,7 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     connect(&_toneAction, &QAction::triggered, this, &ChannelWidget::toneWasTriggered);
     connect(&_noiseAction, &QAction::triggered, this, &ChannelWidget::noiseWasTriggered);
     connect(&_fmAction, &QAction::triggered, this, &ChannelWidget::fmWasTriggered);
+    connect(&_pcmAction, &QAction::triggered, this, &ChannelWidget::pcmWasTriggered);
 
     connect(ui->stepKeys, &StepKeysWidget::clicked, this, &ChannelWidget::pianoKeyClicked);
     connect(ui->stepVelocities, &StepVelocitiesWidget::clicked, this, &ChannelWidget::velocityClicked);
@@ -88,12 +94,16 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     _noiseAction.setChecked(_app->project().getChannel(index).type() == Channel::Type::NOISE);
     _fmAction.setCheckable(true);
     _fmAction.setChecked(_app->project().getChannel(index).type() == Channel::Type::FM);
+    _pcmAction.setCheckable(true);
+    _pcmAction.setChecked(_app->project().getChannel(index).type() == Channel::Type::PCM);
     _typeActionGroup.addAction(&_toneAction);
     _typeActionGroup.addAction(&_noiseAction);
     _typeActionGroup.addAction(&_fmAction);
+    _typeActionGroup.addAction(&_pcmAction);
     _contextMenu.addAction(&_toneAction);
     _contextMenu.addAction(&_noiseAction);
     _contextMenu.addAction(&_fmAction);
+    _contextMenu.addAction(&_pcmAction);
 
     _contextMenu.addSeparator();
     _contextMenu.addAction(&_deleteAction);
@@ -151,7 +161,10 @@ void ChannelWidget::setIndex(const int idx)
         case Channel::FM:
                 ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_fmColor.name()));
                 break;
-    }
+        case Channel::PCM:
+                ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_pcmColor.name()));
+                break;
+        }
 
    ui->pushButton->setText(_app->project().getChannel(_index).name());
    ui->stepSequencer->setIndex(_index);
@@ -194,6 +207,7 @@ void ChannelWidget::setIndex(const int idx)
    _noiseAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::NOISE);
    _toneAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::TONE);
    _fmAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::FM);
+   _pcmAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::PCM);
 
    update();
 }
@@ -246,6 +260,11 @@ const QColor& ChannelWidget::noiseColor() const
     return _noiseColor;
 }
 
+const QColor& ChannelWidget::pcmColor() const
+{
+    return _pcmColor;
+}
+
 void ChannelWidget::setFMColor(const QColor& color)
 {
     _fmColor = color;
@@ -270,6 +289,15 @@ void ChannelWidget::setNoiseColor(const QColor& color)
 
     if (_app->project().getChannel(_index).type() == Channel::NOISE) {
         ui->pushButton->setStyleSheet(QString("background-color: %1; color: %2;").arg(_noiseColor.name()).arg(_noiseColor.lightness() <= 96 ? "white" : "default"));
+    }
+}
+
+void ChannelWidget::setPCMColor(const QColor& color)
+{
+    _pcmColor = color;
+
+    if (_app->project().getChannel(_index).type() == Channel::PCM) {
+        ui->pushButton->setStyleSheet(QString("background-color: %1; color: %2;").arg(_pcmColor.name()).arg(_pcmColor.lightness() <= 96 ? "white" : "default"));
     }
 }
 
@@ -337,6 +365,12 @@ void ChannelWidget::fmWasTriggered()
 {
     ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_fmColor.name()));
     emit fmTriggered();
+}
+
+void ChannelWidget::pcmWasTriggered()
+{
+    ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_pcmColor.name()));
+    emit pcmTriggered();
 }
 
 void ChannelWidget::volumeDialChanged(const int val)

@@ -325,23 +325,19 @@ void MainWindow::channelSelected(const int index)
 
     MdiSubWindow* channelWindow;
 
-    if (_app->project().getChannel(index).type() > Channel::Type::TONE) {
+    if (_app->project().getChannel(index).type() != Channel::Type::TONE) {
         channelWindow = new MdiSubWindow(ui->mdiArea);
         channelWindow->setAttribute(Qt::WA_DeleteOnClose);
         ui->mdiArea->addSubWindow(channelWindow);
     }
 
-    MdiSubWindow* noiseWindow;
     NoiseWidget* noiseWidget;
-    MdiSubWindow* fmWindow;
     FMWidget* fmWidget;
+    PCMWidget* pcmWidget;
     QList<MdiSubWindow*>::Iterator it;
 
-    it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window){
-        return dynamic_cast<NoiseWidget*>(window->widget()) || dynamic_cast<FMWidget*>(window->widget()); });
-
-    if (it != _channelWindows[index].end()) {
-        (*it)->close();
+    for (MdiSubWindow* window : _channelWindows[index]) {
+        window->close();
     }
 
     switch (_app->project().getChannel(index).type()) {
@@ -383,9 +379,26 @@ void MainWindow::channelSelected(const int index)
             break;
         case Channel::TONE:
             break;
+        case Channel::PCM:
+            it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window){ return dynamic_cast<PCMWidget*>(window->widget()); });
+            if (it != _channelWindows[index].end()) {
+                ui->mdiArea->setActiveSubWindow(*it);
+            } else {
+                pcmWidget = new PCMWidget(this, _app);
+                pcmWidget->setSettings(dynamic_cast<PCMChannelSettings*>(&_app->project().getChannel(index).settings()));
+                pcmWidget->setWindowTitle(QString("%1: PCM").arg(_app->project().getChannel(index).name()));
+
+                channelWindow->setWidget(pcmWidget);
+                if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
+                    channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
+                }
+                _channelWindows[index].append(channelWindow);
+                connect(channelWindow, &MdiSubWindow::closed, this, [=](){ windowClosed(channelWindow); });
+            }
+            break;
     }
 
-    if (_app->project().getChannel(index).type() > Channel::Type::TONE) {
+    if (_app->project().getChannel(index).type() != Channel::Type::TONE) {
         channelWindow->show();
         ui->mdiArea->setActiveSubWindow(channelWindow);
     }
@@ -406,6 +419,12 @@ void MainWindow::noiseTriggered(const int index)
 void MainWindow::fmTriggered(const int index)
 {
     _app->project().getChannel(index).setType(Channel::Type::FM);
+    _channelsWidget->select(index);
+}
+
+void MainWindow::pcmTriggered(const int index)
+{
+    _app->project().getChannel(index).setType(Channel::Type::PCM);
     _channelsWidget->select(index);
 }
 
@@ -564,6 +583,7 @@ void MainWindow::showChannelsWindow()
         connect(_channelsWidget, &ChannelsWidget::toneTriggered, this, &MainWindow::toneTriggered);
         connect(_channelsWidget, &ChannelsWidget::noiseTriggered, this, &MainWindow::noiseTriggered);
         connect(_channelsWidget, &ChannelsWidget::fmTriggered, this, &MainWindow::fmTriggered);
+        connect(_channelsWidget, &ChannelsWidget::pcmTriggered, this, &MainWindow::pcmTriggered);
 
         MdiSubWindow* channelsWindow = new MdiSubWindow(ui->mdiArea);
         connect(channelsWindow, &MdiSubWindow::closed, this, [&](){ _channelsWindow = nullptr; });
