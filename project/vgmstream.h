@@ -47,7 +47,7 @@ class VGMStream
         void assignChannel(StreamNoteItem* noteItem, QList<StreamItem*>& items);
         void releaseChannel(const Channel::Type type, const int channel);
 
-        void encode(QList<StreamItem*>& items, QByteArray& data);
+        void encode(const Project& project, QList<StreamItem*>& items, QByteArray& data);
 
         QByteArray compile(Project& project, bool header = false, int* loopOffsetData = nullptr, const float currentOffset = 0, int* const currentOffsetData = nullptr);
         QByteArray compile(const Project& project, const Pattern& pattern, const float loopStart, const float loopEnd, const float currentOffset = 0, int* const currentOffsetData = nullptr);
@@ -123,13 +123,14 @@ class VGMStream
 
         void pad(QList<StreamItem*>& items, const float toDuration);
 
-        int encode(const QList<StreamItem*>& items, const int tempo, QByteArray& data, const float currentTime, int* const currentOffsetData);
+        int encode(const Project& project, const QList<StreamItem*>& items, QByteArray& data, const float currentTime, int* const currentOffsetData);
 
         int encode(const QList<StreamItem*>& items, QByteArray& data, const int tempo, const float loopTime, int* const loopOffsetData, const float currentTime, int* const currentOffsetData, const bool startAtLoop);
 
         int encodeDelay(const int tempo, const float beats, QByteArray& data);
+        int encodeDelay(const quint32 samples, QByteArray& data, const bool pcm = false);
         void encodeSettingsItem(const StreamSettingsItem* item, QByteArray& data);
-        void encodeNoteItem(const StreamNoteItem* item, QByteArray& data);
+        void encodeNoteItem(const Project& project, const StreamNoteItem* item, QByteArray& data);
 };
 
 #endif // VGMSTREAM_H

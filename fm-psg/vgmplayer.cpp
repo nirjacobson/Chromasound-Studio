@@ -28,6 +28,25 @@ void VGMPlayer::setVGM(const QByteArray& vgm, const bool loop, const int current
         _loopOffsetData = -1;
     }
 
+    if (_vgm.isEmpty()) {
+        return;
+    }
+
+    if (vgm[0] == 'V') {
+        if (vgm[64] == 0x67) {
+            quint32 size = *(quint32*)&vgm.constData()[64 + 3];
+            _pcmBlock = vgm.mid(64, 7 + size);
+            _vgm = vgm.mid(0, 64);
+            _vgm.append(vgm.mid(64 + 7 + size));
+        }
+    } else {
+        if (vgm[0] == 0x67) {
+            quint32 size = *(quint32*)&vgm.constData()[3];
+            _pcmBlock = vgm.mid(0, 7 + size);
+            _vgm = vgm.mid(7 + size);
+        }
+    }
+
     _position = currentOffsetData;
 }
 
@@ -185,6 +204,38 @@ void VGMPlayer::runPlayback()
         spi_write(((char*)&_time)[i]);
     }
     _timeLock.unlock();
+
+    if (!_pcmBlock.isEmpty()) {
+        uint32_t position = 0;
+        while (true) {
+            spi_write(REPORT_SPACE);
+            spi_xfer(&tx, &rx);
+            space = rx;
+            spi_xfer(&tx, &rx);
+            space |= (int)rx << 8;
+
+            if (space > 0) {
+                int remaining = _pcmBlock.size() - position;
+                long count = space < remaining ? space : remaining;
+
+                if (count > 0) {
+                    spi_write(RECEIVE_DATA);
+
+                    for (int i = 0; i < 4; i++) {
+                        spi_write(((char*)&count)[i]);
+                    }
+
+                    for (int i = 0; i < count; i++) {
+                        spi_write(_pcmBlock[position++]);
+                    }
+                }
+
+                if (count == remaining) {
+                    break;
+                }
+            }
+        }
+    }
 
     while (true) {
         _stopLock.lock();

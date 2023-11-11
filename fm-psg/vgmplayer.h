@@ -51,6 +51,7 @@ class VGMPlayer : public QThread
         int _spi;
 
         QByteArray _vgm;
+        QByteArray _pcmBlock;
         uint32_t _time;
         uint32_t _position;
 

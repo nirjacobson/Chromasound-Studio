@@ -160,6 +160,76 @@ void Project::addChannel(const int index, const Channel& channel)
     _channels.insert(index, channel);
 }
 
+bool Project::hasPCM() const
+{
+    for (const Channel& channel : _channels) {
+        if (channel.type() == Channel::Type::PCM) {
+            return true;
+        }
+    }
+    return false;
+}
+
+quint32 Project::pcmOffset(const QString& path) const
+{
+    QList<QString> paths;
+
+    for (const Channel& channel : _channels) {
+        if (channel.type() == Channel::Type::PCM) {
+            paths.append(dynamic_cast<const PCMChannelSettings&>(channel.settings()).path());
+        }
+    }
+
+    quint32 offset = 0;
+    for (const QString& pcmPath : paths) {
+        if (pcmPath == path) {
+            return offset;
+        }
+        offset += QFileInfo(QFile(pcmPath)).size();
+    }
+
+    return offset;
+}
+
+quint32 Project::pcmSize() const
+{
+    QList<QString> paths;
+
+    for (const Channel& channel : _channels) {
+        if (channel.type() == Channel::Type::PCM) {
+            paths.append(dynamic_cast<const PCMChannelSettings&>(channel.settings()).path());
+        }
+    }
+
+    quint32 size = 0;
+    for (const QString& pcmPath : paths) {
+        size += QFileInfo(QFile(pcmPath)).size();
+    }
+
+    return size;
+}
+
+QByteArray Project::pcm() const
+{
+    QByteArray result;
+
+    QList<QString> paths;
+    for (const Channel& channel : _channels) {
+        if (channel.type() == Channel::Type::PCM) {
+            paths.append(dynamic_cast<const PCMChannelSettings&>(channel.settings()).path());
+        }
+    }
+
+    for (const QString& pcmPath : paths) {
+        QFile pcmFile(pcmPath);
+        pcmFile.open(QIODevice::ReadOnly);
+        result.append(pcmFile.readAll());
+        pcmFile.close();
+    }
+
+    return result;
+}
+
 Project& Project::operator=(Project&& src)
 {
     _channels = src._channels;

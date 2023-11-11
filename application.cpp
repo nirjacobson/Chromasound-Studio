@@ -42,8 +42,9 @@ void Application::play()
     } else {
         int currentOffsetData;
         if (_project.playMode() == Project::PlayMode::PATTERN) {
+            QByteArray vgm = VGMStream().compile(_project, false, nullptr, position(), &currentOffsetData);
             _fmPSG->setPosition(position());
-            _fmPSG->play(VGMStream().compile(_project, false, nullptr, position(), &currentOffsetData), true, currentOffsetData);
+            _fmPSG->play(vgm, true, currentOffsetData);
         } else {
             if (_project.playlist().doesLoop()) {
                 int loopOffsetData;

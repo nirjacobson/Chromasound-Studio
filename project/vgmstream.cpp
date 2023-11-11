@@ -48,6 +48,8 @@ void VGMStream::assignChannel(StreamNoteItem* noteItem, QList<StreamItem*>& item
         const FMChannelSettings* fmcs = dynamic_cast<const FMChannelSettings*>(noteItem->channelSettings());
         int channel = acquireFMChannel(noteItem->time(), noteItem->note().duration(), fmcs, items);
         noteItem->setChannel(channel);
+    } else if (noteItem->type() == Channel::Type::PCM) {
+        noteItem->setChannel(0);
     }
 }
 
@@ -62,7 +64,7 @@ void VGMStream::releaseChannel(const Channel::Type type, const int channel)
     }
 }
 
-void VGMStream::encode(QList<StreamItem*>& items, QByteArray& data)
+void VGMStream::encode(const Project& project, QList<StreamItem*>& items, QByteArray& data)
 {
     for (int i = 0; i < items.size(); i++) {
         StreamSettingsItem* ssi;
@@ -70,7 +72,7 @@ void VGMStream::encode(QList<StreamItem*>& items, QByteArray& data)
         if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
             encodeSettingsItem(ssi, data);
         } else if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
-            encodeNoteItem(sni, data);
+            encodeNoteItem(project, sni, data);
         }
     }
 
@@ -105,7 +107,7 @@ QByteArray VGMStream::compile(Project& project, bool header, int* loopOffsetData
         processPattern(0, project, project.getFrontPattern(), items);
         assignChannelsAndExpand(items);
         pad(items, project.getPatternBarLength(project.frontPattern()));
-        totalSamples = encode(items, project.tempo(), data, currentOffset, &_currentOffsetData);
+        totalSamples = encode(project, items, data, currentOffset, &_currentOffsetData);
 
         for (StreamItem* item : items) {
             delete item;
@@ -117,12 +119,34 @@ QByteArray VGMStream::compile(Project& project, bool header, int* loopOffsetData
         if (project.playlist().doesLoop()) {
             totalSamples = encode(items, data, project.tempo(), project.playlist().loopOffset(), &_loopOffsetData, currentOffset, &_currentOffsetData, false);
         } else {
-            totalSamples = encode(items, project.tempo(), data, currentOffset, &_currentOffsetData);
+            totalSamples = encode(project, items, data, currentOffset, &_currentOffsetData);
         }
 
         for (StreamItem* item : items) {
             delete item;
         }
+    }
+
+    if (project.hasPCM()) {
+        quint32 pcmSize = project.pcmSize();
+        QByteArray pcmBlock;
+
+        pcmBlock.append(0x67);
+        pcmBlock.append(0x66);
+        pcmBlock.append((quint8)0x00);
+        pcmBlock.append((char*)&pcmSize, sizeof(pcmSize));
+        pcmBlock.append(project.pcm());
+
+        QByteArray enableDac;
+        enableDac.append(0x52);
+        enableDac.append(0x2B);
+        enableDac.append(0x80);
+
+        data.prepend(enableDac);
+        data.prepend(pcmBlock);
+
+        _loopOffsetData += 7 + pcmSize + 3;
+        _currentOffsetData += 7 + pcmSize + 3;
     }
 
     if (header) {
@@ -174,9 +198,7 @@ QByteArray VGMStream::compile(Project& project, bool header, int* loopOffsetData
         // Data offset
         *(uint32_t*)&headerData[0x34] = 0xC;
 
-        QByteArray result = headerData;
-        result.append(data);
-        data = result;
+        data.prepend(headerData);
     }
 
     if (project.playlist().doesLoop() && loopOffsetData) {
@@ -392,27 +414,54 @@ void VGMStream::pad(QList<StreamItem*>& items, const float toDuration)
     items.append(sei);
 }
 
-int VGMStream::encode(const QList<StreamItem*>& items, const int tempo, QByteArray& data, const float currentTime, int* const currentOffsetData)
+int VGMStream::encode(const Project& project, const QList<StreamItem*>& items, QByteArray& data, const float currentTime, int* const currentOffsetData)
 {
     float lastTime = 0.0f;
     int totalSamples = 0;
     bool setCurrentOffsetData = false;
     int _currentOffsetData;
+    QString lastPath;
+    quint32 pcmSize = 0;
+    quint32 pcmWritten = 0;
+    StreamNoteItem* lastPCM = nullptr;
     for (int i = 0; i < items.size(); i++) {
         if (items[i]->time() >= currentTime && !setCurrentOffsetData) {
             _currentOffsetData = data.size();
             setCurrentOffsetData = true;
         }
 
-        totalSamples += encodeDelay(tempo, items[i]->time() - lastTime, data);
+        quint32 fullDelaySamples = (quint32)((items[i]->time() - lastTime) / project.tempo() * 60 * 44100);
         lastTime = items[i]->time();
+        if (lastPCM) {
+            quint32 delayToEndOfPCM = pcmSize - pcmWritten;
+            totalSamples += encodeDelay(qMin(fullDelaySamples, delayToEndOfPCM), data, true);
+            pcmWritten += qMin(fullDelaySamples, delayToEndOfPCM);
+
+            if (delayToEndOfPCM < fullDelaySamples) {
+                totalSamples += encodeDelay(fullDelaySamples - delayToEndOfPCM, data, false);
+            }
+
+            if (pcmWritten == pcmSize) {
+                lastPCM = nullptr;
+            }
+        } else {
+            totalSamples += encodeDelay(fullDelaySamples, data, false);
+        }
 
         StreamSettingsItem* ssi;
         StreamNoteItem* sni;
         if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
             encodeSettingsItem(ssi, data);
         } else if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
-            encodeNoteItem(sni, data);
+            encodeNoteItem(project, sni, data);
+
+            if (sni->on() && sni->type() == Channel::Type::PCM) {
+                const PCMChannelSettings* channelSettings = dynamic_cast<const PCMChannelSettings*>(sni->channelSettings());
+                lastPCM = sni;
+                lastPath = channelSettings->path();
+                pcmSize = QFileInfo(QFile(lastPath)).size();
+                pcmWritten = 0;
+            }
         }
     }
     data.append(0x66);
@@ -451,7 +500,7 @@ int VGMStream::encode(const QList<StreamItem*>& items,  QByteArray& data, const 
         if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
             encodeSettingsItem(ssi, data);
         } else if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
-            encodeNoteItem(sni, data);
+            encodeNoteItem(Project(), sni, data);
         }
     }
     data.append(0x66);
@@ -465,6 +514,38 @@ int VGMStream::encode(const QList<StreamItem*>& items,  QByteArray& data, const 
     }
 
     return totalSamples;
+}
+
+int VGMStream::encodeDelay(const quint32 samples, QByteArray& data, const bool pcm) {
+    quint32 s = samples;
+
+    while (s > 0) {
+        if (pcm) {
+            data.append(0x81);
+            s--;
+        } else {
+            if (s == 735) {
+                data.append(0x62);
+                s = 0;
+            } else if (s == 882) {
+                data.append(0x63);
+                s = 0;
+            } else if (s <= 16) {
+                data.append(0x70 | (s-1));
+                s = 0;
+            } else {
+                int ss = s < 0xFFFF ? s : 0xFFFF;
+
+                data.append(0x61);
+                data.append(ss & 0xFF);
+                data.append((ss >> 8) & 0xFF);
+
+                s -= ss;
+            }
+        }
+    }
+
+    return samples;
 }
 
 int VGMStream::encodeDelay(const int tempo, const float beats, QByteArray& data)
@@ -554,7 +635,7 @@ void VGMStream::encodeSettingsItem(const StreamSettingsItem* item, QByteArray& d
     }
 }
 
-void VGMStream::encodeNoteItem(const StreamNoteItem* item, QByteArray& data)
+void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* item, QByteArray& data)
 {
     if (item->channel() < 0) {
         return;
@@ -639,6 +720,12 @@ void VGMStream::encodeNoteItem(const StreamNoteItem* item, QByteArray& data)
         int c = (item->channel() < 3) ? item->channel() : (1 + item->channel());
         data.append(0x28);
         data.append(((item->on() ? 0xF : 0x0) << 4) | c);
+    } else if (item->on() && item->type() == Channel::Type::PCM) {
+        const PCMChannelSettings* pcmcs = dynamic_cast<const PCMChannelSettings*>(item->channelSettings());
+        quint32 offset = project.pcmOffset(pcmcs->path());
+
+        data.append(0xE0);
+        data.append((char*)&offset, sizeof(offset));
     }
 }
 
