@@ -521,7 +521,7 @@ int VGMStream::encodeDelay(const quint32 samples, QByteArray& data, const bool p
 
     while (s > 0) {
         if (pcm) {
-            data.append(0x81);
+            data.append(0x80);
             s--;
         } else {
             if (s == 735) {
