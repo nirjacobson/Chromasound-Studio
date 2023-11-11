@@ -519,9 +519,16 @@ int VGMStream::encode(const QList<StreamItem*>& items,  QByteArray& data, const 
 int VGMStream::encodeDelay(const quint32 samples, QByteArray& data, const bool pcm) {
     quint32 s = samples;
 
+    if (pcm && samples > 8) {
+        data.append(0x96);
+        data.append((char*)&samples, sizeof(samples));
+
+        return samples;
+    }
+
     while (s > 0) {
         if (pcm) {
-            data.append(0x80);
+            data.append(0x81);
             s--;
         } else {
             if (s == 735) {
