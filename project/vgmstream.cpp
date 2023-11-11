@@ -101,8 +101,8 @@ QByteArray VGMStream::compile(Project& project, bool header, int* loopOffsetData
     QByteArray data;
     int totalSamples;
 
-    int _loopOffsetData;
-    int _currentOffsetData;
+    int _loopOffsetData = 0;
+    int _currentOffsetData = 0;
     if (project.playMode() == Project::PlayMode::PATTERN) {
         processPattern(0, project, project.getFrontPattern(), items);
         assignChannelsAndExpand(items);
