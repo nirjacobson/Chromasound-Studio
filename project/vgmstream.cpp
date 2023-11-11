@@ -459,7 +459,7 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items, Q
                 const PCMChannelSettings* channelSettings = dynamic_cast<const PCMChannelSettings*>(sni->channelSettings());
                 lastPCM = sni;
                 lastPath = channelSettings->path();
-                pcmSize = QFileInfo(QFile(lastPath)).size();
+                pcmSize = qMin(QFileInfo(QFile(lastPath)).size(), (qint64)(sni->note().duration() / project.tempo() * 60 * 44100));
                 pcmWritten = 0;
             }
         }
