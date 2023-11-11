@@ -100,7 +100,7 @@ void FM_PSG_Impl::keyOn(const Channel::Type channelType, const ChannelSettings& 
     QByteArray data;
     items.append(sni);
     _vgmStream.assignChannel(sni, items);
-    _vgmStream.encode(items, data);
+    _vgmStream.encode(Project(), items, data);
     _keys[key] = sni;
     _vgmPlayer->setVGM(data, false, 0);
 }
@@ -113,7 +113,7 @@ void FM_PSG_Impl::keyOff(int key)
     QList<VGMStream::StreamItem*> items;
     QByteArray data;
     items.append(sni);
-    _vgmStream.encode(items, data);
+    _vgmStream.encode(Project(), items, data);
     _keys.remove(key);
     delete sni;
     _vgmPlayer->setVGM(data, false, 0);

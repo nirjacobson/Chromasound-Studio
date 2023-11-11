@@ -2,6 +2,8 @@
 #define PROJECT_H
 
 #include <QList>
+#include <QFile>
+#include <QFileInfo>
 
 #include "pattern.h"
 #include "channel/channel.h"
@@ -54,6 +56,11 @@ class Project
 
         void addChannel();
         void addChannel(const int index, const Channel& channel);
+
+        bool hasPCM() const;
+        quint32 pcmOffset(const QString& path) const;
+        quint32 pcmSize() const;
+        QByteArray pcm() const;
 
         Project& operator=(Project&& src);
         Project(Project&& o);
