@@ -112,7 +112,7 @@ class VGMStream
         static constexpr int FM_CHANNELS = 6;
         static constexpr int TONE_CHANNELS = 3;
         static constexpr int NOISE_CHANNELS = 1;
-        static constexpr int PCM_CHANNELS = 8;
+        static constexpr int PCM_CHANNELS = 4;
 
         FMChannel _fmChannels[FM_CHANNELS];
         ToneChannel _toneChannels[TONE_CHANNELS];
