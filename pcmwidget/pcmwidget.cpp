@@ -8,6 +8,8 @@ PCMWidget::PCMWidget(QWidget *parent, Application* app)
 {
     ui->setupUi(this);
 
+    setAcceptDrops(true);
+
     connect(ui->actionOpen, &QAction::triggered, this, &PCMWidget::openTriggered);
     connect(ui->actionClose, &QAction::triggered, this, &QMainWindow::close);
 }
@@ -21,6 +23,11 @@ void PCMWidget::setSettings(PCMChannelSettings* settings)
 {
     _settings = settings;
     ui->pathLabel->setText(QFileInfo(_settings->path()).fileName());
+}
+
+void PCMWidget::doUpdate()
+{
+    setSettings(_settings);
 }
 
 void PCMWidget::openTriggered()
@@ -37,4 +44,30 @@ void PCMWidget::closeEvent(QCloseEvent* event)
 {
     MdiSubWindow* subwindow = dynamic_cast<MdiSubWindow*>(parent());
     subwindow->close();
+}
+
+void PCMWidget::dragEnterEvent(QDragEnterEvent* event)
+{
+    if (event->mimeData()->hasFormat("text/uri-list")) {
+        event->acceptProposedAction();
+    }
+}
+
+void PCMWidget::dropEvent(QDropEvent* event)
+{
+    QByteArray data = event->mimeData()->data("text/uri-list");
+    QString path(data);
+    path = path.mid(QString("file://").length());
+    path = path.replace("%20", " ");
+    path = path.replace("\r\n", "");
+
+    PCMChannelSettings* settings = new PCMChannelSettings;
+    settings->setPath(path);
+
+    _app->undoStack().push(new SetPCMChannelSettingsCommand(_app->window(), *_settings, *settings));
+    delete settings;
+
+    setSettings(_settings);
+
+    event->acceptProposedAction();
 }

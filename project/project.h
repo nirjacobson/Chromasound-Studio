@@ -56,6 +56,7 @@ class Project
 
         void addChannel();
         void addChannel(const int index, const Channel& channel);
+        int indexOfChannel(const Channel& channel);
 
         bool hasPCM() const;
         quint32 pcmOffset(const QString& path) const;

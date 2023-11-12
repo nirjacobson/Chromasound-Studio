@@ -25,6 +25,7 @@
 #include "commands/movechannelupcommand.h"
 #include "commands/deletechannelcommand.h"
 #include "commands/addchannelcommand.h"
+#include "commands/setchanneltypecommand.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -50,6 +51,8 @@ public:
 
     void doUpdate();
     void channelSettingsUpdated();
+
+    void setChannelType(Channel& channel, const Channel::Type type);
 
 private slots:
     void play();

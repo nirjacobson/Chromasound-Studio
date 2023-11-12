@@ -7,10 +7,18 @@
 #include <QMenu>
 #include <QAction>
 #include <QActionGroup>
-#include <iostream>
+#include <QMimeData>
 
 #include "application.h"
 #include "commands/editchannelvolumecommand.h"
+#include "commands/setchanneltypecommand.h"
+#include "commands/setfmchannelsettingscommand.h"
+#include "commands/setpcmchannelsettingscommand.h"
+#include "commands/removetrackitemscommand.h"
+#include "commands/addtrackitemscommand.h"
+#include "bson.h"
+#include "midi/midi.h"
+#include "midi/midifile.h"
 
 namespace Ui {
     class ChannelWidget;
@@ -111,6 +119,9 @@ class ChannelWidget : public QWidget
 
     protected:
         void paintEvent(QPaintEvent* event);
+        void dragEnterEvent(QDragEnterEvent* event);
+        void dropEvent(QDropEvent* event);
+
 };
 
 #endif // CHANNELWIDGET_H

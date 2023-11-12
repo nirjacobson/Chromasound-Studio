@@ -211,12 +211,17 @@ set(PROJECT_SOURCES
     pcmwidget/pcmwidget.h
     pcmwidget/pcmwidget.cpp
     pcmwidget/pcmwidget.ui
+    commands/setchanneltypecommand.h
+    commands/setchanneltypecommand.cpp
+    commands/setpcmchannelsettingscommand.h
+    commands/setpcmchannelsettingscommand.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(FM-PSG-Studio
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET FM-PSG-Studio APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
