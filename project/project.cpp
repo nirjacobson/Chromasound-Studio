@@ -160,6 +160,17 @@ void Project::addChannel(const int index, const Channel& channel)
     _channels.insert(index, channel);
 }
 
+int Project::indexOfChannel(const Channel& channel)
+{
+    for (int i = 0; i < _channels.size(); i++) {
+        if (&channel == &_channels[i]) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
 bool Project::hasPCM() const
 {
     for (const Channel& channel : _channels) {

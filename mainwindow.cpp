@@ -406,25 +406,25 @@ void MainWindow::channelSelected(const int index)
 
 void MainWindow::toneTriggered(const int index)
 {
-    _app->project().getChannel(index).setType(Channel::Type::TONE);
+    _app->undoStack().push(new SetChannelTypeCommand(this, _app->project().getChannel(index), Channel::Type::TONE));
     _channelsWidget->select(index);
 }
 
 void MainWindow::noiseTriggered(const int index)
 {
-    _app->project().getChannel(index).setType(Channel::Type::NOISE);
+    _app->undoStack().push(new SetChannelTypeCommand(this, _app->project().getChannel(index), Channel::Type::NOISE));
     _channelsWidget->select(index);
 }
 
 void MainWindow::fmTriggered(const int index)
 {
-    _app->project().getChannel(index).setType(Channel::Type::FM);
+    _app->undoStack().push(new SetChannelTypeCommand(this, _app->project().getChannel(index), Channel::Type::FM));
     _channelsWidget->select(index);
 }
 
 void MainWindow::pcmTriggered(const int index)
 {
-    _app->project().getChannel(index).setType(Channel::Type::PCM);
+    _app->undoStack().push(new SetChannelTypeCommand(this, _app->project().getChannel(index), Channel::Type::PCM));
     _channelsWidget->select(index);
 }
 
@@ -666,14 +666,30 @@ void MainWindow::channelSettingsUpdated()
         for (MdiSubWindow* window : (*it)) {
             NoiseWidget* nw;
             FMWidget* fmw;
+            PCMWidget* pw;
 
             if ((nw = dynamic_cast<NoiseWidget*>(window->widget()))) {
                 nw->doUpdate();
             } else if ((fmw = dynamic_cast<FMWidget*>(window->widget()))) {
                 fmw->doUpdate();
+            } else if ((pw = dynamic_cast<PCMWidget*>(window->widget()))) {
+                pw->doUpdate();
             }
         }
     }
+}
+
+void MainWindow::setChannelType(Channel& channel, const Channel::Type type)
+{
+    int index = _app->project().indexOfChannel(channel);
+
+    for (MdiSubWindow* window : _channelWindows[index]) {
+        window->close();
+    }
+
+    channel.setType(type);
+
+    doUpdate();
 }
 
 void MainWindow::showEvent(QShowEvent*)

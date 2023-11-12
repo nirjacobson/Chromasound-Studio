@@ -3,9 +3,11 @@
 
 #include <QMainWindow>
 #include <QFileDialog>
+#include <QMimeData>
 
 #include "application.h"
 #include "mdiarea/mdisubwindow.h"
+#include "commands/setpcmchannelsettingscommand.h"
 
 namespace Ui {
 class PCMWidget;
@@ -21,6 +23,8 @@ public:
 
     void setSettings(PCMChannelSettings* settings);
 
+    void doUpdate();
+
 private:
     Ui::PCMWidget *ui;
     Application* _app;
@@ -33,6 +37,8 @@ private slots:
     // QWidget interface
 protected:
     void closeEvent(QCloseEvent* event);
+    void dragEnterEvent(QDragEnterEvent* event);
+    void dropEvent(QDropEvent* event);
 };
 
 #endif // PCMWIDGET_H

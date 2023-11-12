@@ -24,6 +24,8 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
 {
     ui->setupUi(this);
 
+    setAcceptDrops(true);
+
     switch (_app->project().getChannel(_index).type()) {
         case Channel::TONE:
             ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_toneColor.name()));
@@ -333,6 +335,12 @@ void ChannelWidget::buttonContextMenuRequested(const QPoint& p)
 {
     const Pattern& frontPattern = _app->project().getFrontPattern();
     _pianoRollAction.setChecked(frontPattern.hasTrack(_index) && frontPattern.getTrack(_index).doesUsePianoRoll());
+
+    _toneAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::TONE);
+    _noiseAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::NOISE);
+    _fmAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::FM);
+    _pcmAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::PCM);
+
     _contextMenu.exec(mapToGlobal(p));
 }
 
@@ -351,7 +359,6 @@ void ChannelWidget::pianoRollWasTriggered()
 
 void ChannelWidget::toneWasTriggered()
 {
-    ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_toneColor.name()));
     emit toneTriggered();
 }
 
@@ -383,5 +390,84 @@ void ChannelWidget::paintEvent(QPaintEvent* event)
     const Pattern& activePattern = _app->project().getFrontPattern();
     ui->trackStackedWidget->setCurrentIndex(activePattern.hasTrack(_index) && activePattern.getTrack(_index).doesUsePianoRoll());
 
+    switch (_app->project().getChannel(_index).type()) {
+    case Channel::TONE:
+        ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_toneColor.name()));
+        break;
+    case Channel::NOISE:
+        ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_noiseColor.name()));
+        break;
+    case Channel::FM:
+        ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_fmColor.name()));
+        break;
+    case Channel::PCM:
+        ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_pcmColor.name()));
+        break;
+    }
+
     QWidget::paintEvent(event);
+}
+
+void ChannelWidget::dragEnterEvent(QDragEnterEvent* event)
+{
+    if (event->mimeData()->hasFormat("text/uri-list")) {
+        event->acceptProposedAction();
+    }
+}
+
+void ChannelWidget::dropEvent(QDropEvent* event)
+{
+    QByteArray data = event->mimeData()->data("text/uri-list");
+    QString path(data);
+    path = path.mid(QString("file://").length());
+    path = path.replace("%20", " ");
+    path = path.replace("\r\n", "");
+
+    QFile file(path);
+    QFileInfo fileInfo(file);
+
+    if (fileInfo.suffix() == "fm") {
+        FMChannelSettings* settings = BSON::decodePatch(path);
+        _app->undoStack().push(new SetChannelTypeCommand(_app->window(), _app->project().getChannel(_index), Channel::Type::FM));
+        _app->undoStack().push(new SetFMChannelSettingsCommand(_app->window(),
+                                                               dynamic_cast<FMChannelSettings&>(_app->project().getChannel(_index).settings()),
+                                                               *settings));
+        delete settings;
+
+        event->acceptProposedAction();
+    } else if (fileInfo.suffix() == "pcm") {
+        PCMChannelSettings* settings = new PCMChannelSettings;
+        settings->setPath(path);
+
+        _app->undoStack().push(new SetChannelTypeCommand(_app->window(), _app->project().getChannel(_index), Channel::Type::PCM));
+        _app->undoStack().push(new SetPCMChannelSettingsCommand(_app->window(),
+                                                                dynamic_cast<PCMChannelSettings&>(_app->project().getChannel(_index).settings()),
+                                                                *settings));
+        delete settings;
+        event->acceptProposedAction();
+
+    } else if (fileInfo.suffix() == "mid") {
+        MIDIFile mfile(file);
+
+        auto it1 = std::find_if(mfile.chunks().begin(), mfile.chunks().end(), [](const MIDIChunk* chunk){ return dynamic_cast<const MIDIHeader*>(chunk); });
+
+        if (it1 != mfile.chunks().end()) {
+            const MIDIHeader* header = dynamic_cast<const MIDIHeader*>(*it1);
+
+            auto it2 = std::find_if(mfile.chunks().begin(), mfile.chunks().end(), [](const MIDIChunk* chunk){ return dynamic_cast<const MIDITrack*>(chunk); });
+
+            if (it2 != mfile.chunks().end()) {
+                const MIDITrack* track = dynamic_cast<const MIDITrack*>(*it2);
+
+                QList<Track::Item*> items = MIDI::toTrackItems(*track, header->division());
+
+                Track& t = _app->project().getFrontPattern().getTrack(_index);
+                _app->undoStack().push(new RemoveTrackItemsCommand(_app->window(), t, t.items()));
+                _app->undoStack().push(new AddTrackItemsCommand(_app->window(), t, 0, items));
+                t.usePianoRoll();
+
+                event->acceptProposedAction();
+            }
+        }
+    }
 }
