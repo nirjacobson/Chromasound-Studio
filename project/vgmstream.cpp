@@ -420,7 +420,7 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items, Q
     int totalSamples = 0;
     bool setCurrentOffsetData = false;
     int _currentOffsetData;
-    QString lastPath;
+
     quint32 pcmSize = 0;
     quint32 pcmWritten = 0;
     StreamNoteItem* lastPCM = nullptr;
@@ -458,8 +458,7 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items, Q
             if (sni->on() && sni->type() == Channel::Type::PCM) {
                 const PCMChannelSettings* channelSettings = dynamic_cast<const PCMChannelSettings*>(sni->channelSettings());
                 lastPCM = sni;
-                lastPath = channelSettings->path();
-                pcmSize = qMin(QFileInfo(QFile(lastPath)).size(), (qint64)(sni->note().duration() / project.tempo() * 60 * 44100));
+                pcmSize = qMin(QFileInfo(QFile(channelSettings->path())).size(), (qint64)(sni->note().duration() / project.tempo() * 60 * 44100));
                 pcmWritten = 0;
             }
         }
