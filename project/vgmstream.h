@@ -83,6 +83,8 @@ class VGMStream
                 bool _acquiredIndefinitely;
 
             public:
+                PhysicalChannel();
+
                 bool acquire(float time, float duration);
                 void release();
                 void reset();
@@ -103,10 +105,7 @@ class VGMStream
                 NoiseChannelSettings _settings;
         };
         class PCMChannel : public PhysicalChannel {
-            public:
-                PCMChannelSettings& settings();
-            private:
-                PCMChannelSettings _settings;
+
         };
 
         static constexpr int FM_CHANNELS = 6;

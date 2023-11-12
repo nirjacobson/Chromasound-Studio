@@ -532,7 +532,7 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
         if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
             encodeSettingsItem(ssi, data);
         } else if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
-            encodeNoteItem(Project(), sni, data);
+            encodeNoteItem(project, sni, data);
 
             if (sni->on() && sni->type() == Channel::Type::PCM) {
                 const PCMChannelSettings* channelSettings = dynamic_cast<const PCMChannelSettings*>(sni->channelSettings());
@@ -849,6 +849,14 @@ float VGMStream::StreamItem::time() const
 void VGMStream::StreamItem::setTime(const float time)
 {
     _time = time;
+}
+
+VGMStream::PhysicalChannel::PhysicalChannel()
+    : _time(0)
+    , _duration(0)
+    , _acquiredIndefinitely(false)
+{
+
 }
 
 bool VGMStream::PhysicalChannel::acquire(float time, float duration)
