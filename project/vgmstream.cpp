@@ -49,7 +49,8 @@ void VGMStream::assignChannel(StreamNoteItem* noteItem, QList<StreamItem*>& item
         int channel = acquireFMChannel(noteItem->time(), noteItem->note().duration(), fmcs, items);
         noteItem->setChannel(channel);
     } else if (noteItem->type() == Channel::Type::PCM) {
-        noteItem->setChannel(0);
+        int channel = acquirePCMChannel(noteItem->time(), noteItem->note().duration());
+        noteItem->setChannel(channel);
     }
 }
 
@@ -328,6 +329,17 @@ int VGMStream::acquireFMChannel(const float time, const float duration, const FM
     return -1;
 }
 
+int VGMStream::acquirePCMChannel(const float time, const float duration)
+{
+    for (int i = 0; i < PCM_CHANNELS; i++) {
+        if (_pcmChannels[i].acquire(time, duration)) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
 void VGMStream::processPattern(const float time, const Project& project, const Pattern& pattern, QList<StreamItem*>& items, const float loopStart, const float loopEnd)
 {
     for (auto it = pattern.tracks().cbegin(); it != pattern.tracks().cend(); ++it) {
@@ -457,9 +469,11 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items, Q
 
             if (sni->on() && sni->type() == Channel::Type::PCM) {
                 const PCMChannelSettings* channelSettings = dynamic_cast<const PCMChannelSettings*>(sni->channelSettings());
-                lastPCM = sni;
-                pcmSize = qMin(QFileInfo(QFile(channelSettings->path())).size(), (qint64)(sni->note().duration() / project.tempo() * 60 * 44100));
-                pcmWritten = 0;
+                quint32 newPcmSize = qMin(QFileInfo(QFile(channelSettings->path())).size(), (qint64)(sni->note().duration() / project.tempo() * 60 * 44100));
+                if (pcmWritten + newPcmSize > pcmSize) {
+                    lastPCM = sni;
+                    pcmSize = pcmWritten + newPcmSize;
+                }
             }
         }
     }
@@ -726,12 +740,19 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
         int c = (item->channel() < 3) ? item->channel() : (1 + item->channel());
         data.append(0x28);
         data.append(((item->on() ? 0xF : 0x0) << 4) | c);
-    } else if (item->on() && item->type() == Channel::Type::PCM) {
-        const PCMChannelSettings* pcmcs = dynamic_cast<const PCMChannelSettings*>(item->channelSettings());
-        quint32 offset = project.pcmOffset(pcmcs->path());
+    } else if (item->type() == Channel::Type::PCM) {
+        if (item->on()) {
+            const PCMChannelSettings* pcmcs = dynamic_cast<const PCMChannelSettings*>(item->channelSettings());
+            quint32 offset = project.pcmOffset(pcmcs->path());
 
-        data.append(0xE0);
-        data.append((char*)&offset, sizeof(offset));
+            data.append(0xE0 | item->channel());
+            data.append((char*)&offset, sizeof(offset));
+        } else {
+            quint32 offset = -1;
+
+            data.append(0xE0 | item->channel());
+            data.append((char*)&offset, sizeof(offset));
+        }
     }
 }
 

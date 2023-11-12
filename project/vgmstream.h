@@ -102,18 +102,27 @@ class VGMStream
             private:
                 NoiseChannelSettings _settings;
         };
+        class PCMChannel : public PhysicalChannel {
+            public:
+                PCMChannelSettings& settings();
+            private:
+                PCMChannelSettings _settings;
+        };
 
         static constexpr int FM_CHANNELS = 6;
         static constexpr int TONE_CHANNELS = 3;
         static constexpr int NOISE_CHANNELS = 1;
+        static constexpr int PCM_CHANNELS = 8;
 
         FMChannel _fmChannels[FM_CHANNELS];
         ToneChannel _toneChannels[TONE_CHANNELS];
         NoiseChannel _noiseChannels[NOISE_CHANNELS];
+        NoiseChannel _pcmChannels[PCM_CHANNELS];
 
         int acquireToneChannel(const float time, const float duration);
         int acquireNoiseChannel(const float time, const float duration, const NoiseChannelSettings* settings, QList<StreamItem*>& items);
         int acquireFMChannel(const float time, const float duration, const FMChannelSettings* settings, QList<StreamItem*>& items);
+        int acquirePCMChannel(const float time, const float duration);
 
         void processPattern(const float time, const Project& project, const Pattern& pattern, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
         void processTrack(const float time, const Channel& channel, const Track* track, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
