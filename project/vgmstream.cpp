@@ -118,7 +118,7 @@ QByteArray VGMStream::compile(Project& project, bool header, int* loopOffsetData
         assignChannelsAndExpand(items);
         pad(items, project.getLength());
         if (project.playlist().doesLoop()) {
-            totalSamples = encode(items, data, project.tempo(), project.playlist().loopOffset(), &_loopOffsetData, currentOffset, &_currentOffsetData, false);
+            totalSamples = encode(project, items, data, project.playlist().loopOffset(), &_loopOffsetData, currentOffset, &_currentOffsetData, false);
         } else {
             totalSamples = encode(project, items, data, currentOffset, &_currentOffsetData);
         }
@@ -224,7 +224,7 @@ QByteArray VGMStream::compile(const Project& project, const Pattern& pattern, co
     processPattern(0, project, pattern, items, loopStart, loopEnd);
     assignChannelsAndExpand(items);
     pad(items, loopEnd - loopStart);
-    totalSamples = encode(items, data, project.tempo(), loopStart, nullptr, currentOffset, &_currentOffsetData, true);
+    totalSamples = encode(project, items, data, loopStart, nullptr, currentOffset, &_currentOffsetData, true);
 
     for (StreamItem* item : items) {
         delete item;
@@ -248,7 +248,7 @@ QByteArray VGMStream::compile(const Project& project, const float loopStart, con
     generateItems(project, items, loopStart, loopEnd);
     assignChannelsAndExpand(items);
     pad(items, loopEnd - loopStart);
-    totalSamples = encode(items, data, project.tempo(), loopStart, nullptr, currentOffset, &_currentOffsetData, true);
+    totalSamples = encode(project, items, data, loopStart, nullptr, currentOffset, &_currentOffsetData, true);
 
     for (StreamItem* item : items) {
         delete item;
@@ -486,7 +486,7 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items, Q
     return totalSamples;
 }
 
-int VGMStream::encode(const QList<StreamItem*>& items,  QByteArray& data, const int tempo, const float loopTime, int* const loopOffsetData, const float currentTime, int* const currentOffsetData, const bool startAtLoop)
+int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  QByteArray& data, const float loopTime, int* const loopOffsetData, const float currentTime, int* const currentOffsetData, const bool startAtLoop)
 {
     float lastTime = startAtLoop ? loopTime : 0.0f;
     int totalSamples = 0;
@@ -494,6 +494,10 @@ int VGMStream::encode(const QList<StreamItem*>& items,  QByteArray& data, const 
     int _loopOffsetData;
     bool setCurrentOffsetData = false;
     int _currentOffsetData;
+
+    quint32 pcmSize = 0;
+    quint32 pcmWritten = 0;
+    StreamNoteItem* lastPCM = nullptr;
     for (int i = 0; i < items.size(); i++) {
         if (items[i]->time() >= loopTime && !setLoopOffsetData) {
             _loopOffsetData = data.size();
@@ -505,8 +509,23 @@ int VGMStream::encode(const QList<StreamItem*>& items,  QByteArray& data, const 
             setCurrentOffsetData = true;
         }
 
-        totalSamples += encodeDelay(tempo, items[i]->time() - lastTime, data);
+        quint32 fullDelaySamples = (quint32)((items[i]->time() - lastTime) / project.tempo() * 60 * 44100);
         lastTime = items[i]->time();
+        if (lastPCM) {
+            quint32 delayToEndOfPCM = pcmSize - pcmWritten;
+            totalSamples += encodeDelay(qMin(fullDelaySamples, delayToEndOfPCM), data, true);
+            pcmWritten += qMin(fullDelaySamples, delayToEndOfPCM);
+
+            if (delayToEndOfPCM < fullDelaySamples) {
+                totalSamples += encodeDelay(fullDelaySamples - delayToEndOfPCM, data, false);
+            }
+
+            if (pcmWritten == pcmSize) {
+                lastPCM = nullptr;
+            }
+        } else {
+            totalSamples += encodeDelay(fullDelaySamples, data, false);
+        }
 
         StreamSettingsItem* ssi;
         StreamNoteItem* sni;
@@ -514,6 +533,15 @@ int VGMStream::encode(const QList<StreamItem*>& items,  QByteArray& data, const 
             encodeSettingsItem(ssi, data);
         } else if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
             encodeNoteItem(Project(), sni, data);
+
+            if (sni->on() && sni->type() == Channel::Type::PCM) {
+                const PCMChannelSettings* channelSettings = dynamic_cast<const PCMChannelSettings*>(sni->channelSettings());
+                quint32 newPcmSize = qMin(QFileInfo(QFile(channelSettings->path())).size(), (qint64)(sni->note().duration() / project.tempo() * 60 * 44100));
+                if (pcmWritten + newPcmSize > pcmSize) {
+                    lastPCM = sni;
+                    pcmSize = pcmWritten + newPcmSize;
+                }
+            }
         }
     }
     data.append(0x66);
