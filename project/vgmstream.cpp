@@ -355,7 +355,7 @@ void VGMStream::processPattern(const float time, const Project& project, const P
 void VGMStream::processTrack(const float time, const Channel& channel, const Track* track, QList<StreamItem*>& items, const float loopStart, const float loopEnd)
 {
     QList<Track::Item*> itemsCopy = track->items();
-    std::sort(itemsCopy.begin(), itemsCopy.end(), [](const Track::Item* a, const Track::Item* b){ return a->time() <= b->time(); });
+    std::sort(itemsCopy.begin(), itemsCopy.end(), [](const Track::Item* a, const Track::Item* b){ return a->time() < b->time(); });
 
     for (Track::Item* item : itemsCopy) {
         if (loopStart >= 0 && loopEnd >= 0) {
@@ -374,7 +374,7 @@ void VGMStream::processTrack(const float time, const Channel& channel, const Tra
 void VGMStream::generateItems(const Project& project, QList<StreamItem*>& items, const float loopStart, const float loopEnd)
 {
     QList<Playlist::Item*> itemsCopy(project.playlist().items());
-    std::sort(itemsCopy.begin(), itemsCopy.end(), [](const Playlist::Item* a, const Playlist::Item* b){ return a->time() <= b->time(); });
+    std::sort(itemsCopy.begin(), itemsCopy.end(), [](const Playlist::Item* a, const Playlist::Item* b){ return a->time() < b->time(); });
 
     for (Playlist::Item* item : itemsCopy) {
         if (loopStart >= 0 && loopEnd >= 0) {
@@ -392,7 +392,7 @@ void VGMStream::generateItems(const Project& project, QList<StreamItem*>& items,
 void VGMStream::assignChannelsAndExpand(QList<StreamItem*>& items)
 {
     QList<StreamItem*> itemsCopy = items;
-    std::sort(itemsCopy.begin(), itemsCopy.end(), [](const StreamItem* a, const StreamItem* b){ return a->time() <= b->time(); });
+    std::sort(itemsCopy.begin(), itemsCopy.end(), [](const StreamItem* a, const StreamItem* b){ return a->time() < b->time(); });
 
     for (StreamItem* item : itemsCopy) {
         StreamNoteItem* noteItem = dynamic_cast<StreamNoteItem*>(item);
@@ -409,7 +409,7 @@ void VGMStream::assignChannelsAndExpand(QList<StreamItem*>& items)
             const StreamNoteItem* bn;
             if((an = dynamic_cast<const StreamNoteItem*>(a)) != nullptr) {
                 if((bn = dynamic_cast<const StreamNoteItem*>(b)) != nullptr) {
-                    return !an->on() && bn->on();
+                    return !an->on();
                 }
                 return false;
             }
