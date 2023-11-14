@@ -73,6 +73,9 @@ class ChannelWidget : public QWidget
         QAction _fmAction;
         QAction _pcmAction;
 
+        QAction _fillEvery2StepsAction;
+        QAction _fillEvery4StepsAction;
+
         QColor _fmColor;
         QColor _toneColor;
         QColor _noiseColor;
@@ -118,6 +121,9 @@ class ChannelWidget : public QWidget
         void deleteTriggered();
         void moveUpTriggered();
         void moveDownTriggered();
+
+        void fillEvery2StepsTriggered();
+        void fillEvery4StepsTriggered();
 
     protected:
         void paintEvent(QPaintEvent* event);
