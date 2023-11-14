@@ -359,30 +359,54 @@ void ChannelWidget::pianoRollWasTriggered()
 
 void ChannelWidget::toneWasTriggered()
 {
-    emit toneTriggered();
+    _app->undoStack().push(new SetChannelTypeCommand(_app->window(), _app->project().getChannel(_index), Channel::Type::TONE));
+
+    emit selected();
 }
 
 void ChannelWidget::noiseWasTriggered()
 {
-    ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_noiseColor.name()));
-    emit noiseTriggered();
+    _app->undoStack().push(new SetChannelTypeCommand(_app->window(), _app->project().getChannel(_index), Channel::Type::NOISE));
+
+    emit selected();
 }
 
 void ChannelWidget::fmWasTriggered()
 {
-    ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_fmColor.name()));
-    emit fmTriggered();
+    _app->undoStack().push(new SetChannelTypeCommand(_app->window(), _app->project().getChannel(_index), Channel::Type::FM));
+
+    emit selected();
 }
 
 void ChannelWidget::pcmWasTriggered()
 {
-    ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_pcmColor.name()));
-    emit pcmTriggered();
+    _app->undoStack().push(new SetChannelTypeCommand(_app->window(), _app->project().getChannel(_index), Channel::Type::PCM));
+
+    emit selected();
 }
 
 void ChannelWidget::volumeDialChanged(const int val)
 {
     _app->undoStack().push(new EditChannelVolumeCommand(_app->window(), _index, val));
+}
+
+void ChannelWidget::deleteTriggered()
+{
+    _app->undoStack().push(new DeleteChannelCommand(_app->window(), _app->project().getChannel(_index), _index));
+}
+
+void ChannelWidget::moveUpTriggered()
+{
+    if (_index != 0) {
+        _app->undoStack().push(new MoveChannelUpCommand(_app->window(), _index));
+    }
+}
+
+void ChannelWidget::moveDownTriggered()
+{
+    if (_index != _app->project().channels()-1) {
+        _app->undoStack().push(new MoveChannelDownCommand(_app->window(), _index));
+    }
 }
 
 void ChannelWidget::paintEvent(QPaintEvent* event)

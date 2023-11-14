@@ -295,30 +295,6 @@ void MainWindow::pianoRollTriggered(const int index, const bool on)
     }
 }
 
-void MainWindow::deleteChannelTriggered(const int index)
-{
-    _app->undoStack().push(new DeleteChannelCommand(this, _app->project().getChannel(index), index));
-}
-
-void MainWindow::channelAdded()
-{
-    _app->undoStack().push(new AddChannelCommand(this));
-}
-
-void MainWindow::moveChannelUpTriggered(const int index)
-{
-    if (index != 0) {
-        _app->undoStack().push(new MoveChannelUpCommand(this, index));
-    }
-}
-
-void MainWindow::moveChannelDownTriggered(const int index)
-{
-    if (index != _app->project().channels()-1) {
-        _app->undoStack().push(new MoveChannelDownCommand(this, index));
-    }
-}
-
 void MainWindow::channelSelected(const int index)
 {
     _selectedChannel = index;
@@ -402,30 +378,6 @@ void MainWindow::channelSelected(const int index)
         channelWindow->show();
         ui->mdiArea->setActiveSubWindow(channelWindow);
     }
-}
-
-void MainWindow::toneTriggered(const int index)
-{
-    _app->undoStack().push(new SetChannelTypeCommand(this, _app->project().getChannel(index), Channel::Type::TONE));
-    _channelsWidget->select(index);
-}
-
-void MainWindow::noiseTriggered(const int index)
-{
-    _app->undoStack().push(new SetChannelTypeCommand(this, _app->project().getChannel(index), Channel::Type::NOISE));
-    _channelsWidget->select(index);
-}
-
-void MainWindow::fmTriggered(const int index)
-{
-    _app->undoStack().push(new SetChannelTypeCommand(this, _app->project().getChannel(index), Channel::Type::FM));
-    _channelsWidget->select(index);
-}
-
-void MainWindow::pcmTriggered(const int index)
-{
-    _app->undoStack().push(new SetChannelTypeCommand(this, _app->project().getChannel(index), Channel::Type::PCM));
-    _channelsWidget->select(index);
 }
 
 void MainWindow::channelNameChanged(const int index)
@@ -573,17 +525,8 @@ void MainWindow::showChannelsWindow()
         _channelsWidget = new ChannelsWidget(this, _app);
 
         connect(_channelsWidget, &ChannelsWidget::pianoRollTriggered, this, &MainWindow::pianoRollTriggered);
-        connect(_channelsWidget, &ChannelsWidget::deleteTriggered, this, &MainWindow::deleteChannelTriggered);
-        connect(_channelsWidget, &ChannelsWidget::channelAdded, this, &MainWindow::channelAdded);
-        connect(_channelsWidget, &ChannelsWidget::moveUpTriggered, this, &MainWindow::moveChannelUpTriggered);
-        connect(_channelsWidget, &ChannelsWidget::moveDownTriggered, this, &MainWindow::moveChannelDownTriggered);
         connect(_channelsWidget, &ChannelsWidget::channelSelected, this, &MainWindow::channelSelected);
         connect(_channelsWidget, &ChannelsWidget::nameChanged, this, &MainWindow::channelNameChanged);
-
-        connect(_channelsWidget, &ChannelsWidget::toneTriggered, this, &MainWindow::toneTriggered);
-        connect(_channelsWidget, &ChannelsWidget::noiseTriggered, this, &MainWindow::noiseTriggered);
-        connect(_channelsWidget, &ChannelsWidget::fmTriggered, this, &MainWindow::fmTriggered);
-        connect(_channelsWidget, &ChannelsWidget::pcmTriggered, this, &MainWindow::pcmTriggered);
 
         MdiSubWindow* channelsWindow = new MdiSubWindow(ui->mdiArea);
         connect(channelsWindow, &MdiSubWindow::closed, this, [&](){ _channelsWindow = nullptr; });
