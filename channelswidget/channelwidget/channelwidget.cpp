@@ -17,6 +17,8 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     , _noiseAction("Noise", this)
     , _fmAction("FM", this)
     , _pcmAction("PCM", this)
+    , _fillEvery2StepsAction("Every 2 steps")
+    , _fillEvery4StepsAction("Every 4 steps")
     , _toneColor(Qt::cyan)
     , _noiseColor(Qt::lightGray)
     , _fmColor(Qt::magenta)
@@ -72,6 +74,9 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     connect(&_moveDownAction, &QAction::triggered, this, &ChannelWidget::moveDownTriggered);
     connect(&_deleteAction, &QAction::triggered, this, &ChannelWidget::deleteTriggered);
 
+    connect(&_fillEvery2StepsAction, &QAction::triggered, this, &ChannelWidget::fillEvery2StepsTriggered);
+    connect(&_fillEvery4StepsAction, &QAction::triggered, this, &ChannelWidget::fillEvery4StepsTriggered);
+
     connect(&_toneAction, &QAction::triggered, this, &ChannelWidget::toneWasTriggered);
     connect(&_noiseAction, &QAction::triggered, this, &ChannelWidget::noiseWasTriggered);
     connect(&_fmAction, &QAction::triggered, this, &ChannelWidget::fmWasTriggered);
@@ -89,7 +94,10 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     _contextMenu.addAction(&_moveUpAction);
     _contextMenu.addAction(&_moveDownAction);
 
-    _contextMenu.addSection("Type");
+    _contextMenu.addSection("Fill");
+    _contextMenu.addAction(&_fillEvery2StepsAction);
+    _contextMenu.addAction(&_fillEvery4StepsAction);
+
     _toneAction.setCheckable(true);
     _toneAction.setChecked(_app->project().getChannel(index).type() == Channel::Type::TONE);
     _noiseAction.setCheckable(true);
@@ -102,6 +110,8 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     _typeActionGroup.addAction(&_noiseAction);
     _typeActionGroup.addAction(&_fmAction);
     _typeActionGroup.addAction(&_pcmAction);
+
+    _contextMenu.addSection("Type");
     _contextMenu.addAction(&_toneAction);
     _contextMenu.addAction(&_noiseAction);
     _contextMenu.addAction(&_fmAction);
@@ -407,6 +417,35 @@ void ChannelWidget::moveDownTriggered()
     if (_index != _app->project().channels()-1) {
         _app->undoStack().push(new MoveChannelDownCommand(_app->window(), _index));
     }
+}
+
+void ChannelWidget::fillEvery2StepsTriggered()
+{
+    Track& track = _app->project().getFrontPattern().getTrack(_index);
+    _app->undoStack().push(new RemoveTrackItemsCommand(_app->window(), track, track.items()));
+
+    QList<Track::Item*> newItems;
+
+    for (int i = 0; i < 8; i++) {
+        float time = i * 0.5;
+        newItems.append(new Track::Item(time, Note(60, 0.25)));
+    }
+
+    _app->undoStack().push(new AddTrackItemsCommand(_app->window(), track, 0, newItems));
+}
+
+void ChannelWidget::fillEvery4StepsTriggered()
+{
+    Track& track = _app->project().getFrontPattern().getTrack(_index);
+    _app->undoStack().push(new RemoveTrackItemsCommand(_app->window(), track, track.items()));
+
+    QList<Track::Item*> newItems;
+
+    for (int i = 0; i < 4; i++) {
+        newItems.append(new Track::Item(i, Note(60, 0.25)));
+    }
+
+    _app->undoStack().push(new AddTrackItemsCommand(_app->window(), track, 0, newItems));
 }
 
 void ChannelWidget::paintEvent(QPaintEvent* event)
