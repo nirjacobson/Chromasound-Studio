@@ -56,6 +56,8 @@ class ChannelWidget : public QWidget
 
         const QRect getSequencerGeometry();
 
+        void fromPath(const QString& path);
+
     private:
         Ui::ChannelWidget *ui;
         Application* _app;
