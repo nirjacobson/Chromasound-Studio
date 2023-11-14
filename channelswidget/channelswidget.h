@@ -70,6 +70,8 @@ class ChannelsWidget : public QWidget
         // QWidget interface
     protected:
         void paintEvent(QPaintEvent* event);
+        void dragEnterEvent(QDragEnterEvent* event);
+        void dropEvent(QDropEvent* event);
 };
 
 #endif // CHANNELSWIDGET_H

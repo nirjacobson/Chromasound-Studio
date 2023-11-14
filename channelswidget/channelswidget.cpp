@@ -9,6 +9,8 @@ ChannelsWidget::ChannelsWidget(QWidget *parent, Application* app) :
 {
     ui->setupUi(this);
 
+    setAcceptDrops(true);
+
     rebuild();
 
     connect(ui->pianoButton, &QPushButton::clicked, this, &ChannelsWidget::pianoButtonClicked);
@@ -290,6 +292,32 @@ void ChannelsWidget::paintEvent(QPaintEvent* event)
     opt.initFrom(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
+void ChannelsWidget::dragEnterEvent(QDragEnterEvent* event)
+{
+    if (event->mimeData()->hasFormat("text/uri-list")) {
+        event->acceptProposedAction();
+    }
+}
+
+void ChannelsWidget::dropEvent(QDropEvent* event)
+{
+    QByteArray data = event->mimeData()->data("text/uri-list");
+    QString path(data);
+    path = path.mid(QString("file://").length());
+    path = path.replace("%20", " ");
+    path = path.replace("\r\n", "");
+
+    QFile file(path);
+    QFileInfo fileInfo(file);
+
+    int index = _app->project().channels();
+
+    if (fileInfo.suffix() == "fm" || fileInfo.suffix() == "pcm" || fileInfo.suffix() == "mid") {
+        _app->undoStack().push(new AddChannelCommand(_app->window()));
+        _channelWidgets[index]->fromPath(path);
+    }
 }
 
 
