@@ -50,13 +50,7 @@ void ChannelsWidget::rebuild()
         connect(channelWidget, &ChannelWidget::rectLedClicked, this, [=](){ handleSelect(channelWidget); });
         connect(channelWidget, &ChannelWidget::rectLedDoubleClicked, this, &ChannelsWidget::handleSelectAll);
         connect(channelWidget, &ChannelWidget::pianoRollTriggered, this, [=](bool on){ emit pianoRollTriggered(channelWidget->index(), on); });
-        connect(channelWidget, &ChannelWidget::moveUpTriggered, this, [=](){ emit moveUpTriggered(channelWidget->index()); });
-        connect(channelWidget, &ChannelWidget::moveDownTriggered, this, [=](){ emit moveDownTriggered(channelWidget->index()); });
-        connect(channelWidget, &ChannelWidget::deleteTriggered, this, [=](){ emit deleteTriggered(channelWidget->index()); });
-        connect(channelWidget, &ChannelWidget::toneTriggered, this, [=](){ emit toneTriggered(channelWidget->index()); });
-        connect(channelWidget, &ChannelWidget::noiseTriggered, this, [=](){ emit noiseTriggered(channelWidget->index()); });
-        connect(channelWidget, &ChannelWidget::fmTriggered, this, [=](){ emit fmTriggered(channelWidget->index()); });
-        connect(channelWidget, &ChannelWidget::pcmTriggered, this, [=](){ emit pcmTriggered(channelWidget->index()); });
+        connect(channelWidget, &ChannelWidget::selected, this, [=](){ select(channelWidget->index()); });
         connect(channelWidget, &ChannelWidget::nameChanged, this, [=](){ emit nameChanged(channelWidget->index()); });
         connect(channelWidget, &ChannelWidget::pianoKeyClicked, this, &ChannelsWidget::pianoKeyClicked);
         connect(channelWidget, &ChannelWidget::velocityClicked, this, &ChannelsWidget::velocityClicked);
@@ -93,12 +87,7 @@ void ChannelsWidget::add(const int index)
     connect(cw, &ChannelWidget::rectLedClicked, this, [=](){ handleSelect(cw); });
     connect(cw, &ChannelWidget::rectLedDoubleClicked, this, &ChannelsWidget::handleSelectAll);
     connect(cw, &ChannelWidget::pianoRollTriggered, this, [=](bool on){ emit pianoRollTriggered(cw->index(), on); });
-    connect(cw, &ChannelWidget::moveUpTriggered, this, [=](){ emit moveUpTriggered(cw->index()); });
-    connect(cw, &ChannelWidget::moveDownTriggered, this, [=](){ emit moveDownTriggered(cw->index()); });
-    connect(cw, &ChannelWidget::deleteTriggered, this, [=](){ emit deleteTriggered(cw->index()); });
-    connect(cw, &ChannelWidget::toneTriggered, this, [=](){ emit toneTriggered(cw->index()); });
-    connect(cw, &ChannelWidget::noiseTriggered, this, [=](){ emit noiseTriggered(cw->index()); });
-    connect(cw, &ChannelWidget::fmTriggered, this, [=](){ emit fmTriggered(cw->index()); });
+    connect(cw, &ChannelWidget::selected, this, [=](){ select(cw->index()); });
     connect(cw, &ChannelWidget::nameChanged, this, [=](){ emit nameChanged(cw->index()); });
     connect(cw, &ChannelWidget::pianoKeyClicked, this, &ChannelsWidget::pianoKeyClicked);
     connect(cw, &ChannelWidget::velocityClicked, this, &ChannelsWidget::velocityClicked);
@@ -288,6 +277,11 @@ void ChannelsWidget::velocityClicked(const int step, const int velocity)
         newNote.setVelocity(velocity);
         _app->undoStack().push(new EditNoteCommand(_app->window(), *existingItem, step * beatsPerStep, newNote, QList<Track::Item*>()));
     }
+}
+
+void ChannelsWidget::channelAdded()
+{
+    _app->undoStack().push(new AddChannelCommand(_app->window()));
 }
 
 void ChannelsWidget::paintEvent(QPaintEvent* event)

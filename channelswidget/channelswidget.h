@@ -14,6 +14,8 @@
 #include "commands/addnotecommand.h"
 #include "commands/removenotecommand.h"
 #include "commands/editnotecommand.h"
+#include "commands/addchannelcommand.h"
+#include "commands/setchanneltypecommand.h"
 
 namespace Ui {
     class ChannelsWidget;
@@ -42,14 +44,6 @@ class ChannelsWidget : public QWidget
 
     signals:
         void pianoRollTriggered(const int index, const bool on);
-        void deleteTriggered(const int index);
-        void channelAdded();
-        void moveUpTriggered(const int index);
-        void moveDownTriggered(const int index);
-        void toneTriggered(const int index);
-        void noiseTriggered(const int index);
-        void fmTriggered(const int index);
-        void pcmTriggered(const int index);
         void channelSelected(const int index);
         void nameChanged(const int index);
 
@@ -70,6 +64,8 @@ class ChannelsWidget : public QWidget
         void velocityButtonClicked();
         void pianoKeyClicked(const Qt::MouseButton button, const int step, const int key);
         void velocityClicked(const int step, const int velocity);
+
+        void channelAdded();
 
         // QWidget interface
     protected:

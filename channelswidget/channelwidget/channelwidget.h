@@ -10,12 +10,16 @@
 #include <QMimeData>
 
 #include "application.h"
+#include "commands/movechannelupcommand.h"
+#include "commands/movechanneldowncommand.h"
+#include "commands/deletechannelcommand.h"
 #include "commands/editchannelvolumecommand.h"
 #include "commands/setchanneltypecommand.h"
 #include "commands/setfmchannelsettingscommand.h"
 #include "commands/setpcmchannelsettingscommand.h"
 #include "commands/removetrackitemscommand.h"
 #include "commands/addtrackitemscommand.h"
+#include "commands/setchanneltypecommand.h"
 #include "bson.h"
 #include "midi/midi.h"
 #include "midi/midifile.h"
@@ -94,14 +98,8 @@ class ChannelWidget : public QWidget
         void rectLedClicked();
         void rectLedDoubleClicked();
         void pianoRollTriggered(bool on);
-        void deleteTriggered();
-        void moveUpTriggered();
-        void moveDownTriggered();
 
-        void toneTriggered();
-        void noiseTriggered();
-        void fmTriggered();
-        void pcmTriggered();
+        void selected();
 
         void nameChanged();
 
@@ -116,6 +114,10 @@ class ChannelWidget : public QWidget
         void fmWasTriggered();
         void pcmWasTriggered();
         void volumeDialChanged(const int val);
+
+        void deleteTriggered();
+        void moveUpTriggered();
+        void moveDownTriggered();
 
     protected:
         void paintEvent(QPaintEvent* event);

@@ -65,18 +65,7 @@ private slots:
     void frame();
 
     void pianoRollTriggered(const int index, const bool on);
-    void deleteChannelTriggered(const int index);
-    void channelAdded();
-    void moveChannelUpTriggered(const int index);
-    void moveChannelDownTriggered(const int index);
-
     void channelSelected(const int index);
-
-    void toneTriggered(const int index);
-    void noiseTriggered(const int index);
-    void fmTriggered(const int index);
-    void pcmTriggered(const int index);
-
     void channelNameChanged(const int index);
 
     void newTriggered();
