@@ -20,6 +20,7 @@
 #include "commands/removetrackitemscommand.h"
 #include "commands/addtrackitemscommand.h"
 #include "commands/setchanneltypecommand.h"
+#include "commands/setchannelnamecommand.h"
 #include "bson.h"
 #include "midi/midi.h"
 #include "midi/midifile.h"

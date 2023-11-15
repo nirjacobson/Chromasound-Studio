@@ -376,10 +376,9 @@ void ChannelWidget::buttonPressed()
         bool ok;
         const QString name = QInputDialog::getText(this, tr("Change Channel Name"), tr("Channel name:"), QLineEdit::Normal, _app->project().getChannel(_index).name(), &ok);
         if (ok && !name.isEmpty()) {
-            _app->project().getChannel(_index).setName(name);
-            ui->pushButton->setText(name);
+            _app->undoStack().push(new SetChannelNameCommand(_app->window(), _app->project().getChannel(_index), name));
+            emit nameChanged();
         }
-        emit nameChanged();
     } else {
         bool state = !ui->pushButton->isChecked();
         emit toggled(state);
@@ -495,6 +494,8 @@ void ChannelWidget::fillEvery4StepsTriggered()
 
 void ChannelWidget::paintEvent(QPaintEvent* event)
 {
+    ui->pushButton->setText(_app->project().getChannel(_index).name());
+
     const Pattern& activePattern = _app->project().getFrontPattern();
     ui->trackStackedWidget->setCurrentIndex(activePattern.hasTrack(_index) && activePattern.getTrack(_index).doesUsePianoRoll());
 
