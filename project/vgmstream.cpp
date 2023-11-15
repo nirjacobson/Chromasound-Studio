@@ -409,7 +409,7 @@ void VGMStream::assignChannelsAndExpand(QList<StreamItem*>& items)
             const StreamNoteItem* bn;
             if((an = dynamic_cast<const StreamNoteItem*>(a)) != nullptr) {
                 if((bn = dynamic_cast<const StreamNoteItem*>(b)) != nullptr) {
-                    return !an->on();
+                    return !an->on() && bn->on();
                 }
                 return false;
             }
