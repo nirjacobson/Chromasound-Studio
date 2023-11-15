@@ -221,6 +221,11 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(FM-PSG-Studio
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        fmimport/fmimportdialog.h fmimport/fmimportdialog.cpp fmimport/fmimportdialog.ui
+        fmimport/patchtablemodel.h fmimport/patchtablemodel.cpp
+        fmimport/tableview.h fmimport/tableview.cpp
+        commands/setchannelnamecommand.h commands/setchannelnamecommand.cpp
+
 
     )
 # Define target properties for Android with Qt 6 as:

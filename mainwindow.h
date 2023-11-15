@@ -20,6 +20,7 @@
 #include "midi/midipoller.h"
 #include "style/styledialog.h"
 #include "mdiarea/mdisubwindow.h"
+#include "fmimport/fmimportdialog.h"
 
 #include "commands/movechanneldowncommand.h"
 #include "commands/movechannelupcommand.h"
@@ -79,6 +80,7 @@ private slots:
     void setMIDIDevice(const int device);
 
     void stylesTriggered();
+    void fmImportTriggered();
 
     void showChannelsWindow();
     void showPlaylistWindow();
@@ -102,6 +104,7 @@ private:
     QMap<int, QList<MdiSubWindow*>> _channelWindows;
 
     StyleDialog _styleDialog;
+    FMImportDialog _fmImportDialog;
 
     int _selectedChannel;
 

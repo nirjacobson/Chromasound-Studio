@@ -54,8 +54,10 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
    connect(ui->actionStyles, &QAction::triggered, this, &MainWindow::stylesTriggered);
    connect(ui->actionChannels, &QAction::triggered, this, &MainWindow::showChannelsWindow);
    connect(ui->actionPlaylist, &QAction::triggered, this, &MainWindow::showPlaylistWindow);
+   connect(ui->actionImportFMPatches, &QAction::triggered, this, &MainWindow::fmImportTriggered);
 
    _styleDialog.setApplication(_app);
+   _fmImportDialog.setApplication(_app);
 
    showChannelsWindow();
    showPlaylistWindow();
@@ -519,6 +521,11 @@ void MainWindow::stylesTriggered()
     _styleDialog.show();
 }
 
+void MainWindow::fmImportTriggered()
+{
+    _fmImportDialog.show();
+}
+
 void MainWindow::showChannelsWindow()
 {
     if (_channelsWindow == nullptr) {
@@ -672,6 +679,7 @@ void MainWindow::resizeEvent(QResizeEvent*)
 void MainWindow::closeEvent(QCloseEvent* event)
 {
     _styleDialog.hide();
+    _fmImportDialog.hide();
 }
 
 

@@ -66,9 +66,16 @@
     <addaction name="actionChannels"/>
     <addaction name="actionPlaylist"/>
    </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>&amp;Tools</string>
+    </property>
+    <addaction name="actionImportFMPatches"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
+   <addaction name="menuTools"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionNew">
@@ -109,6 +116,11 @@
   <action name="actionPlaylist">
    <property name="text">
     <string>&amp;Playlist</string>
+   </property>
+  </action>
+  <action name="actionImportFMPatches">
+   <property name="text">
+    <string>&amp;Import FM Patches</string>
    </property>
   </action>
  </widget>
