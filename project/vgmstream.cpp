@@ -106,7 +106,7 @@ QByteArray VGMStream::compile(Project& project, bool header, int* loopOffsetData
     int _currentOffsetData = 0;
     if (project.playMode() == Project::PlayMode::PATTERN) {
         processPattern(0, project, project.getFrontPattern(), items);
-        assignChannelsAndExpand(items);
+        assignChannelsAndExpand(items, project.tempo());
         pad(items, project.getPatternBarLength(project.frontPattern()));
         totalSamples = encode(project, items, data, currentOffset, &_currentOffsetData);
 
@@ -115,7 +115,7 @@ QByteArray VGMStream::compile(Project& project, bool header, int* loopOffsetData
         }
     } else {
         generateItems(project, items);
-        assignChannelsAndExpand(items);
+        assignChannelsAndExpand(items, project.tempo());
         pad(items, project.getLength());
         if (project.playlist().doesLoop()) {
             totalSamples = encode(project, items, data, project.playlist().loopOffset(), &_loopOffsetData, currentOffset, &_currentOffsetData, false);
@@ -222,7 +222,7 @@ QByteArray VGMStream::compile(const Project& project, const Pattern& pattern, co
     int _currentOffsetData;
 
     processPattern(0, project, pattern, items, loopStart, loopEnd);
-    assignChannelsAndExpand(items);
+    assignChannelsAndExpand(items, project.tempo());
     pad(items, loopEnd - loopStart);
     totalSamples = encode(project, items, data, loopStart, nullptr, currentOffset, &_currentOffsetData, true);
 
@@ -246,7 +246,7 @@ QByteArray VGMStream::compile(const Project& project, const float loopStart, con
     int _currentOffsetData;
 
     generateItems(project, items, loopStart, loopEnd);
-    assignChannelsAndExpand(items);
+    assignChannelsAndExpand(items, project.tempo());
     pad(items, loopEnd - loopStart);
     totalSamples = encode(project, items, data, loopStart, nullptr, currentOffset, &_currentOffsetData, true);
 
@@ -389,7 +389,7 @@ void VGMStream::generateItems(const Project& project, QList<StreamItem*>& items,
     }
 }
 
-void VGMStream::assignChannelsAndExpand(QList<StreamItem*>& items)
+void VGMStream::assignChannelsAndExpand(QList<StreamItem*>& items, const int tempo)
 {
     QList<StreamItem*> itemsCopy = items;
     std::sort(itemsCopy.begin(), itemsCopy.end(), [](const StreamItem* a, const StreamItem* b){ return a->time() < b->time(); });
@@ -398,7 +398,15 @@ void VGMStream::assignChannelsAndExpand(QList<StreamItem*>& items)
         StreamNoteItem* noteItem = dynamic_cast<StreamNoteItem*>(item);
         assignChannel(noteItem, items);
         StreamNoteItem* noteOffItem = new StreamNoteItem(*noteItem);
-        noteOffItem->setTime(noteItem->time() + noteItem->note().duration());
+
+        if (noteItem->type() == Channel::Type::PCM) {
+            quint32 pcmSamples = QFileInfo(QFile(dynamic_cast<const PCMChannelSettings*>(noteItem->channelSettings())->path())).size();
+            float pcmDuration = (float)pcmSamples / 44100 / 60 * tempo;
+
+            noteOffItem->setTime(noteItem->time() + qMin(pcmDuration, noteItem->note().duration()));
+        } else {
+            noteOffItem->setTime(noteItem->time() + noteItem->note().duration());
+        }
         noteOffItem->setOn(false);
         items.append(noteOffItem);
     }
@@ -514,20 +522,22 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
 
         quint32 fullDelaySamples = (quint32)((items[i]->time() - lastTime) / project.tempo() * 60 * 44100);
         lastTime = items[i]->time();
-        if (lastPCM) {
-            quint32 delayToEndOfPCM = pcmSize - pcmWritten;
-            totalSamples += encodeDelay(qMin(fullDelaySamples, delayToEndOfPCM), data, true);
-            pcmWritten += qMin(fullDelaySamples, delayToEndOfPCM);
+        if (fullDelaySamples > 0) {
+            if (lastPCM) {
+                quint32 delayToEndOfPCM = pcmSize - pcmWritten;
+                totalSamples += encodeDelay(qMin(fullDelaySamples, delayToEndOfPCM), data, true);
+                pcmWritten += qMin(fullDelaySamples, delayToEndOfPCM);
 
-            if (delayToEndOfPCM < fullDelaySamples) {
-                totalSamples += encodeDelay(fullDelaySamples - delayToEndOfPCM, data, false);
-            }
+                if (delayToEndOfPCM < fullDelaySamples) {
+                    totalSamples += encodeDelay(fullDelaySamples - delayToEndOfPCM, data, false);
+                }
 
-            if (pcmWritten == pcmSize) {
-                lastPCM = nullptr;
+                if (pcmWritten == pcmSize) {
+                    lastPCM = nullptr;
+                }
+            } else {
+                totalSamples += encodeDelay(fullDelaySamples, data, false);
             }
-        } else {
-            totalSamples += encodeDelay(fullDelaySamples, data, false);
         }
 
         StreamSettingsItem* ssi;

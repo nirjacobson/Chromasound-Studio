@@ -127,7 +127,7 @@ class VGMStream
         void processTrack(const float time, const Channel& channel, const Track* track, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
 
         void generateItems(const Project& project, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
-        void assignChannelsAndExpand(QList<StreamItem*>& items);
+        void assignChannelsAndExpand(QList<StreamItem*>& items, const int tempo);
 
         void pad(QList<StreamItem*>& items, const float toDuration);
 
