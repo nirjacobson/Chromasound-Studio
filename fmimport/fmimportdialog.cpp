@@ -12,6 +12,7 @@ FMImportDialog::FMImportDialog(QWidget *parent)
 
     ui->patchTableView->setModel(&_tableModel);
     ui->patchTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->patchTableView->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
     ui->channelRadioButton->setChecked(true);
 
     connect(ui->actionOpen, &QAction::triggered, this, &FMImportDialog::openTriggered);
