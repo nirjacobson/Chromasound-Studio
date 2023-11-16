@@ -444,20 +444,23 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items, Q
 
         quint32 fullDelaySamples = (quint32)((items[i]->time() - lastTime) / project.tempo() * 60 * 44100);
         lastTime = items[i]->time();
-        if (lastPCM) {
-            quint32 delayToEndOfPCM = pcmSize - pcmWritten;
-            totalSamples += encodeDelay(qMin(fullDelaySamples, delayToEndOfPCM), data, true);
-            pcmWritten += qMin(fullDelaySamples, delayToEndOfPCM);
 
-            if (delayToEndOfPCM < fullDelaySamples) {
-                totalSamples += encodeDelay(fullDelaySamples - delayToEndOfPCM, data, false);
-            }
+        if (fullDelaySamples > 0) {
+            if (lastPCM) {
+                quint32 delayToEndOfPCM = pcmSize - pcmWritten;
+                totalSamples += encodeDelay(qMin(fullDelaySamples, delayToEndOfPCM), data, true);
+                pcmWritten += qMin(fullDelaySamples, delayToEndOfPCM);
 
-            if (pcmWritten == pcmSize) {
-                lastPCM = nullptr;
+                if (delayToEndOfPCM < fullDelaySamples) {
+                    totalSamples += encodeDelay(fullDelaySamples - delayToEndOfPCM, data, false);
+                }
+
+                if (pcmWritten == pcmSize) {
+                    lastPCM = nullptr;
+                }
+            } else {
+                totalSamples += encodeDelay(fullDelaySamples, data, false);
             }
-        } else {
-            totalSamples += encodeDelay(fullDelaySamples, data, false);
         }
 
         StreamSettingsItem* ssi;
