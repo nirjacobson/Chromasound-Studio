@@ -12,16 +12,26 @@ AddTrackCommand::AddTrackCommand(MainWindow* window, const QList<Track::Item*>& 
     setText("add track");
 }
 
+AddTrackCommand::~AddTrackCommand()
+{
+    if (_addChannelCommand) delete _addChannelCommand;
+    if (_setChannelNameCommand) delete _setChannelNameCommand;
+    if (_addTrackItemsCommand) delete _addTrackItemsCommand;
+}
+
 void AddTrackCommand::undo()
 {
     _addTrackItemsCommand->undo();
     delete _addTrackItemsCommand;
+    _addTrackItemsCommand = nullptr;
 
     _setChannelNameCommand->undo();
     delete _setChannelNameCommand;
+    _setChannelNameCommand = nullptr;
 
     _addChannelCommand->undo();
     delete _addChannelCommand;
+    _addChannelCommand = nullptr;
 }
 
 void AddTrackCommand::redo()

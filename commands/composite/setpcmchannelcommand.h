@@ -11,6 +11,7 @@ class SetPCMChannelCommand : public QUndoCommand
 {
 public:
     SetPCMChannelCommand(MainWindow* window, Channel& channel, PCMChannelSettings settingsAfter, const QString& name = "");
+    ~SetPCMChannelCommand();
 
 private:
     MainWindow* _mainWindow;

@@ -12,19 +12,29 @@ SetPCMChannelCommand::SetPCMChannelCommand(MainWindow* window, Channel& channel,
     setText("set channel settings");
 }
 
+SetPCMChannelCommand::~SetPCMChannelCommand()
+{
+    if (_setChannelNameCommand) delete _setChannelNameCommand;
+    if (_setPCMChannelSettingsCommand) delete _setPCMChannelSettingsCommand;
+    if (_setChannelTypeCommand) delete _setChannelTypeCommand;
+}
+
 void SetPCMChannelCommand::undo()
 {
     if (_setChannelNameCommand) {
         _setChannelNameCommand->undo();
         delete _setChannelNameCommand;
+        _setChannelNameCommand = nullptr;
     }
 
     _setPCMChannelSettingsCommand->undo();
     delete _setPCMChannelSettingsCommand;
+    _setPCMChannelSettingsCommand = nullptr;
 
     if (_setChannelTypeCommand) {
         _setChannelTypeCommand->undo();
         delete _setChannelTypeCommand;
+        _setPCMChannelSettingsCommand = nullptr;
     }
 }
 

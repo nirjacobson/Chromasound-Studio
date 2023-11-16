@@ -10,13 +10,21 @@ ReplaceTrackItemsCommand::ReplaceTrackItemsCommand(MainWindow* window, Track& tr
     setText("load track");
 }
 
+ReplaceTrackItemsCommand::~ReplaceTrackItemsCommand()
+{
+    if (_addTrackItemsCommand) delete _addTrackItemsCommand;
+    if (_removeTrackItemsCommand) delete _removeTrackItemsCommand;
+}
+
 void ReplaceTrackItemsCommand::undo()
 {
     _addTrackItemsCommand->undo();
-    _removeTrackItemsCommand->undo();
-
     delete _addTrackItemsCommand;
+    _addTrackItemsCommand = nullptr;
+
+    _removeTrackItemsCommand->undo();
     delete _removeTrackItemsCommand;
+    _removeTrackItemsCommand = nullptr;
 }
 
 void ReplaceTrackItemsCommand::redo()

@@ -11,13 +11,21 @@ AddFMChannelCommand::AddFMChannelCommand(MainWindow* window, const FMChannelSett
     setText("add FM channel");
 }
 
+AddFMChannelCommand::~AddFMChannelCommand()
+{
+    if (_addChannelCommand) delete _addChannelCommand;
+    if (_setFMChannelCommand) delete _setFMChannelCommand;
+}
+
 void AddFMChannelCommand::undo()
 {
     _setFMChannelCommand->undo();
     delete _setFMChannelCommand;
+    _setFMChannelCommand = nullptr;
 
     _addChannelCommand->undo();
     delete _addChannelCommand;
+    _addChannelCommand = nullptr;
 }
 
 void AddFMChannelCommand::redo()
