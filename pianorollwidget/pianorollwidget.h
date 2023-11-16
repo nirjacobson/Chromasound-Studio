@@ -17,6 +17,7 @@
 #include "commands/editnotecommand.h"
 #include "commands/addtrackitemscommand.h"
 #include "commands/removetrackitemscommand.h"
+#include "commands/composite/replacetrackitemscommand.h"
 #include "bson.h"
 #include "midi/midi.h"
 #include "midi/midifile.h"

@@ -284,31 +284,15 @@ void FMImportDialog::sendTriggered()
     int selectedIndex = ui->patchTableView->selectionModel()->selectedIndexes().first().row();
 
     if (ui->newChannelRadioButton->isChecked()) {
-        _app->undoStack().push(new AddChannelCommand(_app->window()));
-        _app->undoStack().push(new SetChannelTypeCommand(_app->window(), _app->project().getChannel(_app->project().channels()-1), Channel::Type::FM));
-        _app->undoStack().push(new SetFMChannelSettingsCommand(_app->window(),
-                                                               dynamic_cast<FMChannelSettings&>(_app->project().getChannel(_app->project().channels()-1).settings()),
-                                                               _patchSettings[selectedIndex]));
-        _app->undoStack().push(new SetChannelNameCommand(_app->window(), _app->project().getChannel(_app->project().channels()-1), _patchNames[selectedIndex]));
+        _app->undoStack().push(new AddFMChannelCommand(_app->window(), _patchSettings[selectedIndex], _patchNames[selectedIndex]));
     } else if (ui->channelRadioButton->isChecked()) {
         int channelIndex = ui->channelSpinBox->value() - 1;
 
         if (channelIndex < _app->project().channels()) {
             Channel& channel = _app->project().getChannel(channelIndex);
-            if (channel.type() != Channel::Type::FM) {
-                _app->undoStack().push(new SetChannelTypeCommand(_app->window(), channel, Channel::Type::FM));
-            }
-            _app->undoStack().push(new SetFMChannelSettingsCommand(_app->window(),
-                                                                   dynamic_cast<FMChannelSettings&>(channel.settings()),
-                                                                   _patchSettings[selectedIndex]));
-            _app->undoStack().push(new SetChannelNameCommand(_app->window(), channel, _patchNames[selectedIndex]));
+            _app->undoStack().push(new SetFMChannelCommand(_app->window(), channel, _patchSettings[selectedIndex], _patchNames[selectedIndex]));
         } else {
-            _app->undoStack().push(new AddChannelCommand(_app->window()));
-            _app->undoStack().push(new SetChannelTypeCommand(_app->window(), _app->project().getChannel(_app->project().channels()-1), Channel::Type::FM));
-            _app->undoStack().push(new SetFMChannelSettingsCommand(_app->window(),
-                                                                   dynamic_cast<FMChannelSettings&>(_app->project().getChannel(_app->project().channels()-1).settings()),
-                                                                   _patchSettings[selectedIndex]));
-            _app->undoStack().push(new SetChannelNameCommand(_app->window(), _app->project().getChannel(_app->project().channels()-1), _patchNames[selectedIndex]));
+            _app->undoStack().push(new AddFMChannelCommand(_app->window(), _patchSettings[selectedIndex], _patchNames[selectedIndex]));
         }
     }
 }

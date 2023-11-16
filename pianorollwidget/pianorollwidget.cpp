@@ -143,8 +143,7 @@ void PianoRollWidget::loadMIDI(const MIDIFile& file)
 
             QList<Track::Item*> items = MIDI::toTrackItems(*track, header->division());
 
-            _app->undoStack().push(new RemoveTrackItemsCommand(_app->window(), *_track, _track->items()));
-            _app->undoStack().push(new AddTrackItemsCommand(_app->window(), *_track, 0, items));
+            _app->undoStack().push(new ReplaceTrackItemsCommand(_app->window(), *_track, items));
         }
     }
 }
