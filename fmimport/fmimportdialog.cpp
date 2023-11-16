@@ -37,6 +37,8 @@ void FMImportDialog::setApplication(Application* app)
 
 void FMImportDialog::load(const QString& path)
 {
+    clear();
+
     quint8 ym2612_1[0xFF];
     quint8 ym2612_2[0xFF];
 
@@ -204,7 +206,6 @@ void FMImportDialog::openTriggered()
     QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "VGM file (*.vgm)");
 
     if (!path.isNull()) {
-        clear();
         load(path);
     }
 }
