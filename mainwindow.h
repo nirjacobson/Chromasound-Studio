@@ -55,6 +55,8 @@ public:
 
     void setChannelType(Channel& channel, const Channel::Type type);
 
+    Application* app();
+
 private slots:
     void play();
     void pause();

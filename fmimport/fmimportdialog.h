@@ -16,6 +16,8 @@
 #include "commands/setchanneltypecommand.h"
 #include "commands/setfmchannelsettingscommand.h"
 #include "commands/setchannelnamecommand.h"
+#include "commands/composite/addfmchannelcommand.h"
+#include "commands/composite/setfmchannelcommand.h"
 
 namespace Ui {
 class FMImportDialog;

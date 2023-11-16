@@ -215,18 +215,33 @@ set(PROJECT_SOURCES
     commands/setchanneltypecommand.cpp
     commands/setpcmchannelsettingscommand.h
     commands/setpcmchannelsettingscommand.cpp
+    fmimport/fmimportdialog.h
+    fmimport/fmimportdialog.cpp
+    fmimport/fmimportdialog.ui
+    fmimport/patchtablemodel.h
+    fmimport/patchtablemodel.cpp
+    fmimport/tableview.h
+    fmimport/tableview.cpp
+    commands/setchannelnamecommand.h
+    commands/setchannelnamecommand.cpp
+    commands/composite/setfmchannelcommand.h
+    commands/composite/setfmchannelcommand.cpp
+    commands/composite/setpcmchannelcommand.h
+    commands/composite/setpcmchannelcommand.cpp
+    commands/composite/replacetrackitemscommand.h
+    commands/composite/replacetrackitemscommand.cpp
+    commands/composite/addfmchannelcommand.h
+    commands/composite/addfmchannelcommand.cpp
+    commands/composite/addpcmchannelcommand.h
+    commands/composite/addpcmchannelcommand.cpp
+    commands/composite/addtrackcommand.h
+    commands/composite/addtrackcommand.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(FM-PSG-Studio
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        fmimport/fmimportdialog.h fmimport/fmimportdialog.cpp fmimport/fmimportdialog.ui
-        fmimport/patchtablemodel.h fmimport/patchtablemodel.cpp
-        fmimport/tableview.h fmimport/tableview.cpp
-        commands/setchannelnamecommand.h commands/setchannelnamecommand.cpp
-
-
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET FM-PSG-Studio APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

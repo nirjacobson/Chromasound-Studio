@@ -264,19 +264,14 @@ void ChannelWidget::fromPath(const QString& path)
 
     if (fileInfo.suffix() == "fm") {
         FMChannelSettings* settings = BSON::decodePatch(path);
-        _app->undoStack().push(new SetChannelTypeCommand(_app->window(), _app->project().getChannel(_index), Channel::Type::FM));
-        _app->undoStack().push(new SetFMChannelSettingsCommand(_app->window(),
-                                                               dynamic_cast<FMChannelSettings&>(_app->project().getChannel(_index).settings()),
-                                                               *settings));
+        _app->undoStack().push(new SetFMChannelCommand(_app->window(), _app->project().getChannel(_index), *settings));
+
         delete settings;
     } else if (fileInfo.suffix() == "pcm") {
         PCMChannelSettings* settings = new PCMChannelSettings;
         settings->setPath(path);
+        _app->undoStack().push(new SetPCMChannelCommand(_app->window(), _app->project().getChannel(_index), *settings));
 
-        _app->undoStack().push(new SetChannelTypeCommand(_app->window(), _app->project().getChannel(_index), Channel::Type::PCM));
-        _app->undoStack().push(new SetPCMChannelSettingsCommand(_app->window(),
-                                                                dynamic_cast<PCMChannelSettings&>(_app->project().getChannel(_index).settings()),
-                                                                *settings));
         delete settings;
     } else if (fileInfo.suffix() == "mid") {
         MIDIFile mfile(file);
@@ -294,8 +289,8 @@ void ChannelWidget::fromPath(const QString& path)
                 QList<Track::Item*> items = MIDI::toTrackItems(*track, header->division());
 
                 Track& t = _app->project().getFrontPattern().getTrack(_index);
-                _app->undoStack().push(new RemoveTrackItemsCommand(_app->window(), t, t.items()));
-                _app->undoStack().push(new AddTrackItemsCommand(_app->window(), t, 0, items));
+
+                _app->undoStack().push(new ReplaceTrackItemsCommand(_app->window(), t, items));
                 t.usePianoRoll();
             }
         }
@@ -466,7 +461,6 @@ void ChannelWidget::moveDownTriggered()
 void ChannelWidget::fillEvery2StepsTriggered()
 {
     Track& track = _app->project().getFrontPattern().getTrack(_index);
-    _app->undoStack().push(new RemoveTrackItemsCommand(_app->window(), track, track.items()));
 
     QList<Track::Item*> newItems;
 
@@ -475,13 +469,12 @@ void ChannelWidget::fillEvery2StepsTriggered()
         newItems.append(new Track::Item(time, Note(60, 0.25)));
     }
 
-    _app->undoStack().push(new AddTrackItemsCommand(_app->window(), track, 0, newItems));
+    _app->undoStack().push(new ReplaceTrackItemsCommand(_app->window(), track, newItems));
 }
 
 void ChannelWidget::fillEvery4StepsTriggered()
 {
     Track& track = _app->project().getFrontPattern().getTrack(_index);
-    _app->undoStack().push(new RemoveTrackItemsCommand(_app->window(), track, track.items()));
 
     QList<Track::Item*> newItems;
 
@@ -489,7 +482,7 @@ void ChannelWidget::fillEvery4StepsTriggered()
         newItems.append(new Track::Item(i, Note(60, 0.25)));
     }
 
-    _app->undoStack().push(new AddTrackItemsCommand(_app->window(), track, 0, newItems));
+    _app->undoStack().push(new ReplaceTrackItemsCommand(_app->window(), track, newItems));
 }
 
 void ChannelWidget::paintEvent(QPaintEvent* event)

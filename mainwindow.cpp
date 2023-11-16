@@ -642,6 +642,11 @@ void MainWindow::setChannelType(Channel& channel, const Channel::Type type)
     doUpdate();
 }
 
+Application* MainWindow::app()
+{
+    return _app;
+}
+
 void MainWindow::showEvent(QShowEvent*)
 {
     if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {

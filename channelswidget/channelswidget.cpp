@@ -314,9 +314,36 @@ void ChannelsWidget::dropEvent(QDropEvent* event)
 
     int index = _app->project().channels();
 
-    if (fileInfo.suffix() == "fm" || fileInfo.suffix() == "pcm" || fileInfo.suffix() == "mid") {
-        _app->undoStack().push(new AddChannelCommand(_app->window()));
-        _channelWidgets[index]->fromPath(path);
+
+    if (fileInfo.suffix() == "fm") {
+        FMChannelSettings* settings = BSON::decodePatch(path);
+        _app->undoStack().push(new AddFMChannelCommand(_app->window(), *settings, QFileInfo(QFile(path)).baseName()));
+
+        delete settings;
+    } else if (fileInfo.suffix() == "pcm") {
+        PCMChannelSettings* settings = new PCMChannelSettings;
+        settings->setPath(path);
+        _app->undoStack().push(new AddPCMChannelCommand(_app->window(), *settings, QFileInfo(QFile(path)).baseName()));
+
+        delete settings;
+    } else if (fileInfo.suffix() == "mid") {
+        MIDIFile mfile(file);
+
+        auto it1 = std::find_if(mfile.chunks().begin(), mfile.chunks().end(), [](const MIDIChunk* chunk){ return dynamic_cast<const MIDIHeader*>(chunk); });
+
+        if (it1 != mfile.chunks().end()) {
+            const MIDIHeader* header = dynamic_cast<const MIDIHeader*>(*it1);
+
+            auto it2 = std::find_if(mfile.chunks().begin(), mfile.chunks().end(), [](const MIDIChunk* chunk){ return dynamic_cast<const MIDITrack*>(chunk); });
+
+            if (it2 != mfile.chunks().end()) {
+                const MIDITrack* track = dynamic_cast<const MIDITrack*>(*it2);
+
+                QList<Track::Item*> items = MIDI::toTrackItems(*track, header->division());
+
+                _app->undoStack().push(new AddTrackCommand(_app->window(), items, QFileInfo(file).baseName()));
+            }
+        }
     }
 }
 

@@ -15,7 +15,10 @@
 #include "commands/removenotecommand.h"
 #include "commands/editnotecommand.h"
 #include "commands/addchannelcommand.h"
+#include "commands/composite/addtrackcommand.h"
 #include "commands/setchanneltypecommand.h"
+#include "commands/composite/addfmchannelcommand.h"
+#include "commands/composite/addpcmchannelcommand.h"
 
 namespace Ui {
     class ChannelsWidget;
