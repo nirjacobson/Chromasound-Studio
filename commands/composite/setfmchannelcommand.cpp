@@ -12,19 +12,29 @@ SetFMChannelCommand::SetFMChannelCommand(MainWindow* window, Channel& channel, c
     setText("set channel settings");
 }
 
+SetFMChannelCommand::~SetFMChannelCommand()
+{
+    if (_setChannelNameCommand) delete _setChannelNameCommand;
+    if (_setFMChannelSettingsCommand) delete _setFMChannelSettingsCommand;
+    if (_setChannelTypeCommand) delete _setChannelTypeCommand;
+}
+
 void SetFMChannelCommand::undo()
 {
     if (_setChannelNameCommand) {
         _setChannelNameCommand->undo();
         delete _setChannelNameCommand;
+        _setChannelNameCommand = nullptr;
     }
 
     _setFMChannelSettingsCommand->undo();
     delete _setFMChannelSettingsCommand;
+    _setFMChannelSettingsCommand = nullptr;
 
     if (_setChannelTypeCommand) {
         _setChannelTypeCommand->undo();
         delete _setChannelTypeCommand;
+        _setChannelTypeCommand = nullptr;
     }
 }
 

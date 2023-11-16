@@ -13,6 +13,7 @@ class SetFMChannelCommand : public QUndoCommand
 {
 public:
     SetFMChannelCommand(MainWindow* window, Channel& channel, const FMChannelSettings& settingsAfter, const QString& name = "");
+    ~SetFMChannelCommand();
 
 private:
     MainWindow* _mainWindow;

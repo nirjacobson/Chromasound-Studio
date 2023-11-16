@@ -10,6 +10,7 @@ class AddPCMChannelCommand : public QUndoCommand
 {
 public:
     AddPCMChannelCommand(MainWindow* window, const PCMChannelSettings& settingsAfter, const QString& name);
+    ~AddPCMChannelCommand();
 
 private:
     MainWindow* _mainWindow;

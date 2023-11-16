@@ -11,13 +11,21 @@ AddPCMChannelCommand::AddPCMChannelCommand(MainWindow* window, const PCMChannelS
     setText("add PCM channel");
 }
 
+AddPCMChannelCommand::~AddPCMChannelCommand()
+{
+    if (_addChannelCommand) delete _addChannelCommand;
+    if (_setPCMChannelCommand) delete _setPCMChannelCommand;
+}
+
 void AddPCMChannelCommand::undo()
 {
     _setPCMChannelCommand->undo();
     delete _setPCMChannelCommand;
+    _setPCMChannelCommand = nullptr;
 
     _addChannelCommand->undo();
     delete _addChannelCommand;
+    _addChannelCommand = nullptr;
 }
 
 void AddPCMChannelCommand::redo()

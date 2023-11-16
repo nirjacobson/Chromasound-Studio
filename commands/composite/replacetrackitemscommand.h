@@ -13,6 +13,7 @@ class ReplaceTrackItemsCommand : public QUndoCommand
 {
 public:
     ReplaceTrackItemsCommand(MainWindow* window, Track& track, const QList<Track::Item*>& items);
+    ~ReplaceTrackItemsCommand();
 
 private:
     MainWindow* _mainWindow;

@@ -13,6 +13,7 @@ class AddTrackCommand : public QUndoCommand
 {
 public:
     AddTrackCommand(MainWindow* window, const QList<Track::Item*>& items, const QString& name);
+    ~AddTrackCommand();
 
 private:
     MainWindow* _mainWindow;
