@@ -283,7 +283,8 @@ void VGMStream::reset()
 int VGMStream::acquireToneChannel(const float time, const float duration)
 {
     for (int i = 0; i < TONE_CHANNELS; i++) {
-        if (_toneChannels[i].acquire(time, duration)) {
+        bool first;
+        if (_toneChannels[i].acquire(time, duration, first)) {
             return i;
         }
     }
@@ -295,14 +296,19 @@ int VGMStream::acquireNoiseChannel(const float time, const float duration, const
 {
     for (int i = 0; i < NOISE_CHANNELS; i++) {
         if (_noiseChannels[i].settings() == *settings) {
-            if (_noiseChannels[i].acquire(time, duration)) {
+            bool first;
+            if (_noiseChannels[i].acquire(time, duration, first)) {
+                if (first) {
+                    items.append(new StreamSettingsItem(time, i, settings));
+                }
                 return i;
             }
         }
     }
 
     for (int i = 0; i < NOISE_CHANNELS; i++) {
-        if (_noiseChannels[i].acquire(time, duration)) {
+        bool first;
+        if (_noiseChannels[i].acquire(time, duration, first)) {
             _noiseChannels[i].settings() = *settings;
             items.append(new StreamSettingsItem(time, i, settings));
             return i;
@@ -316,14 +322,19 @@ int VGMStream::acquireFMChannel(const float time, const float duration, const FM
 {
     for (int i = 0; i < FM_CHANNELS; i++) {
         if (_fmChannels[i].settings() == *settings) {
-            if (_fmChannels[i].acquire(time, duration)) {
+            bool first;
+            if (_fmChannels[i].acquire(time, duration, first)) {
+                if (first) {
+                    items.append(new StreamSettingsItem(time, i, settings));
+                }
                 return i;
             }
         }
     }
 
     for (int i = 0; i < FM_CHANNELS; i++) {
-        if (_fmChannels[i].acquire(time, duration)) {
+        bool first;
+        if (_fmChannels[i].acquire(time, duration, first)) {
             _fmChannels[i].settings() = *settings;
             items.append(new StreamSettingsItem(time, i, settings));
             return i;
@@ -336,7 +347,8 @@ int VGMStream::acquireFMChannel(const float time, const float duration, const FM
 int VGMStream::acquirePCMChannel(const float time, const float duration)
 {
     for (int i = 0; i < PCM_CHANNELS; i++) {
-        if (_pcmChannels[i].acquire(time, duration)) {
+        bool first;
+        if (_pcmChannels[i].acquire(time, duration, first)) {
             return i;
         }
     }
@@ -940,12 +952,15 @@ VGMStream::PhysicalChannel::PhysicalChannel()
     : _time(0)
     , _duration(0)
     , _acquiredIndefinitely(false)
+    , _acquiredEver(false)
 {
 
 }
 
-bool VGMStream::PhysicalChannel::acquire(float time, float duration)
+bool VGMStream::PhysicalChannel::acquire(float time, float duration, bool& first)
 {
+    first = !_acquiredEver;
+
     if (_acquiredIndefinitely) {
         return false;
     }
@@ -960,6 +975,8 @@ bool VGMStream::PhysicalChannel::acquire(float time, float duration)
     if (duration == 0) {
         _acquiredIndefinitely = true;
     }
+
+    _acquiredEver = true;
 
     return true;
 }
