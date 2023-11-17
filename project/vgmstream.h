@@ -45,6 +45,15 @@ class VGMStream
                 bool _on;
         };
 
+        class StreamLFOItem : public StreamItem {
+            public:
+                StreamLFOItem(const float time, const int mode);
+
+                int mode() const;
+            private:
+                int _mode;
+        };
+
         VGMStream();
 
         void assignChannel(StreamNoteItem* noteItem, QList<StreamItem*>& items);
@@ -72,15 +81,6 @@ class VGMStream
             private:
                 int _channel;
                 const Settings* _channelSettings;
-        };
-
-        class StreamLFOItem : public StreamItem {
-            public:
-                StreamLFOItem(const float time, const int mode);
-
-                int mode() const;
-            private:
-                int _mode;
         };
 
         class StreamEndItem : public StreamItem {

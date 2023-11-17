@@ -39,7 +39,7 @@ class Application : public QApplication
 
         Project& project();
 
-        void keyOn(const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity);
+        void keyOn(const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity, const int lfoMode);
         void keyOff(int key);
 
         QUndoStack& undoStack();

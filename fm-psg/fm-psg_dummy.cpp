@@ -44,7 +44,7 @@ bool FM_PSG_Dummy::isPlaying() const
     return _playing;
 }
 
-void FM_PSG_Dummy::keyOn(const Channel::Type, const ChannelSettings&, const int, const int)
+void FM_PSG_Dummy::keyOn(const Channel::Type, const ChannelSettings&, const int, const int, const int)
 {
 
 }

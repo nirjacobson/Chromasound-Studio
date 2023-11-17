@@ -93,11 +93,13 @@ bool FM_PSG_Impl::isPlaying() const
     return _vgmPlayer->isPlaying();
 }
 
-void FM_PSG_Impl::keyOn(const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity)
+void FM_PSG_Impl::keyOn(const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity, const int lfoMode)
 {
+    VGMStream::StreamLFOItem* sli = new VGMStream::StreamLFOItem(0, lfoMode);
     VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(0, channelType, nullptr, Note(key, 0, velocity), &settings);
     QList<VGMStream::StreamItem*> items;
     QByteArray data;
+    items.append(sli);
     items.append(sni);
     _vgmStream.assignChannel(sni, items);
     _vgmStream.encode(Project(), items, data);

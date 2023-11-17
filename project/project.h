@@ -52,6 +52,9 @@ class Project
         int beatsPerBar() const;
         void setBeatsPerBar(const int beats);
 
+        int lfoMode() const;
+        void setLFOMode(const int mode);
+
         const QList<Pattern*>& patterns() const;
 
         void addChannel();
@@ -76,6 +79,8 @@ class Project
 
         int _tempo;
         int _beatsPerBar;
+
+        int _lfoMode;
 
         void swapChannels(const int idxa, const int idxb);
 };
