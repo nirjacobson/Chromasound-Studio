@@ -450,7 +450,7 @@ void VGMStream::applySettingsChanges(Project& project, const float time, const P
         });
 
         if (!settingChanges.isEmpty()) {
-            settingChanges.prepend(new Track::SettingsChange(time, "", &project.getChannel(it.key()).settings()));
+            settingChanges.prepend(new Track::SettingsChange(0, "", &project.getChannel(it.key()).settings()));
         }
 
         for (auto it2 = settingChanges.begin(); it2 != settingChanges.end(); ++it2) {
