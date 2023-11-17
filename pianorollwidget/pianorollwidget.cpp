@@ -368,8 +368,7 @@ void PianoRollWidget::doneButtonClicked()
 
 void PianoRollWidget::removeButtonClicked()
 {
-    _track->removeSettingsChange(_editingSettingsChange);
-    ui->ganttWidget->update();
+    _app->undoStack().push(new RemoveTrackSettingsChangeCommand(_app->window(), *_track, _editingSettingsChange));
     ui->stackedWidget->setCurrentIndex(0);
 }
 

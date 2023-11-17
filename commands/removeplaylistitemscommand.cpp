@@ -6,7 +6,7 @@ RemovePlaylistItemsCommand::RemovePlaylistItemsCommand(MainWindow* window, Playl
     , _playlist(playlist)
     , _items(items)
 {
-
+    setText("delete playlist items");
 }
 
 void RemovePlaylistItemsCommand::undo()

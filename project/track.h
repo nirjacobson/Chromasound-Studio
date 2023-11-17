@@ -52,15 +52,13 @@ class Track
         };
 
         class SettingsChange : public GanttMarker {
-            private:
-
             public:
                 SettingsChange(const float time, const QString& name, ChannelSettings* settings);
                 ~SettingsChange();
 
                 // GanttMarker interface
                 float time() const;
-                const QString& name() const;
+                QString name() const;
 
                 ChannelSettings& settings();
 
@@ -84,7 +82,7 @@ class Track
         void removeItems(const QList<Item*>& items);
 
         SettingsChange* addSettingsChange(const float time, const QString& name, ChannelSettings* settings);
-        void removeSettingsChange(const SettingsChange* sc);
+        void removeSettingsChange(const SettingsChange* sc, const bool keep = false);
 
         void usePianoRoll();
         bool doesUsePianoRoll() const;

@@ -4,7 +4,7 @@
 AddChannelCommand::AddChannelCommand(MainWindow* window)
     : _mainWindow(window)
 {
-
+    setText("add channel");
 }
 
 void AddChannelCommand::undo()

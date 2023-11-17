@@ -7,7 +7,7 @@ SetChannelNameCommand::SetChannelNameCommand(MainWindow* window, Channel& channe
     , _nameBefore(channel.name())
     , _nameAfter(name)
 {
-
+    setText("set channel name");
 }
 
 void SetChannelNameCommand::undo()

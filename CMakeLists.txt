@@ -246,6 +246,15 @@ set(PROJECT_SOURCES
     fmwidget/fmwidgetwindow.ui
     commands/addtracksettingschangecommand.h
     commands/addtracksettingschangecommand.cpp
+    commands/addplaylistlfochangecommand.h
+    commands/addplaylistlfochangecommand.cpp
+    playlistwidget/lfowidget.h
+    playlistwidget/lfowidget.cpp
+    playlistwidget/lfowidget.ui
+    commands/removetracksettingschangecommand.h
+    commands/removetracksettingschangecommand.cpp
+    commands/removeplaylistlfochangecommand.h
+    commands/removeplaylistlfochangecommand.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

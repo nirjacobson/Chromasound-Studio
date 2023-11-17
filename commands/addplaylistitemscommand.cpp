@@ -7,7 +7,7 @@ AddPlaylistItemsCommand::AddPlaylistItemsCommand(MainWindow* window, Playlist& p
     , _time(time)
     , _items(items)
 {
-
+    setText("add playlist items");
 }
 
 void AddPlaylistItemsCommand::undo()

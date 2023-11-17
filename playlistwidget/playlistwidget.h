@@ -13,6 +13,8 @@
 #include "commands/removeplaylistitemcommand.h"
 #include "commands/removeplaylistitemscommand.h"
 #include "commands/editplaylistcommand.h"
+#include "commands/addplaylistlfochangecommand.h"
+#include "commands/removeplaylistlfochangecommand.h"
 #include "bson.h"
 #include "mdiarea/mdisubwindow.h"
 
@@ -47,7 +49,10 @@ private:
     Ui::PlaylistWidget *ui;
     PlaylistPatternsWidget* _patternsWidget;
 
+    Playlist::LFOChange* _editingLFOChange;
+
 private slots:
+    void ganttMarkerClicked(GanttMarker* marker);
     void ganttHeaderClicked(Qt::MouseButton button, float time);
     void ganttEditorClicked(Qt::MouseButton button, int row, float time);
     void ganttItemChanged(GanttItem* item, const float toTime, const int toRow, const float toDuration);
@@ -55,6 +60,8 @@ private slots:
     void paste();
     void selectAll();
     void deleteTriggered();
+    void doneButtonClicked();
+    void removeButtonClicked();
 
     // QWidget interface
 protected:

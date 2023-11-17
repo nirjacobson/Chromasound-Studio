@@ -6,7 +6,7 @@ RemoveTrackItemsCommand::RemoveTrackItemsCommand(MainWindow* window, Track& trac
     , _track(track)
     , _items(items)
 {
-
+    setText("remove notes");
 }
 
 void RemoveTrackItemsCommand::undo()
