@@ -403,6 +403,10 @@ void VGMStream::generateItems(const Project& project, QList<StreamItem*>& items,
             processPattern(item->time(), project, project.getPattern(item->pattern()), items);
         }
     }
+
+    for (Playlist::LFOChange* change : project.playlist().lfoChanges()) {
+        items.append(new StreamLFOItem(change->time(), change->mode()));
+    }
 }
 
 void VGMStream::assignChannelsAndExpand(QList<StreamItem*>& items, const int tempo)
@@ -555,6 +559,7 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items, Q
 
         StreamSettingsItem* ssi;
         StreamNoteItem* sni;
+        StreamLFOItem* sli;
         if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
             encodeSettingsItem(ssi, data);
         } else if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
@@ -568,6 +573,8 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items, Q
                     pcmSize = pcmWritten + newPcmSize;
                 }
             }
+        } else if ((sli = dynamic_cast<StreamLFOItem*>(items[i])) != nullptr) {
+            encodeLFOItem(sli, data);
         }
     }
     data.append(0x66);
@@ -624,6 +631,7 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
 
         StreamSettingsItem* ssi;
         StreamNoteItem* sni;
+        StreamLFOItem* sli;
         if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
             encodeSettingsItem(ssi, data);
         } else if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
@@ -637,6 +645,8 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
                     pcmSize = pcmWritten + newPcmSize;
                 }
             }
+        } else if ((sli = dynamic_cast<StreamLFOItem*>(items[i])) != nullptr) {
+            encodeLFOItem(sli, data);
         }
     }
     data.append(0x66);
@@ -879,6 +889,17 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
     }
 }
 
+void VGMStream::encodeLFOItem(const StreamLFOItem* item, QByteArray& data)
+{
+    data.append(0x52);
+    data.append(0x22);
+    if (item->mode() > 0) {
+        data.append(0x8 | (item->mode() - 1));
+    } else {
+        data.append((quint8)0x00);
+    }
+}
+
 VGMStream::StreamNoteItem::StreamNoteItem(const float time, const Channel::Type type, const Track* track, const Note& note, const ChannelSettings* channelSettings)
     : StreamItem(time)
     , _type(type)
@@ -1034,4 +1055,16 @@ VGMStream::StreamEndItem::StreamEndItem(const float time)
     : StreamItem(time)
 {
 
+}
+
+VGMStream::StreamLFOItem::StreamLFOItem(const float time, const int mode)
+    : StreamItem(time)
+    , _mode(mode)
+{
+
+}
+
+int VGMStream::StreamLFOItem::mode() const
+{
+    return _mode;
 }

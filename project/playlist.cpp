@@ -179,6 +179,11 @@ void Playlist::setLoopOffset(const float offset)
     _loopOffset = offset;
 }
 
+const QList<Playlist::LFOChange*>& Playlist::lfoChanges() const
+{
+    return _lfoChanges;
+}
+
 QList<Playlist::LFOChange*>& Playlist::lfoChanges()
 {
     return _lfoChanges;
