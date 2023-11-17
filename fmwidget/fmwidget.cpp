@@ -61,7 +61,7 @@ void FMWidget::setSettings(FMChannelSettings* settings)
     ui->operatorWidget4->blockSignals(false);
 
     ui->lfoWidget->blockSignals(true);
-    ui->lfoWidget->setSettings(&settings->lfoSettings());
+    ui->lfoWidget->setSettings(&settings->lfo());
     ui->lfoWidget->blockSignals(false);
 
     ui->algorithmWidget->blockSignals(true);

@@ -25,12 +25,12 @@ const AlgorithmSettings& FMChannelSettings::algorithm() const
     return _algorithm;
 }
 
-LFOSettings& FMChannelSettings::lfoSettings()
+LFOSettings& FMChannelSettings::lfo()
 {
     return _lfo;
 }
 
-const LFOSettings& FMChannelSettings::lfoSettings() const
+const LFOSettings& FMChannelSettings::lfo() const
 {
     return _lfo;
 }
