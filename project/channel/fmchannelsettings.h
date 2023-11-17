@@ -6,6 +6,7 @@
 #include "operatorsettings.h"
 #include "channelsettings.h"
 #include "algorithmsettings.h"
+#include "lfosettings.h"
 
 class FMChannelSettings : public ChannelSettings
 {
@@ -20,6 +21,9 @@ class FMChannelSettings : public ChannelSettings
         AlgorithmSettings& algorithm();
         const AlgorithmSettings& algorithm() const;
 
+        LFOSettings& lfoSettings();
+        const LFOSettings& lfoSettings() const;
+
         bson_t toBSON() const;
         void fromBSON(bson_iter_t& bson);
 
@@ -28,6 +32,7 @@ class FMChannelSettings : public ChannelSettings
     private:
         OperatorSettings _operators[4];
         AlgorithmSettings _algorithm;
+        LFOSettings _lfo;
 };
 
 #endif // FMCHANNELSETTINGS_H
