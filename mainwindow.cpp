@@ -290,6 +290,10 @@ void MainWindow::pianoRollTriggered(const int index, const bool on)
         pianoRollWindow->setWidget(pianoRollWidget);
         connect(pianoRollWindow, &MdiSubWindow::closed, this, [=](){ windowClosed(pianoRollWindow); });
 
+        if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
+            pianoRollWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
+        }
+
         pianoRollWindow->show();
         ui->mdiArea->setActiveSubWindow(pianoRollWindow);
 
@@ -310,7 +314,7 @@ void MainWindow::channelSelected(const int index)
     }
 
     NoiseWidget* noiseWidget;
-    FMWidget* fmWidget;
+    FMWidgetWindow* fmWidget;
     PCMWidget* pcmWidget;
     QList<MdiSubWindow*>::Iterator it;
 
@@ -337,13 +341,13 @@ void MainWindow::channelSelected(const int index)
             }
             break;
         case Channel::Type::FM:
-            it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window){ return dynamic_cast<FMWidget*>(window->widget()); });
+            it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window){ return dynamic_cast<FMWidgetWindow*>(window->widget()); });
             if (it != _channelWindows[index].end()) {
                 ui->mdiArea->setActiveSubWindow(*it);
             } else {
-                fmWidget = new FMWidget(this, _app);
-                connect(fmWidget, &FMWidget::keyPressed, this, &MainWindow::keyOn);
-                connect(fmWidget, &FMWidget::keyReleased, this, &MainWindow::keyOff);
+                fmWidget = new FMWidgetWindow(this, _app);
+                connect(fmWidget, &FMWidgetWindow::keyPressed, this, &MainWindow::keyOn);
+                connect(fmWidget, &FMWidgetWindow::keyReleased, this, &MainWindow::keyOff);
                 fmWidget->setSettings(dynamic_cast<FMChannelSettings*>(&_app->project().getChannel(index).settings()));
                 fmWidget->setWindowTitle(QString("%1: FM").arg(_app->project().getChannel(index).name()));
 
@@ -390,7 +394,7 @@ void MainWindow::channelNameChanged(const int index)
             tail = "Piano Roll";
         } else if (dynamic_cast<NoiseWidget*>(window->widget())) {
             tail = "Noise";
-        } else if (dynamic_cast<FMWidget*>(window->widget())) {
+        } else if (dynamic_cast<FMWidgetWindow*>(window->widget())) {
             tail = "FM";
         }
 
@@ -467,10 +471,10 @@ void MainWindow::keyOn(const int key, const int velocity)
 
         for (MdiSubWindow* window : _channelWindows[activeChannel]) {
             PianoRollWidget* prw;
-            FMWidget* fmw;
+            FMWidgetWindow* fmw;
             if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
                 prw->pressKey(key);
-            } else if ((fmw = dynamic_cast<FMWidget*>(window->widget()))) {
+            } else if ((fmw = dynamic_cast<FMWidgetWindow*>(window->widget()))) {
                 fmw->pressKey(key);
             }
         }
@@ -483,10 +487,10 @@ void MainWindow::keyOff(const int key)
     _app->keyOff(key);
     for (MdiSubWindow* window : _channelWindows[activeChannel]) {
         PianoRollWidget* prw;
-        FMWidget* fmw;
+        FMWidgetWindow* fmw;
         if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
             prw->releaseKey(key);
-        } else if ((fmw = dynamic_cast<FMWidget*>(window->widget()))) {
+        } else if ((fmw = dynamic_cast<FMWidgetWindow*>(window->widget()))) {
             fmw->releaseKey(key);
         }
     }
@@ -615,12 +619,12 @@ void MainWindow::channelSettingsUpdated()
     for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
         for (MdiSubWindow* window : (*it)) {
             NoiseWidget* nw;
-            FMWidget* fmw;
+            FMWidgetWindow* fmw;
             PCMWidget* pw;
 
             if ((nw = dynamic_cast<NoiseWidget*>(window->widget()))) {
                 nw->doUpdate();
-            } else if ((fmw = dynamic_cast<FMWidget*>(window->widget()))) {
+            } else if ((fmw = dynamic_cast<FMWidgetWindow*>(window->widget()))) {
                 fmw->doUpdate();
             } else if ((pw = dynamic_cast<PCMWidget*>(window->widget()))) {
                 pw->doUpdate();

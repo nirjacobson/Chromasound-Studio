@@ -13,6 +13,7 @@ GanttEditorWidget::GanttEditorWidget(QWidget *parent)
     , _snap(true)
     , _invertRows(false)
     , _items(nullptr)
+    , _markers(nullptr)
     , _itemUnderCursor(nullptr)
     , _itemsResizable(false)
     , _itemsMovableX(false)
@@ -24,6 +25,7 @@ GanttEditorWidget::GanttEditorWidget(QWidget *parent)
     , _cursorColor(QColor(64, 192, 64))
     , _selectionColor(QColor(192, 192, 255))
     , _loopColor(QColor(255, 192, 0))
+    , _markerColor(QColor(255, 128, 128))
     , _selecting(false)
     , _cellMajors({ 4 })
 {
@@ -46,6 +48,11 @@ void GanttEditorWidget::setHorizontalScrollPercentage(const float percent)
     _left = percent * scrollWidth;
 
     update();
+}
+
+void GanttEditorWidget::setMarkers(QList<GanttMarker*>* markers)
+{
+    _markers = markers;
 }
 
 void GanttEditorWidget::setItems(QList<GanttItem*>* items)
@@ -216,6 +223,16 @@ void GanttEditorWidget::paintEvent(QPaintEvent*)
 
         painter.setPen(_cursorColor);
         painter.drawLine(p1, p2);
+    }
+
+    if (_markers) {
+        for (GanttMarker* marker : *_markers) {
+            if (leftPosition <= marker->time() && marker->time() <= rightPosition) {
+                int markerPixel = (marker->time() - leftPosition) / beatsPerPixel;
+                painter.setPen(_markerColor);
+                painter.drawLine(QLine(QPoint(markerPixel, 0), QPoint(markerPixel, height())));
+            }
+        }
     }
 
     if (_selecting) {

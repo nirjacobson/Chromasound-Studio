@@ -40,6 +40,11 @@ const QList<Track::Item*>& Track::items() const
     return _items;
 }
 
+QList<Track::SettingsChange*>& Track::settingsChanges()
+{
+    return _settingsChanges;
+}
+
 float Track::length() const
 {
     float end = 0;
@@ -98,6 +103,23 @@ float Track::removeItem(const float time)
 void Track::removeItems(const QList<Item*>& items)
 {
     _items.erase(std::remove_if(_items.begin(), _items.end(), [&](const Track::Item* item){ return items.contains(item); }), _items.end());
+}
+
+Track::SettingsChange* Track::addSettingsChange(const float time, const QString& name, ChannelSettings* settings)
+{
+    SettingsChange* ret = nullptr;
+
+    if (std::find_if(_settingsChanges.begin(), _settingsChanges.end(), [=](SettingsChange* const sc){ return sc->time() == time; }) == _settingsChanges.end()) {
+        ret = new SettingsChange(time, name, settings);
+        _settingsChanges.append(ret);
+    }
+
+    return ret;
+}
+
+void Track::removeSettingsChange(const SettingsChange* sc)
+{
+    _settingsChanges.removeAll(sc);
 }
 
 void Track::usePianoRoll()
@@ -182,3 +204,32 @@ void Track::Item::setVelocity(const int velocity)
 {
     _note.setVelocity(velocity);
 }
+
+Track::SettingsChange::SettingsChange(const float time, const QString& name, ChannelSettings* settings)
+    : _time(time)
+    , _name(name)
+    , _settings(settings)
+{
+
+}
+
+Track::SettingsChange::~SettingsChange()
+{
+    delete _settings;
+}
+
+float Track::SettingsChange::time() const
+{
+    return _time;
+}
+
+const QString& Track::SettingsChange::name() const
+{
+    return _name;
+}
+
+ChannelSettings& Track::SettingsChange::settings()
+{
+    return *_settings;
+}
+

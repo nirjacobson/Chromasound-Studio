@@ -1,7 +1,8 @@
 #ifndef FMWIDGET_H
 #define FMWIDGET_H
 
-#include <QMainWindow>
+#include <QWidget>
+
 #include <QFileDialog>
 #include <QStyleOption>
 #include <QMimeData>
@@ -16,13 +17,15 @@ namespace Ui {
 class FMWidget;
 }
 
-class FMWidget : public QMainWindow
+class FMWidget : public QWidget
 {
     Q_OBJECT
 
 public:
     explicit FMWidget(QWidget *parent = nullptr, Application* app = nullptr);
     ~FMWidget();
+
+    void setApplication(Application* app);
 
     void setSettings(FMChannelSettings* settings);
 
@@ -38,10 +41,9 @@ signals:
 private:
     Ui::FMWidget *ui;
     Application* _app;
-
     FMChannelSettings* _settings;
 
-private slots:
+public slots:
     void newTriggered();
     void openTriggered();
     void saveTriggered();
@@ -49,7 +51,6 @@ private slots:
     // QWidget interface
 protected:
     void paintEvent(QPaintEvent* event);
-    void closeEvent(QCloseEvent* event);
     void dragEnterEvent(QDragEnterEvent* event);
     void dropEvent(QDropEvent* event);
 };

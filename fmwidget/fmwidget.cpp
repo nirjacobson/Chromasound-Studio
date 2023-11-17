@@ -2,7 +2,7 @@
 #include "ui_fmwidget.h"
 
 FMWidget::FMWidget(QWidget *parent, Application* app) :
-    QMainWindow(parent),
+    QWidget(parent),
     ui(new Ui::FMWidget),
     _app(app)
 {
@@ -19,16 +19,23 @@ FMWidget::FMWidget(QWidget *parent, Application* app) :
 
     connect(ui->pianoWidget, &PianoWidget::keyPressed, this, &FMWidget::keyPressed);
     connect(ui->pianoWidget, &PianoWidget::keyReleased, this, &FMWidget::keyReleased);
-
-    connect(ui->actionNew, &QAction::triggered, this, &FMWidget::newTriggered);
-    connect(ui->actionOpen, &QAction::triggered, this, &FMWidget::openTriggered);
-    connect(ui->actionSave, &QAction::triggered, this, &FMWidget::saveTriggered);
-    connect(ui->actionClose, &QAction::triggered, this, &QMainWindow::close);
 }
 
 FMWidget::~FMWidget()
 {
     delete ui;
+}
+
+void FMWidget::setApplication(Application* app)
+{
+    _app = app;
+
+    ui->operatorWidget1->setApplication(app);
+    ui->operatorWidget2->setApplication(app);
+    ui->operatorWidget3->setApplication(app);
+    ui->operatorWidget4->setApplication(app);
+
+    ui->algorithmWidget->setApplication(app);
 }
 
 void FMWidget::setSettings(FMChannelSettings* settings)
@@ -107,12 +114,6 @@ void FMWidget::paintEvent(QPaintEvent* event)
     opt.initFrom(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
-}
-
-void FMWidget::closeEvent(QCloseEvent* event)
-{
-    MdiSubWindow* subwindow = dynamic_cast<MdiSubWindow*>(parent());
-    subwindow->close();
 }
 
 void FMWidget::dragEnterEvent(QDragEnterEvent* event)

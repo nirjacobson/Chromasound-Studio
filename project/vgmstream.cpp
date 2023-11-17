@@ -107,6 +107,7 @@ QByteArray VGMStream::compile(Project& project, bool header, int* loopOffsetData
     if (project.playMode() == Project::PlayMode::PATTERN) {
         processPattern(0, project, project.getFrontPattern(), items);
         assignChannelsAndExpand(items, project.tempo());
+        applySettingsChanges(project.getFrontPattern(), items);
         pad(items, project.getPatternBarLength(project.frontPattern()));
         totalSamples = encode(project, items, data, currentOffset, &_currentOffsetData);
 
@@ -116,6 +117,7 @@ QByteArray VGMStream::compile(Project& project, bool header, int* loopOffsetData
     } else {
         generateItems(project, items);
         assignChannelsAndExpand(items, project.tempo());
+        applySettingsChanges(project, items);
         pad(items, project.getLength());
         if (project.playlist().doesLoop()) {
             totalSamples = encode(project, items, data, project.playlist().loopOffset(), &_loopOffsetData, currentOffset, &_currentOffsetData, false);
@@ -223,6 +225,7 @@ QByteArray VGMStream::compile(const Project& project, const Pattern& pattern, co
 
     processPattern(0, project, pattern, items, loopStart, loopEnd);
     assignChannelsAndExpand(items, project.tempo());
+    applySettingsChanges(pattern, items);
     pad(items, loopEnd - loopStart);
     totalSamples = encode(project, items, data, loopStart, nullptr, currentOffset, &_currentOffsetData, true);
 
@@ -247,6 +250,7 @@ QByteArray VGMStream::compile(const Project& project, const float loopStart, con
 
     generateItems(project, items, loopStart, loopEnd);
     assignChannelsAndExpand(items, project.tempo());
+    applySettingsChanges(project, items);
     pad(items, loopEnd - loopStart);
     totalSamples = encode(project, items, data, loopStart, nullptr, currentOffset, &_currentOffsetData, true);
 
@@ -367,7 +371,7 @@ void VGMStream::processTrack(const float time, const Channel& channel, const Tra
                 item->setDuration(loopEnd - item->time());
             }
         }
-        items.append(new StreamNoteItem(time + item->time(), channel.type(), item->note(), &channel.settings()));
+        items.append(new StreamNoteItem(time + item->time(), channel.type(), track, item->note(), &channel.settings()));
     }
 }
 
@@ -410,6 +414,56 @@ void VGMStream::assignChannelsAndExpand(QList<StreamItem*>& items, const int tem
         noteOffItem->setOn(false);
         items.append(noteOffItem);
     }
+}
+
+void VGMStream::applySettingsChanges(const Pattern& pattern, QList<StreamItem*>& items)
+{
+    QMap<int, Track*> tracks = pattern.tracks();
+    for (auto it = tracks.begin(); it != tracks.end(); ++it) {
+        QList<StreamItem*> trackNoteItems = items;
+        std::remove_if(trackNoteItems.begin(), trackNoteItems.end(), [&](StreamItem* si){
+            StreamNoteItem* sni;
+            if ((sni = dynamic_cast<StreamNoteItem*>(si))) {
+                if (sni->track() == it.value()) {
+                    return false;
+                }
+            }
+            return true;
+        });
+
+        std::sort(it.value()->settingsChanges().begin(), it.value()->settingsChanges().end(), [](Track::SettingsChange* a, Track::SettingsChange* b) {
+            return a->time() < b->time();
+        });
+
+        for (auto it2 = it.value()->settingsChanges().begin(); it2 != it.value()->settingsChanges().end(); ++it2) {
+            QList<StreamItem*> trackNoteItemsAtChange = trackNoteItems;
+            std::remove_if(trackNoteItemsAtChange.begin(), trackNoteItemsAtChange.end(), [&](StreamItem* si){
+                StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(si);
+
+                return !(sni->time() < (*it2)->time() && (*it2)->time() < (sni->time() + sni->note().duration()));
+            });
+
+            QList<int> channels;
+            for (StreamItem* si : trackNoteItemsAtChange) {
+                StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(si);
+                if (!channels.contains(sni->channel())) {
+                    channels.append(sni->channel());
+                }
+            }
+
+            for (int c : channels) {
+                StreamSettingsItem* ssi = new StreamSettingsItem((*it2)->time(), c, &(*it2)->settings());
+                items.append(ssi);
+            }
+
+            for (StreamItem* si : trackNoteItems) {
+                StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(si);
+                if (sni->time() >= (*it2)->time() && !trackNoteItemsAtChange.contains(sni)) {
+                    sni->setChannelSettings(&(*it2)->settings());
+                }
+            }
+        }
+    }
 
     std::sort(items.begin(), items.end(), [](const StreamItem* a, const StreamItem* b){
         if (a->time() == b->time()) {
@@ -426,6 +480,13 @@ void VGMStream::assignChannelsAndExpand(QList<StreamItem*>& items, const int tem
 
         return a->time() < b->time();
     });
+}
+
+void VGMStream::applySettingsChanges(const Project& project, QList<StreamItem*>& items)
+{
+    for (int i = 0; i < project.patterns().size(); i++) {
+        applySettingsChanges(project.getPattern(i), items);
+    }
 }
 
 void VGMStream::pad(QList<StreamItem*>& items, const float toDuration)
@@ -797,9 +858,10 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
     }
 }
 
-VGMStream::StreamNoteItem::StreamNoteItem(const float time, const Channel::Type type, const Note& note, const ChannelSettings* channelSettings)
+VGMStream::StreamNoteItem::StreamNoteItem(const float time, const Channel::Type type, const Track* track, const Note& note, const ChannelSettings* channelSettings)
     : StreamItem(time)
     , _type(type)
+    , _track(track)
     , _channel(-1)
     , _note(note)
     , _channelSettings(channelSettings)
@@ -818,9 +880,19 @@ void VGMStream::StreamNoteItem::setOn(const bool on)
     _on = on;
 }
 
+void VGMStream::StreamNoteItem::setChannelSettings(const ChannelSettings* settings)
+{
+    _channelSettings = settings;
+}
+
 Channel::Type VGMStream::StreamNoteItem::type() const
 {
     return _type;
+}
+
+const Track* VGMStream::StreamNoteItem::track() const
+{
+    return _track;
 }
 
 const Note& VGMStream::StreamNoteItem::note() const

@@ -24,18 +24,21 @@ class VGMStream
 
         class StreamNoteItem : public StreamItem {
             public:
-                StreamNoteItem(const float time, const Channel::Type type, const Note& note, const ChannelSettings* channelSettings);
+                StreamNoteItem(const float time, const Channel::Type type, const Track* _track, const Note& note, const ChannelSettings* channelSettings);
 
                 void setChannel(const int channel);
                 void setOn(const bool on);
+                void setChannelSettings(const ChannelSettings* settings);
 
                 Channel::Type type() const;
+                const Track* track() const;
                 const Note& note() const;
                 const ChannelSettings* channelSettings() const;
                 int channel() const;
                 bool on() const;
             private:
                 Channel::Type _type;
+                const Track* _track;
                 int _channel;
                 Note _note;
                 const ChannelSettings* _channelSettings;
@@ -128,6 +131,8 @@ class VGMStream
 
         void generateItems(const Project& project, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
         void assignChannelsAndExpand(QList<StreamItem*>& items, const int tempo);
+        void applySettingsChanges(const Pattern& pattern, QList<StreamItem*>& items);
+        void applySettingsChanges(const Project& project, QList<StreamItem*>& items);
 
         void pad(QList<StreamItem*>& items, const float toDuration);
 

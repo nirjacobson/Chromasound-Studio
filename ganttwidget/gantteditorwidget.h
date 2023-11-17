@@ -25,6 +25,7 @@ class GanttEditorWidget : public QWidget
         void setVerticalScrollPercentage(const float percent);
         void setHorizontalScrollPercentage(const float percent);
 
+        void setMarkers(QList<GanttMarker*>* markers);
         void setItems(QList<GanttItem*>* items);
 
         void setApplication(Application* app);
@@ -76,6 +77,7 @@ class GanttEditorWidget : public QWidget
         QColor _cursorColor;
         QColor _selectionColor;
         QColor _loopColor;
+        QColor _markerColor;
 
         const QColor& backgroundColor() const;
         const QColor& borderColor() const;
@@ -113,6 +115,7 @@ class GanttEditorWidget : public QWidget
         bool _invertRows;
 
         QList<GanttItem*>* _items;
+        QList<GanttMarker*>* _markers;
 
         GanttItem* _itemUnderCursor;
         int _cursorPositionOverItem;

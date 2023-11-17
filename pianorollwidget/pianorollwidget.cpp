@@ -15,6 +15,9 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
 
     ui->setupUi(this);
 
+    ui->fmWidget->setApplication(app);
+    ui->noiseWidget->setApplication(app);
+
     ui->actionCopy->setShortcuts(QKeySequence::Copy);
     ui->actionPaste->setShortcuts(QKeySequence::Paste);
     ui->actionSelectAll->setShortcuts(QKeySequence::SelectAll);
@@ -48,10 +51,16 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
     connect(&_velocityAction, &QAction::triggered, this, &PianoRollWidget::velocityTriggered);
 
     connect(ui->ganttWidget, &GanttWidget::headerClicked, this, &PianoRollWidget::ganttHeaderClicked);
+    connect(ui->ganttWidget, &GanttWidget::markerClicked, this, &PianoRollWidget::ganttMarkerClicked);
     connect(ui->ganttWidget, &GanttWidget::editorClicked, this, &PianoRollWidget::ganttEditorClicked);
     connect(ui->ganttWidget, &GanttWidget::itemChanged, this, &PianoRollWidget::ganttItemChanged);
     connect(ui->ganttWidget, &GanttWidget::itemReleased, this, &PianoRollWidget::ganttItemReleased);
     connect(ui->ganttWidget, &GanttWidget::contextMenuRequested, this, &PianoRollWidget::contextMenuRequested);
+
+    connect(ui->fmDoneButton, &QPushButton::pressed, this, &PianoRollWidget::doneButtonClicked);
+    connect(ui->noiseDoneButton, &QPushButton::pressed, this, &PianoRollWidget::doneButtonClicked);
+    connect(ui->fmRemoveButton, &QPushButton::pressed, this, &PianoRollWidget::removeButtonClicked);
+    connect(ui->noiseRemoveButton, &QPushButton::pressed, this, &PianoRollWidget::removeButtonClicked);
 
     connect(_keysWidget, &PianoRollKeysWidget::keyOn, this, &PianoRollWidget::keyOn);
     connect(_keysWidget, &PianoRollKeysWidget::keyOff, this, &PianoRollWidget::keyOff);
@@ -71,6 +80,7 @@ void PianoRollWidget::setTrack(const int pattern, const int track)
     _channel = track;
     _track = &_app->project().getPattern(pattern).getTrack(track);
     ui->ganttWidget->setItems(reinterpret_cast<QList<GanttItem*>*>(&_track->items()));
+    ui->ganttWidget->setMarkers(reinterpret_cast<QList<GanttMarker*>*>(&_track->settingsChanges()));
     ui->ganttWidget->setPositionFunction([=](){
         float appPosition = _app->position();
 
@@ -148,10 +158,37 @@ void PianoRollWidget::loadMIDI(const MIDIFile& file)
     }
 }
 
+void PianoRollWidget::ganttMarkerClicked(GanttMarker* marker)
+{
+    Track::SettingsChange* settingsChange = dynamic_cast<Track::SettingsChange*>(marker);
+
+    if (_app->project().getChannel(_channel).type() == Channel::Type::FM) {
+        ui->fmWidget->setSettings(&dynamic_cast<FMChannelSettings&>(settingsChange->settings()));
+        ui->stackedWidget->setCurrentIndex(1);
+        _editingSettingsChange = dynamic_cast<Track::SettingsChange*>(marker);
+    } else if (_app->project().getChannel(_channel).type() == Channel::Type::NOISE) {
+        ui->noiseWidget->setSettings(&dynamic_cast<NoiseChannelSettings&>(settingsChange->settings()));
+        ui->stackedWidget->setCurrentIndex(2);
+        _editingSettingsChange = dynamic_cast<Track::SettingsChange*>(marker);
+    }
+}
+
 void PianoRollWidget::ganttHeaderClicked(Qt::MouseButton button, float time)
 {
-    if (button == Qt::LeftButton && _app->project().playMode() == Project::PlayMode::PATTERN) {
-        _app->setPosition(time);
+    if (button == Qt::LeftButton) {
+        if (Qt::ShiftModifier == QApplication::keyboardModifiers()) {
+            if (_app->project().getChannel(_channel).type() == Channel::Type::NOISE) {
+                NoiseChannelSettings& ncs = dynamic_cast<NoiseChannelSettings&>(_app->project().getChannel(_channel).settings());
+                _track->addSettingsChange(time, "Settings change", new NoiseChannelSettings(ncs));
+                ui->ganttWidget->update();
+            } else if (_app->project().getChannel(_channel).type() == Channel::Type::FM) {
+                FMChannelSettings& fmcs = dynamic_cast<FMChannelSettings&>(_app->project().getChannel(_channel).settings());
+                _track->addSettingsChange(time, "Settings change", new FMChannelSettings(fmcs));
+                ui->ganttWidget->update();
+            }
+        } else if (_app->project().playMode() == Project::PlayMode::PATTERN) {
+            _app->setPosition(time);
+        }
     }
 }
 
@@ -324,6 +361,18 @@ void PianoRollWidget::selectAll()
 void PianoRollWidget::deleteTriggered()
 {
     _app->undoStack().push(new RemoveTrackItemsCommand(_app->window(), *_track, reinterpret_cast<const QList<Track::Item*>&>(ui->ganttWidget->selectedItems())));
+}
+
+void PianoRollWidget::doneButtonClicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
+void PianoRollWidget::removeButtonClicked()
+{
+    _track->removeSettingsChange(_editingSettingsChange);
+    ui->ganttWidget->update();
+    ui->stackedWidget->setCurrentIndex(0);
 }
 
 void PianoRollWidget::paintEvent(QPaintEvent* event)

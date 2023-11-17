@@ -35,6 +35,11 @@ void NoiseWidget::doUpdate()
     setSettings(_settings);
 }
 
+void NoiseWidget::setApplication(Application* app)
+{
+    _app = app;
+}
+
 void NoiseWidget::typeChanged(int idx)
 {
     NoiseChannelSettings newSettings(*_settings);

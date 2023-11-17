@@ -27,6 +27,7 @@ GanttWidget::GanttWidget(QWidget *parent, Application* app) :
     connect(ui->horizontalScrollBar, &QScrollBar::valueChanged, this, &GanttWidget::horizontalScroll);
     connect(ui->snapCheckBox, &QCheckBox::clicked, this, &GanttWidget::snapClicked);
     connect(ui->headerWidget, &GanttHeaderWidget::loopChanged, this, &GanttWidget::loopChanged);
+    connect(ui->headerWidget, &GanttHeaderWidget::markerClicked, this, &GanttWidget::markerClicked);
     connect(ui->headerWidget, &GanttHeaderWidget::clicked, this, &GanttWidget::headerClicked);
     connect(ui->editorWidget, &GanttEditorWidget::clicked, this, &GanttWidget::editorClicked);
     connect(ui->editorWidget, &GanttEditorWidget::itemChanged, this, &GanttWidget::itemChanged);
@@ -76,6 +77,12 @@ void GanttWidget::setParameters(int rows, int rowHeight, int cellWidth, float be
     ui->editorWidget->setRowHeight(_rowHeight);
     ui->editorWidget->setCellWidth(_cellWidth);
     ui->editorWidget->setCellBeats(_cellBeats);
+}
+
+void GanttWidget::setMarkers(QList<GanttMarker*>* markers)
+{
+    ui->headerWidget->setMarkers(markers);
+    ui->editorWidget->setMarkers(markers);
 }
 
 void GanttWidget::setItems(QList<GanttItem*>* items)

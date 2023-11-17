@@ -13,7 +13,7 @@
 #include "noisewidget/noisewidget.h"
 #include "playlistwidget/playlistwidget.h"
 #include "pianorollwidget/pianorollwidget.h"
-#include "fmwidget/fmwidget.h"
+#include "fmwidget/fmwidgetwindow.h"
 #include "pcmwidget/pcmwidget.h"
 #include "project/vgmstream.h"
 #include "midi/midiinput.h"
