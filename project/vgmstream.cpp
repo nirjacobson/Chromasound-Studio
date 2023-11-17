@@ -432,6 +432,19 @@ void VGMStream::applySettingsChanges(Project& project, const float time, const P
 {
     QMap<int, Track*> tracks = pattern.tracks();
     for (auto it = tracks.begin(); it != tracks.end(); ++it) {
+
+        QList<Track::SettingsChange*> settingChanges = it.value()->settingsChanges();
+
+        std::sort(settingChanges.begin(), settingChanges.end(), [](Track::SettingsChange* a, Track::SettingsChange* b) {
+            return a->time() < b->time();
+        });
+
+        if (!settingChanges.isEmpty()) {
+            settingChanges.prepend(new Track::SettingsChange(0, "", &project.getChannel(it.key()).settings()));
+        } else {
+            continue;
+        }
+
         QList<StreamItem*> trackNoteItems = items;
         trackNoteItems.erase(std::remove_if(trackNoteItems.begin(), trackNoteItems.end(), [&](StreamItem* si){
             StreamNoteItem* sni;
@@ -442,16 +455,6 @@ void VGMStream::applySettingsChanges(Project& project, const float time, const P
             }
             return true;
         }));
-
-        QList<Track::SettingsChange*> settingChanges = it.value()->settingsChanges();
-
-        std::sort(settingChanges.begin(), settingChanges.end(), [](Track::SettingsChange* a, Track::SettingsChange* b) {
-            return a->time() < b->time();
-        });
-
-        if (!settingChanges.isEmpty()) {
-            settingChanges.prepend(new Track::SettingsChange(0, "", &project.getChannel(it.key()).settings()));
-        }
 
         for (auto it2 = settingChanges.begin(); it2 != settingChanges.end(); ++it2) {
             QList<StreamItem*> trackNoteItemsAtChange = trackNoteItems;
