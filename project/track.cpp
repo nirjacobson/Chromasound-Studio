@@ -10,6 +10,9 @@ Track::~Track()
 {
     for (Item* item : _items)
         delete item;
+
+    for (SettingsChange* sc : _settingsChanges)
+        delete sc;
 }
 
 Track::Track(Track&& o)
@@ -119,7 +122,9 @@ Track::SettingsChange* Track::addSettingsChange(const float time, const QString&
 
 void Track::removeSettingsChange(const SettingsChange* sc)
 {
-    _settingsChanges.removeAll(sc);
+    if (_settingsChanges.removeAll(sc) > 0) {
+        delete sc;
+    }
 }
 
 void Track::usePianoRoll()
