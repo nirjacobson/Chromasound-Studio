@@ -82,6 +82,7 @@ public:
     int loopOffsetSamples() const;
     void setLoopOffset(const float offset);
 
+    const QList<LFOChange*>& lfoChanges() const;
     QList<LFOChange*>& lfoChanges();
     LFOChange* addLFOChange(const float time, const int mode);
     void removeLFOChange(const LFOChange* lc, const bool keep = false);

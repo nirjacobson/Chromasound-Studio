@@ -74,6 +74,15 @@ class VGMStream
                 const Settings* _channelSettings;
         };
 
+        class StreamLFOItem : public StreamItem {
+            public:
+                StreamLFOItem(const float time, const int mode);
+
+                int mode() const;
+            private:
+                int _mode;
+        };
+
         class StreamEndItem : public StreamItem {
             public:
                 StreamEndItem(const float time);
@@ -145,6 +154,7 @@ class VGMStream
         int encodeDelay(const quint32 samples, QByteArray& data, const bool pcm = false);
         void encodeSettingsItem(const StreamSettingsItem* item, QByteArray& data);
         void encodeNoteItem(const Project& project, const StreamNoteItem* item, QByteArray& data);
+        void encodeLFOItem(const StreamLFOItem* item, QByteArray& data);
 };
 
 #endif // VGMSTREAM_H
