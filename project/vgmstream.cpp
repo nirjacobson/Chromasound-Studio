@@ -433,7 +433,7 @@ void VGMStream::applySettingsChanges(Project& project, const float time, const P
     QMap<int, Track*> tracks = pattern.tracks();
     for (auto it = tracks.begin(); it != tracks.end(); ++it) {
         QList<StreamItem*> trackNoteItems = items;
-        std::remove_if(trackNoteItems.begin(), trackNoteItems.end(), [&](StreamItem* si){
+        trackNoteItems.erase(std::remove_if(trackNoteItems.begin(), trackNoteItems.end(), [&](StreamItem* si){
             StreamNoteItem* sni;
             if ((sni = dynamic_cast<StreamNoteItem*>(si))) {
                 if (sni->track() == it.value()) {
@@ -441,7 +441,7 @@ void VGMStream::applySettingsChanges(Project& project, const float time, const P
                 }
             }
             return true;
-        });
+        }));
 
         QList<Track::SettingsChange*> settingChanges = it.value()->settingsChanges();
 
@@ -455,11 +455,11 @@ void VGMStream::applySettingsChanges(Project& project, const float time, const P
 
         for (auto it2 = settingChanges.begin(); it2 != settingChanges.end(); ++it2) {
             QList<StreamItem*> trackNoteItemsAtChange = trackNoteItems;
-            std::remove_if(trackNoteItemsAtChange.begin(), trackNoteItemsAtChange.end(), [&](StreamItem* si){
+            trackNoteItemsAtChange.erase(std::remove_if(trackNoteItemsAtChange.begin(), trackNoteItemsAtChange.end(), [&](StreamItem* si){
                 StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(si);
 
                 return !((sni->time() - time) < (*it2)->time() && (*it2)->time() < (sni->time() - time + sni->note().duration()));
-            });
+            }));
 
             QList<int> channels;
             for (StreamItem* si : trackNoteItemsAtChange) {
