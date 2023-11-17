@@ -527,6 +527,23 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items, Q
     bool setCurrentOffsetData = false;
     int _currentOffsetData;
 
+    auto it = std::find_if(items.begin(), items.end(), [](StreamItem* si) {
+        StreamLFOItem* sli;
+        if ((sli = dynamic_cast<StreamLFOItem*>(si))) {
+            if (sli->time() == 0) {
+                return true;
+            }
+        }
+
+        return false;
+    });
+
+    if (it == items.end()) {
+        StreamLFOItem* sli = new StreamLFOItem(0, project.lfoMode());
+        encodeLFOItem(sli, data);
+        delete sli;
+    }
+
     quint32 pcmSize = 0;
     quint32 pcmWritten = 0;
     StreamNoteItem* lastPCM = nullptr;
@@ -594,6 +611,23 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
     int _loopOffsetData;
     bool setCurrentOffsetData = false;
     int _currentOffsetData;
+
+    auto it = std::find_if(items.begin(), items.end(), [](StreamItem* si) {
+        StreamLFOItem* sli;
+        if ((sli = dynamic_cast<StreamLFOItem*>(si))) {
+            if (sli->time() == 0) {
+                return true;
+            }
+        }
+
+        return false;
+    });
+
+    if (it == items.end()) {
+        StreamLFOItem* sli = new StreamLFOItem(0, project.lfoMode());
+        encodeLFOItem(sli, data);
+        delete sli;
+    }
 
     quint32 pcmSize = 0;
     quint32 pcmWritten = 0;

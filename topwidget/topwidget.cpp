@@ -32,6 +32,7 @@ TopWidget::TopWidget(QWidget *parent, Application* app)
     connect(ui->tempoSpinBox, SIGNAL(valueChanged(int)), this, SLOT(tempoDidChange(int)));
     connect(ui->beatsPerBarSpinBox, SIGNAL(valueChanged(int)), this, SIGNAL(beatsPerBarChanged(int)));
     connect(ui->beatsPerBarSpinBox, SIGNAL(valueChanged(int)), this, SLOT(beatsPerBarDidChange(int)));
+    connect(ui->lfoComboBox, &QComboBox::currentIndexChanged, this, &TopWidget::lfoModeChanged);
 }
 
 TopWidget::~TopWidget()
@@ -72,6 +73,10 @@ void TopWidget::updateFromProject(const Project& project)
         ui->songRadioButton->setChecked(true);
         ui->songRadioButton->blockSignals(false);
     }
+
+    ui->lfoComboBox->blockSignals(true);
+    ui->lfoComboBox->setCurrentIndex(project.lfoMode());
+    ui->lfoComboBox->blockSignals(false);
 }
 
 void TopWidget::playPauseClicked()
@@ -113,6 +118,11 @@ void TopWidget::patModeSelected()
 void TopWidget::songModeSelected()
 {
     _app->project().setPlayMode(Project::PlayMode::SONG);
+}
+
+void TopWidget::lfoModeChanged(int mode)
+{
+    _app->project().setLFOMode(mode);
 }
 
 void TopWidget::paintEvent(QPaintEvent* event)

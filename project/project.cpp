@@ -16,6 +16,7 @@ Project::Project()
     , _playlist(this)
     , _tempo(120)
     , _beatsPerBar(4)
+    , _lfoMode(0)
 {
     addChannel();
     addChannel();
@@ -143,6 +144,16 @@ int Project::beatsPerBar() const
 void Project::setBeatsPerBar(const int beats)
 {
     _beatsPerBar = beats;
+}
+
+int Project::lfoMode() const
+{
+    return _lfoMode;
+}
+
+void Project::setLFOMode(const int mode)
+{
+    _lfoMode = mode;
 }
 
 const QList<Pattern*>& Project::patterns() const
