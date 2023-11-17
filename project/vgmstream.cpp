@@ -527,11 +527,6 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items, Q
     quint32 pcmWritten = 0;
     StreamNoteItem* lastPCM = nullptr;
     for (int i = 0; i < items.size(); i++) {
-        if (items[i]->time() >= currentTime && !setCurrentOffsetData) {
-            _currentOffsetData = data.size();
-            setCurrentOffsetData = true;
-        }
-
         quint32 fullDelaySamples = (quint32)((items[i]->time() - lastTime) / project.tempo() * 60 * 44100);
         lastTime = items[i]->time();
 
@@ -551,6 +546,11 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items, Q
             } else {
                 totalSamples += encodeDelay(fullDelaySamples, data, false);
             }
+        }
+
+        if (items[i]->time() >= currentTime && !setCurrentOffsetData) {
+            _currentOffsetData = data.size();
+            setCurrentOffsetData = true;
         }
 
         StreamSettingsItem* ssi;
@@ -592,16 +592,6 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
     quint32 pcmWritten = 0;
     StreamNoteItem* lastPCM = nullptr;
     for (int i = 0; i < items.size(); i++) {
-        if (items[i]->time() >= loopTime && !setLoopOffsetData) {
-            _loopOffsetData = data.size();
-            setLoopOffsetData = true;
-        }
-
-        if (items[i]->time() >= currentTime && !setCurrentOffsetData) {
-            _currentOffsetData = data.size();
-            setCurrentOffsetData = true;
-        }
-
         quint32 fullDelaySamples = (quint32)((items[i]->time() - lastTime) / project.tempo() * 60 * 44100);
         lastTime = items[i]->time();
         if (fullDelaySamples > 0) {
@@ -620,6 +610,16 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
             } else {
                 totalSamples += encodeDelay(fullDelaySamples, data, false);
             }
+        }
+
+        if (items[i]->time() >= loopTime && !setLoopOffsetData) {
+            _loopOffsetData = data.size();
+            setLoopOffsetData = true;
+        }
+
+        if (items[i]->time() >= currentTime && !setCurrentOffsetData) {
+            _currentOffsetData = data.size();
+            setCurrentOffsetData = true;
         }
 
         StreamSettingsItem* ssi;
