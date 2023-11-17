@@ -69,9 +69,12 @@ private:
     QAction _velocityAction;
     Track::Item* _contextItem;
 
+    const Track::SettingsChange* _editingSettingsChange;
+
     void loadMIDI(const MIDIFile& file);
 
 private slots:
+    void ganttMarkerClicked(GanttMarker* marker);
     void ganttHeaderClicked(Qt::MouseButton button, float time);
     void ganttEditorClicked(Qt::MouseButton button, int row, float time);
     void ganttItemChanged(GanttItem* item, const float toTime, const int toRow, const float toDuration);
@@ -85,6 +88,8 @@ private slots:
     void paste();
     void selectAll();
     void deleteTriggered();
+    void doneButtonClicked();
+    void removeButtonClicked();
 
     // QWidget interface
 protected:

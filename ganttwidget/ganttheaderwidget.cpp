@@ -3,6 +3,7 @@
 GanttHeaderWidget::GanttHeaderWidget(QWidget *parent)
     : ScrollableWidget{parent}
     , _items(nullptr)
+    , _markers(nullptr)
     , _left(0)
     , _loopStart(-1)
     , _loopEnd(-1)
@@ -17,6 +18,7 @@ GanttHeaderWidget::GanttHeaderWidget(QWidget *parent)
     , _inactiveForegroundColor(Qt::gray)
     , _cursorColor(QColor(64, 192, 64))
     , _loopColor(QColor(255, 192, 0))
+    , _markerColor(QColor(255, 128, 128))
 {
 
 }
@@ -41,6 +43,11 @@ void GanttHeaderWidget::setScrollPercentage(const float percent)
     _left = percent * scrollWidth;
 
     update();
+}
+
+void GanttHeaderWidget::setMarkers(QList<GanttMarker*>* markers)
+{
+    _markers = markers;
 }
 
 void GanttHeaderWidget::setItems(QList<GanttItem*>* items)
@@ -161,6 +168,23 @@ void GanttHeaderWidget::paintEvent(QPaintEvent*)
         painter.fillPath(path, _cursorColor);
     }
 
+    if (_markers) {
+        for (GanttMarker* marker : *_markers) {
+            QRectF br = painter.boundingRect(rect(), marker->name());
+
+            if (marker->time() + (br.width() * beatsPerPixel) > leftPosition) {
+                int markerPixel = (marker->time() - leftPosition) / beatsPerPixel;
+
+                painter.setPen(_markerColor);
+                painter.setBrush(_markerColor);
+                br = QRectF(QPoint(markerPixel, 0), QSize(br.width() + 8, height()));
+                painter.drawRect(br);
+                painter.setPen(Qt::white);
+                painter.drawText(br.adjusted(4, 0, 0, -4), Qt::AlignLeft | Qt::AlignBottom, marker->name());
+            }
+        }
+    }
+
     if (hasLoop()) {
         if (leftPosition <= _loopEnd && _loopStart <= rightPosition) {
             int loopFromPixel = (_loopStart - leftPosition) / beatsPerPixel;
@@ -187,9 +211,20 @@ void GanttHeaderWidget::mousePressEvent(QMouseEvent* event)
     _loopEnd = -1;
 
     update();
+    emit loopChanged();
+
+    if (Qt::ShiftModifier == QApplication::keyboardModifiers()) {
+        if (_markers) {
+            for (GanttMarker* marker : *_markers) {
+                if (marker->time() <= mousePosition && mousePosition < marker->time() + (height() * beatsPerPixel)) {
+                    emit markerClicked(marker);
+                    return;
+                }
+            }
+        }
+    }
 
     emit clicked(event->button(), _snap ? mousePositionSnapped : mousePosition);
-    emit loopChanged();
 }
 
 void GanttHeaderWidget::mouseReleaseEvent(QMouseEvent* event)

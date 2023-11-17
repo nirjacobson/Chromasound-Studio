@@ -51,9 +51,9 @@ set(PROJECT_SOURCES
     fmwidget/algorithmwidget.ui
     fmwidget/envelopedisplaywidget.cpp
     fmwidget/envelopedisplaywidget.h
-    fmwidget/fmwidget.cpp
-    fmwidget/fmwidget.h
-    fmwidget/fmwidget.ui
+
+
+
     fmwidget/operatorwidget.cpp
     fmwidget/operatorwidget.h
     fmwidget/operatorwidget.ui
@@ -242,6 +242,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(FM-PSG-Studio
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        ganttwidget/ganttmarker.h ganttwidget/ganttmarker.cpp
+        fmwidget/fmwidget.h fmwidget/fmwidget.cpp fmwidget/fmwidget.ui
+        fmwidget/fmwidgetwindow.h fmwidget/fmwidgetwindow.cpp fmwidget/fmwidgetwindow.ui
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET FM-PSG-Studio APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

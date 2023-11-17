@@ -1,105 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>FMWidget</class>
- <widget class="QMainWindow" name="FMWidget">
+ <widget class="QWidget" name="FMWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>995</width>
-    <height>568</height>
+    <width>1024</width>
+    <height>680</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Form</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="OperatorWidget" name="operatorWidget1" native="true"/>
-    </item>
-    <item row="0" column="1" rowspan="4">
-     <widget class="Line" name="line">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="2" rowspan="4">
-     <widget class="AlgorithmWidget" name="algorithmWidget" native="true"/>
-    </item>
-    <item row="1" column="0">
-     <widget class="OperatorWidget" name="operatorWidget2" native="true"/>
-    </item>
-    <item row="2" column="0">
-     <widget class="OperatorWidget" name="operatorWidget3" native="true"/>
-    </item>
-    <item row="3" column="0">
-     <widget class="OperatorWidget" name="operatorWidget4" native="true"/>
-    </item>
-    <item row="4" column="0" colspan="3">
-     <widget class="PianoWidget" name="pianoWidget" native="true">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>192</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>995</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuFile">
-    <property name="title">
-     <string>&amp;File</string>
-    </property>
-    <addaction name="actionNew"/>
-    <addaction name="separator"/>
-    <addaction name="actionOpen"/>
-    <addaction name="actionSave"/>
-    <addaction name="separator"/>
-    <addaction name="actionClose"/>
-   </widget>
-   <addaction name="menuFile"/>
-  </widget>
-  <action name="actionNew">
-   <property name="text">
-    <string>&amp;New</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+N</string>
-   </property>
-  </action>
-  <action name="actionOpen">
-   <property name="text">
-    <string>&amp;Open</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+O</string>
-   </property>
-  </action>
-  <action name="actionSave">
-   <property name="text">
-    <string>&amp;Save</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+S</string>
-   </property>
-  </action>
-  <action name="actionClose">
-   <property name="text">
-    <string>&amp;Close</string>
-   </property>
-  </action>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="OperatorWidget" name="operatorWidget1" native="true"/>
+   </item>
+   <item row="0" column="1" rowspan="4">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2" rowspan="4">
+    <widget class="AlgorithmWidget" name="algorithmWidget" native="true"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="OperatorWidget" name="operatorWidget2" native="true"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="OperatorWidget" name="operatorWidget3" native="true"/>
+   </item>
+   <item row="3" column="0">
+    <widget class="OperatorWidget" name="operatorWidget4" native="true"/>
+   </item>
+   <item row="4" column="0" colspan="3">
+    <widget class="PianoWidget" name="pianoWidget" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>192</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <customwidgets>
   <customwidget>

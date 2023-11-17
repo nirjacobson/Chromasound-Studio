@@ -4,8 +4,10 @@
 #include <QMap>
 #include <QList>
 
+#include "project/channel/channelsettings.h"
 #include "note.h"
 #include "ganttwidget/ganttitem.h"
+#include "ganttwidget/ganttmarker.h"
 
 class Track
 {
@@ -49,8 +51,29 @@ class Track
                 void setVelocity(const int velocity);
         };
 
+        class SettingsChange : public GanttMarker {
+            private:
+
+            public:
+                SettingsChange(const float time, const QString& name, ChannelSettings* settings);
+                ~SettingsChange();
+
+                // GanttMarker interface
+                float time() const;
+                const QString& name() const;
+
+                ChannelSettings& settings();
+
+            private:
+                float _time;
+                QString _name;
+                ChannelSettings* _settings;
+        };
+
         QList<Item*>& items();
         const QList<Item*>& items() const;
+
+        QList<SettingsChange*>& settingsChanges();
 
         float length() const;
 
@@ -60,6 +83,9 @@ class Track
         float removeItem(const float time);
         void removeItems(const QList<Item*>& items);
 
+        SettingsChange* addSettingsChange(const float time, const QString& name, ChannelSettings* settings);
+        void removeSettingsChange(const SettingsChange* sc);
+
         void usePianoRoll();
         bool doesUsePianoRoll() const;
 
@@ -67,6 +93,7 @@ class Track
 
     private:
         QList<Item*> _items;
+        QList<SettingsChange*> _settingsChanges;
         bool _usePianoRoll;
 };
 

@@ -25,6 +25,8 @@ class NoiseWidget : public QWidget
         void setSettings(NoiseChannelSettings* settings);
         void doUpdate();
 
+        void setApplication(Application* app);
+
     private:
         Ui::NoiseWidget *ui;
         Application* _app;

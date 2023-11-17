@@ -7,6 +7,7 @@
 #include "ganttleftwidget.h"
 #include "ganttbottomwidget.h"
 #include "ganttitem.h"
+#include "ganttmarker.h"
 
 namespace Ui {
     class GanttWidget;
@@ -24,6 +25,7 @@ class GanttWidget : public QWidget
         void setBottomWidget(GanttBottomWidget* const widget);
         void setParameters(int rows, int rowHeight, int cellWidth, float beatsPerCell);
 
+        void setMarkers(QList<GanttMarker*>* markers);
         void setItems(QList<GanttItem*>* items);
         void setApplication(Application* app);
         void invertRows(const bool invert);
@@ -72,6 +74,7 @@ class GanttWidget : public QWidget
         void loopChanged();
 
     signals:
+        void markerClicked(GanttMarker* marker);
         void headerClicked(Qt::MouseButton button, float time);
         void editorClicked(Qt::MouseButton button, int row, float time);
         void itemChanged(GanttItem* item, const float toTime, const int toRow, const float toDuration);

@@ -7,6 +7,8 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QMouseEvent>
+#include <QRectF>
+#include <QPointF>
 
 class GanttHeaderWidget : public ScrollableWidget
 {
@@ -26,6 +28,7 @@ class GanttHeaderWidget : public ScrollableWidget
         float getScrollPercentage();
         void setScrollPercentage(const float percent);
 
+        void setMarkers(QList<GanttMarker*>* markers);
         void setItems(QList<GanttItem*>* items);
 
         void setCellWidth(int width);
@@ -43,6 +46,7 @@ class GanttHeaderWidget : public ScrollableWidget
         float loopEnd() const;
 
     signals:
+        void markerClicked(GanttMarker* marker);
         void clicked(Qt::MouseButton button, float time);
         void loopChanged();
 
@@ -57,6 +61,7 @@ class GanttHeaderWidget : public ScrollableWidget
         Application* _app;
 
         QList<GanttItem*>* _items;
+        QList<GanttMarker*>* _markers;
 
         int _left;
 
@@ -73,6 +78,7 @@ class GanttHeaderWidget : public ScrollableWidget
         QColor _inactiveForegroundColor;
         QColor _cursorColor;
         QColor _loopColor;
+        QColor _markerColor;
 
         const QColor& activeColor() const;
         const QColor& inactiveColor() const;
