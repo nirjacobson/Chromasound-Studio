@@ -13,6 +13,7 @@ FMWidget::FMWidget(QWidget *parent, Application* app) :
     ui->operatorWidget3->setApplication(app);
     ui->operatorWidget4->setApplication(app);
 
+    ui->lfoWidget->setApplication(app);
     ui->algorithmWidget->setApplication(app);
 
     setAcceptDrops(true);
@@ -35,6 +36,7 @@ void FMWidget::setApplication(Application* app)
     ui->operatorWidget3->setApplication(app);
     ui->operatorWidget4->setApplication(app);
 
+    ui->lfoWidget->setApplication(app);
     ui->algorithmWidget->setApplication(app);
 }
 
@@ -57,6 +59,10 @@ void FMWidget::setSettings(FMChannelSettings* settings)
     ui->operatorWidget4->blockSignals(true);
     ui->operatorWidget4->setSettings(&settings->operators()[3]);
     ui->operatorWidget4->blockSignals(false);
+
+    ui->lfoWidget->blockSignals(true);
+    ui->lfoWidget->setSettings(&settings->lfoSettings());
+    ui->lfoWidget->blockSignals(false);
 
     ui->algorithmWidget->blockSignals(true);
     ui->algorithmWidget->setSettings(&settings->algorithm());

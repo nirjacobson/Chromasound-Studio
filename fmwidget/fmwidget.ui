@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1024</width>
-    <height>680</height>
+    <width>1133</width>
+    <height>597</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,6 +25,16 @@
     </widget>
    </item>
    <item row="0" column="2" rowspan="4">
+    <widget class="FMLFOWidget" name="lfoWidget" native="true"/>
+   </item>
+   <item row="0" column="3" rowspan="4">
+    <widget class="Line" name="line_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="4" rowspan="4">
     <widget class="AlgorithmWidget" name="algorithmWidget" native="true"/>
    </item>
    <item row="1" column="0">
@@ -36,7 +46,7 @@
    <item row="3" column="0">
     <widget class="OperatorWidget" name="operatorWidget4" native="true"/>
    </item>
-   <item row="4" column="0" colspan="3">
+   <item row="4" column="0" colspan="5">
     <widget class="PianoWidget" name="pianoWidget" native="true">
      <property name="minimumSize">
       <size>
@@ -65,6 +75,12 @@
    <class>PianoWidget</class>
    <extends>QWidget</extends>
    <header>fmwidget/pianowidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>FMLFOWidget</class>
+   <extends>QWidget</extends>
+   <header>fmwidget/fmlfowidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
