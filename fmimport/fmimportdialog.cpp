@@ -148,7 +148,6 @@ void FMImportDialog::load(const QString& path)
                 quint8 rr = data & 0x0F;
                 channelSettings.operators()[i].envelopeSettings().setT2l(t2l);
                 channelSettings.operators()[i].envelopeSettings().setRr(rr);
-
             }
 
             int offset = channel % 3;
@@ -159,6 +158,13 @@ void FMImportDialog::load(const QString& path)
             int algorithm = data & 0b111;
             channelSettings.algorithm().setFeedback(feedback);
             channelSettings.algorithm().setAlgorithm(algorithm);
+
+            // LFO
+            data = mem[0xB4 + offset];
+            int ams = (data >> 4) & 0b11;
+            int fms = (data & 0b111);
+            channelSettings.lfo().setAMS(ams);
+            channelSettings.lfo().setFMS(fms);
 
             // store if not already stored
             int idx = ensurePatch(channelSettings);

@@ -782,9 +782,10 @@ void VGMStream::encodeSettingsItem(const StreamSettingsItem* item, QByteArray& d
         data.append(0xB0 + channel);
         data.append(datum);
 
+        datum = 0xC0 | (fmcs->lfo().ams() << 4) | fmcs->lfo().fms();
         data.append((part == 1) ? 0x52 : 0x53);
         data.append(0xB4 + channel);
-        data.append(0xC0);
+        data.append(datum);
     }
 }
 

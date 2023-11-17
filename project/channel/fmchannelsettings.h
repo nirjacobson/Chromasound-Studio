@@ -20,9 +20,9 @@ class FMChannelSettings : public ChannelSettings
 
         AlgorithmSettings& algorithm();
         const AlgorithmSettings& algorithm() const;
-
-        LFOSettings& lfoSettings();
-        const LFOSettings& lfoSettings() const;
+        
+        LFOSettings& lfo();
+        const LFOSettings& lfo() const;
 
         bson_t toBSON() const;
         void fromBSON(bson_iter_t& bson);
