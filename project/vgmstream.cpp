@@ -107,7 +107,7 @@ QByteArray VGMStream::compile(Project& project, bool header, int* loopOffsetData
     if (project.playMode() == Project::PlayMode::PATTERN) {
         processPattern(0, project, project.getFrontPattern(), items);
         assignChannelsAndExpand(items, project.tempo());
-        applySettingsChanges(project.getFrontPattern(), items);
+        applySettingsChanges(project, 0, project.getFrontPattern(), items);
         pad(items, project.getPatternBarLength(project.frontPattern()));
         totalSamples = encode(project, items, data, currentOffset, &_currentOffsetData);
 
@@ -215,7 +215,7 @@ QByteArray VGMStream::compile(Project& project, bool header, int* loopOffsetData
     return data;
 }
 
-QByteArray VGMStream::compile(const Project& project, const Pattern& pattern, const float loopStart, const float loopEnd, const float currentOffset, int* const currentOffsetData)
+QByteArray VGMStream::compile(Project& project, const Pattern& pattern, const float loopStart, const float loopEnd, const float currentOffset, int* const currentOffsetData)
 {
     QList<StreamItem*> items;
     QByteArray data;
@@ -225,7 +225,7 @@ QByteArray VGMStream::compile(const Project& project, const Pattern& pattern, co
 
     processPattern(0, project, pattern, items, loopStart, loopEnd);
     assignChannelsAndExpand(items, project.tempo());
-    applySettingsChanges(pattern, items);
+    applySettingsChanges(project, 0, pattern, items);
     pad(items, loopEnd - loopStart);
     totalSamples = encode(project, items, data, loopStart, nullptr, currentOffset, &_currentOffsetData, true);
 
@@ -240,7 +240,7 @@ QByteArray VGMStream::compile(const Project& project, const Pattern& pattern, co
     return data;
 }
 
-QByteArray VGMStream::compile(const Project& project, const float loopStart, const float loopEnd, const float currentOffset, int* const currentOffsetData)
+QByteArray VGMStream::compile(Project& project, const float loopStart, const float loopEnd, const float currentOffset, int* const currentOffsetData)
 {
     QList<StreamItem*> items;
     QByteArray data;
@@ -428,7 +428,7 @@ void VGMStream::assignChannelsAndExpand(QList<StreamItem*>& items, const int tem
     }
 }
 
-void VGMStream::applySettingsChanges(const Pattern& pattern, QList<StreamItem*>& items)
+void VGMStream::applySettingsChanges(Project& project, const float time, const Pattern& pattern, QList<StreamItem*>& items)
 {
     QMap<int, Track*> tracks = pattern.tracks();
     for (auto it = tracks.begin(); it != tracks.end(); ++it) {
@@ -443,16 +443,22 @@ void VGMStream::applySettingsChanges(const Pattern& pattern, QList<StreamItem*>&
             return true;
         });
 
-        std::sort(it.value()->settingsChanges().begin(), it.value()->settingsChanges().end(), [](Track::SettingsChange* a, Track::SettingsChange* b) {
+        QList<Track::SettingsChange*> settingChanges = it.value()->settingsChanges();
+
+        std::sort(settingChanges.begin(), settingChanges.end(), [](Track::SettingsChange* a, Track::SettingsChange* b) {
             return a->time() < b->time();
         });
 
-        for (auto it2 = it.value()->settingsChanges().begin(); it2 != it.value()->settingsChanges().end(); ++it2) {
+        if (!settingChanges.isEmpty()) {
+            settingChanges.prepend(new Track::SettingsChange(time, "", &project.getChannel(it.key()).settings()));
+        }
+
+        for (auto it2 = settingChanges.begin(); it2 != settingChanges.end(); ++it2) {
             QList<StreamItem*> trackNoteItemsAtChange = trackNoteItems;
             std::remove_if(trackNoteItemsAtChange.begin(), trackNoteItemsAtChange.end(), [&](StreamItem* si){
                 StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(si);
 
-                return !(sni->time() < (*it2)->time() && (*it2)->time() < (sni->time() + sni->note().duration()));
+                return !((sni->time() - time) < (*it2)->time() && (*it2)->time() < (sni->time() - time + sni->note().duration()));
             });
 
             QList<int> channels;
@@ -464,13 +470,13 @@ void VGMStream::applySettingsChanges(const Pattern& pattern, QList<StreamItem*>&
             }
 
             for (int c : channels) {
-                StreamSettingsItem* ssi = new StreamSettingsItem((*it2)->time(), c, &(*it2)->settings());
+                StreamSettingsItem* ssi = new StreamSettingsItem(time + (*it2)->time(), c, &(*it2)->settings());
                 items.append(ssi);
             }
 
             for (StreamItem* si : trackNoteItems) {
                 StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(si);
-                if (sni->time() >= (*it2)->time() && !trackNoteItemsAtChange.contains(sni)) {
+                if ((sni->time() - time) >= (*it2)->time() && !trackNoteItemsAtChange.contains(sni)) {
                     sni->setChannelSettings(&(*it2)->settings());
                 }
             }
@@ -494,10 +500,10 @@ void VGMStream::applySettingsChanges(const Pattern& pattern, QList<StreamItem*>&
     });
 }
 
-void VGMStream::applySettingsChanges(const Project& project, QList<StreamItem*>& items)
+void VGMStream::applySettingsChanges(Project& project, QList<StreamItem*>& items)
 {
-    for (int i = 0; i < project.patterns().size(); i++) {
-        applySettingsChanges(project.getPattern(i), items);
+    for (Playlist::Item* item : project.playlist().items()) {
+        applySettingsChanges(project, item->time(), project.getPattern(item->pattern()), items);
     }
 }
 

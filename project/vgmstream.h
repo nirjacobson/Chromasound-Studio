@@ -53,8 +53,8 @@ class VGMStream
         void encode(const Project& project, QList<StreamItem*>& items, QByteArray& data);
 
         QByteArray compile(Project& project, bool header = false, int* loopOffsetData = nullptr, const float currentOffset = 0, int* const currentOffsetData = nullptr);
-        QByteArray compile(const Project& project, const Pattern& pattern, const float loopStart, const float loopEnd, const float currentOffset = 0, int* const currentOffsetData = nullptr);
-        QByteArray compile(const Project& project, const float loopStart, const float loopEnd, const float currentOffset = 0, int* const currentOffsetData = nullptr);
+        QByteArray compile(Project& project, const Pattern& pattern, const float loopStart, const float loopEnd, const float currentOffset = 0, int* const currentOffsetData = nullptr);
+        QByteArray compile(Project& project, const float loopStart, const float loopEnd, const float currentOffset = 0, int* const currentOffsetData = nullptr);
 
         void reset();
 
@@ -132,8 +132,8 @@ class VGMStream
 
         void generateItems(const Project& project, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
         void assignChannelsAndExpand(QList<StreamItem*>& items, const int tempo);
-        void applySettingsChanges(const Pattern& pattern, QList<StreamItem*>& items);
-        void applySettingsChanges(const Project& project, QList<StreamItem*>& items);
+        void applySettingsChanges(Project& project, const float time, const Pattern& pattern, QList<StreamItem*>& items);
+        void applySettingsChanges(Project& project, QList<StreamItem*>& items);
 
         void pad(QList<StreamItem*>& items, const float toDuration);
 
