@@ -255,6 +255,8 @@ set(PROJECT_SOURCES
     commands/removetracksettingschangecommand.cpp
     commands/removeplaylistlfochangecommand.h
     commands/removeplaylistlfochangecommand.cpp
+    project/channel/lfosettings.h
+    project/channel/lfosettings.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

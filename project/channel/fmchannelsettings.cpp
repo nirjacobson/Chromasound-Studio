@@ -25,6 +25,16 @@ const AlgorithmSettings& FMChannelSettings::algorithm() const
     return _algorithm;
 }
 
+LFOSettings& FMChannelSettings::lfoSettings()
+{
+    return _lfo;
+}
+
+const LFOSettings& FMChannelSettings::lfoSettings() const
+{
+    return _lfo;
+}
+
 bson_t FMChannelSettings::toBSON() const
 {
     bson_t bson = ChannelSettings::toBSON();
@@ -46,6 +56,10 @@ bson_t FMChannelSettings::toBSON() const
 
     BSON_APPEND_DOCUMENT(&bson, "algorithm", &algorithm);
 
+    bson_t lfo = _lfo.toBSON();
+
+    BSON_APPEND_DOCUMENT(&bson, "lfo", &lfo);
+
     return bson;
 }
 
@@ -58,6 +72,7 @@ void FMChannelSettings::fromBSON(bson_iter_t& bson)
     bson_iter_t op;
 
     bson_iter_t algorithm;
+    bson_iter_t lfo;
 
     int i = 0;
     if (bson_iter_find_descendant(&bson, "operators", &operators) && BSON_ITER_HOLDS_ARRAY(&operators) && bson_iter_recurse(&operators, &child)) {
@@ -70,10 +85,14 @@ void FMChannelSettings::fromBSON(bson_iter_t& bson)
     if (bson_iter_find_descendant(&bson, "algorithm", &algorithm) && BSON_ITER_HOLDS_DOCUMENT(&algorithm) && bson_iter_recurse(&algorithm, &algorithm)) {
         _algorithm.fromBSON(algorithm);
     }
+    if (bson_iter_find_descendant(&bson, "lfo", &lfo) && BSON_ITER_HOLDS_DOCUMENT(&lfo) && bson_iter_recurse(&lfo, &lfo)) {
+        _lfo.fromBSON(lfo);
+    }
 }
 
 bool FMChannelSettings::operator==(const FMChannelSettings& other) const
 {
     return _algorithm == other._algorithm &&
+           _lfo == other._lfo &&
            std::equal(std::begin(_operators), std::end(_operators), std::begin(other._operators));
 }
