@@ -84,11 +84,12 @@ class VGMStream
                 float _time;
                 float _duration;
                 bool _acquiredIndefinitely;
+                bool _acquiredEver;
 
             public:
                 PhysicalChannel();
 
-                bool acquire(float time, float duration);
+                bool acquire(float time, float duration, bool& first);
                 void release();
                 void reset();
         };
