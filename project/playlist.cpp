@@ -179,7 +179,81 @@ void Playlist::setLoopOffset(const float offset)
     _loopOffset = offset;
 }
 
+QList<Playlist::LFOChange*>& Playlist::lfoChanges()
+{
+    return _lfoChanges;
+}
+
+Playlist::LFOChange* Playlist::addLFOChange(const float time, const int mode)
+{
+    LFOChange* ret = nullptr;
+
+    if (std::find_if(_lfoChanges.begin(), _lfoChanges.end(), [=](LFOChange* const lc) { return lc->time() == time; }) == _lfoChanges.end()) {
+        ret = new LFOChange(time, mode);
+        _lfoChanges.append(ret);
+    }
+
+    return ret;
+}
+
+void Playlist::removeLFOChange(const LFOChange* lc, const bool keep)
+{
+    if (_lfoChanges.removeAll(lc) > 0) {
+        if (!keep) {
+            delete lc;
+        }
+    }
+}
+
 Playlist::Playlist()
 {
 
+}
+
+Playlist::LFOChange::LFOChange(const float time, const int mode)
+    : _time(time)
+    , _mode(mode)
+{
+
+}
+
+float Playlist::LFOChange::time() const
+{
+    return _time;
+}
+
+QString Playlist::LFOChange::name() const
+{
+    switch (_mode) {
+    case 0:
+        return "LFO: Off";
+    case 1:
+        return "LFO: 3.98 Hz";
+    case 2:
+        return "LFO: 5.56 Hz";
+    case 3:
+        return "LFO: 6.02 Hz";
+    case 4:
+        return "LFO: 6.37 Hz";
+    case 5:
+        return "LFO: 6.88 Hz";
+    case 6:
+        return "LFO: 9.63 Hz";
+    case 7:
+        return "LFO: 48.1 Hz";
+    case 8:
+        return "LFO: 72.2 Hz";
+    }
+
+    return "LFO change";
+}
+
+int Playlist::LFOChange::mode() const
+{
+    return _mode;
+}
+
+void Playlist::LFOChange::setMode(const int mode)
+{
+    _mode = mode;
 }

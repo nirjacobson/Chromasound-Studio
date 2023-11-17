@@ -10,6 +10,10 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
 {
     ui->setupUi(this);
 
+    _app->setStyleSheet("PlaylistWidget GanttHeaderWidget, PlaylistWidget GanttEditorWidget {"
+                        "   qproperty-markerColor: rgb(64, 255, 64);"
+                        "}");
+
     ui->actionCopy->setShortcuts(QKeySequence::Copy);
     ui->actionPaste->setShortcuts(QKeySequence::Paste);
     ui->actionSelectAll->setShortcuts(QKeySequence::SelectAll);
@@ -18,6 +22,7 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
     ui->ganttWidget->setApplication(_app);
     ui->ganttWidget->setLeftWidget(_patternsWidget);
     ui->ganttWidget->setItems(reinterpret_cast<QList<GanttItem*>*>(&app->project().playlist()));
+    ui->ganttWidget->setMarkers(reinterpret_cast<QList<GanttMarker*>*>(&app->project().playlist().lfoChanges()));
     ui->ganttWidget->setParameters(Rows, RowHeight, CellWidth, 1);
     ui->ganttWidget->setItemsMovableX(true);
     ui->ganttWidget->setPositionFunction([&](){ return _app->project().playMode() == Project::PlayMode::SONG ? _app->position() : 0.0f; });
@@ -40,6 +45,7 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
         }
     });
 
+    connect(ui->ganttWidget, &GanttWidget::markerClicked, this, &PlaylistWidget::ganttMarkerClicked);
     connect(ui->ganttWidget, &GanttWidget::headerClicked, this, &PlaylistWidget::ganttHeaderClicked);
     connect(ui->ganttWidget, &GanttWidget::editorClicked, this, &PlaylistWidget::ganttEditorClicked);
     connect(ui->ganttWidget, &GanttWidget::itemChanged, this, &PlaylistWidget::ganttItemChanged);
@@ -49,6 +55,9 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
     connect(ui->actionPaste, &QAction::triggered, this, &PlaylistWidget::paste);
     connect(ui->actionSelectAll, &QAction::triggered, this, &PlaylistWidget::selectAll);
     connect(ui->actionDelete, &QAction::triggered, this, &PlaylistWidget::deleteTriggered);
+
+    connect(ui->doneButton, &QPushButton::pressed, this, &PlaylistWidget::doneButtonClicked);
+    connect(ui->removeButton, &QPushButton::pressed, this, &PlaylistWidget::removeButtonClicked);
 }
 
 PlaylistWidget::~PlaylistWidget()
@@ -82,6 +91,16 @@ void PlaylistWidget::setLoopColor(const QColor& color)
     _loopColor = color;
 }
 
+void PlaylistWidget::ganttMarkerClicked(GanttMarker* marker)
+{
+    Playlist::LFOChange* lfoChange = dynamic_cast<Playlist::LFOChange*>(marker);
+
+    ui->lfoWidget->setLFOChange(lfoChange);
+    ui->stackedWidget->setCurrentIndex(1);
+
+    _editingLFOChange = lfoChange;
+}
+
 void PlaylistWidget::ganttHeaderClicked(Qt::MouseButton button, float time)
 {
     if (button == Qt::RightButton) {
@@ -91,8 +110,15 @@ void PlaylistWidget::ganttHeaderClicked(Qt::MouseButton button, float time)
             _app->project().playlist().setLoopOffset(time);
         }
         update();
-    } else if (_app->project().playMode() == Project::PlayMode::SONG) {
-        _app->setPosition(time);
+    } else {
+        if (_app->project().playMode() == Project::PlayMode::SONG) {
+            _app->setPosition(time);
+        }
+
+        if (Qt::ShiftModifier == QApplication::keyboardModifiers()) {
+            _app->undoStack().push(new AddPlaylistLFOChangeCommand(_app->window(), _app->project().playlist(), time, 0));
+        }
+
     }
 }
 
@@ -206,6 +232,17 @@ void PlaylistWidget::selectAll()
 void PlaylistWidget::deleteTriggered()
 {
     _app->undoStack().push(new RemovePlaylistItemsCommand(_app->window(), _app->project().playlist(), reinterpret_cast<const QList<Playlist::Item*>&>(ui->ganttWidget->selectedItems())));
+}
+
+void PlaylistWidget::doneButtonClicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
+void PlaylistWidget::removeButtonClicked()
+{
+    _app->undoStack().push(new RemovePlaylistLFOChangeCommand(_app->window(), _app->project().playlist(), _editingLFOChange));
+    ui->stackedWidget->setCurrentIndex(0);
 }
 
 void PlaylistWidget::paintEvent(QPaintEvent* event)

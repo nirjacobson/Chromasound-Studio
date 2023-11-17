@@ -19,6 +19,7 @@
 #include "commands/removetrackitemscommand.h"
 #include "commands/composite/replacetrackitemscommand.h"
 #include "commands/addtracksettingschangecommand.h"
+#include "commands/removetracksettingschangecommand.h"
 #include "bson.h"
 #include "midi/midi.h"
 #include "midi/midifile.h"
@@ -70,7 +71,7 @@ private:
     QAction _velocityAction;
     Track::Item* _contextItem;
 
-    const Track::SettingsChange* _editingSettingsChange;
+    Track::SettingsChange* _editingSettingsChange;
 
     void loadMIDI(const MIDIFile& file);
 

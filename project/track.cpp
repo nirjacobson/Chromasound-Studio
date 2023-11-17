@@ -120,10 +120,12 @@ Track::SettingsChange* Track::addSettingsChange(const float time, const QString&
     return ret;
 }
 
-void Track::removeSettingsChange(const SettingsChange* sc)
+void Track::removeSettingsChange(const SettingsChange* sc, const bool keep)
 {
     if (_settingsChanges.removeAll(sc) > 0) {
-        delete sc;
+        if (!keep) {
+            delete sc;
+        }
     }
 }
 
@@ -228,7 +230,7 @@ float Track::SettingsChange::time() const
     return _time;
 }
 
-const QString& Track::SettingsChange::name() const
+QString Track::SettingsChange::name() const
 {
     return _name;
 }

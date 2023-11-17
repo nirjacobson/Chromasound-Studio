@@ -179,7 +179,7 @@ void GanttHeaderWidget::paintEvent(QPaintEvent*)
                 painter.setBrush(_markerColor);
                 br = QRectF(QPoint(markerPixel, 0), QSize(br.width() + 8, height()));
                 painter.drawRect(br);
-                painter.setPen(Qt::white);
+                painter.setPen(Qt::black);
                 painter.drawText(br.adjusted(4, 0, 0, -4), Qt::AlignLeft | Qt::AlignBottom, marker->name());
             }
         }
@@ -282,6 +282,11 @@ const QColor& GanttHeaderWidget::loopColor() const
     return _loopColor;
 }
 
+const QColor& GanttHeaderWidget::markerColor() const
+{
+    return _markerColor;
+}
+
 void GanttHeaderWidget::setActiveColor(const QColor& color)
 {
     _activeColor = color;
@@ -310,6 +315,11 @@ void GanttHeaderWidget::setCursorColor(const QColor& color)
 void GanttHeaderWidget::setLoopColor(const QColor& color)
 {
     _loopColor = color;
+}
+
+void GanttHeaderWidget::setMarkerColor(const QColor& color)
+{
+    _markerColor = color;
 }
 
 int GanttHeaderWidget::length() const

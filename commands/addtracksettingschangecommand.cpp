@@ -7,7 +7,7 @@ AddTrackSettingsChangeCommand::AddTrackSettingsChangeCommand(MainWindow* window,
     , _time(time)
     , _settings(settings)
 {
-
+    setText("add track settings change");
 }
 
 void AddTrackSettingsChangeCommand::undo()

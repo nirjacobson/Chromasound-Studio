@@ -539,6 +539,11 @@ const QColor& GanttEditorWidget::loopColor() const
     return _loopColor;
 }
 
+const QColor& GanttEditorWidget::markerColor() const
+{
+    return _markerColor;
+}
+
 void GanttEditorWidget::setBackgroundColor(const QColor& color)
 {
     _backgroundColor = color;
@@ -567,6 +572,11 @@ void GanttEditorWidget::setSelectionColor(const QColor& color)
 void GanttEditorWidget::setLoopColor(const QColor& color)
 {
     _loopColor = color;
+}
+
+void GanttEditorWidget::setMarkerColor(const QColor& color)
+{
+    _markerColor = color;
 }
 
 const QList<GanttItem*>& GanttEditorWidget::selectedItems() const
