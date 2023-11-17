@@ -18,6 +18,7 @@
 #include "commands/addtrackitemscommand.h"
 #include "commands/removetrackitemscommand.h"
 #include "commands/composite/replacetrackitemscommand.h"
+#include "commands/addtracksettingschangecommand.h"
 #include "bson.h"
 #include "midi/midi.h"
 #include "midi/midifile.h"
