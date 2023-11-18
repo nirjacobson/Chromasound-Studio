@@ -64,6 +64,9 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
 
     connect(_keysWidget, &PianoRollKeysWidget::keyOn, this, &PianoRollWidget::keyOn);
     connect(_keysWidget, &PianoRollKeysWidget::keyOff, this, &PianoRollWidget::keyOff);
+
+    connect(ui->fmWidget, &FMWidget::keyPressed, this, &PianoRollWidget::keyOn);
+    connect(ui->fmWidget, &FMWidget::keyReleased, this, &PianoRollWidget::keyOff);
 }
 
 PianoRollWidget::~PianoRollWidget()
@@ -117,11 +120,13 @@ Pattern& PianoRollWidget::pattern() const
 void PianoRollWidget::pressKey(const int key)
 {
     _keysWidget->pressKey(key);
+    ui->fmWidget->pressKey(key);
 }
 
 void PianoRollWidget::releaseKey(const int key)
 {
     _keysWidget->releaseKey(key);
+    ui->fmWidget->releaseKey(key);
 }
 
 bool PianoRollWidget::hasLoop() const
@@ -145,6 +150,15 @@ void PianoRollWidget::doUpdate()
         ui->fmWidget->doUpdate();
     } else if (_app->project().getChannel(_channel).type() == Channel::Type::NOISE) {
         ui->noiseWidget->doUpdate();
+    }
+}
+
+ChannelSettings& PianoRollWidget::currentSettings()
+{
+    if (_editingSettingsChange) {
+        return _editingSettingsChange->settings();
+    } else {
+        return _app->project().getChannel(_channel).settings();
     }
 }
 
@@ -373,12 +387,14 @@ void PianoRollWidget::deleteTriggered()
 void PianoRollWidget::doneButtonClicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
+    _editingSettingsChange = nullptr;
 }
 
 void PianoRollWidget::removeButtonClicked()
 {
     _app->undoStack().push(new RemoveTrackSettingsChangeCommand(_app->window(), *_track, _editingSettingsChange));
     ui->stackedWidget->setCurrentIndex(0);
+    _editingSettingsChange = nullptr;
 }
 
 void PianoRollWidget::paintEvent(QPaintEvent* event)
