@@ -52,6 +52,8 @@ public:
     float loopStart() const;
     float loopEnd() const;
 
+    void doUpdate();
+
 signals:
     void keyOn(const int key, const int velocity);
     void keyOff(const int key);

@@ -621,6 +621,7 @@ void MainWindow::channelSettingsUpdated()
             NoiseWidget* nw;
             FMWidgetWindow* fmw;
             PCMWidget* pw;
+            PianoRollWidget* prw;
 
             if ((nw = dynamic_cast<NoiseWidget*>(window->widget()))) {
                 nw->doUpdate();
@@ -628,6 +629,8 @@ void MainWindow::channelSettingsUpdated()
                 fmw->doUpdate();
             } else if ((pw = dynamic_cast<PCMWidget*>(window->widget()))) {
                 pw->doUpdate();
+            } else if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
+                prw->doUpdate();
             }
         }
     }
