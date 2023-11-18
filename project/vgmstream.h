@@ -55,6 +55,7 @@ class VGMStream
         };
 
         VGMStream();
+        ~VGMStream();
 
         void assignChannel(StreamNoteItem* noteItem, QList<StreamItem*>& items);
         void releaseChannel(const Channel::Type type, const int channel);
@@ -130,6 +131,8 @@ class VGMStream
         ToneChannel _toneChannels[TONE_CHANNELS];
         NoiseChannel _noiseChannels[NOISE_CHANNELS];
         NoiseChannel _pcmChannels[PCM_CHANNELS];
+
+        QList<Track::SettingsChange*> _createdSCs;
 
         int acquireToneChannel(const float time, const float duration);
         int acquireNoiseChannel(const float time, const float duration, const NoiseChannelSettings* settings, QList<StreamItem*>& items);
