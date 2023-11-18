@@ -469,17 +469,19 @@ void MainWindow::keyOn(const int key, const int velocity)
 
     if (activeChannel >= 0) {
         Channel& channel = _app->project().getChannel(activeChannel);
-        _app->keyOn(channel.type(), channel.settings(), key, velocity);
 
-        for (MdiSubWindow* window : _channelWindows[activeChannel]) {
-            PianoRollWidget* prw;
-            FMWidgetWindow* fmw;
-            if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
+        PianoRollWidget* prw;
+        FMWidgetWindow* fmw;
+        if (_channelWindows[activeChannel].contains(ui->mdiArea->activeSubWindow())) {
+            if ((prw = dynamic_cast<PianoRollWidget*>(ui->mdiArea->activeSubWindow()->widget()))) {
                 prw->pressKey(key);
-            } else if ((fmw = dynamic_cast<FMWidgetWindow*>(window->widget()))) {
+                _app->keyOn(channel.type(), prw->currentSettings(), key, velocity);
+                return;
+            } else if ((fmw = dynamic_cast<FMWidgetWindow*>(ui->mdiArea->activeSubWindow()->widget()))) {
                 fmw->pressKey(key);
             }
         }
+        _app->keyOn(channel.type(), channel.settings(), key, velocity);
     }
 }
 
