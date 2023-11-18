@@ -33,6 +33,9 @@ class BSON
         static void fromTrackSettingsChange(bson_t* dst, const Track::SettingsChange* const change);
         static Track::SettingsChange toTrackSettingsChange(bson_iter_t& b);
 
+        static void fromLFOChange(bson_t* dst, const Playlist::LFOChange* const change);
+        static Playlist::LFOChange toLFOChange(bson_iter_t& b);
+
         static void fromChannel(bson_t* dst, const Channel& channel);
         static Channel toChannel(bson_iter_t& b);
 

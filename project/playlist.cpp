@@ -149,8 +149,10 @@ Playlist& Playlist::operator=(Playlist&& o)
 {
     _loopOffset = o._loopOffset;
     _items = o._items;
+    _lfoChanges = o._lfoChanges;
 
     o._items.clear();
+    o._lfoChanges.clear();
 
     for (Item* item : _items) {
         item->_project = _project;
@@ -261,4 +263,11 @@ int Playlist::LFOChange::mode() const
 void Playlist::LFOChange::setMode(const int mode)
 {
     _mode = mode;
+}
+
+Playlist::LFOChange::LFOChange()
+    : _time(0)
+    , _mode(0)
+{
+
 }

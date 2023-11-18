@@ -386,11 +386,36 @@ Track::SettingsChange BSON::toTrackSettingsChange(bson_iter_t& b)
     return sc;
 }
 
+void BSON::fromLFOChange(bson_t* dst, const Playlist::LFOChange* const change)
+{
+    BSON_APPEND_DOUBLE(dst, "time", change->time());
+    BSON_APPEND_INT32(dst, "mode", change->mode());
+}
+
+Playlist::LFOChange BSON::toLFOChange(bson_iter_t& b)
+{
+    Playlist::LFOChange lfoChange;
+
+    bson_iter_t time;
+    bson_iter_t mode;
+
+    if (bson_iter_find_descendant(&b, "time", &time) && BSON_ITER_HOLDS_DOUBLE(&time)) {
+        lfoChange._time = bson_iter_double(&time);
+    }
+
+    if (bson_iter_find_descendant(&b, "mode", &mode) && BSON_ITER_HOLDS_INT(&mode)) {
+        lfoChange._mode = bson_iter_int32(&mode);
+    }
+
+    return lfoChange;
+}
+
 void BSON::fromPlaylist(bson_t* dst, const Playlist& playlist)
 {
     BSON_APPEND_DOUBLE(dst, "loopOffset", playlist.loopOffset());
 
     bson_t items;
+    bson_t lfoChanges;
 
     uint32_t i = 0;
 
@@ -407,6 +432,22 @@ void BSON::fromPlaylist(bson_t* dst, const Playlist& playlist)
         BSON_APPEND_DOCUMENT(&items, key, &b_item);
     }
     bson_append_array_end(dst, &items);
+
+    i = 0;
+
+    BSON_APPEND_ARRAY_BEGIN(dst, "lfoChanges", &lfoChanges);
+    for (const Playlist::LFOChange* const lfoChange : playlist._lfoChanges) {
+        bson_t b_change;
+        bson_init(&b_change);
+        fromLFOChange(&b_change, lfoChange);
+
+        char keybuff[8];
+        const char* key;
+        bson_uint32_to_string(i++, &key, keybuff, sizeof keybuff);
+
+        BSON_APPEND_DOCUMENT(&lfoChanges, key, &b_change);
+    }
+    bson_append_array_end(dst, &lfoChanges);
 }
 
 Playlist BSON::toPlaylist(bson_iter_t& b, Project* project)
@@ -418,6 +459,9 @@ Playlist BSON::toPlaylist(bson_iter_t& b, Project* project)
     bson_iter_t child;
     bson_iter_t item;
 
+    bson_iter_t lfoChanges;
+    bson_iter_t lfoChange;
+
     if (bson_iter_find_descendant(&b, "loopOffset", &loopOffset) && BSON_ITER_HOLDS_DOUBLE(&loopOffset)) {
         p._loopOffset = bson_iter_double(&loopOffset);
     }
@@ -426,6 +470,13 @@ Playlist BSON::toPlaylist(bson_iter_t& b, Project* project)
         while (bson_iter_next(&child)) {
             bson_iter_recurse(&child, &item);
             p._items.append(new Playlist::Item(toPlaylistItem(item)));
+        }
+    }
+
+    if (bson_iter_find_descendant(&b, "lfoChanges", &lfoChanges) && BSON_ITER_HOLDS_ARRAY(&lfoChanges) && bson_iter_recurse(&lfoChanges, &child)) {
+        while (bson_iter_next(&child)) {
+            bson_iter_recurse(&child, &lfoChange);
+            p._lfoChanges.append(new Playlist::LFOChange(toLFOChange(lfoChange)));
         }
     }
 
@@ -492,6 +543,10 @@ void BSON::fromProject(bson_t* dst,const Project& project)
     // Play mode
 
     BSON_APPEND_UTF8(dst, "playMode", project._playMode == Project::PlayMode::PATTERN ? "PATTERN" : "SONG");
+
+    // LFO
+
+    BSON_APPEND_INT32(dst, "lfo", project._lfoMode);
 }
 
 Project BSON::toProject(bson_iter_t& b)
@@ -555,6 +610,14 @@ Project BSON::toProject(bson_iter_t& b)
 
    if (bson_iter_find_descendant(&b, "playMode", &playMode) && BSON_ITER_HOLDS_UTF8(&playMode)) {
        p._playMode = (QString(bson_iter_utf8(&playMode, NULL)) == QString("PATTERN")) ? Project::PlayMode::PATTERN : Project::PlayMode::SONG;
+   }
+
+   // LFO
+
+   bson_iter_t lfo;
+
+   if (bson_iter_find_descendant(&b, "lfo", &lfo) && BSON_ITER_HOLDS_INT(&lfo)) {
+       p._lfoMode = bson_iter_int32(&lfo);
    }
 
     return p;
