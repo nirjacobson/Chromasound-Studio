@@ -119,6 +119,7 @@ QByteArray VGMStream::compile(Project& project, bool header, int* loopOffsetData
         assignChannelsAndExpand(items, project.tempo());
         applySettingsChanges(project, 0, project.getFrontPattern(), items);
         pad(items, project.getPatternBarLength(project.frontPattern()));
+        items.prepend(new StreamLFOItem(0, project.lfoMode()));
         totalSamples = encode(project, items, data, currentOffset, &_currentOffsetData);
 
         for (StreamItem* item : items) {
@@ -237,6 +238,24 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, const fl
     assignChannelsAndExpand(items, project.tempo());
     applySettingsChanges(project, 0, pattern, items, loopStart, loopEnd);
     pad(items, loopEnd - loopStart);
+
+    QList<Playlist::LFOChange*> lfoChanges = project.playlist().lfoChanges();
+
+    std::sort(lfoChanges.begin(), lfoChanges.end(), [](Playlist::LFOChange* a, Playlist::LFOChange* b) {
+        return a->time() < b->time();
+    });
+
+    auto mostRecentLFOChangeIt = std::find_if(project.playlist().lfoChanges().rbegin(),
+                                              project.playlist().lfoChanges().rend(),
+                                              [&](Playlist::LFOChange* change){
+                                                  return change->time() <= loopStart;
+                                              });
+    if (mostRecentLFOChangeIt == project.playlist().lfoChanges().rend()) {
+        items.prepend(new StreamLFOItem(loopStart, project.lfoMode()));
+    } else {
+        items.prepend(new StreamLFOItem(loopStart, (*mostRecentLFOChangeIt)->mode()));
+    }
+
     totalSamples = encode(project, items, data, loopStart, nullptr, currentOffset, &_currentOffsetData, true);
 
     for (StreamItem* item : items) {
