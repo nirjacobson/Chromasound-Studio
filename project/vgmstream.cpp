@@ -70,10 +70,13 @@ void VGMStream::encode(const Project& project, QList<StreamItem*>& items, QByteA
     for (int i = 0; i < items.size(); i++) {
         StreamSettingsItem* ssi;
         StreamNoteItem* sni;
+        StreamLFOItem* sli;
         if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
             encodeSettingsItem(ssi, data);
         } else if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
             encodeNoteItem(project, sni, data);
+        } else if ((sli = dynamic_cast<StreamLFOItem*>(items[i])) != nullptr) {
+            encodeLFOItem(sli, data);
         }
     }
 

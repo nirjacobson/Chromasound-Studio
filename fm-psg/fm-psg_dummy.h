@@ -18,7 +18,7 @@ class FM_PSG_Dummy : public FM_PSG
         void setPosition(const float pos);
         bool isPlaying() const;
 
-        void keyOn(const Channel::Type, const ChannelSettings&, const int, const int, const int);
+        void keyOn(const Project&, const Channel::Type, const ChannelSettings&, const int, const int);
         void keyOff(int);
 
     private:
