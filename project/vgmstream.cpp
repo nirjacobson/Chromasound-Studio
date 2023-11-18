@@ -498,6 +498,7 @@ void VGMStream::applySettingsChanges(Project& project, const float time, const P
             return a->time() < b->time();
         });
 
+        Track::SettingsChange* prefixedSC = nullptr;
         if (!settingChanges.isEmpty()) {
             ChannelSettings* firstSettings;
             if (loopStart >= 0 && loopEnd >= 0) {
@@ -514,7 +515,7 @@ void VGMStream::applySettingsChanges(Project& project, const float time, const P
                 firstSettings = &project.getChannel(it.key()).settings();
             }
 
-            settingChanges.prepend(new Track::SettingsChange(time, firstSettings->copy()));
+            settingChanges.prepend((prefixedSC = new Track::SettingsChange(time, firstSettings->copy())));
         } else {
             continue;
         }
@@ -557,6 +558,10 @@ void VGMStream::applySettingsChanges(Project& project, const float time, const P
                     sni->setChannelSettings(&(*it2)->settings());
                 }
             }
+        }
+
+        if (prefixedSC) {
+            delete prefixedSC;
         }
     }
 
