@@ -139,6 +139,11 @@ float PianoRollWidget::loopEnd() const
     return ui->ganttWidget->loopEnd();
 }
 
+void PianoRollWidget::doUpdate()
+{
+    ui->fmWidget->doUpdate();
+}
+
 void PianoRollWidget::loadMIDI(const MIDIFile& file)
 {
     auto it1 = std::find_if(file.chunks().begin(), file.chunks().end(), [](const MIDIChunk* chunk){ return dynamic_cast<const MIDIHeader*>(chunk); });
