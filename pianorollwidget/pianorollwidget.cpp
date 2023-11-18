@@ -202,10 +202,10 @@ void PianoRollWidget::ganttHeaderClicked(Qt::MouseButton button, float time)
         if (Qt::ShiftModifier == QApplication::keyboardModifiers()) {
             if (_app->project().getChannel(_channel).type() == Channel::Type::NOISE) {
                 NoiseChannelSettings& ncs = dynamic_cast<NoiseChannelSettings&>(_app->project().getChannel(_channel).settings());
-                _app->undoStack().push(new AddTrackSettingsChangeCommand(_app->window(), *_track, time, new NoiseChannelSettings(ncs)));
+                _app->undoStack().push(new AddTrackSettingsChangeCommand(_app->window(), *_track, time, &ncs));
             } else if (_app->project().getChannel(_channel).type() == Channel::Type::FM) {
                 FMChannelSettings& fmcs = dynamic_cast<FMChannelSettings&>(_app->project().getChannel(_channel).settings());
-                _app->undoStack().push(new AddTrackSettingsChangeCommand(_app->window(), *_track, time, new FMChannelSettings(fmcs)));
+                _app->undoStack().push(new AddTrackSettingsChangeCommand(_app->window(), *_track, time, &fmcs));
             }
         } else if (_app->project().playMode() == Project::PlayMode::PATTERN) {
             _app->setPosition(time);
