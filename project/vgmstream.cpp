@@ -408,7 +408,56 @@ void VGMStream::generateItems(const Project& project, QList<StreamItem*>& items,
     }
 
     for (Playlist::LFOChange* change : project.playlist().lfoChanges()) {
-        items.append(new StreamLFOItem(change->time(), change->mode()));
+        if (loopStart >= 0 && loopEnd >= 0) {
+            if (loopEnd < change->time() || loopStart > change->time()) {
+                continue;
+            } else {
+                items.append(new StreamLFOItem(change->time(), change->mode()));
+            }
+        } else {
+            items.append(new StreamLFOItem(change->time(), change->mode()));
+        }
+    }
+
+    auto it = std::find_if(items.begin(), items.end(), [&](StreamItem* si) {
+        StreamLFOItem* sli;
+        if ((sli = dynamic_cast<StreamLFOItem*>(si))) {
+            if (loopStart >= 0 && loopEnd >= 0) {
+                if (sli->time() == loopStart) {
+                    return true;
+                }
+            } else {
+                if (sli->time() == 0) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    });
+
+    if (it == items.end()) {
+        Playlist::LFOChange* firstLFOChange;
+        if (loopStart >= 0 && loopEnd >= 0) {
+            QList<Playlist::LFOChange*> lfoChanges = project.playlist().lfoChanges();
+
+            std::sort(lfoChanges.begin(), lfoChanges.end(), [](Playlist::LFOChange* a, Playlist::LFOChange* b) {
+                return a->time() < b->time();
+            });
+
+            auto mostRecentLFOChangeIt = std::find_if(project.playlist().lfoChanges().rbegin(),
+                                                    project.playlist().lfoChanges().rend(),
+                                                    [&](Playlist::LFOChange* change){
+                                                        return change->time() <= loopStart;
+                                                    });
+            if (mostRecentLFOChangeIt == project.playlist().lfoChanges().rend()) {
+                items.prepend(new StreamLFOItem(loopStart, project.lfoMode()));
+            } else {
+                items.prepend(new StreamLFOItem(loopStart, (*mostRecentLFOChangeIt)->mode()));
+            }
+        } else {
+            items.prepend(new StreamLFOItem(0, project.lfoMode()));
+        }
     }
 }
 
@@ -438,7 +487,7 @@ void VGMStream::assignChannelsAndExpand(QList<StreamItem*>& items, const int tem
     }
 }
 
-void VGMStream::applySettingsChanges(Project& project, const float time, const Pattern& pattern, QList<StreamItem*>& items)
+void VGMStream::applySettingsChanges(Project& project, const float time, const Pattern& pattern, QList<StreamItem*>& items, const float loopStart, const float loopEnd)
 {
     QMap<int, Track*> tracks = pattern.tracks();
     for (auto it = tracks.begin(); it != tracks.end(); ++it) {
@@ -450,7 +499,22 @@ void VGMStream::applySettingsChanges(Project& project, const float time, const P
         });
 
         if (!settingChanges.isEmpty()) {
-            settingChanges.prepend(new Track::SettingsChange(0, &project.getChannel(it.key()).settings()));
+            ChannelSettings* firstSettings;
+            if (loopStart >= 0 && loopEnd >= 0) {
+                auto mostRecentSettingsIt = std::find_if(settingChanges.rbegin(), settingChanges.rend(), [&](Track::SettingsChange* change){
+                    return change->time() <= loopStart;
+                });
+
+                if (mostRecentSettingsIt == settingChanges.rend()) {
+                    firstSettings = &project.getChannel(it.key()).settings();
+                } else {
+                    firstSettings = &(*mostRecentSettingsIt)->settings();
+                }
+            } else {
+                firstSettings = &project.getChannel(it.key()).settings();
+            }
+
+            settingChanges.prepend(new Track::SettingsChange(0, firstSettings));
         } else {
             continue;
         }
@@ -533,28 +597,12 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items, Q
     bool setCurrentOffsetData = false;
     int _currentOffsetData;
 
-    auto it = std::find_if(items.begin(), items.end(), [](StreamItem* si) {
-        StreamLFOItem* sli;
-        if ((sli = dynamic_cast<StreamLFOItem*>(si))) {
-            if (sli->time() == 0) {
-                return true;
-            }
-        }
-
-        return false;
-    });
-
-    QList<StreamItem*> itemsCopy = items;
-    if (it == items.end()) {
-        itemsCopy.prepend(new StreamLFOItem(0, project.lfoMode()));
-    }
-
     quint32 pcmSize = 0;
     quint32 pcmWritten = 0;
     StreamNoteItem* lastPCM = nullptr;
-    for (int i = 0; i < itemsCopy.size(); i++) {
-        quint32 fullDelaySamples = (quint32)((itemsCopy[i]->time() - lastTime) / project.tempo() * 60 * 44100);
-        lastTime = itemsCopy[i]->time();
+    for (int i = 0; i < items.size(); i++) {
+        quint32 fullDelaySamples = (quint32)((items[i]->time() - lastTime) / project.tempo() * 60 * 44100);
+        lastTime = items[i]->time();
 
         if (fullDelaySamples > 0) {
             if (lastPCM) {
@@ -574,7 +622,7 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items, Q
             }
         }
 
-        if (itemsCopy[i]->time() >= currentTime && !setCurrentOffsetData) {
+        if (items[i]->time() >= currentTime && !setCurrentOffsetData) {
             _currentOffsetData = data.size();
             setCurrentOffsetData = true;
         }
@@ -582,9 +630,9 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items, Q
         StreamSettingsItem* ssi;
         StreamNoteItem* sni;
         StreamLFOItem* sli;
-        if ((ssi = dynamic_cast<StreamSettingsItem*>(itemsCopy[i])) != nullptr) {
+        if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
             encodeSettingsItem(ssi, data);
-        } else if ((sni = dynamic_cast<StreamNoteItem*>(itemsCopy[i])) != nullptr) {
+        } else if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
             encodeNoteItem(project, sni, data);
 
             if (sni->on() && sni->type() == Channel::Type::PCM) {
@@ -595,7 +643,7 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items, Q
                     pcmSize = pcmWritten + newPcmSize;
                 }
             }
-        } else if ((sli = dynamic_cast<StreamLFOItem*>(itemsCopy[i])) != nullptr) {
+        } else if ((sli = dynamic_cast<StreamLFOItem*>(items[i])) != nullptr) {
             encodeLFOItem(sli, data);
         }
     }
@@ -617,28 +665,12 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
     bool setCurrentOffsetData = false;
     int _currentOffsetData;
 
-    auto it = std::find_if(items.begin(), items.end(), [](StreamItem* si) {
-        StreamLFOItem* sli;
-        if ((sli = dynamic_cast<StreamLFOItem*>(si))) {
-            if (sli->time() == 0) {
-                return true;
-            }
-        }
-
-        return false;
-    });
-
-    QList<StreamItem*> itemsCopy = items;
-    if (it == items.end()) {
-        itemsCopy.prepend(new StreamLFOItem(0, project.lfoMode()));
-    }
-
     quint32 pcmSize = 0;
     quint32 pcmWritten = 0;
     StreamNoteItem* lastPCM = nullptr;
-    for (int i = 0; i < itemsCopy.size(); i++) {
-        quint32 fullDelaySamples = (quint32)((itemsCopy[i]->time() - lastTime) / project.tempo() * 60 * 44100);
-        lastTime = itemsCopy[i]->time();
+    for (int i = 0; i < items.size(); i++) {
+        quint32 fullDelaySamples = (quint32)((items[i]->time() - lastTime) / project.tempo() * 60 * 44100);
+        lastTime = items[i]->time();
         if (fullDelaySamples > 0) {
             if (lastPCM) {
                 quint32 delayToEndOfPCM = pcmSize - pcmWritten;
@@ -657,12 +689,12 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
             }
         }
 
-        if (itemsCopy[i]->time() >= loopTime && !setLoopOffsetData) {
+        if (items[i]->time() >= loopTime && !setLoopOffsetData) {
             _loopOffsetData = data.size();
             setLoopOffsetData = true;
         }
 
-        if (itemsCopy[i]->time() >= currentTime && !setCurrentOffsetData) {
+        if (items[i]->time() >= currentTime && !setCurrentOffsetData) {
             _currentOffsetData = data.size();
             setCurrentOffsetData = true;
         }
@@ -670,9 +702,9 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
         StreamSettingsItem* ssi;
         StreamNoteItem* sni;
         StreamLFOItem* sli;
-        if ((ssi = dynamic_cast<StreamSettingsItem*>(itemsCopy[i])) != nullptr) {
+        if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
             encodeSettingsItem(ssi, data);
-        } else if ((sni = dynamic_cast<StreamNoteItem*>(itemsCopy[i])) != nullptr) {
+        } else if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
             encodeNoteItem(project, sni, data);
 
             if (sni->on() && sni->type() == Channel::Type::PCM) {
@@ -683,7 +715,7 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
                     pcmSize = pcmWritten + newPcmSize;
                 }
             }
-        } else if ((sli = dynamic_cast<StreamLFOItem*>(itemsCopy[i])) != nullptr) {
+        } else if ((sli = dynamic_cast<StreamLFOItem*>(items[i])) != nullptr) {
             encodeLFOItem(sli, data);
         }
     }

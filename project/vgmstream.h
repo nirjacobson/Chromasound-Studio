@@ -141,7 +141,7 @@ class VGMStream
 
         void generateItems(const Project& project, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
         void assignChannelsAndExpand(QList<StreamItem*>& items, const int tempo);
-        void applySettingsChanges(Project& project, const float time, const Pattern& pattern, QList<StreamItem*>& items);
+        void applySettingsChanges(Project& project, const float time, const Pattern& pattern, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
         void applySettingsChanges(Project& project, QList<StreamItem*>& items);
 
         void pad(QList<StreamItem*>& items, const float toDuration);
