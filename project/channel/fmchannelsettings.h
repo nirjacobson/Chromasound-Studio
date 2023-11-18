@@ -37,6 +37,10 @@ class FMChannelSettings : public ChannelSettings
         // ChannelSettings interface
     public:
         QString type() const;
+
+        // ChannelSettings interface
+    public:
+        ChannelSettings* copy() const;
 };
 
 #endif // FMCHANNELSETTINGS_H

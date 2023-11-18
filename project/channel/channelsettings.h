@@ -16,6 +16,8 @@ class ChannelSettings : public Settings
 
         virtual QString type() const = 0;
 
+        virtual ChannelSettings* copy() const = 0;
+
     private:
         int _volume;
 

@@ -114,3 +114,11 @@ QString NoiseChannelSettings::type() const
 {
     return Channel::channelTypeToString(Channel::Type::NOISE);
 }
+
+ChannelSettings* NoiseChannelSettings::copy() const
+{
+    NoiseChannelSettings* ncs = new NoiseChannelSettings;
+    *ncs = *this;
+
+    return ncs;
+}
