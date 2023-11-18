@@ -267,6 +267,8 @@ Project& Project::operator=(Project&& src)
     _tempo = src._tempo;
     _beatsPerBar = src._beatsPerBar;
 
+    _lfoMode = src._lfoMode;
+
     return *this;
 }
 

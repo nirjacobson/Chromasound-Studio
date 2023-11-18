@@ -48,6 +48,8 @@ public:
     };
 
     class LFOChange : public GanttMarker {
+        friend class BSON;
+
         public:
             LFOChange(const float time, const int mode);
 
@@ -58,6 +60,8 @@ public:
             void setMode(const int mode);
 
         private:
+            LFOChange();
+
             float _time;
             int _mode;
     };
