@@ -35,6 +35,13 @@ VGMStream::VGMStream()
     reset();
 }
 
+VGMStream::~VGMStream()
+{
+    for (Track::SettingsChange* sc : _createdSCs) {
+        delete sc;
+    }
+}
+
 void VGMStream::assignChannel(StreamNoteItem* noteItem, QList<StreamItem*>& items)
 {
     if (noteItem->type() == Channel::Type::TONE) {
@@ -515,7 +522,9 @@ void VGMStream::applySettingsChanges(Project& project, const float time, const P
                 firstSettings = &project.getChannel(it.key()).settings();
             }
 
-            settingChanges.prepend((prefixedSC = new Track::SettingsChange(time, firstSettings->copy())));
+            prefixedSC = new Track::SettingsChange(time, firstSettings->copy());
+            settingChanges.prepend(prefixedSC);
+            _createdSCs.append(prefixedSC);
         } else {
             continue;
         }
@@ -558,10 +567,6 @@ void VGMStream::applySettingsChanges(Project& project, const float time, const P
                     sni->setChannelSettings(&(*it2)->settings());
                 }
             }
-        }
-
-        if (prefixedSC) {
-            delete prefixedSC;
         }
     }
 
