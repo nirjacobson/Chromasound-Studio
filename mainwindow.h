@@ -120,5 +120,7 @@ protected:
     void showEvent(QShowEvent*);
     void resizeEvent(QResizeEvent*);
     void closeEvent(QCloseEvent* event);
+    void dragEnterEvent(QDragEnterEvent* event);
+    void dropEvent(QDropEvent* event);
 };
 #endif // MAINWINDOW_H
