@@ -19,7 +19,7 @@ void AddTrackSettingsChangeCommand::undo()
 
 void AddTrackSettingsChangeCommand::redo()
 {
-    _change = _track.addSettingsChange(_time, _settings);
+    _change = _track.addSettingsChange(_time, _settings->copy());
 
     _mainWindow->doUpdate();
 }
