@@ -7,6 +7,7 @@
 #include <QObject>
 
 #include "vgmplayer.h"
+#include "project/project.h"
 #include "project/channel/channel.h"
 
 class FM_PSG : public QObject
@@ -27,7 +28,7 @@ class FM_PSG : public QObject
 
         virtual bool isPlaying() const = 0;
 
-        virtual void keyOn(const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity, const int lfoMode) = 0;
+        virtual void keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity) = 0;
         virtual void keyOff(int key) = 0;
 };
 

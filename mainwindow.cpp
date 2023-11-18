@@ -467,7 +467,7 @@ void MainWindow::keyOn(const int key, const int velocity)
 
     if (activeChannel >= 0) {
         Channel& channel = _app->project().getChannel(activeChannel);
-        _app->keyOn(channel.type(), channel.settings(), key, velocity, _app->project().lfoMode());
+        _app->keyOn(channel.type(), channel.settings(), key, velocity);
 
         for (MdiSubWindow* window : _channelWindows[activeChannel]) {
             PianoRollWidget* prw;
