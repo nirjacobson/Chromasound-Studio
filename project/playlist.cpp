@@ -87,6 +87,9 @@ Playlist::~Playlist()
 {
     for (Playlist::Item* item : _items)
         delete item;
+
+    for (Playlist::LFOChange* change : _lfoChanges)
+        delete change;
 }
 
 const QList<Playlist::Item*>& Playlist::items() const
