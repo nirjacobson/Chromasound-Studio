@@ -416,6 +416,9 @@ void VGMStream::assignChannelsAndExpand(QList<StreamItem*>& items, const int tem
 
     for (StreamItem* item : itemsCopy) {
         StreamNoteItem* noteItem = dynamic_cast<StreamNoteItem*>(item);
+
+        if (!noteItem) continue;
+
         assignChannel(noteItem, items);
         StreamNoteItem* noteOffItem = new StreamNoteItem(*noteItem);
 
