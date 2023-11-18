@@ -423,6 +423,13 @@ void MainWindow::channelNameChanged(const int index)
 
 void MainWindow::newTriggered()
 {
+    for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
+        for (MdiSubWindow* window : *it) {
+            window->close();
+            delete window;
+        }
+    }
+
     _app->project() = Project();
 
     ui->topWidget->updateFromProject(_app->project());
