@@ -184,6 +184,39 @@ float GanttWidget::loopEnd() const
     return ui->headerWidget->loopEnd();
 }
 
+const QColor& GanttWidget::cursorColor() const
+{
+    return ui->headerWidget->cursorColor();
+}
+
+const QColor& GanttWidget::loopColor() const
+{
+    return ui->headerWidget->loopColor();
+}
+
+const QColor& GanttWidget::markerColor() const
+{
+    return ui->headerWidget->markerColor();
+}
+
+void GanttWidget::setCursorColor(const QColor& color)
+{
+    ui->headerWidget->setCursorColor(color);
+    ui->editorWidget->setCursorColor(color);
+}
+
+void GanttWidget::setLoopColor(const QColor& color)
+{
+    ui->headerWidget->setLoopColor(color);
+    ui->editorWidget->setLoopColor(color);
+}
+
+void GanttWidget::setMarkerColor(const QColor& color)
+{
+    ui->headerWidget->setMarkerColor(color);
+    ui->editorWidget->setMarkerColor(color);
+}
+
 void GanttWidget::verticalScroll(int amount)
 {
     float vscroll = (float)amount / ui->verticalScrollBar->maximum();

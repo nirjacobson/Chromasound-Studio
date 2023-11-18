@@ -10,7 +10,7 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
 {
     ui->setupUi(this);
 
-    _app->setStyleSheet("PlaylistWidget GanttHeaderWidget, PlaylistWidget GanttEditorWidget {"
+    _app->setStyleSheet("PlaylistWidget GanttWidget {"
                         "   qproperty-markerColor: rgb(64, 255, 64);"
                         "}");
 
