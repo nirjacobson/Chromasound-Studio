@@ -541,18 +541,17 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items, Q
         return false;
     });
 
+    QList<StreamItem*> itemsCopy = items;
     if (it == items.end()) {
-        StreamLFOItem* sli = new StreamLFOItem(0, project.lfoMode());
-        encodeLFOItem(sli, data);
-        delete sli;
+        itemsCopy.prepend(new StreamLFOItem(0, project.lfoMode()));
     }
 
     quint32 pcmSize = 0;
     quint32 pcmWritten = 0;
     StreamNoteItem* lastPCM = nullptr;
-    for (int i = 0; i < items.size(); i++) {
-        quint32 fullDelaySamples = (quint32)((items[i]->time() - lastTime) / project.tempo() * 60 * 44100);
-        lastTime = items[i]->time();
+    for (int i = 0; i < itemsCopy.size(); i++) {
+        quint32 fullDelaySamples = (quint32)((itemsCopy[i]->time() - lastTime) / project.tempo() * 60 * 44100);
+        lastTime = itemsCopy[i]->time();
 
         if (fullDelaySamples > 0) {
             if (lastPCM) {
@@ -572,7 +571,7 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items, Q
             }
         }
 
-        if (items[i]->time() >= currentTime && !setCurrentOffsetData) {
+        if (itemsCopy[i]->time() >= currentTime && !setCurrentOffsetData) {
             _currentOffsetData = data.size();
             setCurrentOffsetData = true;
         }
@@ -580,9 +579,9 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items, Q
         StreamSettingsItem* ssi;
         StreamNoteItem* sni;
         StreamLFOItem* sli;
-        if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
+        if ((ssi = dynamic_cast<StreamSettingsItem*>(itemsCopy[i])) != nullptr) {
             encodeSettingsItem(ssi, data);
-        } else if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
+        } else if ((sni = dynamic_cast<StreamNoteItem*>(itemsCopy[i])) != nullptr) {
             encodeNoteItem(project, sni, data);
 
             if (sni->on() && sni->type() == Channel::Type::PCM) {
@@ -593,7 +592,7 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items, Q
                     pcmSize = pcmWritten + newPcmSize;
                 }
             }
-        } else if ((sli = dynamic_cast<StreamLFOItem*>(items[i])) != nullptr) {
+        } else if ((sli = dynamic_cast<StreamLFOItem*>(itemsCopy[i])) != nullptr) {
             encodeLFOItem(sli, data);
         }
     }
@@ -626,18 +625,17 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
         return false;
     });
 
+    QList<StreamItem*> itemsCopy = items;
     if (it == items.end()) {
-        StreamLFOItem* sli = new StreamLFOItem(0, project.lfoMode());
-        encodeLFOItem(sli, data);
-        delete sli;
+        itemsCopy.prepend(new StreamLFOItem(0, project.lfoMode()));
     }
 
     quint32 pcmSize = 0;
     quint32 pcmWritten = 0;
     StreamNoteItem* lastPCM = nullptr;
-    for (int i = 0; i < items.size(); i++) {
-        quint32 fullDelaySamples = (quint32)((items[i]->time() - lastTime) / project.tempo() * 60 * 44100);
-        lastTime = items[i]->time();
+    for (int i = 0; i < itemsCopy.size(); i++) {
+        quint32 fullDelaySamples = (quint32)((itemsCopy[i]->time() - lastTime) / project.tempo() * 60 * 44100);
+        lastTime = itemsCopy[i]->time();
         if (fullDelaySamples > 0) {
             if (lastPCM) {
                 quint32 delayToEndOfPCM = pcmSize - pcmWritten;
@@ -656,12 +654,12 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
             }
         }
 
-        if (items[i]->time() >= loopTime && !setLoopOffsetData) {
+        if (itemsCopy[i]->time() >= loopTime && !setLoopOffsetData) {
             _loopOffsetData = data.size();
             setLoopOffsetData = true;
         }
 
-        if (items[i]->time() >= currentTime && !setCurrentOffsetData) {
+        if (itemsCopy[i]->time() >= currentTime && !setCurrentOffsetData) {
             _currentOffsetData = data.size();
             setCurrentOffsetData = true;
         }
@@ -669,9 +667,9 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
         StreamSettingsItem* ssi;
         StreamNoteItem* sni;
         StreamLFOItem* sli;
-        if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
+        if ((ssi = dynamic_cast<StreamSettingsItem*>(itemsCopy[i])) != nullptr) {
             encodeSettingsItem(ssi, data);
-        } else if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
+        } else if ((sni = dynamic_cast<StreamNoteItem*>(itemsCopy[i])) != nullptr) {
             encodeNoteItem(project, sni, data);
 
             if (sni->on() && sni->type() == Channel::Type::PCM) {
@@ -682,7 +680,7 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
                     pcmSize = pcmWritten + newPcmSize;
                 }
             }
-        } else if ((sli = dynamic_cast<StreamLFOItem*>(items[i])) != nullptr) {
+        } else if ((sli = dynamic_cast<StreamLFOItem*>(itemsCopy[i])) != nullptr) {
             encodeLFOItem(sli, data);
         }
     }
