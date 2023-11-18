@@ -7,6 +7,10 @@ class ToneChannelSettings : public ChannelSettings
 {
 public:
     ToneChannelSettings();
+
+    // ChannelSettings interface
+public:
+    QString type() const;
 };
 
 #endif // TONECHANNELSETTINGS_H

@@ -33,6 +33,10 @@ class FMChannelSettings : public ChannelSettings
         OperatorSettings _operators[4];
         AlgorithmSettings _algorithm;
         LFOSettings _lfo;
+
+        // ChannelSettings interface
+    public:
+        QString type() const;
 };
 
 #endif // FMCHANNELSETTINGS_H

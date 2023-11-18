@@ -30,6 +30,9 @@ class BSON
         static Playlist::Item toPlaylistItem(bson_iter_t& b, Project* project = nullptr);
 
     private:
+        static void fromTrackSettingsChange(bson_t* dst, const Track::SettingsChange* const change);
+        static Track::SettingsChange toTrackSettingsChange(bson_iter_t& b);
+
         static void fromChannel(bson_t* dst, const Channel& channel);
         static Channel toChannel(bson_iter_t& b);
 

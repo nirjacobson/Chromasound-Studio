@@ -141,7 +141,11 @@ float PianoRollWidget::loopEnd() const
 
 void PianoRollWidget::doUpdate()
 {
-    ui->fmWidget->doUpdate();
+    if (_app->project().getChannel(_channel).type() == Channel::Type::FM) {
+        ui->fmWidget->doUpdate();
+    } else if (_app->project().getChannel(_channel).type() == Channel::Type::NOISE) {
+        ui->noiseWidget->doUpdate();
+    }
 }
 
 void PianoRollWidget::loadMIDI(const MIDIFile& file)
@@ -241,7 +245,7 @@ void PianoRollWidget::newTriggered()
 
 void PianoRollWidget::openTriggered()
 {
-    const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "MIDI File (*.mid)");
+    const QString path = QFileDialog::getOpenFileName(nullptr, tr("Open file"), "", "MIDI File (*.mid)");
 
     if (!path.isNull()) {
         QFile file(path);
@@ -253,7 +257,7 @@ void PianoRollWidget::openTriggered()
 
 void PianoRollWidget::saveTriggered()
 {
-    const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "MIDI File (*.mid)");
+    const QString path = QFileDialog::getSaveFileName(nullptr, tr("Save file"), "", "MIDI File (*.mid)");
 
     if (!path.isNull()) {
         MIDIFile midiFile;

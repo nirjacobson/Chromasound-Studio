@@ -29,6 +29,7 @@ bson_t ChannelSettings::toBSON() const
     bson_init(&bson);
 
     BSON_APPEND_INT32(&bson, "volume", _volume);
+    BSON_APPEND_UTF8(&bson, "_type", type().toStdString().c_str());
 
     return bson;
 }

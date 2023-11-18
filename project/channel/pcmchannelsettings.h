@@ -20,6 +20,10 @@ private:
 public:
     bson_t toBSON() const;
     void fromBSON(bson_iter_t& bson);
+
+    // ChannelSettings interface
+public:
+    QString type() const;
 };
 
 #endif // PCMCHANNELSETTINGS_H

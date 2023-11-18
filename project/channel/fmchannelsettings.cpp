@@ -1,4 +1,5 @@
 #include "fmchannelsettings.h"
+#include "project/channel/channel.h"
 
 FMChannelSettings::FMChannelSettings()
 {
@@ -95,4 +96,9 @@ bool FMChannelSettings::operator==(const FMChannelSettings& other) const
     return _algorithm == other._algorithm &&
            _lfo == other._lfo &&
            std::equal(std::begin(_operators), std::end(_operators), std::begin(other._operators));
+}
+
+QString FMChannelSettings::type() const
+{
+    return Channel::channelTypeToString(Channel::Type::FM);
 }

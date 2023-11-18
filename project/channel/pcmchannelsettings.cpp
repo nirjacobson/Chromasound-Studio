@@ -1,4 +1,5 @@
 #include "pcmchannelsettings.h"
+#include "project/channel/channel.h"
 
 PCMChannelSettings::PCMChannelSettings()
 {
@@ -33,4 +34,9 @@ void PCMChannelSettings::fromBSON(bson_iter_t& bson)
     if (bson_iter_find_descendant(&bson, "path", &path) && BSON_ITER_HOLDS_UTF8(&path)) {
         _filePath = bson_iter_utf8(&path, nullptr);
     }
+}
+
+QString PCMChannelSettings::type() const
+{
+    return Channel::channelTypeToString(Channel::Type::PCM);
 }

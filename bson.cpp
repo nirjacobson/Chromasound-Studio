@@ -202,6 +202,7 @@ Track::Item BSON::toTrackItem(bson_iter_t& b)
 void BSON::fromTrack(bson_t* dst, const Track& track)
 {
     bson_t items;
+    bson_t settingsChanges;
 
     uint32_t i = 0;
 
@@ -219,6 +220,22 @@ void BSON::fromTrack(bson_t* dst, const Track& track)
     }
     bson_append_array_end(dst, &items);
 
+    i = 0;
+
+    BSON_APPEND_ARRAY_BEGIN(dst, "settingsChanges", &settingsChanges);
+    for (const Track::SettingsChange* const sc : track._settingsChanges) {
+        bson_t b_change;
+        bson_init(&b_change);
+        fromTrackSettingsChange(&b_change, sc);
+
+        char keybuff[8];
+        const char* key;
+        bson_uint32_to_string(i++, &key, keybuff, sizeof keybuff);
+
+        BSON_APPEND_DOCUMENT(&settingsChanges, key, &b_change);
+    }
+    bson_append_array_end(dst, &settingsChanges);
+
     BSON_APPEND_BOOL(dst, "usePianoRoll", track.doesUsePianoRoll());
 }
 
@@ -230,12 +247,22 @@ Track BSON::toTrack(bson_iter_t& b)
     bson_iter_t child;
     bson_iter_t item;
 
+    bson_iter_t changes;
+    bson_iter_t change;
+
     bson_iter_t usePianoRoll;
 
     if (bson_iter_find_descendant(&b, "items", &items) && BSON_ITER_HOLDS_ARRAY(&items) && bson_iter_recurse(&items, &child)) {
         while (bson_iter_next(&child)) {
             bson_iter_recurse(&child, &item);
             t._items.append(new Track::Item(toTrackItem(item)));
+        }
+    }
+
+    if (bson_iter_find_descendant(&b, "settingsChanges", &changes) && BSON_ITER_HOLDS_ARRAY(&changes) && bson_iter_recurse(&changes, &child)) {
+        while (bson_iter_next(&child)) {
+            bson_iter_recurse(&child, &change);
+            t._settingsChanges.append(new Track::SettingsChange(toTrackSettingsChange(change)));
         }
     }
 
@@ -307,6 +334,56 @@ Playlist::Item BSON::toPlaylistItem(bson_iter_t& b, Project* project)
     i._project = project;
 
     return i;
+}
+
+void BSON::fromTrackSettingsChange(bson_t* dst, const Track::SettingsChange* const change)
+{
+    BSON_APPEND_DOUBLE(dst, "time", change->time());
+
+    bson_t settings = change->_settings->toBSON();
+    BSON_APPEND_DOCUMENT(dst, "settings", &settings);
+}
+
+Track::SettingsChange BSON::toTrackSettingsChange(bson_iter_t& b)
+{
+    Track::SettingsChange sc;
+
+    bson_iter_t time;
+    bson_iter_t settings;
+    bson_iter_t settingsInner;
+    bson_iter_t type;
+
+    if (bson_iter_find_descendant(&b, "time", &time) && BSON_ITER_HOLDS_DOUBLE(&time)) {
+        sc._time = bson_iter_double(&time);
+    }
+    if (bson_iter_find_descendant(&b, "settings", &settings) && BSON_ITER_HOLDS_DOCUMENT(&settings) && bson_iter_recurse(&settings, &settingsInner)) {
+        if (bson_iter_find_descendant(&settingsInner, "_type", &type) && BSON_ITER_HOLDS_UTF8(&type)) {
+            Channel::Type channelType = Channel::channelTypeFromString(bson_iter_utf8(&type, nullptr));
+
+            if (bson_iter_recurse(&settings, &settingsInner)) {
+                switch (channelType) {
+                    case Channel::TONE:
+                        sc._settings = new ToneChannelSettings;
+                        sc._settings->fromBSON(settingsInner);
+                        break;
+                    case Channel::NOISE:
+                        sc._settings = new NoiseChannelSettings;
+                        sc._settings->fromBSON(settingsInner);
+                        break;
+                    case Channel::FM:
+                        sc._settings = new FMChannelSettings;
+                        sc._settings->fromBSON(settingsInner);
+                        break;
+                    case Channel::PCM:
+                        sc._settings = new PCMChannelSettings;
+                        sc._settings->fromBSON(settingsInner);
+                        break;
+                }
+            }
+        }
+    }
+
+    return sc;
 }
 
 void BSON::fromPlaylist(bson_t* dst, const Playlist& playlist)

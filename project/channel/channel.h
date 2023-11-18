@@ -36,15 +36,15 @@ class Channel
         ChannelSettings& settings();
         const ChannelSettings& settings() const;
 
+        static QString channelTypeToString(const Channel::Type type);
+        static Channel::Type channelTypeFromString(const QString& str);
+
     private:
         bool _enabled;
         Type _type;
         QString _name;
 
         ChannelSettings* _settings;
-
-        static QString channelTypeToString(const Channel::Type type);
-        static Channel::Type channelTypeFromString(const QString& str);
 };
 
 #endif // CHANNEL_H
