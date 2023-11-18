@@ -13,6 +13,8 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
 
     ui->setupUi(this);
 
+    setAcceptDrops(true);
+
     ui->actionNew->setShortcuts(QKeySequence::New);
     ui->actionOpen->setShortcuts(QKeySequence::Open);
     ui->actionSave->setShortcuts(QKeySequence::Save);
@@ -692,6 +694,35 @@ void MainWindow::closeEvent(QCloseEvent* event)
 {
     _styleDialog.hide();
     _fmImportDialog.hide();
+}
+
+void MainWindow::dragEnterEvent(QDragEnterEvent* event)
+{
+    if (event->mimeData()->hasFormat("text/uri-list")) {
+        event->acceptProposedAction();
+    }
+}
+
+void MainWindow::dropEvent(QDropEvent* event)
+{
+    QByteArray data = event->mimeData()->data("text/uri-list");
+    QString path(data);
+    path = path.mid(QString("file://").length());
+    path = path.replace("%20", " ");
+    path = path.replace("\r\n", "");
+
+    QFile file(path);
+    QFileInfo fileInfo(file);
+
+    if (fileInfo.suffix() == "fsp") {
+        _app->project() = BSON::decode(path);
+
+        ui->topWidget->updateFromProject(_app->project());
+
+        _channelsWidget->rebuild();
+
+        _playlistWidget->update();
+    }
 }
 
 
