@@ -102,3 +102,11 @@ QString FMChannelSettings::type() const
 {
     return Channel::channelTypeToString(Channel::Type::FM);
 }
+
+ChannelSettings* FMChannelSettings::copy() const
+{
+    FMChannelSettings* fmcs = new FMChannelSettings;
+    *fmcs = *this;
+
+    return fmcs;
+}

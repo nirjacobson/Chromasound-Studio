@@ -228,7 +228,7 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, const fl
 
     processPattern(0, project, pattern, items, loopStart, loopEnd);
     assignChannelsAndExpand(items, project.tempo());
-    applySettingsChanges(project, 0, pattern, items);
+    applySettingsChanges(project, 0, pattern, items, loopStart, loopEnd);
     pad(items, loopEnd - loopStart);
     totalSamples = encode(project, items, data, loopStart, nullptr, currentOffset, &_currentOffsetData, true);
 
@@ -253,7 +253,7 @@ QByteArray VGMStream::compile(Project& project, const float loopStart, const flo
 
     generateItems(project, items, loopStart, loopEnd);
     assignChannelsAndExpand(items, project.tempo());
-    applySettingsChanges(project, items);
+    applySettingsChanges(project, items, loopStart, loopEnd);
     pad(items, loopEnd - loopStart);
     totalSamples = encode(project, items, data, loopStart, nullptr, currentOffset, &_currentOffsetData, true);
 
@@ -502,7 +502,7 @@ void VGMStream::applySettingsChanges(Project& project, const float time, const P
             ChannelSettings* firstSettings;
             if (loopStart >= 0 && loopEnd >= 0) {
                 auto mostRecentSettingsIt = std::find_if(settingChanges.rbegin(), settingChanges.rend(), [&](Track::SettingsChange* change){
-                    return change->time() <= loopStart;
+                    return (time + change->time()) <= loopStart;
                 });
 
                 if (mostRecentSettingsIt == settingChanges.rend()) {
@@ -514,7 +514,7 @@ void VGMStream::applySettingsChanges(Project& project, const float time, const P
                 firstSettings = &project.getChannel(it.key()).settings();
             }
 
-            settingChanges.prepend(new Track::SettingsChange(0, firstSettings));
+            settingChanges.prepend(new Track::SettingsChange(time, firstSettings->copy()));
         } else {
             continue;
         }
@@ -577,10 +577,10 @@ void VGMStream::applySettingsChanges(Project& project, const float time, const P
     });
 }
 
-void VGMStream::applySettingsChanges(Project& project, QList<StreamItem*>& items)
+void VGMStream::applySettingsChanges(Project& project, QList<StreamItem*>& items, const float loopStart, const float loopEnd)
 {
     for (Playlist::Item* item : project.playlist().items()) {
-        applySettingsChanges(project, item->time(), project.getPattern(item->pattern()), items);
+        applySettingsChanges(project, item->time(), project.getPattern(item->pattern()), items, loopStart, loopEnd);
     }
 }
 

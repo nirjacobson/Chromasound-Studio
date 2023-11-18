@@ -24,6 +24,10 @@ public:
     // ChannelSettings interface
 public:
     QString type() const;
+
+    // ChannelSettings interface
+public:
+    ChannelSettings* copy() const;
 };
 
 #endif // PCMCHANNELSETTINGS_H

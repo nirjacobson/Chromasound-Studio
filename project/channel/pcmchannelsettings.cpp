@@ -40,3 +40,11 @@ QString PCMChannelSettings::type() const
 {
     return Channel::channelTypeToString(Channel::Type::PCM);
 }
+
+ChannelSettings* PCMChannelSettings::copy() const
+{
+    PCMChannelSettings* pcs = new PCMChannelSettings;
+    *pcs = *this;
+
+    return pcs;
+}
