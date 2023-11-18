@@ -105,6 +105,9 @@ void FM_PSG_Impl::keyOn(const Project& project, const Channel::Type channelType,
     _vgmStream.encode(project, items, data);
     _keys[key] = sni;
     _vgmPlayer->setVGM(data, false, 0);
+
+    delete sli;
+    delete sni;
 }
 
 void FM_PSG_Impl::keyOff(int key)
@@ -117,8 +120,9 @@ void FM_PSG_Impl::keyOff(int key)
     items.append(sni);
     _vgmStream.encode(Project(), items, data);
     _keys.remove(key);
-    delete sni;
     _vgmPlayer->setVGM(data, false, 0);
+
+    delete sni;
 }
 
 void FM_PSG_Impl::reset()

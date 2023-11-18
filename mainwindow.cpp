@@ -73,6 +73,23 @@ MainWindow::~MainWindow()
 
     _midiInput->destroy();
 
+    for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
+        for (MdiSubWindow* window : *it) {
+            window->close();
+            delete window;
+        }
+    }
+
+    if (_channelsWindow) {
+        _channelsWindow->close();
+        delete _channelsWindow;
+    }
+
+    if (_playlistWindow) {
+        _playlistWindow->close();
+        delete _playlistWindow;
+    }
+
     delete ui;
 }
 
@@ -590,7 +607,7 @@ void MainWindow::mdiViewModeChanged(const QString& viewMode)
 
     if (viewMode == "windows") {
         MdiArea* mdiArea = new MdiArea(this);
-        ui->centralwidget->layout()->replaceWidget(ui->mdiArea, mdiArea);
+        delete ui->centralwidget->layout()->replaceWidget(ui->mdiArea, mdiArea);
         ui->mdiArea = mdiArea;
     }
 }
