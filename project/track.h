@@ -52,8 +52,10 @@ class Track
         };
 
         class SettingsChange : public GanttMarker {
+                friend class BSON;
+
             public:
-                SettingsChange(const float time, const QString& name, ChannelSettings* settings);
+                SettingsChange(const float time, ChannelSettings* settings);
                 ~SettingsChange();
 
                 // GanttMarker interface
@@ -63,8 +65,9 @@ class Track
                 ChannelSettings& settings();
 
             private:
+                SettingsChange();
+
                 float _time;
-                QString _name;
                 ChannelSettings* _settings;
         };
 
@@ -81,7 +84,7 @@ class Track
         float removeItem(const float time);
         void removeItems(const QList<Item*>& items);
 
-        SettingsChange* addSettingsChange(const float time, const QString& name, ChannelSettings* settings);
+        SettingsChange* addSettingsChange(const float time, ChannelSettings* settings);
         void removeSettingsChange(const SettingsChange* sc, const bool keep = false);
 
         void usePianoRoll();

@@ -19,7 +19,7 @@ RemoveTrackSettingsChangeCommand::~RemoveTrackSettingsChangeCommand()
 
 void RemoveTrackSettingsChangeCommand::undo()
 {
-    _track.addSettingsChange(_change->time(), _change->name(), &_change->settings());
+    _track.addSettingsChange(_change->time(), &_change->settings());
 
     _mainWindow->doUpdate();
 

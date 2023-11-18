@@ -32,7 +32,7 @@ void PCMWidget::doUpdate()
 
 void PCMWidget::openTriggered()
 {
-    const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "PCM audio (*.pcm)");
+    const QString path = QFileDialog::getOpenFileName(nullptr, tr("Open file"), "", "PCM audio (*.pcm)");
 
     if (!path.isNull()) {
         _settings->setPath(path);

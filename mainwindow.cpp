@@ -415,7 +415,7 @@ void MainWindow::newTriggered()
 
 void MainWindow::openTriggered()
 {
-    const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "FM-PSG Studio Projects (*.fsp)");
+    const QString path = QFileDialog::getOpenFileName(nullptr, tr("Open file"), "", "FM-PSG Studio Projects (*.fsp)");
 
     if (!path.isNull()) {
         _app->project() = BSON::decode(path);
@@ -430,7 +430,7 @@ void MainWindow::openTriggered()
 
 void MainWindow::saveTriggered()
 {
-    const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "FM-PSG Studio Projects (*.fsp)");
+    const QString path = QFileDialog::getSaveFileName(nullptr, tr("Save file"), "", "FM-PSG Studio Projects (*.fsp)");
 
     if (!path.isNull()) {
         QFile file(path);
@@ -442,7 +442,7 @@ void MainWindow::saveTriggered()
 
 void MainWindow::renderTriggered()
 {
-    const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "VGM files (*.vgm)");
+    const QString path = QFileDialog::getSaveFileName(nullptr, tr("Save file"), "", "VGM files (*.vgm)");
 
     if (!path.isNull()) {
         QFile file(path);

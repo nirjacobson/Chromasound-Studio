@@ -209,7 +209,7 @@ int FMImportDialog::ensurePatch(const FMChannelSettings& settings)
 
 void FMImportDialog::openTriggered()
 {
-    QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "VGM file (*.vgm)");
+    QString path = QFileDialog::getOpenFileName(nullptr, tr("Open file"), "", "VGM file (*.vgm)");
 
     if (!path.isNull()) {
         load(path);
@@ -226,7 +226,7 @@ void FMImportDialog::saveTriggered() {
 
     int index = ui->patchTableView->selectionModel()->selectedIndexes().first().row();
 
-    QString path = QFileDialog::getSaveFileName(this, tr("Save patch"), QString("%1.fm").arg(_patchNames[index]), "YM2612 Patch (*.fm)");
+    QString path = QFileDialog::getSaveFileName(nullptr, tr("Save patch"), QString("%1.fm").arg(_patchNames[index]), "YM2612 Patch (*.fm)");
 
     if (!path.isNull()) {
         QFile patchFile(path);
@@ -238,7 +238,7 @@ void FMImportDialog::saveTriggered() {
 
 void FMImportDialog::saveAllTriggered()
 {
-    QString path = QFileDialog::getExistingDirectory(this, tr("Save all patches"), "");
+    QString path = QFileDialog::getExistingDirectory(nullptr, tr("Save all patches"), "");
 
     if (!path.isNull()) {
         QFile manifestFile(path + QDir::separator() + "Manifest");

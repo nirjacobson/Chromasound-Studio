@@ -1,4 +1,5 @@
 #include "noisechannelsettings.h"
+#include "project/channel/channel.h"
 
 NoiseChannelSettings::NoiseChannelSettings()
     : _type(NoiseType::Periodic)
@@ -107,4 +108,9 @@ NoiseChannelSettings::ShiftRate NoiseChannelSettings::shiftRateFromString(const 
     }
 
     return ShiftRate::FIVE_TWELVE;
+}
+
+QString NoiseChannelSettings::type() const
+{
+    return Channel::channelTypeToString(Channel::Type::NOISE);
 }

@@ -42,6 +42,10 @@ class NoiseChannelSettings : public ChannelSettings
 
         static NoiseType noiseTypeFromString(const QString& str);
         static ShiftRate shiftRateFromString(const QString& str);
+
+        // ChannelSettings interface
+    public:
+        QString type() const;
 };
 
 #endif // NOISECHANNELSETTINGS_H

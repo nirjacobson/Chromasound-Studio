@@ -108,12 +108,12 @@ void Track::removeItems(const QList<Item*>& items)
     _items.erase(std::remove_if(_items.begin(), _items.end(), [&](const Track::Item* item){ return items.contains(item); }), _items.end());
 }
 
-Track::SettingsChange* Track::addSettingsChange(const float time, const QString& name, ChannelSettings* settings)
+Track::SettingsChange* Track::addSettingsChange(const float time, ChannelSettings* settings)
 {
     SettingsChange* ret = nullptr;
 
     if (std::find_if(_settingsChanges.begin(), _settingsChanges.end(), [=](SettingsChange* const sc){ return sc->time() == time; }) == _settingsChanges.end()) {
-        ret = new SettingsChange(time, name, settings);
+        ret = new SettingsChange(time, settings);
         _settingsChanges.append(ret);
     }
 
@@ -212,9 +212,8 @@ void Track::Item::setVelocity(const int velocity)
     _note.setVelocity(velocity);
 }
 
-Track::SettingsChange::SettingsChange(const float time, const QString& name, ChannelSettings* settings)
+Track::SettingsChange::SettingsChange(const float time, ChannelSettings* settings)
     : _time(time)
-    , _name(name)
     , _settings(settings)
 {
 
@@ -232,11 +231,18 @@ float Track::SettingsChange::time() const
 
 QString Track::SettingsChange::name() const
 {
-    return _name;
+    return "Settings change";
 }
 
 ChannelSettings& Track::SettingsChange::settings()
 {
     return *_settings;
+}
+
+Track::SettingsChange::SettingsChange()
+    : _time(0)
+    , _settings(nullptr)
+{
+
 }
 
