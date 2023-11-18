@@ -226,12 +226,13 @@ QByteArray VGMStream::compile(Project& project, bool header, int* loopOffsetData
     return data;
 }
 
-QByteArray VGMStream::compile(Project& project, const Pattern& pattern, const float loopStart, const float loopEnd, const float currentOffset, int* const currentOffsetData)
+QByteArray VGMStream::compile(Project& project, const Pattern& pattern, int* loopOffsetData, const float loopStart, const float loopEnd, const float currentOffset, int* const currentOffsetData)
 {
     QList<StreamItem*> items;
     QByteArray data;
     int totalSamples;
 
+    int _loopOffsetData = 0;
     int _currentOffsetData;
 
     processPattern(0, project, pattern, items, loopStart, loopEnd);
@@ -258,6 +259,28 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, const fl
 
     totalSamples = encode(project, items, data, loopStart, nullptr, currentOffset, &_currentOffsetData, true);
 
+    if (project.hasPCM()) {
+        quint32 pcmSize = project.pcmSize();
+        QByteArray pcmBlock;
+
+        pcmBlock.append(0x67);
+        pcmBlock.append(0x66);
+        pcmBlock.append((quint8)0x00);
+        pcmBlock.append((char*)&pcmSize, sizeof(pcmSize));
+        pcmBlock.append(project.pcm());
+
+        QByteArray enableDac;
+        enableDac.append(0x52);
+        enableDac.append(0x2B);
+        enableDac.append(0x80);
+
+        data.prepend(enableDac);
+        data.prepend(pcmBlock);
+
+        _loopOffsetData += 7 + pcmSize;
+        _currentOffsetData += 7 + pcmSize;
+    }
+
     for (StreamItem* item : items) {
         delete item;
     }
@@ -266,15 +289,20 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, const fl
         *currentOffsetData = _currentOffsetData;
     }
 
+    if (loopOffsetData) {
+        *loopOffsetData = _loopOffsetData;
+    }
+
     return data;
 }
 
-QByteArray VGMStream::compile(Project& project, const float loopStart, const float loopEnd, const float currentOffset, int* const currentOffsetData)
+QByteArray VGMStream::compile(Project& project, int* loopOffsetData, const float loopStart, const float loopEnd, const float currentOffset, int* const currentOffsetData)
 {
     QList<StreamItem*> items;
     QByteArray data;
     int totalSamples;
 
+    int _loopOffsetData = 0;
     int _currentOffsetData;
 
     generateItems(project, items, loopStart, loopEnd);
@@ -283,12 +311,38 @@ QByteArray VGMStream::compile(Project& project, const float loopStart, const flo
     pad(items, loopEnd - loopStart);
     totalSamples = encode(project, items, data, loopStart, nullptr, currentOffset, &_currentOffsetData, true);
 
+    if (project.hasPCM()) {
+        quint32 pcmSize = project.pcmSize();
+        QByteArray pcmBlock;
+
+        pcmBlock.append(0x67);
+        pcmBlock.append(0x66);
+        pcmBlock.append((quint8)0x00);
+        pcmBlock.append((char*)&pcmSize, sizeof(pcmSize));
+        pcmBlock.append(project.pcm());
+
+        QByteArray enableDac;
+        enableDac.append(0x52);
+        enableDac.append(0x2B);
+        enableDac.append(0x80);
+
+        data.prepend(enableDac);
+        data.prepend(pcmBlock);
+
+        _loopOffsetData += 7 + pcmSize;
+        _currentOffsetData += 7 + pcmSize;
+    }
+
     for (StreamItem* item : items) {
         delete item;
     }
 
     if (currentOffsetData) {
         *currentOffsetData = _currentOffsetData;
+    }
+
+    if (loopOffsetData) {
+        *loopOffsetData = _loopOffsetData;
     }
 
     return data;
