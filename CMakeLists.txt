@@ -51,9 +51,6 @@ set(PROJECT_SOURCES
     fmwidget/algorithmwidget.ui
     fmwidget/envelopedisplaywidget.cpp
     fmwidget/envelopedisplaywidget.h
-
-
-
     fmwidget/operatorwidget.cpp
     fmwidget/operatorwidget.h
     fmwidget/operatorwidget.ui
@@ -257,15 +254,17 @@ set(PROJECT_SOURCES
     commands/removeplaylistlfochangecommand.cpp
     project/channel/lfosettings.h
     project/channel/lfosettings.cpp
+    fmwidget/fmlfowidget.h
+    fmwidget/fmlfowidget.cpp
+    fmwidget/fmlfowidget.ui
+    commands/editlfosettingscommand.h
+    commands/editlfosettingscommand.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(FM-PSG-Studio
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        fmwidget/fmlfowidget.h fmwidget/fmlfowidget.cpp fmwidget/fmlfowidget.ui
-        commands/editlfosettingscommand.h commands/editlfosettingscommand.cpp
-
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET FM-PSG-Studio APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
