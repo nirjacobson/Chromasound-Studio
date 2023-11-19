@@ -94,11 +94,22 @@ void VGMStream::encode(const Project& project, QList<StreamItem*>& items, QByteA
             const StreamNoteItem* bn;
             if((an = dynamic_cast<const StreamNoteItem*>(a)) != nullptr) {
                 if((bn = dynamic_cast<const StreamNoteItem*>(b)) != nullptr) {
-                    return !an->on() && bn->on();
+                    if (!an->on() && bn->on()) {
+                        return true;
+                    } if (an->on() && !bn->on()) {
+                        return false;
+                    } else {
+                        return an->channel() < bn->channel();
+                    }
                 }
                 return false;
+            } else {
+                if((bn = dynamic_cast<const StreamNoteItem*>(b)) != nullptr) {
+                    return true;
+                } else {
+                    return a < b; // doesn't matter
+                }
             }
-            return true;
         }
 
         return a->time() < b->time();
@@ -649,11 +660,22 @@ void VGMStream::applySettingsChanges(Project& project, const float time, const P
             const StreamNoteItem* bn;
             if((an = dynamic_cast<const StreamNoteItem*>(a)) != nullptr) {
                 if((bn = dynamic_cast<const StreamNoteItem*>(b)) != nullptr) {
-                    return !an->on() && bn->on();
+                    if (!an->on() && bn->on()) {
+                        return true;
+                    } if (an->on() && !bn->on()) {
+                        return false;
+                    } else {
+                        return an->channel() < bn->channel();
+                    }
                 }
                 return false;
+            } else {
+                if((bn = dynamic_cast<const StreamNoteItem*>(b)) != nullptr) {
+                    return true;
+                } else {
+                    return a < b; // doesn't matter
+                }
             }
-            return true;
         }
 
         return a->time() < b->time();
