@@ -1,10 +1,11 @@
 #include "fmwidget.h"
 #include "ui_fmwidget.h"
 
-FMWidget::FMWidget(QWidget *parent, Application* app) :
-    QWidget(parent),
-    ui(new Ui::FMWidget),
-    _app(app)
+FMWidget::FMWidget(QWidget *parent, Application* app)
+    : QWidget(parent)
+    , ui(new Ui::FMWidget)
+    , _app(app)
+    , _settings(nullptr)
 {
     ui->setupUi(this);
 
@@ -81,7 +82,9 @@ void FMWidget::releaseKey(const int key)
 
 void FMWidget::doUpdate()
 {
-    setSettings(_settings);
+    if (_settings) {
+        setSettings(_settings);
+    }
 }
 
 void FMWidget::newTriggered()
