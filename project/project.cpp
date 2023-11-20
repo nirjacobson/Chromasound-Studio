@@ -108,7 +108,12 @@ const Pattern& Project::getFrontPattern() const
 
 int Project::getPatternBarLength(const int idx)
 {
-    return qCeil(getPattern(idx).getLength() / _beatsPerBar) * _beatsPerBar;
+    return getPatternBarLength(getPattern(idx));
+}
+
+int Project::getPatternBarLength(const Pattern& pattern)
+{
+    return qCeil(pattern.getLength() / _beatsPerBar) * _beatsPerBar;
 }
 
 Playlist& Project::playlist()
