@@ -37,7 +37,7 @@ class Project
         Pattern& getFrontPattern();
         const Pattern& getFrontPattern() const;
         int getPatternBarLength(const int idx);
-
+        int getPatternBarLength(const Pattern& pattern);
         PlayMode playMode() const;
         void setPlayMode(const PlayMode mode);
 

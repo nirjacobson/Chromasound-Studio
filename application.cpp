@@ -42,18 +42,17 @@ void Application::play()
     } else {
         int currentOffsetData;
         if (_project.playMode() == Project::PlayMode::PATTERN) {
-            QByteArray vgm = VGMStream().compile(_project, false, nullptr, position(), &currentOffsetData);
+            QByteArray vgm = VGMStream().compile(_project, _project.getFrontPattern(), false, nullptr, -1, -1, position(), &currentOffsetData);
             _fmPSG->setPosition(position());
             _fmPSG->play(vgm, true, currentOffsetData);
         } else {
+            int loopOffsetData;
+            QByteArray vgm = VGMStream().compile(_project, false, &loopOffsetData, -1, -1, position(), &currentOffsetData);
+            _fmPSG->setPosition(position());
             if (_project.playlist().doesLoop()) {
-                int loopOffsetData;
-                QByteArray vgm = VGMStream().compile(_project, false, &loopOffsetData, position(), &currentOffsetData);
-                _fmPSG->setPosition(position());
                 _fmPSG->play(vgm, _project.playlist().loopOffsetSamples(), loopOffsetData, currentOffsetData);
             } else {
-                _fmPSG->setPosition(position());
-                _fmPSG->play(VGMStream().compile(_project, false, nullptr, position(), &currentOffsetData), false, currentOffsetData);
+                _fmPSG->play(vgm, false, currentOffsetData);
             }
         }
 
@@ -66,7 +65,7 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
     int loopOffsetData;
     int currentOffsetData;
     int loopOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
-    QByteArray vgm = VGMStream().compile(_project, pattern, &loopOffsetData, loopStart, loopEnd, position(), &currentOffsetData);
+    QByteArray vgm = VGMStream().compile(_project, pattern, false, &loopOffsetData, loopStart, loopEnd, position(), &currentOffsetData);
 
     _fmPSG->setPosition(loopStart);
     _fmPSG->play(vgm, loopOffsetSamples, loopOffsetData, currentOffsetData, loopEnd - loopStart);
@@ -77,7 +76,7 @@ void Application::play(const float loopStart, const float loopEnd)
     int loopOffsetData;
     int currentOffsetData;
     int loopOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
-    QByteArray vgm = VGMStream().compile(_project, &loopOffsetData, loopStart, loopEnd, position(), &currentOffsetData);
+    QByteArray vgm = VGMStream().compile(_project, false, &loopOffsetData, loopStart, loopEnd, position(), &currentOffsetData);
 
     _fmPSG->setPosition(loopStart);
     _fmPSG->play(vgm, loopOffsetSamples, loopOffsetData, currentOffsetData, loopEnd - loopStart);

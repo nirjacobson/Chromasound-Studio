@@ -475,7 +475,9 @@ void MainWindow::renderTriggered()
         file.open(QIODevice::WriteOnly);
 
         VGMStream vgmStream;
-        QByteArray data = vgmStream.compile(_app->project(), true);
+        QByteArray data = _app->project().playMode() == Project::PlayMode::PATTERN
+            ? vgmStream.compile(_app->project(), _app->project().getFrontPattern(), true)
+            : vgmStream.compile(_app->project(), true);
         file.write(data);
         file.close();
     }
