@@ -11,6 +11,10 @@
 class VGMStream
 {
     public:
+        enum Format {
+            FM_PSG,
+            STANDARD
+        };
 
         class StreamItem {
             private:
@@ -54,7 +58,7 @@ class VGMStream
                 int _mode;
         };
 
-        VGMStream();
+        VGMStream(const Format format = Format::FM_PSG);
         ~VGMStream();
 
         void assignChannel(StreamNoteItem* noteItem, QList<StreamItem*>& items);
@@ -126,6 +130,8 @@ class VGMStream
         static constexpr int NOISE_CHANNELS = 1;
         static constexpr int PCM_CHANNELS = 4;
 
+        Format _format;
+
         FMChannel _fmChannels[FM_CHANNELS];
         ToneChannel _toneChannels[TONE_CHANNELS];
         NoiseChannel _noiseChannels[NOISE_CHANNELS];
@@ -146,6 +152,8 @@ class VGMStream
         void applySettingsChanges(Project& project, const float time, const Pattern& pattern, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
         void applySettingsChanges(Project& project, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
 
+        void sortItems(QList<StreamItem*>& items);
+
         void pad(QList<StreamItem*>& items, const float toDuration);
 
         int encode(const Project& project, const QList<StreamItem*>& items, QByteArray& data, const float loopTime = 0, int* const loopOffsetData = nullptr, const float currentTime = 0, int* const currentOffsetData = nullptr, const bool startAtLoop = false);
@@ -156,6 +164,9 @@ class VGMStream
         void encodeSettingsItem(const StreamSettingsItem* item, QByteArray& data);
         void encodeNoteItem(const Project& project, const StreamNoteItem* item, QByteArray& data);
         void encodeLFOItem(const StreamLFOItem* item, QByteArray& data);
+
+        QByteArray encodeStandardPCM(const Project& project, const Pattern& pattern, const float loopStart = -1, const float loopEnd = -1);
+        QByteArray encodeStandardPCM(const Project& project, const float loopStart = -1, const float loopEnd = -1);
 
         QByteArray generateHeader(const Project& project, const QByteArray& data, const int totalSamples, const int loopOffsetData);
 };

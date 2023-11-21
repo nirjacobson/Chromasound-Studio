@@ -43,12 +43,19 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <widget class="QMenu" name="menuRender">
+     <property name="title">
+      <string>&amp;Render</string>
+     </property>
+     <addaction name="actionForFMPSG"/>
+     <addaction name="actionFor3rdPartyPlayers"/>
+    </widget>
     <addaction name="actionNew"/>
     <addaction name="separator"/>
     <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
     <addaction name="separator"/>
-    <addaction name="actionRender"/>
+    <addaction name="menuRender"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -93,19 +100,9 @@
     <string>&amp;Save</string>
    </property>
   </action>
-  <action name="actionRender">
-   <property name="text">
-    <string>&amp;Render</string>
-   </property>
-  </action>
   <action name="actionStyles">
    <property name="text">
     <string>&amp;Styles...</string>
-   </property>
-  </action>
-  <action name="actionExit">
-   <property name="text">
-    <string>E&amp;xit</string>
    </property>
   </action>
   <action name="actionChannels">
@@ -121,6 +118,21 @@
   <action name="actionImportFMPatches">
    <property name="text">
     <string>&amp;Import FM Patches</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>E&amp;xit</string>
+   </property>
+  </action>
+  <action name="actionForFMPSG">
+   <property name="text">
+    <string>For FM-PSG</string>
+   </property>
+  </action>
+  <action name="actionFor3rdPartyPlayers">
+   <property name="text">
+    <string>For 3rd party players</string>
    </property>
   </action>
  </widget>

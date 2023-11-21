@@ -18,7 +18,6 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     ui->actionNew->setShortcuts(QKeySequence::New);
     ui->actionOpen->setShortcuts(QKeySequence::Open);
     ui->actionSave->setShortcuts(QKeySequence::Save);
-    ui->actionRender->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_R));
     ui->actionExit->setShortcuts(QKeySequence::Quit);
 
     QAction* menuEditFirstAction = ui->menuEdit->actions()[0];
@@ -51,7 +50,8 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
    connect(ui->actionNew, &QAction::triggered, this, &MainWindow::newTriggered);
    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openTriggered);
    connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveTriggered);
-   connect(ui->actionRender, &QAction::triggered, this, &MainWindow::renderTriggered);
+   connect(ui->actionForFMPSG, &QAction::triggered, this, &MainWindow::renderForFMPSGTriggered);
+   connect(ui->actionFor3rdPartyPlayers, &QAction::triggered, this, &MainWindow::renderFor3rdPartyTriggered);
    connect(ui->actionExit, &QAction::triggered, this, &MainWindow::close);
    connect(ui->actionStyles, &QAction::triggered, this, &MainWindow::stylesTriggered);
    connect(ui->actionChannels, &QAction::triggered, this, &MainWindow::showChannelsWindow);
@@ -466,7 +466,7 @@ void MainWindow::saveTriggered()
     }
 }
 
-void MainWindow::renderTriggered()
+void MainWindow::renderForFMPSGTriggered()
 {
     const QString path = QFileDialog::getSaveFileName(nullptr, tr("Save file"), "", "VGM files (*.vgm)");
 
@@ -476,8 +476,25 @@ void MainWindow::renderTriggered()
 
         VGMStream vgmStream;
         QByteArray data = _app->project().playMode() == Project::PlayMode::PATTERN
-            ? vgmStream.compile(_app->project(), _app->project().getFrontPattern(), true)
-            : vgmStream.compile(_app->project(), true);
+                              ? vgmStream.compile(_app->project(), _app->project().getFrontPattern(), true)
+                              : vgmStream.compile(_app->project(), true);
+        file.write(data);
+        file.close();
+    }
+}
+
+void MainWindow::renderFor3rdPartyTriggered()
+{
+    const QString path = QFileDialog::getSaveFileName(nullptr, tr("Save file"), "", "VGM files (*.vgm)");
+
+    if (!path.isNull()) {
+        QFile file(path);
+        file.open(QIODevice::WriteOnly);
+
+        VGMStream vgmStream(VGMStream::Format::STANDARD);
+        QByteArray data = _app->project().playMode() == Project::PlayMode::PATTERN
+                              ? vgmStream.compile(_app->project(), _app->project().getFrontPattern(), true)
+                              : vgmStream.compile(_app->project(), true);
         file.write(data);
         file.close();
     }
