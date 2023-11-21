@@ -776,6 +776,10 @@ void VGMStream::applySettingsChanges(Project& project, const float time, const P
         settingChanges.prepend(prefixedSC);
         _createdSCs.append(prefixedSC);
 
+        std::sort(settingChanges.begin(), settingChanges.end(), [](Track::SettingsChange* a, Track::SettingsChange* b) {
+            return a->time() < b->time();
+        });
+
         QList<StreamItem*> trackNoteItems = items;
         trackNoteItems.erase(std::remove_if(trackNoteItems.begin(), trackNoteItems.end(), [&](StreamItem* si){
             StreamNoteItem* sni;
