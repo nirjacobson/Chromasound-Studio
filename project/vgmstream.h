@@ -149,8 +149,8 @@ class VGMStream
         void processTrack(const float time, const Channel& channel, const Track* track, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
 
         void assignChannelsAndExpand(QList<StreamItem*>& items, const int tempo);
-        void applySettingsChanges(Project& project, const float time, const Pattern& pattern, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
-        void applySettingsChanges(Project& project, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
+        void applySettingsChanges(Project& project, const float time, const Pattern& pattern, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1, const float currentTime = 0);
+        void applySettingsChanges(Project& project, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1, const float currentTime = 0);
 
         void sortItems(QList<StreamItem*>& items);
 
