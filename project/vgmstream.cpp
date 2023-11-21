@@ -757,7 +757,7 @@ void VGMStream::applySettingsChanges(Project& project, const float time, const P
                 firstSettings = &project.getChannel(it.key()).settings();
             }
 
-            prefixedSC = new Track::SettingsChange(time, firstSettings->copy());
+            prefixedSC = new Track::SettingsChange(0, firstSettings->copy());
             settingChanges.prepend(prefixedSC);
             _createdSCs.append(prefixedSC);
         }
@@ -772,7 +772,7 @@ void VGMStream::applySettingsChanges(Project& project, const float time, const P
         } else {
             firstSettings = &(*mostRecentSettingsIt)->settings();
         }
-        prefixedSC = new Track::SettingsChange(currentTime, firstSettings->copy());
+        prefixedSC = new Track::SettingsChange(currentTime - time, firstSettings->copy());
         settingChanges.prepend(prefixedSC);
         _createdSCs.append(prefixedSC);
 
