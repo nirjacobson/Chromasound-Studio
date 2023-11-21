@@ -139,16 +139,19 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool hea
             pcmBlock.append((char*)&pcmSize, sizeof(pcmSize));
             pcmBlock.append(dataBlock);
         }
+        _loopOffsetData += 7 + pcmSize;
+        _currentOffsetData += 7 + pcmSize;
+
         QByteArray enableDac;
         enableDac.append(0x52);
         enableDac.append(0x2B);
         enableDac.append(0x80);
 
+        _loopOffsetData += 3;
+        _currentOffsetData += 3;
+
         data.prepend(enableDac);
         data.prepend(pcmBlock);
-
-        _loopOffsetData += 7 + pcmSize;
-        _currentOffsetData += 7 + pcmSize;
     }
 
     if (header) {
@@ -221,7 +224,6 @@ QByteArray VGMStream::compile(Project& project, const bool header, int* loopOffs
     }
 
     if (project.hasPCM()) {
-        QByteArray seek;
         QByteArray pcmBlock;
         quint32 pcmSize;
 
@@ -255,7 +257,6 @@ QByteArray VGMStream::compile(Project& project, const bool header, int* loopOffs
         _loopOffsetData += 3;
         _currentOffsetData += 3;
 
-        data.prepend(seek);
         data.prepend(enableDac);
         data.prepend(pcmBlock);
     }
