@@ -74,7 +74,8 @@ private slots:
     void newTriggered();
     void openTriggered();
     void saveTriggered();
-    void renderTriggered();
+    void renderForFMPSGTriggered();
+    void renderFor3rdPartyTriggered();
 
     void keyOn(const int key, const int velocity);
     void keyOff(const int key);
