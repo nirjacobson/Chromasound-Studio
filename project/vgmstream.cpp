@@ -303,6 +303,10 @@ void VGMStream::reset()
     for (int i = 0; i < FM_CHANNELS; i++) {
         _fmChannels[i].reset();
     }
+
+    for (int i = 0; i < PCM_CHANNELS; i++) {
+        _pcmChannels[i].reset();
+    }
 }
 
 QByteArray VGMStream::encodeStandardPCM(const Project& project, const Pattern& pattern, const float loopStart, const float loopEnd)
