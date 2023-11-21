@@ -98,7 +98,7 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool hea
     int totalSamples;
 
     int _loopOffsetData = 0;
-    int _currentOffsetData;
+    int _currentOffsetData = 0;
 
     processPattern(0, project, pattern, items, loopStart, loopEnd);
     assignChannelsAndExpand(items, project.tempo());
@@ -124,9 +124,9 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool hea
         enableDac.append(0x2B);
         enableDac.append(0x80);
 
-        data.insert((qsizetype)currentOffsetData, enableDac);
+        data.insert((qsizetype)_currentOffsetData, enableDac);
 
-        if (loopOffsetData >= currentOffsetData) {
+        if (_loopOffsetData >= _currentOffsetData) {
             _loopOffsetData += 3;
         }
 
@@ -181,7 +181,7 @@ QByteArray VGMStream::compile(Project& project, const bool header, int* loopOffs
     int totalSamples;
 
     int _loopOffsetData = 0;
-    int _currentOffsetData;
+    int _currentOffsetData = 0;
 
     processProject(project, items, loopStart, loopEnd);
     assignChannelsAndExpand(items, project.tempo());
@@ -249,9 +249,9 @@ QByteArray VGMStream::compile(Project& project, const bool header, int* loopOffs
         enableDac.append(0x2B);
         enableDac.append(0x80);
 
-        data.insert((qsizetype)currentOffsetData, enableDac);
+        data.insert((qsizetype)_currentOffsetData, enableDac);
 
-        if (loopOffsetData >= currentOffsetData) {
+        if (_loopOffsetData >= _currentOffsetData) {
             _loopOffsetData += 3;
         }
 
