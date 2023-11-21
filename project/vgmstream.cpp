@@ -148,7 +148,10 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool hea
         enableDac.append(0x80);
 
         _loopOffsetData += 3;
-        _currentOffsetData += 3;
+
+        if (_currentOffsetData > (7 + pcmSize)) {
+            _currentOffsetData += 3;
+        }
 
         data.prepend(enableDac);
         data.prepend(pcmBlock);
@@ -255,7 +258,10 @@ QByteArray VGMStream::compile(Project& project, const bool header, int* loopOffs
         enableDac.append(0x80);
 
         _loopOffsetData += 3;
-        _currentOffsetData += 3;
+
+        if (_currentOffsetData > (7 + pcmSize)) {
+            _currentOffsetData += 3;
+        }
 
         data.prepend(enableDac);
         data.prepend(pcmBlock);
