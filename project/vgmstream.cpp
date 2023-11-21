@@ -102,7 +102,7 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool hea
 
     processPattern(0, project, pattern, items, loopStart, loopEnd);
     assignChannelsAndExpand(items, project.tempo());
-    applySettingsChanges(project, 0, pattern, items, loopStart, loopEnd);
+    applySettingsChanges(project, 0, pattern, items, loopStart, loopEnd, currentOffset);
     sortItems(items);
     if (loopStart >= 0 && loopEnd >= 0) {
         pad(items, loopEnd - loopStart);
@@ -119,6 +119,17 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool hea
     }
 
     if (project.hasPCM()) {
+        QByteArray enableDac;
+        enableDac.append(0x52);
+        enableDac.append(0x2B);
+        enableDac.append(0x80);
+
+        data.insert((qsizetype)currentOffsetData, enableDac);
+
+        if (loopOffsetData >= currentOffsetData) {
+            _loopOffsetData += 3;
+        }
+
         QByteArray pcmBlock;
         quint32 pcmSize;
         if (_format == Format::FM_PSG) {
@@ -142,18 +153,6 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool hea
         _loopOffsetData += 7 + pcmSize;
         _currentOffsetData += 7 + pcmSize;
 
-        QByteArray enableDac;
-        enableDac.append(0x52);
-        enableDac.append(0x2B);
-        enableDac.append(0x80);
-
-        _loopOffsetData += 3;
-
-        if (_currentOffsetData > (7 + pcmSize)) {
-            _currentOffsetData += 3;
-        }
-
-        data.prepend(enableDac);
         data.prepend(pcmBlock);
     }
 
@@ -186,8 +185,7 @@ QByteArray VGMStream::compile(Project& project, const bool header, int* loopOffs
 
     processProject(project, items, loopStart, loopEnd);
     assignChannelsAndExpand(items, project.tempo());
-    applySettingsChanges(project, items, loopStart, loopEnd);
-    sortItems(items);
+    applySettingsChanges(project, items, loopStart, loopEnd, currentOffset);
 
     if (loopStart >= 0 && loopEnd >= 0) {
         pad(items, loopEnd - loopStart);
@@ -209,11 +207,30 @@ QByteArray VGMStream::compile(Project& project, const bool header, int* loopOffs
             items.prepend(new StreamLFOItem(loopStart, (*mostRecentLFOChangeIt)->mode()));
         }
 
+        sortItems(items);
+
         totalSamples = encode(project, items, data, loopStart, nullptr, currentOffset, &_currentOffsetData, true);
     } else {
         pad(items, project.getLength());
 
-        items.prepend(new StreamLFOItem(0, project.lfoMode()));
+        QList<Playlist::LFOChange*> lfoChanges = project.playlist().lfoChanges();
+
+        std::sort(lfoChanges.begin(), lfoChanges.end(), [](Playlist::LFOChange* a, Playlist::LFOChange* b) {
+            return a->time() < b->time();
+        });
+
+        auto mostRecentLFOChangeIt = std::find_if(project.playlist().lfoChanges().rbegin(),
+                                                  project.playlist().lfoChanges().rend(),
+                                                  [&](Playlist::LFOChange* change){
+                                                      return change->time() <= currentOffset;
+                                                  });
+        if (mostRecentLFOChangeIt == project.playlist().lfoChanges().rend()) {
+            items.prepend(new StreamLFOItem(currentOffset, project.lfoMode()));
+        } else {
+            items.prepend(new StreamLFOItem(currentOffset, (*mostRecentLFOChangeIt)->mode()));
+        }
+
+        sortItems(items);
 
         if (project.playlist().doesLoop()) {
             totalSamples = encode(project, items, data, project.playlist().loopOffset(), &_loopOffsetData, currentOffset, &_currentOffsetData, false);
@@ -227,6 +244,17 @@ QByteArray VGMStream::compile(Project& project, const bool header, int* loopOffs
     }
 
     if (project.hasPCM()) {
+        QByteArray enableDac;
+        enableDac.append(0x52);
+        enableDac.append(0x2B);
+        enableDac.append(0x80);
+
+        data.insert((qsizetype)currentOffsetData, enableDac);
+
+        if (loopOffsetData >= currentOffsetData) {
+            _loopOffsetData += 3;
+        }
+
         QByteArray pcmBlock;
         quint32 pcmSize;
 
@@ -252,18 +280,6 @@ QByteArray VGMStream::compile(Project& project, const bool header, int* loopOffs
         _loopOffsetData += 7 + pcmSize;
         _currentOffsetData += 7 + pcmSize;
 
-        QByteArray enableDac;
-        enableDac.append(0x52);
-        enableDac.append(0x2B);
-        enableDac.append(0x80);
-
-        _loopOffsetData += 3;
-
-        if (_currentOffsetData > (7 + pcmSize)) {
-            _currentOffsetData += 3;
-        }
-
-        data.prepend(enableDac);
         data.prepend(pcmBlock);
     }
 
@@ -713,7 +729,7 @@ void VGMStream::assignChannelsAndExpand(QList<StreamItem*>& items, const int tem
     }
 }
 
-void VGMStream::applySettingsChanges(Project& project, const float time, const Pattern& pattern, QList<StreamItem*>& items, const float loopStart, const float loopEnd)
+void VGMStream::applySettingsChanges(Project& project, const float time, const Pattern& pattern, QList<StreamItem*>& items, const float loopStart, const float loopEnd, const float currentTime)
 {
     QMap<int, Track*> tracks = pattern.tracks();
     for (auto it = tracks.begin(); it != tracks.end(); ++it) {
@@ -744,9 +760,21 @@ void VGMStream::applySettingsChanges(Project& project, const float time, const P
             prefixedSC = new Track::SettingsChange(time, firstSettings->copy());
             settingChanges.prepend(prefixedSC);
             _createdSCs.append(prefixedSC);
-        } else {
-            continue;
         }
+
+        ChannelSettings* firstSettings;
+        auto mostRecentSettingsIt = std::find_if(settingChanges.rbegin(), settingChanges.rend(), [&](Track::SettingsChange* change){
+            return (time + change->time()) <= currentTime;
+        });
+
+        if (mostRecentSettingsIt == settingChanges.rend()) {
+            firstSettings = &project.getChannel(it.key()).settings();
+        } else {
+            firstSettings = &(*mostRecentSettingsIt)->settings();
+        }
+        prefixedSC = new Track::SettingsChange(currentTime, firstSettings->copy());
+        settingChanges.prepend(prefixedSC);
+        _createdSCs.append(prefixedSC);
 
         QList<StreamItem*> trackNoteItems = items;
         trackNoteItems.erase(std::remove_if(trackNoteItems.begin(), trackNoteItems.end(), [&](StreamItem* si){
@@ -790,10 +818,10 @@ void VGMStream::applySettingsChanges(Project& project, const float time, const P
     }
 }
 
-void VGMStream::applySettingsChanges(Project& project, QList<StreamItem*>& items, const float loopStart, const float loopEnd)
+void VGMStream::applySettingsChanges(Project& project, QList<StreamItem*>& items, const float loopStart, const float loopEnd, const float currentTime)
 {
     for (Playlist::Item* item : project.playlist().items()) {
-        applySettingsChanges(project, item->time(), project.getPattern(item->pattern()), items, loopStart, loopEnd);
+        applySettingsChanges(project, item->time(), project.getPattern(item->pattern()), items, loopStart, loopEnd, currentTime);
     }
 }
 
