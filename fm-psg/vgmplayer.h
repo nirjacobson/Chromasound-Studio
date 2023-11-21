@@ -52,7 +52,7 @@ class VGMPlayer : public QThread
 
         QByteArray _vgm;
         QByteArray _pcmBlock;
-        uint32_t _time;
+        volatile uint32_t _time;
         uint32_t _position;
 
         QMutex _stopLock;
@@ -61,8 +61,8 @@ class VGMPlayer : public QThread
         bool _stop;
         bool _paused;
 
-        int _loopOffsetSamples;
-        int _loopOffsetData;
+        volatile int _loopOffsetSamples;
+        volatile int _loopOffsetData;
 
         void spi_write(char val);
         void spi_xfer(char* tx, char* rx);
