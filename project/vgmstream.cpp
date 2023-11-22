@@ -402,6 +402,7 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const Pattern& p
             }
         } else {
             pcmOffsetsByChannel.remove(sni->channel());
+            pcmPathsByChannel.remove(sni->channel());
         }
     }
 
