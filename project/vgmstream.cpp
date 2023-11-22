@@ -1156,7 +1156,7 @@ QByteArray VGMStream::generateHeader(const Project& project, const QByteArray& d
     // SN76489 clock
     *(uint32_t*)&headerData[0xC] = 3579545;
     // GD3 offset
-    *(uint32_t*)&headerData[0x14] = data.size() + 64 - 0xC;
+    *(uint32_t*)&headerData[0x14] = data.size() + 64 - 0x14;
     // Total samples
     *(uint32_t*)&headerData[0x18] = totalSamples;
     // Loop offset
