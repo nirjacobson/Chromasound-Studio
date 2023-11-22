@@ -195,49 +195,32 @@ QByteArray VGMStream::compile(Project& project, const bool header, int* loopOffs
 
     if (loopStart >= 0 && loopEnd >= 0) {
         pad(items, loopEnd - loopStart);
-
-        QList<Playlist::LFOChange*> lfoChanges = project.playlist().lfoChanges();
-
-        std::sort(lfoChanges.begin(), lfoChanges.end(), [](Playlist::LFOChange* a, Playlist::LFOChange* b) {
-            return a->time() < b->time();
-        });
-
-        auto mostRecentLFOChangeIt = std::find_if(project.playlist().lfoChanges().rbegin(),
-                                                  project.playlist().lfoChanges().rend(),
-                                                  [&](Playlist::LFOChange* change){
-                                                      return change->time() <= loopStart;
-                                                  });
-        if (mostRecentLFOChangeIt == project.playlist().lfoChanges().rend()) {
-            items.prepend(new StreamLFOItem(loopStart, project.lfoMode()));
-        } else {
-            items.prepend(new StreamLFOItem(loopStart, (*mostRecentLFOChangeIt)->mode()));
-        }
-
-        sortItems(items);
-
-        totalSamples = encode(project, items, data, loopStart, nullptr, currentOffset, &_currentOffsetData, true);
     } else {
         pad(items, project.getLength());
+    }
 
-        QList<Playlist::LFOChange*> lfoChanges = project.playlist().lfoChanges();
+    QList<Playlist::LFOChange*> lfoChanges = project.playlist().lfoChanges();
 
-        std::sort(lfoChanges.begin(), lfoChanges.end(), [](Playlist::LFOChange* a, Playlist::LFOChange* b) {
-            return a->time() < b->time();
-        });
+    std::sort(lfoChanges.begin(), lfoChanges.end(), [](Playlist::LFOChange* a, Playlist::LFOChange* b) {
+        return a->time() < b->time();
+    });
 
-        auto mostRecentLFOChangeIt = std::find_if(project.playlist().lfoChanges().rbegin(),
-                                                  project.playlist().lfoChanges().rend(),
-                                                  [&](Playlist::LFOChange* change){
-                                                      return change->time() <= currentOffset;
-                                                  });
-        if (mostRecentLFOChangeIt == project.playlist().lfoChanges().rend()) {
-            items.prepend(new StreamLFOItem(currentOffset, project.lfoMode()));
-        } else {
-            items.prepend(new StreamLFOItem(currentOffset, (*mostRecentLFOChangeIt)->mode()));
-        }
+    auto mostRecentLFOChangeIt = std::find_if(project.playlist().lfoChanges().rbegin(),
+                                              project.playlist().lfoChanges().rend(),
+                                              [&](Playlist::LFOChange* change){
+                                                  return change->time() <= currentOffset;
+                                              });
+    if (mostRecentLFOChangeIt == project.playlist().lfoChanges().rend()) {
+        items.prepend(new StreamLFOItem(currentOffset, project.lfoMode()));
+    } else {
+        items.prepend(new StreamLFOItem(currentOffset, (*mostRecentLFOChangeIt)->mode()));
+    }
 
-        sortItems(items);
+    sortItems(items);
 
+    if (loopStart >= 0 && loopEnd >= 0) {
+        totalSamples = encode(project, items, data, loopStart, nullptr, currentOffset, &_currentOffsetData, true);
+    } else {
         if (project.playlist().doesLoop()) {
             totalSamples = encode(project, items, data, project.playlist().loopOffset(), &_loopOffsetData, currentOffset, &_currentOffsetData, false);
         } else {
