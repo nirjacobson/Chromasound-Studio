@@ -632,53 +632,9 @@ void VGMStream::processProject(const Project& project, QList<StreamItem*>& items
         if (loopStart >= 0 && loopEnd >= 0) {
             if (loopEnd < change->time() || loopStart > change->time()) {
                 continue;
-            } else {
-                items.append(new StreamLFOItem(change->time(), change->mode()));
-            }
-        } else {
-            items.append(new StreamLFOItem(change->time(), change->mode()));
-        }
-    }
-
-    auto it = std::find_if(items.begin(), items.end(), [&](StreamItem* si) {
-        StreamLFOItem* sli;
-        if ((sli = dynamic_cast<StreamLFOItem*>(si))) {
-            if (loopStart >= 0 && loopEnd >= 0) {
-                if (sli->time() == loopStart) {
-                    return true;
-                }
-            } else {
-                if (sli->time() == 0) {
-                    return true;
-                }
             }
         }
-
-        return false;
-    });
-
-    if (it == items.end()) {
-        Playlist::LFOChange* firstLFOChange;
-        if (loopStart >= 0 && loopEnd >= 0) {
-            QList<Playlist::LFOChange*> lfoChanges = project.playlist().lfoChanges();
-
-            std::sort(lfoChanges.begin(), lfoChanges.end(), [](Playlist::LFOChange* a, Playlist::LFOChange* b) {
-                return a->time() < b->time();
-            });
-
-            auto mostRecentLFOChangeIt = std::find_if(project.playlist().lfoChanges().rbegin(),
-                                                    project.playlist().lfoChanges().rend(),
-                                                    [&](Playlist::LFOChange* change){
-                                                        return change->time() <= loopStart;
-                                                    });
-            if (mostRecentLFOChangeIt == project.playlist().lfoChanges().rend()) {
-                items.prepend(new StreamLFOItem(loopStart, project.lfoMode()));
-            } else {
-                items.prepend(new StreamLFOItem(loopStart, (*mostRecentLFOChangeIt)->mode()));
-            }
-        } else {
-            items.prepend(new StreamLFOItem(0, project.lfoMode()));
-        }
+        items.append(new StreamLFOItem(change->time(), change->mode()));
     }
 }
 
