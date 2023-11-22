@@ -134,28 +134,24 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool hea
             _loopOffsetData += 3;
         }
 
+        QByteArray dataBlock;
+        quint32 dataBlockSize;
         QByteArray pcmBlock;
-        quint32 pcmSize;
         if (_format == Format::FM_PSG) {
-            pcmSize = project.pcmSize();
-
-            pcmBlock.append(0x67);
-            pcmBlock.append(0x66);
-            pcmBlock.append((quint8)0x00);
-            pcmBlock.append((char*)&pcmSize, sizeof(pcmSize));
-            pcmBlock.append(project.pcm());
+            QByteArray dataBlock = project.pcm();
         } else {
             QByteArray dataBlock = encodeStandardPCM(project, pattern, loopStart, loopEnd);
-            pcmSize = dataBlock.size();
-
-            pcmBlock.append(0x67);
-            pcmBlock.append(0x66);
-            pcmBlock.append((quint8)0x00);
-            pcmBlock.append((char*)&pcmSize, sizeof(pcmSize));
-            pcmBlock.append(dataBlock);
         }
-        _loopOffsetData += 7 + pcmSize;
-        _currentOffsetData += 7 + pcmSize;
+        dataBlockSize = dataBlock.size();
+
+        pcmBlock.append(0x67);
+        pcmBlock.append(0x66);
+        pcmBlock.append((quint8)0x00);
+        pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
+        pcmBlock.append(dataBlock);
+
+        _loopOffsetData += 7 + dataBlockSize;
+        _currentOffsetData += 7 + dataBlockSize;
 
         data.prepend(pcmBlock);
     }
@@ -244,30 +240,24 @@ QByteArray VGMStream::compile(Project& project, const bool header, int* loopOffs
             _loopOffsetData += 3;
         }
 
+        QByteArray dataBlock;
+        quint32 dataBlockSize;
         QByteArray pcmBlock;
-        quint32 pcmSize;
-
         if (_format == Format::FM_PSG) {
-            pcmSize = project.pcmSize();
-
-            pcmBlock.append(0x67);
-            pcmBlock.append(0x66);
-            pcmBlock.append((quint8)0x00);
-            pcmBlock.append((char*)&pcmSize, sizeof(pcmSize));
-            pcmBlock.append(project.pcm());
-
+            QByteArray dataBlock = project.pcm();
         } else {
             QByteArray dataBlock = encodeStandardPCM(project, loopStart, loopEnd);
-            pcmSize = dataBlock.size();
-
-            pcmBlock.append(0x67);
-            pcmBlock.append(0x66);
-            pcmBlock.append((quint8)0x00);
-            pcmBlock.append((char*)&pcmSize, sizeof(pcmSize));
-            pcmBlock.append(dataBlock);
         }
-        _loopOffsetData += 7 + pcmSize;
-        _currentOffsetData += 7 + pcmSize;
+        dataBlockSize = dataBlock.size();
+
+        pcmBlock.append(0x67);
+        pcmBlock.append(0x66);
+        pcmBlock.append((quint8)0x00);
+        pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
+        pcmBlock.append(dataBlock);
+
+        _loopOffsetData += 7 + dataBlockSize;
+        _currentOffsetData += 7 + dataBlockSize;
 
         data.prepend(pcmBlock);
     }
