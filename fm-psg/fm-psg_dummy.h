@@ -7,7 +7,7 @@
 class FM_PSG_Dummy : public FM_PSG
 {
     public:
-        FM_PSG_Dummy(Project& project);
+        FM_PSG_Dummy(const Project& project);
 
         void play(const QByteArray&, const int, const int,  const int, const float duration);
         void play(const QByteArray&, const bool loop, const int);
@@ -22,7 +22,7 @@ class FM_PSG_Dummy : public FM_PSG
         void keyOff(int);
 
     private:
-        Project& _project;
+        const Project& _project;
         QElapsedTimer _timer;
         qint64 _ref;
         bool _playing;
