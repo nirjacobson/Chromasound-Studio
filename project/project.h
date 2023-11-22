@@ -63,7 +63,6 @@ class Project
 
         bool hasPCM() const;
         quint32 pcmOffset(const QString& path) const;
-        quint32 pcmSize() const;
         QByteArray pcm() const;
 
         Project& operator=(Project&& src);
