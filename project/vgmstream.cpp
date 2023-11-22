@@ -651,14 +651,7 @@ void VGMStream::assignChannelsAndExpand(QList<StreamItem*>& items, const int tem
         assignChannel(noteItem, items);
         StreamNoteItem* noteOffItem = new StreamNoteItem(*noteItem);
 
-        if (noteItem->type() == Channel::Type::PCM) {
-            quint32 pcmSamples = QFileInfo(QFile(dynamic_cast<const PCMChannelSettings*>(noteItem->channelSettings())->path())).size();
-            float pcmDuration = (float)pcmSamples / 44100 / 60 * tempo;
-
-            noteOffItem->setTime(noteItem->time() + qMin(pcmDuration, noteItem->note().duration()));
-        } else {
-            noteOffItem->setTime(noteItem->time() + noteItem->note().duration());
-        }
+        noteOffItem->setTime(noteItem->time() + noteItem->note().duration());
         noteOffItem->setOn(false);
         items.append(noteOffItem);
     }
