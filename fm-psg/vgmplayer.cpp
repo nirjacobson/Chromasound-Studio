@@ -315,10 +315,7 @@ void VGMPlayer::runPlayback()
                     if (rx != 0) {
                         _refTime = _time;
                         _timer.restart();
-                        for (int j = 0; j < 100; j++) {
-                            gpioDelay(100);
-                        }
-                        _refTime = -1;
+                        while(_timer.nsecsElapsed() < 1e6);
                     }
                 }
             }
@@ -340,5 +337,6 @@ void VGMPlayer::runPlayback()
         spi_xfer(&tx, &rx);
         _time |= (uint32_t)rx << 24;
         _timeLock.unlock();
+        _refTime = -1;
     }
 }
