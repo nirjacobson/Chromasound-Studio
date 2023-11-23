@@ -296,14 +296,20 @@ void VGMPlayer::runPlayback()
             long count = space < remaining ? space : remaining;
 
             if (count > 0) {
-                spi_write(RECEIVE_DATA);
+                tx = RECEIVE_DATA;
+                spi_xfer(&tx, &rx);
 
                 for (int i = 0; i < 4; i++) {
-                    spi_write(((char*)&count)[i]);
+                    tx = ((char*)&count)[i];
+                    spi_xfer(&tx, &rx);
                 }
 
                 for (int i = 0; i < count; i++) {
-                    spi_write(_vgm[_position++]);
+                    tx = _vgm[_position++];
+                    spi_xfer(&tx, &rx);
+                    if (rx != 0) {
+                        gpioDelay(1000);
+                    }
                 }
             }
             _vgmLock.unlock();
