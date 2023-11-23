@@ -215,6 +215,7 @@ void VGMPlayer::runInteractive()
         }
     }
 }
+#include <QtDebug>
 
 void VGMPlayer::runPlayback()
 {
@@ -222,6 +223,11 @@ void VGMPlayer::runPlayback()
     uint16_t space;
 
     bool loop = _loopOffsetData >= 0 && _loopOffsetSamples >= 0;
+
+    qDebug() << "loop: " << loop;
+    qDebug() << "loopOffsetSamples: " << _loopOffsetSamples;
+    qDebug() << "time: " << _time;
+    qDebug() << "----";
 
     spi_write(SET_LOOP_TIME);
     for (int i = 0; i < 4; i++) {
