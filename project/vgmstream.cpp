@@ -138,9 +138,9 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool hea
         quint32 dataBlockSize;
         QByteArray pcmBlock;
         if (_format == Format::FM_PSG) {
-            QByteArray dataBlock = project.pcm();
+            dataBlock = project.pcm();
         } else {
-            QByteArray dataBlock = encodeStandardPCM(project, pattern, loopStart, loopEnd);
+            dataBlock = encodeStandardPCM(project, pattern, loopStart, loopEnd);
         }
         dataBlockSize = dataBlock.size();
 
@@ -244,9 +244,9 @@ QByteArray VGMStream::compile(Project& project, const bool header, int* loopOffs
         quint32 dataBlockSize;
         QByteArray pcmBlock;
         if (_format == Format::FM_PSG) {
-            QByteArray dataBlock = project.pcm();
+            dataBlock = project.pcm();
         } else {
-            QByteArray dataBlock = encodeStandardPCM(project, loopStart, loopEnd);
+            dataBlock = encodeStandardPCM(project, loopStart, loopEnd);
         }
         dataBlockSize = dataBlock.size();
 
