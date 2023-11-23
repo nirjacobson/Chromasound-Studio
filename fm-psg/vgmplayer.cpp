@@ -308,7 +308,7 @@ void VGMPlayer::runPlayback()
                     tx = _vgm[_position++];
                     spi_xfer(&tx, &rx);
                     if (rx != 0) {
-                        gpioDelay(1000);
+                        QThread::usleep(1000);
                     }
                 }
             }
