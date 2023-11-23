@@ -10,6 +10,7 @@ VGMPlayer::VGMPlayer(int spi, QObject *parent)
     , _paused(false)
     , _loopOffsetSamples(0)
     , _loopOffsetData(0)
+    , _refTime(-1)
 {
 
 }
@@ -125,6 +126,10 @@ void VGMPlayer::pause()
 
 uint32_t VGMPlayer::time()
 {
+    if (_refTime != -1) {
+        return _refTime + (_timer.nsecsElapsed() / 1e9f) * 44100;
+    }
+
     _timeLock.lock();
     uint32_t time = _time;
     _timeLock.unlock();
@@ -308,9 +313,12 @@ void VGMPlayer::runPlayback()
                     tx = _vgm[_position++];
                     spi_xfer(&tx, &rx);
                     if (rx != 0) {
+                        _refTime = _time;
+                        _timer.restart();
                         for (int j = 0; j < 100; j++) {
                             gpioDelay(100);
                         }
+                        _refTime = -1;
                     }
                 }
             }
