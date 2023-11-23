@@ -334,6 +334,5 @@ void VGMPlayer::runPlayback()
         spi_xfer(&tx, &rx);
         _time |= (uint32_t)rx << 24;
         _timeLock.unlock();
-        _refTime = -1;
     }
 }
