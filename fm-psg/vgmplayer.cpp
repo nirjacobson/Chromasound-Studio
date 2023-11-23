@@ -315,7 +315,7 @@ void VGMPlayer::runPlayback()
                     if (rx != 0) {
                         _refTime = _time;
                         _timer.restart();
-                        while(_timer.nsecsElapsed() < 1e6);
+                        while(_timer.nsecsElapsed() < 10e6);
                     }
                 }
             }
