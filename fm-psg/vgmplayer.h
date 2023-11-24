@@ -3,7 +3,7 @@
 
 #include <QThread>
 #include <QMutex>
-#include <QElapsedTimer>
+#include <QTimer>
 
 #include <pigpio.h>
 
@@ -55,6 +55,7 @@ class VGMPlayer : public QThread
         QByteArray _vgm;
         QByteArray _pcmBlock;
         volatile uint32_t _time;
+        uint32_t _timeTmp;
         uint32_t _position;
 
         QMutex _stopLock;
@@ -65,8 +66,6 @@ class VGMPlayer : public QThread
 
         volatile int _loopOffsetSamples;
         volatile int _loopOffsetData;
-
-        QElapsedTimer _timer;
 
         void spi_write(char val);
         void spi_xfer(char* tx, char* rx);

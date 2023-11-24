@@ -5,6 +5,7 @@ VGMPlayer::VGMPlayer(int spi, QObject *parent)
     , _mode(Mode::Interactive)
     , _spi(spi)
     , _time(0)
+    , _timeTmp(0)
     , _position(0)
     , _stop(false)
     , _paused(false)
@@ -307,12 +308,21 @@ void VGMPlayer::runPlayback()
                 for (int i = 0; i < count; i++) {
                     tx = _vgm[_position++];
                     spi_xfer(&tx, &rx);
-                    if (rx != 0) {
-                        uint32_t refTime = _time;
-                        _timer.restart();
-                        while(_timer.nsecsElapsed() < 10e6) {
-                            _time = refTime + (_timer.nsecsElapsed() / 1e9f * 44100);
+
+                    if (i == 0) continue;
+
+                    int mod = (i - 1) % 5;
+
+                    if (mod < 4) {
+                        ((char*)&_timeTmp)[mod] = rx;
+
+                        if (mod == 3) {
+                            _time = _timeTmp;
                         }
+                    } else if (rx != 0) {
+                        volatile bool wait = true;
+                        QTimer::singleShot(10, [&](){ wait = false; });
+                        while (wait) ;
                     }
                 }
             }
