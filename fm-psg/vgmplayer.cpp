@@ -323,11 +323,14 @@ void VGMPlayer::runPlayback()
                         }
                     }
 
-//                    if (wait) {
-//                        QElapsedTimer timer;
-//                        timer.start();
-//                        while (timer.elapsed() < 10) ;
-//                    }
+                    if (wait) {
+                        QElapsedTimer timer;
+                        uint32_t refTime = _time;
+                        timer.start();
+                        while (timer.elapsed() < 10) {
+                            _time = refTime + ((float)timer.elapsed() / 1e3 * 44100);
+                        }
+                    }
                 }
             }
             _vgmLock.unlock();
