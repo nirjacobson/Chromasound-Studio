@@ -324,7 +324,9 @@ void VGMPlayer::runPlayback()
                     }
 
                     if (wait) {
-                        QThread::msleep(10);
+                        for (int j = 0; j < 100; j++) {
+                            gpioDelay(100);
+                        }
                     }
                 }
             }
