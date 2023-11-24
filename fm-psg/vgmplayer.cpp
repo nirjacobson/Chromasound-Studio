@@ -269,6 +269,7 @@ void VGMPlayer::runPlayback()
         }
     }
 
+    bool wait = false;
     while (true) {
         _stopLock.lock();
         bool stop = _stop;
@@ -305,7 +306,6 @@ void VGMPlayer::runPlayback()
                     spi_xfer(&tx, &rx);
                 }
 
-                bool wait = false;
                 for (int i = 0; i < count; i++) {
                     tx = _vgm[_position++];
                     spi_xfer(&tx, &rx);
@@ -323,7 +323,9 @@ void VGMPlayer::runPlayback()
                         }
                     }
 
-                    QThread::msleep(10);
+                    if (wait) {
+                        QThread::msleep(10);
+                    }
                 }
             }
             _vgmLock.unlock();
