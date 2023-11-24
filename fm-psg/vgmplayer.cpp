@@ -314,7 +314,7 @@ void VGMPlayer::runPlayback()
                     int mod = (i - 1) % 5;
 
                     if (mod < 4) {
-                        ((char*)&_timeTmp)[mod] = rx;
+                        _timeTmp |= (uint32_t)rx << (8 * mod);
 
                         if (mod == 3) {
                             _time = _timeTmp;
