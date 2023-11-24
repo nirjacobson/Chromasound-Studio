@@ -5,7 +5,6 @@ VGMPlayer::VGMPlayer(int spi, QObject *parent)
     , _mode(Mode::Interactive)
     , _spi(spi)
     , _time(0)
-    , _timeTmp(0)
     , _position(0)
     , _stop(false)
     , _paused(false)
@@ -311,18 +310,7 @@ void VGMPlayer::runPlayback()
                     spi_xfer(&tx, &rx);
 
                     if (i > 0) {
-                        int mod = (i - 1) % 4;
-
-                        _timeTmp |= (uint32_t)rx << (mod * 8);
-
-                        if (mod == 3) {
-                            wait = rx & (1 << 7);
-                            _timeTmp &= ~(1 << 31);
-                            _timeLock.lock();
-                            _time = _timeTmp;
-                            _timeLock.unlock();
-                            _timeTmp = 0;
-                        }
+                        wait = !!rx;
                     }
 
                     if (wait) {
@@ -339,16 +327,21 @@ void VGMPlayer::runPlayback()
             }
         }
 
-//        _timeLock.lock();
-//        spi_write(REPORT_TIME);
-//        spi_xfer(&tx, &rx);
-//        _time = (uint8_t)rx;
-//        spi_xfer(&tx, &rx);
-//        _time |= (uint32_t)rx << 8;
-//        spi_xfer(&tx, &rx);
-//        _time |= (uint32_t)rx << 16;
-//        spi_xfer(&tx, &rx);
-//        _time |= (uint32_t)rx << 24;
-//        _timeLock.unlock();
+        tx = REPORT_TIME;
+        uint32_t timeTmp = 0;
+        for (int i = 0; i < 5; i++) {
+            spi_xfer(&tx, &rx);
+            if (i > 0) {
+                timeTmp |= (uint32_t)rx << (8 * (i - 1));
+            }
+            if (wait) {
+                QElapsedTimer timer;
+                timer.start();
+                while (timer.elapsed() < 10) ;
+            }
+        }
+        _timeLock.lock();
+        _time = timeTmp;
+        _timeLock.unlock();
     }
 }

@@ -55,7 +55,6 @@ class VGMPlayer : public QThread
         QByteArray _vgm;
         QByteArray _pcmBlock;
         volatile uint32_t _time;
-        uint32_t _timeTmp;
         uint32_t _position;
 
         QMutex _stopLock;
