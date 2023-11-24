@@ -152,7 +152,7 @@ qint64 VGMPlayer::nsecsElapsed()
 
     _nsecsElapsed = e;
 
-    _nsecs += diff * (_pcmPlaying ? 0.82f : 1.0f);
+    _nsecs += diff * (_pcmPlaying ? 0.80f : 1.0f);
 
     return _nsecs;
 }
@@ -315,7 +315,7 @@ void VGMPlayer::runPlayback()
         if (_pcmPlaying) {
             QElapsedTimer timer;
             timer.start();
-            while (timer.elapsed() < 10) ;
+            while (timer.elapsed() < 20) ;
         }
 
         if (space > 0) {
@@ -343,7 +343,7 @@ void VGMPlayer::runPlayback()
                     if (_pcmPlaying) {
                         QElapsedTimer timer;
                         timer.start();
-                        while (timer.elapsed() < 10) ;
+                        while (timer.elapsed() < 20) ;
                     }
                 }
             }
