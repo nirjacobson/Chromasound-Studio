@@ -324,8 +324,12 @@ void VGMPlayer::runPlayback()
                     }
 
                     if (wait) {
-                        for (int j = 0; j < 100; j++) {
-                            gpioDelay(100);
+                        QElapsedTimer timer;
+                        uint32_t refTime = _time;
+                        timer.start();
+                        qint64 nsecs;
+                        while ((nsecs = timer.nsecsElapsed()) < 10e6) {
+                            _time = refTime + (nsecs / 1e9f * 44100);
                         }
                     }
                 }
