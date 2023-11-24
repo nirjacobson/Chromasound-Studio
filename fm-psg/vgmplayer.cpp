@@ -322,9 +322,9 @@ void VGMPlayer::runPlayback()
                         _timeTmp = 0;
 
                         if (wait) {
-                            QElapsedTimer timer;
-                            timer.start();
-                            while (timer.nsecsElapsed() < 10e6) ;
+                            volatile bool doWait = true;
+                            QTimer::singleShot(10, [&](){ doWait = false; });
+                            while (doWait) ;
                         }
                     }
                 }
