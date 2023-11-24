@@ -322,9 +322,9 @@ void VGMPlayer::runPlayback()
                         _timeTmp = 0;
 
                         if (wait) {
-                            volatile bool doWait = true;
-                            QTimer::singleShot(10, [&](){ doWait = false; });
-                            while (doWait) ;
+                            for (int i = 0; i < 100; i++) {
+                                gpioDelay(100);
+                            }
                         }
                     }
                 }
