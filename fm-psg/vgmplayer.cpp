@@ -324,7 +324,13 @@ void VGMPlayer::runPlayback()
                     }
 
                     if (wait) {
-                        QThread::msleep(10);
+                        QElapsedTimer timer;
+                        uint32_t refTime = _time;
+                        qint64 nsecs;
+                        timer.start();
+                        while ((nsecs = timer.nsecsElapsed()) < 10e6) {
+                            _time = refTime + (nsecs / 1e9f * 44100);
+                        }
                     }
                 }
             }
