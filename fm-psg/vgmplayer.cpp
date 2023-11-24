@@ -322,9 +322,9 @@ void VGMPlayer::runPlayback()
                         _timeTmp = 0;
 
                         if (wait) {
-                            for (int i = 0; i < 100; i++) {
-                                gpioDelay(100);
-                            }
+                            qDebug() << "wait";
+                        } else {
+                            qDebug() << "don't wait";
                         }
                     }
                 }
