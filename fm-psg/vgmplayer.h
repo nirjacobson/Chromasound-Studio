@@ -70,6 +70,7 @@ class VGMPlayer : public QThread
 
         QElapsedTimer _timer;
         bool _playing;
+        bool _pcmPlaying;
 
         void spi_write(char val);
         void spi_xfer(char* tx, char* rx);

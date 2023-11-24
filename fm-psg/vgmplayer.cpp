@@ -11,6 +11,7 @@ VGMPlayer::VGMPlayer(int spi, QObject *parent)
     , _loopOffsetSamples(0)
     , _loopOffsetData(0)
     , _playing(false)
+    , _pcmPlaying(false)
 {
 
 }
@@ -144,7 +145,7 @@ void VGMPlayer::setTime(const uint32_t time)
 
 qint64 VGMPlayer::nsecsElapsed() const
 {
-    return _timer.nsecsElapsed();
+    return _timer.nsecsElapsed() * (_pcmPlaying ? 0.8f : 1.0f);
 }
 
 void VGMPlayer::start(Priority p)
@@ -223,7 +224,6 @@ void VGMPlayer::runInteractive()
         }
     }
 }
-#include <QtDebug>
 
 void VGMPlayer::runPlayback()
 {
@@ -279,7 +279,6 @@ void VGMPlayer::runPlayback()
     _timer.restart();
     _playing = true;
 
-    bool wait = false;
     while (true) {
         _stopLock.lock();
         bool stop = _stop;
@@ -302,10 +301,10 @@ void VGMPlayer::runPlayback()
         spi_xfer(&tx, &rx);
         space |= (int)rx << 8;
 
-        if (wait) {
+        if (_pcmPlaying) {
             QElapsedTimer timer;
             timer.start();
-            while (timer.elapsed() < 25) ;
+            while (timer.elapsed() < 10) ;
         }
 
         if (space > 0) {
@@ -327,13 +326,13 @@ void VGMPlayer::runPlayback()
                     spi_xfer(&tx, &rx);
 
                     if (i > 0) {
-                        wait = !!rx;
+                        _pcmPlaying = !!rx;
                     }
 
-                    if (wait) {
+                    if (_pcmPlaying) {
                         QElapsedTimer timer;
                         timer.start();
-                        while (timer.elapsed() < 25) ;
+                        while (timer.elapsed() < 10) ;
                     }
                 }
             }
