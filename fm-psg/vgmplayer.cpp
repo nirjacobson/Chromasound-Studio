@@ -305,7 +305,7 @@ void VGMPlayer::runPlayback()
         if (wait) {
             QElapsedTimer timer;
             timer.start();
-            while (timer.elapsed() < 10) ;
+            while (timer.elapsed() < 25) ;
         }
 
         if (space > 0) {
@@ -333,7 +333,7 @@ void VGMPlayer::runPlayback()
                     if (wait) {
                         QElapsedTimer timer;
                         timer.start();
-                        while (timer.elapsed() < 10) ;
+                        while (timer.elapsed() < 25) ;
                     }
                 }
             }
