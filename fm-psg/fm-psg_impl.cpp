@@ -3,7 +3,6 @@
 FM_PSG_Impl::FM_PSG_Impl(const Project& project)
     : _project(project)
     , _ref(0)
-    , _playing(false)
     , _loopOffsetSamples(-1)
     , _duration(-1)
 {
@@ -59,7 +58,6 @@ void FM_PSG_Impl::play(const QByteArray& vgm, const int loopOffsetSamples, const
 
     _loopOffsetSamples = loopOffsetSamples;
     _duration = duration;
-    _playing = true;
 }
 
 void FM_PSG_Impl::play(const QByteArray& vgm, const bool loop, const int currentOffsetData)
@@ -75,20 +73,17 @@ void FM_PSG_Impl::play(const QByteArray& vgm, const bool loop, const int current
     _vgmPlayer->start();
 
     _loopOffsetSamples = loop ? 0 : -1;
-    _playing = true;
 }
 
 void FM_PSG_Impl::play()
 {
     _vgmPlayer->start();
-    _playing = true;
 }
 
 void FM_PSG_Impl::pause()
 {
     _vgmPlayer->pause();
     _ref += _vgmPlayer->nsecsElapsed();
-    _playing = false;
 }
 
 void FM_PSG_Impl::stop()
@@ -102,7 +97,6 @@ void FM_PSG_Impl::stop()
     _vgmPlayer->setMode(VGMPlayer::Mode::Interactive);
     _vgmPlayer->start();
     _ref = 0;
-    _playing = false;
     _duration = -1;
 }
 
@@ -158,7 +152,7 @@ float FM_PSG_Impl::softwarePosition()
 
     float pos = (_ref + _vgmPlayer->nsecsElapsed()) / beatNS;
 
-    if (!_playing) {
+    if (!isPlaying()) {
       pos = _ref / beatNS;
     }
 
