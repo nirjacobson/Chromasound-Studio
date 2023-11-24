@@ -318,6 +318,7 @@ void VGMPlayer::runPlayback()
 
                         if (mod == 3) {
                             _time = _timeTmp;
+                            _timeTmp = 0;
                         }
                     }
                 }
