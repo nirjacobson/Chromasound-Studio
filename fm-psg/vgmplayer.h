@@ -31,7 +31,7 @@ class VGMPlayer : public QThread
         uint32_t time();
         void setTime(const uint32_t time);
 
-        qint64 nsecsElapsed() const;
+        qint64 nsecsElapsed();
 
     public slots:
         void start(Priority p = InheritPriority);
@@ -71,6 +71,9 @@ class VGMPlayer : public QThread
         QElapsedTimer _timer;
         bool _playing;
         bool _pcmPlaying;
+
+        qint64 _nsecsElapsed;
+        qint64 _nsecs;
 
         void spi_write(char val);
         void spi_xfer(char* tx, char* rx);
