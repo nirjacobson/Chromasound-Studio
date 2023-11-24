@@ -152,7 +152,7 @@ qint64 VGMPlayer::nsecsElapsed()
 
     _nsecsElapsed = e;
 
-    _nsecs += diff * (_pcmPlaying ? 0.80f : 1.0f);
+    _nsecs += diff * (_pcmPlaying ? 0.81f : 1.0f);
 
     return _nsecs;
 }
