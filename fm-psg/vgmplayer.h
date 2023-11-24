@@ -3,7 +3,7 @@
 
 #include <QThread>
 #include <QMutex>
-#include <QTimer>
+#include <QElapsedTimer>
 
 #include <pigpio.h>
 

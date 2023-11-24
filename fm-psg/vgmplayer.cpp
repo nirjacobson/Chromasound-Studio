@@ -308,6 +308,25 @@ void VGMPlayer::runPlayback()
                 for (int i = 0; i < count; i++) {
                     tx = _vgm[_position++];
                     spi_xfer(&tx, &rx);
+
+                    if (i == 0) continue;
+
+                    int mod = (i - 1) % 4;
+
+                    _timeTmp |= (uint32_t)rx << (mod * 8);
+
+                    if (mod == 3) {
+                        bool wait = rx & (1 << 7);
+                        _timeTmp &= ~(1 << 31);
+                        _time = _timeTmp;
+                        _timeTmp = 0;
+
+                        if (wait) {
+                            QElapsedTimer timer;
+                            timer.start();
+                            while (timer.nsecsElapsed() < 10e6) ;
+                        }
+                    }
                 }
             }
             _vgmLock.unlock();
