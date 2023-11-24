@@ -319,10 +319,6 @@ void VGMPlayer::runPlayback()
                         if (mod == 3) {
                             _time = _timeTmp;
                         }
-                    } else if (rx != 0) {
-                        volatile bool wait = true;
-                        QTimer::singleShot(10, [&](){ wait = false; });
-                        while (wait) ;
                     }
                 }
             }
