@@ -323,11 +323,11 @@ void VGMPlayer::runPlayback()
                         }
                     }
 
-                    if (wait) {
-                        QElapsedTimer timer;
-                        timer.start();
-                        while (timer.elapsed() < 10) ;
-                    }
+//                    if (wait) {
+//                        QElapsedTimer timer;
+//                        timer.start();
+//                        while (timer.elapsed() < 10) ;
+//                    }
                 }
             }
             _vgmLock.unlock();
@@ -337,16 +337,16 @@ void VGMPlayer::runPlayback()
             }
         }
 
-        _timeLock.lock();
-        spi_write(REPORT_TIME);
-        spi_xfer(&tx, &rx);
-        _time = (uint8_t)rx;
-        spi_xfer(&tx, &rx);
-        _time |= (uint32_t)rx << 8;
-        spi_xfer(&tx, &rx);
-        _time |= (uint32_t)rx << 16;
-        spi_xfer(&tx, &rx);
-        _time |= (uint32_t)rx << 24;
-        _timeLock.unlock();
+//        _timeLock.lock();
+//        spi_write(REPORT_TIME);
+//        spi_xfer(&tx, &rx);
+//        _time = (uint8_t)rx;
+//        spi_xfer(&tx, &rx);
+//        _time |= (uint32_t)rx << 8;
+//        spi_xfer(&tx, &rx);
+//        _time |= (uint32_t)rx << 16;
+//        spi_xfer(&tx, &rx);
+//        _time |= (uint32_t)rx << 24;
+//        _timeLock.unlock();
     }
 }
