@@ -316,7 +316,7 @@ void VGMPlayer::runPlayback()
                     if (wait) {
                         QElapsedTimer timer;
                         timer.start();
-                        while (timer.elapsed() < 20) ;
+                        while (timer.elapsed() < 50) ;
                     }
                 }
             }
