@@ -11,6 +11,7 @@ VGMPlayer::VGMPlayer(int spi, QObject *parent)
     , _paused(false)
     , _loopOffsetSamples(0)
     , _loopOffsetData(0)
+    , _refTime(-1)
 {
 
 }
@@ -126,6 +127,10 @@ void VGMPlayer::pause()
 
 uint32_t VGMPlayer::time()
 {
+    if (_refTime != -1) {
+        return _refTime + (_timer.nsecsElapsed() / 1e9f * 44100);
+    }
+
     _timeLock.lock();
     uint32_t time = _time;
     _timeLock.unlock();
@@ -320,17 +325,14 @@ void VGMPlayer::runPlayback()
                             _timeTmp &= ~(1 << 31);
                             _time = _timeTmp;
                             _timeTmp = 0;
+                            _refTime = -1;
                         }
                     }
 
                     if (wait) {
-                        QElapsedTimer timer;
-                        uint32_t refTime = _time;
-                        qint64 msecs;
-                        timer.start();
-                        while ((msecs = timer.elapsed()) < 10) {
-                            _time = refTime + ((float)msecs / 1e3 * 44100);
-                        }
+                        _refTime = _time;
+                        _timer.restart();
+                        while (_timer.elapsed() < 10) ;
                     }
                 }
             }
@@ -352,5 +354,6 @@ void VGMPlayer::runPlayback()
         spi_xfer(&tx, &rx);
         _time |= (uint32_t)rx << 24;
         _timeLock.unlock();
+        _refTime = -1;
     }
 }
