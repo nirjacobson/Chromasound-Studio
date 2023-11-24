@@ -310,27 +310,20 @@ void VGMPlayer::runPlayback()
                     tx = _vgm[_position++];
                     spi_xfer(&tx, &rx);
 
-                    if (i == 0) continue;
+                    if (i > 0) {
+                        int mod = (i - 1) % 4;
 
-                    int mod = (i - 1) % 4;
+                        _timeTmp |= (uint32_t)rx << (mod * 8);
 
-                    _timeTmp |= (uint32_t)rx << (mod * 8);
-
-                    if (mod == 3) {
-                        wait = rx & (1 << 7);
-                        _timeTmp &= ~(1 << 31);
-                        _time = _timeTmp;
-                        _timeTmp = 0;
-                    }
-
-                    if (wait) {
-                        QElapsedTimer timer1;
-                        QElapsedTimer timer2;
-                        timer1.start();
-                        while (timer1.nsecsElapsed() < 10e6) {
-                            _time += timer2.restart() / 1e3f * 44100;
+                        if (mod == 3) {
+                            wait = rx & (1 << 7);
+                            _timeTmp &= ~(1 << 31);
+                            _time = _timeTmp;
+                            _timeTmp = 0;
                         }
                     }
+
+                    QThread::msleep(10);
                 }
             }
             _vgmLock.unlock();
