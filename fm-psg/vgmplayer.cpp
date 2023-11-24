@@ -12,6 +12,8 @@ VGMPlayer::VGMPlayer(int spi, QObject *parent)
     , _loopOffsetData(0)
     , _playing(false)
     , _pcmPlaying(false)
+    , _nsecsElapsed(0)
+    , _nsecs(0)
 {
 
 }
@@ -143,9 +145,16 @@ void VGMPlayer::setTime(const uint32_t time)
     _timeLock.unlock();
 }
 
-qint64 VGMPlayer::nsecsElapsed() const
+qint64 VGMPlayer::nsecsElapsed()
 {
-    return _timer.nsecsElapsed() * (_pcmPlaying ? 0.8f : 1.0f);
+    qint64 e;
+    qint64 diff = (e = _timer.nsecsElapsed()) - _nsecsElapsed;
+
+    _nsecsElapsed = e;
+
+    _nsecs += diff * (_pcmPlaying ? 0.8f : 1.0f);
+
+    return _nsecs;
 }
 
 void VGMPlayer::start(Priority p)
@@ -276,6 +285,8 @@ void VGMPlayer::runPlayback()
         }
     }
 
+    _nsecs = 0;
+    _nsecsElapsed = 0;
     _timer.restart();
     _playing = true;
 
