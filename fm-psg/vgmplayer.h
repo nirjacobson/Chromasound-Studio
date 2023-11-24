@@ -67,9 +67,6 @@ class VGMPlayer : public QThread
         volatile int _loopOffsetSamples;
         volatile int _loopOffsetData;
 
-        bool _wait;
-        QElapsedTimer _timer;
-
         void spi_write(char val);
         void spi_xfer(char* tx, char* rx);
 
