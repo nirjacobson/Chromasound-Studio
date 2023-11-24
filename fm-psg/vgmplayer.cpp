@@ -338,11 +338,5 @@ void VGMPlayer::runPlayback()
         spi_xfer(&tx, &rx);
         _time |= (uint32_t)rx << 24;
         _timeLock.unlock();
-
-        if (wait) {
-            QElapsedTimer timer;
-            timer.start();
-            while (timer.elapsed() < 10) ;
-        }
     }
 }
