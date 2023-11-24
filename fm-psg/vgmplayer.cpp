@@ -329,7 +329,7 @@ void VGMPlayer::runPlayback()
                         qint64 nsecs;
                         timer.start();
                         while ((nsecs = timer.nsecsElapsed()) < 10e6) {
-                            _time = refTime + (nsecs / 1e9f * 44100);
+                            _time = refTime + ((float)nsecs / 1e9 * 44100);
                         }
                     }
                 }
