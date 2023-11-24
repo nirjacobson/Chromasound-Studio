@@ -291,6 +291,12 @@ void VGMPlayer::runPlayback()
         spi_xfer(&tx, &rx);
         space |= (int)rx << 8;
 
+        if (wait) {
+            QElapsedTimer timer;
+            timer.start();
+            while (timer.elapsed() < 10) ;
+        }
+
         if (space > 0) {
             _vgmLock.lock();
             int remaining = _vgm.size() - _position;
@@ -316,7 +322,7 @@ void VGMPlayer::runPlayback()
                     if (wait) {
                         QElapsedTimer timer;
                         timer.start();
-                        while (timer.elapsed() < 50) ;
+                        while (timer.elapsed() < 10) ;
                     }
                 }
             }
