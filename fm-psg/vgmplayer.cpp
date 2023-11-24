@@ -139,6 +139,11 @@ void VGMPlayer::setTime(const uint32_t time)
     _timeLock.unlock();
 }
 
+qint64 VGMPlayer::nsecsElapsed() const
+{
+    return _timer.nsecsElapsed();
+}
+
 void VGMPlayer::start(Priority p)
 {
     if (_paused) {
@@ -267,6 +272,8 @@ void VGMPlayer::runPlayback()
             }
         }
     }
+
+    _timer.restart();
 
     bool wait = false;
     while (true) {
