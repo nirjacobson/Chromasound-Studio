@@ -36,7 +36,6 @@ class FM_PSG_Impl : public FM_PSG
         VGMPlayer* _vgmPlayer;
 
         qint64 _ref;
-        bool _playing;
         float _duration;
         int _loopOffsetSamples;
 

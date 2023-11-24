@@ -10,6 +10,7 @@ VGMPlayer::VGMPlayer(int spi, QObject *parent)
     , _paused(false)
     , _loopOffsetSamples(0)
     , _loopOffsetData(0)
+    , _playing(false)
 {
 
 }
@@ -102,7 +103,7 @@ void VGMPlayer::setMode(const Mode mode)
 
 bool VGMPlayer::isPlaying() const
 {
-    return _mode == Mode::Playback && isRunning();
+    return _playing && isRunning();
 }
 
 void VGMPlayer::stop()
@@ -111,6 +112,7 @@ void VGMPlayer::stop()
     _stop = true;
     _paused = false;
     _stopLock.unlock();
+    _playing = false;
 
     _position = 0;
 }
@@ -121,6 +123,7 @@ void VGMPlayer::pause()
     _stop = true;
     _paused = true;
     _stopLock.unlock();
+    _playing = false;
 }
 
 uint32_t VGMPlayer::time()
@@ -274,6 +277,7 @@ void VGMPlayer::runPlayback()
     }
 
     _timer.restart();
+    _playing = true;
 
     bool wait = false;
     while (true) {
