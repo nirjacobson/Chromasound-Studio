@@ -31,6 +31,8 @@ class VGMPlayer : public QThread
         uint32_t time();
         void setTime(const uint32_t time);
 
+        qint64 nsecsElapsed() const;
+
     public slots:
         void start(Priority p = InheritPriority);
 
@@ -65,6 +67,8 @@ class VGMPlayer : public QThread
 
         volatile int _loopOffsetSamples;
         volatile int _loopOffsetData;
+
+        QElapsedTimer _timer;
 
         void spi_write(char val);
         void spi_xfer(char* tx, char* rx);

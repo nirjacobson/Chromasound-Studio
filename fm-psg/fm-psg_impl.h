@@ -35,7 +35,6 @@ class FM_PSG_Impl : public FM_PSG
 
         VGMPlayer* _vgmPlayer;
 
-        QElapsedTimer _timer;
         qint64 _ref;
         bool _playing;
         float _duration;
