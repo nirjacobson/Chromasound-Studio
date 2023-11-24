@@ -308,19 +308,6 @@ void VGMPlayer::runPlayback()
                 for (int i = 0; i < count; i++) {
                     tx = _vgm[_position++];
                     spi_xfer(&tx, &rx);
-
-                    if (i == 0) continue;
-
-                    int mod = (i - 1) % 5;
-
-                    if (mod < 4) {
-                        _timeTmp |= (uint32_t)rx << (8 * mod);
-
-                        if (mod == 3) {
-                            _time = _timeTmp;
-                            _timeTmp = 0;
-                        }
-                    }
                 }
             }
             _vgmLock.unlock();
