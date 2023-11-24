@@ -322,6 +322,7 @@ void VGMPlayer::runPlayback()
                         _timeTmp = 0;
 
                         if (wait) {
+                            qDebug() << "here";
                             QThread::msleep(10);
                         }
                     }
