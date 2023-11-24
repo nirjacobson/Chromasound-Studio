@@ -324,12 +324,11 @@ void VGMPlayer::runPlayback()
                     }
 
                     if (wait) {
-                        QElapsedTimer timer;
-                        uint32_t refTime = _time;
-                        timer.start();
-                        qint64 nsecs;
-                        while ((nsecs = timer.nsecsElapsed()) < 10e6) {
-                            _time = refTime + (nsecs / 1e9f * 44100);
+                        QElapsedTimer timer1;
+                        QElapsedTimer timer2;
+                        timer1.start();
+                        while (timer1.nsecsElapsed() < 10e6) {
+                            _time += timer2.restart() / 1e3f * 44100;
                         }
                     }
                 }
