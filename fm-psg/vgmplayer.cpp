@@ -116,6 +116,7 @@ void VGMPlayer::stop()
     _paused = false;
     _stopLock.unlock();
     _playing = false;
+    _pcmPlaying = false;
 
     _position = 0;
 }
@@ -127,6 +128,7 @@ void VGMPlayer::pause()
     _paused = true;
     _stopLock.unlock();
     _playing = false;
+    _pcmPlaying = false;
 }
 
 uint32_t VGMPlayer::time()
@@ -177,12 +179,24 @@ void VGMPlayer::spi_write(char val)
 {
     spiWrite(_spi, &val, 1);
     gpioDelay(SPI_DELAY);
+
+    if (_pcmPlaying) {
+        QElapsedTimer timer;
+        timer.start();
+        while (timer.elapsed() < 20) ;
+    }
 }
 
 void VGMPlayer::spi_xfer(char* tx, char* rx)
 {
     spiXfer(_spi, tx, rx, 1);
     gpioDelay(SPI_DELAY);
+
+    if (_pcmPlaying) {
+        QElapsedTimer timer;
+        timer.start();
+        while (timer.elapsed() < 20) ;
+    }
 }
 
 void VGMPlayer::run() {
@@ -312,12 +326,6 @@ void VGMPlayer::runPlayback()
         spi_xfer(&tx, &rx);
         space |= (int)rx << 8;
 
-        if (_pcmPlaying) {
-            QElapsedTimer timer;
-            timer.start();
-            while (timer.elapsed() < 20) ;
-        }
-
         if (space > 0) {
             _vgmLock.lock();
             int remaining = _vgm.size() - _position;
@@ -338,12 +346,6 @@ void VGMPlayer::runPlayback()
 
                     if (i > 0) {
                         _pcmPlaying = !!rx;
-                    }
-
-                    if (_pcmPlaying) {
-                        QElapsedTimer timer;
-                        timer.start();
-                        while (timer.elapsed() < 20) ;
                     }
                 }
             }
