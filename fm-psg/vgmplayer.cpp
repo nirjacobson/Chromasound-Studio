@@ -167,11 +167,6 @@ void VGMPlayer::start(Priority p)
         spi_write(STOP_START);
     }
 
-    _stopLock.lock();
-    _stop = false;
-    _paused = false;
-    _stopLock.unlock();
-
     QThread::start(p);
 }
 
@@ -211,6 +206,11 @@ void VGMPlayer::runInteractive()
 {
     char rx, tx;
     uint16_t space;
+
+    _stopLock.lock();
+    _stop = false;
+    _paused = false;
+    _stopLock.unlock();
 
     while (true) {
         _stopLock.lock();
@@ -267,7 +267,7 @@ void VGMPlayer::runPlayback()
     }
     _timeLock.unlock();
 
-    if (!_pcmBlock.isEmpty()) {
+    if (!_pcmBlock.isEmpty() && !_paused) {
         uint32_t position = 0;
         while (true) {
             spi_write(REPORT_SPACE);
@@ -298,6 +298,11 @@ void VGMPlayer::runPlayback()
             }
         }
     }
+
+    _stopLock.lock();
+    _stop = false;
+    _paused = false;
+    _stopLock.unlock();
 
     _nsecs = 0;
     _nsecsElapsed = 0;
