@@ -2,9 +2,6 @@
 
 FM_PSG_Impl::FM_PSG_Impl(const Project& project)
     : _project(project)
-    , _ref(0)
-    , _loopOffsetSamples(-1)
-    , _duration(-1)
 {
     if (gpioInitialise() < 0) {
       throw "Error initializing pigpio.";
@@ -35,16 +32,15 @@ FM_PSG_Impl::~FM_PSG_Impl()
 
 float FM_PSG_Impl::position()
 {
-    return softwarePosition();
+    return ((float)_vgmPlayer->time() / 44100.0f) / 60.0f * _project.tempo();
 }
 
 void FM_PSG_Impl::setPosition(const float pos)
 {
     _vgmPlayer->setTime(pos / _project.tempo() * 60 * 44100);
-    _ref = pos * nanosecondsPerBeat();
 }
 
-void FM_PSG_Impl::play(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData, const int currentOffsetData, const float duration)
+void FM_PSG_Impl::play(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData, const int currentOffsetData, const float)
 {
     _vgmPlayer->stop();
     _vgmPlayer->quit();
@@ -55,9 +51,6 @@ void FM_PSG_Impl::play(const QByteArray& vgm, const int loopOffsetSamples, const
     _vgmPlayer->setMode(VGMPlayer::Mode::Playback);
     _vgmPlayer->setVGM(vgm, loopOffsetSamples, loopOffsetData, currentOffsetData);
     _vgmPlayer->start();
-
-    _loopOffsetSamples = loopOffsetSamples;
-    _duration = duration;
 }
 
 void FM_PSG_Impl::play(const QByteArray& vgm, const bool loop, const int currentOffsetData)
@@ -71,8 +64,6 @@ void FM_PSG_Impl::play(const QByteArray& vgm, const bool loop, const int current
     _vgmPlayer->setMode(VGMPlayer::Mode::Playback);
     _vgmPlayer->setVGM(vgm, loop, currentOffsetData);
     _vgmPlayer->start();
-
-    _loopOffsetSamples = loop ? 0 : -1;
 }
 
 void FM_PSG_Impl::play()
@@ -83,7 +74,6 @@ void FM_PSG_Impl::play()
 void FM_PSG_Impl::pause()
 {
     _vgmPlayer->pause();
-    _ref += _vgmPlayer->nsecsElapsed();
 }
 
 void FM_PSG_Impl::stop()
@@ -96,8 +86,6 @@ void FM_PSG_Impl::stop()
 
     _vgmPlayer->setMode(VGMPlayer::Mode::Interactive);
     _vgmPlayer->start();
-    _ref = 0;
-    _duration = -1;
 }
 
 bool FM_PSG_Impl::isPlaying() const
@@ -134,50 +122,6 @@ void FM_PSG_Impl::keyOff(int key)
     _vgmPlayer->setVGM(data, false, 0);
 
     delete sni;
-}
-
-qint64 FM_PSG_Impl::nanosecondsPerBeat() const
-{
-    return 1e9 * 60 / _project.tempo();
-}
-
-float FM_PSG_Impl::hardwarePosition()
-{
-    return ((float)_vgmPlayer->time() / 44100.0f) / 60.0f * _project.tempo();
-}
-
-float FM_PSG_Impl::softwarePosition()
-{
-    float beatNS = nanosecondsPerBeat();
-
-    float pos = (_ref + _vgmPlayer->nsecsElapsed()) / beatNS;
-
-    if (!isPlaying()) {
-      pos = _ref / beatNS;
-    }
-
-    if (_duration >= 0) {
-      float loopPos = ((float)_loopOffsetSamples / 44100 / 60 * _project.tempo());
-      return loopPos + fmod(pos - loopPos, _duration);
-    } else if (_project.playMode() == Project::PlayMode::PATTERN) {
-      if (_loopOffsetSamples >= 0) {
-          float patternLength = _project.getPatternBarLength(_project.frontPattern());
-
-          return fmod(pos, patternLength);
-      }
-    } else {
-      if (_loopOffsetSamples >= 0) {
-          float songLength = _project.getLength();
-          float loopPos = _project.playlist().loopOffset();
-          float loopLength = songLength - loopPos;
-
-          if (pos >= loopPos) {
-              return loopPos + fmod(pos - loopPos, loopLength);
-          }
-      }
-    }
-
-    return pos;
 }
 
 void FM_PSG_Impl::reset()

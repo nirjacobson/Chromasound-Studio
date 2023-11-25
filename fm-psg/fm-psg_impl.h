@@ -16,7 +16,7 @@ class FM_PSG_Impl : public FM_PSG
 
         float position();
         void setPosition(const float pos);
-        void play(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData, const int currentOffsetData, const float duration);
+        void play(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData, const int currentOffsetData, const float);
         void play(const QByteArray& vgm, const bool loop, const int currentOffsetData);
         void play();
         void pause();
@@ -34,15 +34,6 @@ class FM_PSG_Impl : public FM_PSG
         QMap<int, VGMStream::StreamNoteItem*> _keys;
 
         VGMPlayer* _vgmPlayer;
-
-        qint64 _ref;
-        float _duration;
-        int _loopOffsetSamples;
-
-        qint64 nanosecondsPerBeat() const;
-
-        float hardwarePosition();
-        float softwarePosition();
 
         void reset();
 };

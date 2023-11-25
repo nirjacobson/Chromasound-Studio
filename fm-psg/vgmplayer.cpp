@@ -10,10 +10,8 @@ VGMPlayer::VGMPlayer(int spi, QObject *parent)
     , _paused(false)
     , _loopOffsetSamples(0)
     , _loopOffsetData(0)
-    , _playing(false)
     , _pcmPlaying(false)
-    , _nsecsElapsed(0)
-    , _nsecs(0)
+    , _playing(false)
 {
 
 }
@@ -106,7 +104,7 @@ void VGMPlayer::setMode(const Mode mode)
 
 bool VGMPlayer::isPlaying() const
 {
-    return _playing && isRunning();
+    return _mode == Mode::Playback && isRunning();
 }
 
 void VGMPlayer::stop()
@@ -115,10 +113,9 @@ void VGMPlayer::stop()
     _stop = true;
     _paused = false;
     _stopLock.unlock();
-    _playing = false;
-    _pcmPlaying = false;
 
     _position = 0;
+    _playing = false;
 }
 
 void VGMPlayer::pause()
@@ -127,8 +124,8 @@ void VGMPlayer::pause()
     _stop = true;
     _paused = true;
     _stopLock.unlock();
+
     _playing = false;
-    _pcmPlaying = false;
 }
 
 uint32_t VGMPlayer::time()
@@ -137,7 +134,11 @@ uint32_t VGMPlayer::time()
     uint32_t time = _time;
     _timeLock.unlock();
 
-    return time;
+    if (_playing) {
+        return time + ((float)_timer.nsecsElapsed() / 1e9 * 44100);
+    } else {
+        return time;
+    }
 }
 
 void VGMPlayer::setTime(const uint32_t time)
@@ -145,18 +146,6 @@ void VGMPlayer::setTime(const uint32_t time)
     _timeLock.lock();
     _time = time;
     _timeLock.unlock();
-}
-
-qint64 VGMPlayer::nsecsElapsed()
-{
-    qint64 e;
-    qint64 diff = (e = _timer.nsecsElapsed()) - _nsecsElapsed;
-
-    _nsecsElapsed = e;
-
-    _nsecs += diff * (_pcmPlaying ? 0.81f : 1.0f);
-
-    return _nsecs;
 }
 
 void VGMPlayer::start(Priority p)
@@ -304,8 +293,6 @@ void VGMPlayer::runPlayback()
     _paused = false;
     _stopLock.unlock();
 
-    _nsecs = 0;
-    _nsecsElapsed = 0;
     _timer.restart();
     _playing = true;
 
@@ -360,5 +347,18 @@ void VGMPlayer::runPlayback()
                 _position = _loopOffsetData;
             }
         }
+
+        _timeLock.lock();
+        spi_write(REPORT_TIME);
+        spi_xfer(&tx, &rx);
+        _time = rx;
+        spi_xfer(&tx, &rx);
+        _time |= (int)rx << 8;
+        spi_xfer(&tx, &rx);
+        _time |= (int)rx << 16;
+        spi_xfer(&tx, &rx);
+        _time |= (int)rx << 24;
+        _timer.restart();
+        _timeLock.unlock();
     }
 }
