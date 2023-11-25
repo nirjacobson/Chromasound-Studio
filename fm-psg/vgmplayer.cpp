@@ -104,7 +104,7 @@ void VGMPlayer::setMode(const Mode mode)
 
 bool VGMPlayer::isPlaying() const
 {
-    return _mode == Mode::Playback && isRunning();
+    return _playing && isRunning();
 }
 
 void VGMPlayer::stop()
@@ -116,6 +116,7 @@ void VGMPlayer::stop()
 
     _position = 0;
     _playing = false;
+    _pcmPlaying = false;
 }
 
 void VGMPlayer::pause()
@@ -126,6 +127,7 @@ void VGMPlayer::pause()
     _stopLock.unlock();
 
     _playing = false;
+    _pcmPlaying = false;
 }
 
 uint32_t VGMPlayer::time()
@@ -259,6 +261,13 @@ void VGMPlayer::runPlayback()
     if (!_pcmBlock.isEmpty() && !_paused) {
         uint32_t position = 0;
         while (true) {
+            _stopLock.lock();
+            bool stop = _stop;
+            _stopLock.unlock();
+            if (stop) {
+                return;
+            }
+
             spi_write(REPORT_SPACE);
             spi_xfer(&tx, &rx);
             space = rx;
