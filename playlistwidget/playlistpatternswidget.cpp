@@ -105,6 +105,18 @@ void PlaylistPatternsWidget::paintEvent(QPaintEvent*)
     }
 }
 
+void PlaylistPatternsWidget::mousePressEvent(QMouseEvent* event)
+{
+    int firstPattern = _top / _rowHeight;
+    int firstPatternStart = firstPattern * _rowHeight - _top;
+
+    int numPatternsAcrossHeight = qCeil((float)height()/_rowHeight) + 1;
+
+    int pattern = firstPattern + ((event->pos().y() - firstPatternStart) / _rowHeight);
+
+    emit patternClicked(pattern + 1);
+}
+
 const QColor& PlaylistPatternsWidget::ledColor() const
 {
     return _ledColor;

@@ -39,6 +39,9 @@ public:
     float loopStart() const;
     float loopEnd() const;
 
+signals:
+    void patternClicked(const int pattern);
+
 private:
     QColor _loopColor;
 
