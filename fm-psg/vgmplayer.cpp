@@ -134,11 +134,7 @@ uint32_t VGMPlayer::time()
     uint32_t time = _time;
     _timeLock.unlock();
 
-    if (_playing) {
-        return time + ((float)_timer.nsecsElapsed() / 1e9 * 44100);
-    } else {
-        return time;
-    }
+    return time;
 }
 
 void VGMPlayer::setTime(const uint32_t time)
