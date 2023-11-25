@@ -134,7 +134,11 @@ uint32_t VGMPlayer::time()
     uint32_t time = _time;
     _timeLock.unlock();
 
-    return time;
+    if (_playing) {
+        return time + ((float)_timer.nsecsElapsed() / 1e9 * 44100);
+    } else {
+        return time;
+    }
 }
 
 void VGMPlayer::setTime(const uint32_t time)
@@ -163,7 +167,7 @@ void VGMPlayer::spi_write(char val)
     if (_pcmPlaying) {
         QElapsedTimer timer;
         timer.start();
-        while (timer.elapsed() < 20) ;
+        while (timer.elapsed() < 10) ;
     }
 }
 
@@ -175,7 +179,7 @@ void VGMPlayer::spi_xfer(char* tx, char* rx)
     if (_pcmPlaying) {
         QElapsedTimer timer;
         timer.start();
-        while (timer.elapsed() < 20) ;
+        while (timer.elapsed() < 10) ;
     }
 }
 
