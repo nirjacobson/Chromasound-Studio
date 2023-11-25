@@ -58,6 +58,8 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
 
     connect(ui->doneButton, &QPushButton::pressed, this, &PlaylistWidget::doneButtonClicked);
     connect(ui->removeButton, &QPushButton::pressed, this, &PlaylistWidget::removeButtonClicked);
+
+    connect(_patternsWidget, &PlaylistPatternsWidget::patternClicked, this, &PlaylistWidget::patternClicked);
 }
 
 PlaylistWidget::~PlaylistWidget()

@@ -51,7 +51,6 @@ void TopWidget::setApplication(Application* app)
 
 void TopWidget::updateFromProject(const Project& project)
 {
-
     ui->patSpinBox->blockSignals(true);
     ui->patSpinBox->setValue(project.frontPattern()+1);
     ui->patSpinBox->blockSignals(false);

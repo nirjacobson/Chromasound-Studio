@@ -253,6 +253,7 @@ void MainWindow::patternChanged(int num)
 {
     _app->project().setFrontPattern(num - 1);
     _channelsWidget->update();
+    ui->topWidget->updateFromProject(_app->project());
 }
 
 void MainWindow::beatsPerBarChanged(int)
@@ -605,6 +606,7 @@ void MainWindow::showPlaylistWindow()
 {
     if (_playlistWindow == nullptr) {
         _playlistWidget = new PlaylistWidget(this, _app);
+        connect(_playlistWidget, &PlaylistWidget::patternClicked, this, &MainWindow::patternChanged);
 
         MdiSubWindow* playlistWindow = new MdiSubWindow(ui->mdiArea);
         connect(playlistWindow, &MdiSubWindow::closed, this, [&](){ _playlistWindow = nullptr; });

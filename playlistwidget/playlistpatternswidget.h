@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <QColor>
 #include <QtMath>
+#include <QMouseEvent>
 
 #include "ganttwidget/ganttleftwidget.h"
 #include "application.h"
@@ -24,10 +25,12 @@ class PlaylistPatternsWidget : public GanttLeftWidget
         void setRowHeight(int height);
 
     signals:
+        void patternClicked(const int pattern);
 
     protected:
         int length() const;
         void paintEvent(QPaintEvent*);
+        void mousePressEvent(QMouseEvent* event);
 
     private:
         static constexpr int LED_WIDTH = 8;
@@ -43,7 +46,6 @@ class PlaylistPatternsWidget : public GanttLeftWidget
         int _rows;
         int _top;
         int _rowHeight;
-
 };
 
 #endif // PLAYLISTPATTERNSWIDGET_H
