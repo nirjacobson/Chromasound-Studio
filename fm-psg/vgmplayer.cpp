@@ -246,6 +246,13 @@ void VGMPlayer::runPlayback()
 
     bool loop = _loopOffsetData >= 0 && _loopOffsetSamples >= 0;
 
+    bool wasPaused = _paused;
+
+    _stopLock.lock();
+    _stop = false;
+    _paused = false;
+    _stopLock.unlock();
+
     spi_write(SET_LOOP_TIME);
     for (int i = 0; i < 4; i++) {
         spi_write(loop ? ((char*)&_loopOffsetSamples)[i] : 0);
@@ -258,7 +265,7 @@ void VGMPlayer::runPlayback()
     }
     _timeLock.unlock();
 
-    if (!_pcmBlock.isEmpty() && !_paused) {
+    if (!_pcmBlock.isEmpty() && !wasPaused) {
         uint32_t position = 0;
         while (true) {
             _stopLock.lock();
@@ -296,11 +303,6 @@ void VGMPlayer::runPlayback()
             }
         }
     }
-
-    _stopLock.lock();
-    _stop = false;
-    _paused = false;
-    _stopLock.unlock();
 
     _timer.restart();
     _playing = true;
