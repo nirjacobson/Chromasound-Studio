@@ -751,6 +751,10 @@ void VGMStream::applySettingsChanges2(Project& project, QList<StreamItem*>& item
 
 void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const float currentTime)
 {
+    if (currentTime == 0) {
+        return;
+    }
+
     sortItems(items);
 
     for (int i = 0; i < NOISE_CHANNELS; i++) {
