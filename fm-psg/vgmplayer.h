@@ -70,6 +70,10 @@ class VGMPlayer : public QThread
         bool _playing;
         bool _pcmPlaying;
 
+        quint32 checksum(const QByteArray& data);
+        quint32 _lastPCMBlockSize;
+        quint32 _lastPCMBlockChecksum;
+
         void spi_write(char val);
         void spi_xfer(char* tx, char* rx);
 

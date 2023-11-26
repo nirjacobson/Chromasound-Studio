@@ -12,6 +12,8 @@ VGMPlayer::VGMPlayer(int spi, QObject *parent)
     , _loopOffsetData(0)
     , _pcmPlaying(false)
     , _playing(false)
+    , _lastPCMBlockSize(0)
+    , _lastPCMBlockChecksum(0)
 {
 
 }
@@ -158,7 +160,24 @@ void VGMPlayer::start(Priority p)
         spi_write(STOP_START);
     }
 
+    _stopLock.lock();
+    _stop = false;
+    _paused = false;
+    _stopLock.unlock();
+
     QThread::start(p);
+}
+
+quint32 VGMPlayer::checksum(const QByteArray& data)
+{
+    quint32 result = 0;
+    quint8 lastVal = 0;
+    for (int i = 0; i < data.size(); i++) {
+        result = (result << 8) | (lastVal ^ data[i]);
+        lastVal = data[i];
+    }
+
+    return result;
 }
 
 void VGMPlayer::spi_write(char val)
@@ -246,13 +265,6 @@ void VGMPlayer::runPlayback()
 
     bool loop = _loopOffsetData >= 0 && _loopOffsetSamples >= 0;
 
-    bool wasPaused = _paused;
-
-    _stopLock.lock();
-    _stop = false;
-    _paused = false;
-    _stopLock.unlock();
-
     spi_write(SET_LOOP_TIME);
     for (int i = 0; i < 4; i++) {
         spi_write(loop ? ((char*)&_loopOffsetSamples)[i] : 0);
@@ -265,40 +277,48 @@ void VGMPlayer::runPlayback()
     }
     _timeLock.unlock();
 
-    if (!_pcmBlock.isEmpty() && !wasPaused) {
-        uint32_t position = 0;
-        while (true) {
-            _stopLock.lock();
-            bool stop = _stop;
-            _stopLock.unlock();
-            if (stop) {
-                return;
-            }
+    if (!_pcmBlock.isEmpty()) {
+        quint32 lastPCMBlockSize = _lastPCMBlockSize;
+        quint32 lastPCMBlockChecksum = _lastPCMBlockChecksum;
 
-            spi_write(REPORT_SPACE);
-            spi_xfer(&tx, &rx);
-            space = rx;
-            spi_xfer(&tx, &rx);
-            space |= (int)rx << 8;
+        _lastPCMBlockSize = _pcmBlock.size();
+        _lastPCMBlockChecksum = checksum(_pcmBlock);
 
-            if (space > 0) {
-                int remaining = _pcmBlock.size() - position;
-                long count = space < remaining ? space : remaining;
-
-                if (count > 0) {
-                    spi_write(RECEIVE_DATA);
-
-                    for (int i = 0; i < 4; i++) {
-                        spi_write(((char*)&count)[i]);
-                    }
-
-                    for (int i = 0; i < count; i++) {
-                        spi_write(_pcmBlock[position++]);
-                    }
+        if (!(lastPCMBlockSize == _lastPCMBlockSize && lastPCMBlockChecksum == _lastPCMBlockChecksum)) {
+            uint32_t position = 0;
+            while (true) {
+                _stopLock.lock();
+                bool stop = _stop;
+                _stopLock.unlock();
+                if (stop) {
+                    return;
                 }
 
-                if (count == remaining) {
-                    break;
+                spi_write(REPORT_SPACE);
+                spi_xfer(&tx, &rx);
+                space = rx;
+                spi_xfer(&tx, &rx);
+                space |= (int)rx << 8;
+
+                if (space > 0) {
+                    int remaining = _pcmBlock.size() - position;
+                    long count = space < remaining ? space : remaining;
+
+                    if (count > 0) {
+                        spi_write(RECEIVE_DATA);
+
+                        for (int i = 0; i < 4; i++) {
+                            spi_write(((char*)&count)[i]);
+                        }
+
+                        for (int i = 0; i < count; i++) {
+                            spi_write(_pcmBlock[position++]);
+                        }
+                    }
+
+                    if (count == remaining) {
+                        break;
+                    }
                 }
             }
         }
