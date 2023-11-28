@@ -161,7 +161,6 @@ class VGMStream
 
         int encode(const Project& project, const QList<StreamItem*>& items, QByteArray& data, const float loopTime = 0, int* const loopOffsetData = nullptr, const float currentTime = 0, int* const currentOffsetData = nullptr, const bool startAtLoop = false);
 
-        int encodeDelay(const int tempo, const float beats, QByteArray& data);
         int encodeDelay(const quint32 samples, QByteArray& data, const bool pcm = false);
 
         void encodeSettingsItem(const StreamSettingsItem* item, QByteArray& data);

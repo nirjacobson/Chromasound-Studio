@@ -942,34 +942,6 @@ int VGMStream::encodeDelay(const quint32 samples, QByteArray& data, const bool p
     return samples;
 }
 
-int VGMStream::encodeDelay(const int tempo, const float beats, QByteArray& data)
-{
-    int samples = beats * 60.0f/tempo * 44100;
-
-    while (samples > 0) {
-        if (samples == 735) {
-            data.append(0x62);
-            samples = 0;
-        } else if (samples == 882) {
-            data.append(0x63);
-            samples = 0;
-        } else if (samples <= 16) {
-            data.append(0x70 | (samples-1));
-            samples = 0;
-        } else {
-            int s = samples < 0xFFFF ? samples : 0xFFFF;
-
-            data.append(0x61);
-            data.append(s & 0xFF);
-            data.append((s >> 8) & 0xFF);
-
-            samples -= s;
-        }
-    }
-
-    return samples;
-}
-
 void VGMStream::encodeSettingsItem(const StreamSettingsItem* item, QByteArray& data)
 {
     const NoiseChannelSettings* ncs;
