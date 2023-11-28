@@ -260,10 +260,12 @@ void PianoWidget::mousePressEvent(QMouseEvent* event)
     if (event->pos().y() < HEADER_HEIGHT) {
         if (event->pos().x() < octaveWidth) {
             _baseOctave--;
+            update();
         } else {
             int lastOctave = keyAt(rect().topRight()) / KEYS_PER_OCTAVE;
             if (event->pos().x() > (lastOctave - _baseOctave) * octaveWidth) {
                 _baseOctave++;
+                update();
             }
         }
     } else {
@@ -275,6 +277,10 @@ void PianoWidget::mousePressEvent(QMouseEvent* event)
 
 void PianoWidget::mouseReleaseEvent(QMouseEvent* event)
 {
+    if (event->pos().y() < HEADER_HEIGHT) {
+        return;
+    }
+
     const char key = keyAt(event->pos());
     releaseKey(key);
     emit keyReleased(key);
