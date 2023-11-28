@@ -599,16 +599,17 @@ void VGMStream::processTrack(const float time, const Channel& channel, const Tra
     std::sort(itemsCopy.begin(), itemsCopy.end(), [](const Track::Item* a, const Track::Item* b){ return a->time() < b->time(); });
 
     for (Track::Item* item : itemsCopy) {
+        Note note = item->note();
         if (loopStart >= 0 && loopEnd >= 0) {
             if ((time + item->time()) < loopStart || (time + item->time()) >= loopEnd) {
                 continue;
             }
 
             if ((time + item->time() + item->duration()) > loopEnd) {
-                item->setDuration(loopEnd - item->time());
+                note.setDuration(loopEnd - item->time());
             }
         }
-        items.append(new StreamNoteItem(time + item->time(), channel.type(), track, item->note(), &channel.settings()));
+        items.append(new StreamNoteItem(time + item->time(), channel.type(), track, note, &channel.settings()));
     }
 }
 
