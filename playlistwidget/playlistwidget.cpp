@@ -33,7 +33,7 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
             if (leftPosition <= loopOffset && loopOffset <= rightPosition) {
                 int loopOffsetPixel = (loopOffset - leftPosition) / beatsPerPixel;
 
-                QRect loopRect = QRect(QPoint(loopOffsetPixel, 0), QSize(rect.height(), rect.height()));
+                QRect loopRect = QRect(QPoint(loopOffsetPixel, 0), QSize(24, 24));
                 painter.setPen(QColor(_loopColor).darker());
                 painter.setBrush(QColor(_loopColor));
 
