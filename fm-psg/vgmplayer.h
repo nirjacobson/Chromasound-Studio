@@ -35,7 +35,7 @@ class VGMPlayer : public QThread
         void start(Priority p = InheritPriority);
 
     private:
-        static constexpr int SPI_DELAY = 30;
+        static constexpr int SPI_DELAY = 100;
 
         enum {
             IDLE,
