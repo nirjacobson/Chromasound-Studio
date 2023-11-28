@@ -109,7 +109,7 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool hea
     sortItems(items);
 
     if (loopStart >= 0 && loopEnd >= 0) {
-        pad(items, loopEnd - loopStart);
+        pad(items, loopEnd);
         items.prepend(new StreamLFOItem(loopStart, project.lfoMode()));
         totalSamples = encode(project, items, data, loopStart, nullptr, currentOffset, &_currentOffsetData, true);
     } else {
@@ -190,7 +190,7 @@ QByteArray VGMStream::compile(Project& project, const bool header, int* loopOffs
     addSettingsAtCurrentOffset(items, currentOffset);
 
     if (loopStart >= 0 && loopEnd >= 0) {
-        pad(items, loopEnd - loopStart);
+        pad(items, loopEnd);
     } else {
         pad(items, project.getLength());
     }
