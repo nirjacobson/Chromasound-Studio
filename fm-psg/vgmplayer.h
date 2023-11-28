@@ -63,8 +63,8 @@ class VGMPlayer : public QThread
         bool _stop;
         bool _paused;
 
-        volatile int _loopOffsetSamples;
-        volatile int _loopOffsetData;
+        int _loopOffsetSamples;
+        int _loopOffsetData;
 
         QElapsedTimer _timer;
         bool _playing;
