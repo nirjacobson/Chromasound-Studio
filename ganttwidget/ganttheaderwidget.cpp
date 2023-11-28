@@ -118,6 +118,8 @@ float GanttHeaderWidget::playlength() const
 
 void GanttHeaderWidget::paintEvent(QPaintEvent*)
 {
+    setMinimumHeight((!_markers || _markers->isEmpty()) ? 24 : 48);
+
     QPainter painter(this);
 
     int beatsPerBar = _app->project().beatsPerBar();
@@ -138,8 +140,8 @@ void GanttHeaderWidget::paintEvent(QPaintEvent*)
         painter.setBrush(active ? _activeColor : _inactiveColor);
         painter.drawRect(QRect(thisTopLeft, thisBottomRight));
 
-        QPoint thisBottomLeft = QPoint(thisTopLeft.x(), thisBottomRight.y());
-        painter.drawText(thisBottomLeft + QPoint(4, -4), QString("%1").arg((firstBar + i) + 1));
+        QPoint textBottomLeft = QPoint(thisTopLeft.x(), 24);
+        painter.drawText(textBottomLeft + QPoint(4, -4), QString("%1").arg((firstBar + i) + 1));
     }
 
     float beatsPerPixel = _cellBeats / _cellWidth;
@@ -155,9 +157,9 @@ void GanttHeaderWidget::paintEvent(QPaintEvent*)
 
         QPainterPath path;
 
-        QPoint p1(appPositionPixel - height() / 2, 0);
-        QPoint p2(appPositionPixel, height() / 2);
-        QPoint p3(appPositionPixel + height() / 2, 0);
+        QPoint p1(appPositionPixel - 24 / 2, 0);
+        QPoint p2(appPositionPixel, 24 / 2);
+        QPoint p3(appPositionPixel + 24 / 2, 0);
 
         path.moveTo(p1);
         path.lineTo(p2);
@@ -166,6 +168,12 @@ void GanttHeaderWidget::paintEvent(QPaintEvent*)
 
         painter.setPen(Qt::NoPen);
         painter.fillPath(path, _cursorColor);
+
+        QPoint p4(appPositionPixel, 0);
+        QPoint p5(appPositionPixel, height());
+
+        painter.setPen(_cursorColor);
+        painter.drawLine(p4, p5);
     }
 
     if (_markers) {
@@ -177,7 +185,7 @@ void GanttHeaderWidget::paintEvent(QPaintEvent*)
 
                 painter.setPen(_markerColor);
                 painter.setBrush(_markerColor);
-                br = QRectF(QPoint(markerPixel, 0), QSize(br.width() + 8, height()));
+                br = QRectF(QPoint(markerPixel, 24), QSize(br.width() + 8, 24));
                 painter.drawRect(br);
                 painter.setPen(Qt::black);
                 painter.drawText(br.adjusted(4, 0, 0, -4), Qt::AlignLeft | Qt::AlignBottom, marker->name());
