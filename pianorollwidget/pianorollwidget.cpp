@@ -10,6 +10,7 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
     , _itemLastClicked(nullptr)
     , _noteMenu(tr("Context menu"), this)
     , _velocityAction("Velocity", this)
+    , _editingSettingsChange(nullptr)
 {
     _velocitiesWidget->setApplication(app);
 
