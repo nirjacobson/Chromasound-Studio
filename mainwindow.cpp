@@ -5,7 +5,6 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , _app(app)
-    , _pcmMessageBox(this)
     , _midiInput(MIDIInput::instance())
     , _channelsWindow(nullptr)
     , _playlistWindow(nullptr)
@@ -13,9 +12,6 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     _midiInput->init();
 
     ui->setupUi(this);
-
-    _pcmMessageBox.setText("Uploading PCM data...");
-    _pcmMessageBox.setStandardButtons(QMessageBox::NoButton);
 
     setAcceptDrops(true);
 
@@ -253,6 +249,7 @@ void MainWindow::stop()
 {
     _app->stop();
     _timer.stop();
+    ui->topWidget->setStatusMessage("Ready.");
     doUpdate();
 }
 
@@ -459,6 +456,8 @@ void MainWindow::openTriggered()
         _channelsWidget->rebuild();
 
         _playlistWidget->update();
+
+        ui->topWidget->setStatusMessage(QString("Opened %1.").arg(QFileInfo(path).fileName()));
     }
 }
 
@@ -471,6 +470,8 @@ void MainWindow::saveTriggered()
         file.open(QIODevice::WriteOnly);
         file.write(BSON::encode(_app->project()));
         file.close();
+
+        ui->topWidget->setStatusMessage(QString("Saved %1.").arg(QFileInfo(path).fileName()));
     }
 }
 
@@ -488,6 +489,8 @@ void MainWindow::renderForFMPSGTriggered()
                               : vgmStream.compile(_app->project(), true);
         file.write(data);
         file.close();
+
+        ui->topWidget->setStatusMessage(QString("Saved %1.").arg(QFileInfo(path).fileName()));
     }
 }
 
@@ -505,6 +508,8 @@ void MainWindow::renderFor3rdPartyTriggered()
                               : vgmStream.compile(_app->project(), true);
         file.write(data);
         file.close();
+
+        ui->topWidget->setStatusMessage(QString("Saved %1.").arg(QFileInfo(path).fileName()));
     }
 }
 
@@ -649,12 +654,12 @@ void MainWindow::mdiViewModeChanged(const QString& viewMode)
 
 void MainWindow::pcmUploadStarted()
 {
-    _pcmMessageBox.exec();
+    ui->topWidget->setStatusMessage("Uploading PCM...");
 }
 
 void MainWindow::pcmUploadFinished()
 {
-    _pcmMessageBox.accept();
+    ui->topWidget->setStatusMessage("Done.");
 }
 
 void MainWindow::windowClosed(MdiSubWindow* window)
@@ -786,6 +791,8 @@ void MainWindow::dropEvent(QDropEvent* event)
         _channelsWidget->rebuild();
 
         _playlistWidget->update();
+
+        ui->topWidget->setStatusMessage(QString("Opened %1.").arg(fileInfo.fileName()));
     }
 }
 

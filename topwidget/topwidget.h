@@ -21,6 +21,7 @@ class TopWidget : public QWidget
 
         void setApplication(Application* app);
         void updateFromProject(const Project& project);
+        void setStatusMessage(const QString& message);
 
     signals:
         void play();

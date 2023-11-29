@@ -116,8 +116,6 @@ private:
 
     QTimer _timer;
 
-    QMessageBox _pcmMessageBox;
-
     void windowClosed(MdiSubWindow* window);
 
     // QWidget interface
