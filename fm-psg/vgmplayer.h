@@ -31,6 +31,10 @@ class VGMPlayer : public QThread
         uint32_t time();
         void setTime(const uint32_t time);
 
+    signals:
+        void pcmUploadStarted();
+        void pcmUploadFinished();
+
     public slots:
         void start(Priority p = InheritPriority);
 

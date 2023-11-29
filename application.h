@@ -44,6 +44,10 @@ class Application : public QApplication
 
         QUndoStack& undoStack();
 
+    signals:
+        void pcmUploadStarted();
+        void pcmUploadFinished();
+
     private:
         MainWindow* _mainWindow;
         QUndoStack _undoStack;

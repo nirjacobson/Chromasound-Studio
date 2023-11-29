@@ -14,6 +14,9 @@ FM_PSG_Impl::FM_PSG_Impl(const Project& project)
     _vgmPlayer = new VGMPlayer(_spi, this);
     reset();
 
+    connect(_vgmPlayer, &VGMPlayer::pcmUploadStarted, this, &FM_PSG::pcmUploadStarted);
+    connect(_vgmPlayer, &VGMPlayer::pcmUploadFinished, this, &FM_PSG::pcmUploadFinished);
+
     _vgmPlayer->start();
 }
 

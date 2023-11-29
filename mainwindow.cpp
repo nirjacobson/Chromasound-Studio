@@ -5,6 +5,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , _app(app)
+    , _pcmMessageBox(this)
     , _midiInput(MIDIInput::instance())
     , _channelsWindow(nullptr)
     , _playlistWindow(nullptr)
@@ -12,6 +13,9 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     _midiInput->init();
 
     ui->setupUi(this);
+
+    _pcmMessageBox.setText("Uploading PCM data...");
+    _pcmMessageBox.setStandardButtons(QMessageBox::NoButton);
 
     setAcceptDrops(true);
 
@@ -57,6 +61,9 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
    connect(ui->actionChannels, &QAction::triggered, this, &MainWindow::showChannelsWindow);
    connect(ui->actionPlaylist, &QAction::triggered, this, &MainWindow::showPlaylistWindow);
    connect(ui->actionImportFMPatches, &QAction::triggered, this, &MainWindow::fmImportTriggered);
+
+   connect(_app, &Application::pcmUploadStarted, this, &MainWindow::pcmUploadStarted);
+   connect(_app, &Application::pcmUploadFinished, this, &MainWindow::pcmUploadFinished);
 
    _styleDialog.setApplication(_app);
    _fmImportDialog.setApplication(_app);
@@ -638,6 +645,16 @@ void MainWindow::mdiViewModeChanged(const QString& viewMode)
         delete ui->centralwidget->layout()->replaceWidget(ui->mdiArea, mdiArea);
         ui->mdiArea = mdiArea;
     }
+}
+
+void MainWindow::pcmUploadStarted()
+{
+    _pcmMessageBox.exec();
+}
+
+void MainWindow::pcmUploadFinished()
+{
+    _pcmMessageBox.accept();
 }
 
 void MainWindow::windowClosed(MdiSubWindow* window)

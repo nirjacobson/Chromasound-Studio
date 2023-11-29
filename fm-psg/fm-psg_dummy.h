@@ -1,6 +1,8 @@
 #ifndef DUMMY_FM_PSG_H
 #define DUMMY_FM_PSG_H
 
+#include <QTimer>
+
 #include "fm-psg.h"
 #include "project/project.h"
 

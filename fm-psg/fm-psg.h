@@ -30,6 +30,10 @@ class FM_PSG : public QObject
 
         virtual void keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity) = 0;
         virtual void keyOff(int key) = 0;
+
+    signals:
+        void pcmUploadStarted();
+        void pcmUploadFinished();
 };
 
 #endif // FM_PSG_H
