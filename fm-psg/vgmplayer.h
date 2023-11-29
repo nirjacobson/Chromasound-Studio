@@ -35,9 +35,6 @@ class VGMPlayer : public QThread
         void pcmUploadStarted();
         void pcmUploadFinished();
 
-    public slots:
-        void start(Priority p = InheritPriority);
-
     private:
         static constexpr int SPI_DELAY_FAST = 30000;
         static constexpr int SPI_DELAY      = 120000;
