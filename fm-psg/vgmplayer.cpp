@@ -205,7 +205,7 @@ void VGMPlayer::runInteractive()
     char rx, tx;
     uint16_t space;
 
-    _spiDelay = SPI_DELAY_FAST;
+    _spiDelay = SPI_DELAY;
 
     while (true) {
         _stopLock.lock();
