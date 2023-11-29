@@ -202,10 +202,16 @@ void GanttEditorWidget::paintEvent(QPaintEvent*)
             }
 
             QRect rect(QPoint(startPixelX - _left, startPixelY - _top), QPoint(endPixelX - _left, endPixelY - _top));
+            QColor color = _selectedItems.contains(item) ? _selectionColor : _itemColor;
 
-            painter.setPen(_selectedItems.contains(item) ? _selectionColor.darker() : _itemColor.darker());
-            painter.setBrush(_selectedItems.contains(item) ? _selectionColor : _itemColor);
+            painter.setPen(color.darker());
+            painter.setBrush(color.darker(150));
             painter.drawRect(rect.adjusted(0, 0, -1, -1));
+            painter.setPen(Qt::NoPen);
+            painter.setBrush(color.lighter(125));
+            painter.drawRect(rect.adjusted(3, 1, -1, -3));
+            painter.setBrush(color);
+            painter.drawRect(rect.adjusted(3, 3, -3, -3));
         }
     }
 
