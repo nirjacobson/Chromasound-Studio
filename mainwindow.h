@@ -90,6 +90,9 @@ private slots:
 
     void mdiViewModeChanged(const QString& viewMode);
 
+    void pcmUploadStarted();
+    void pcmUploadFinished();
+
 private:
     Ui::MainWindow* ui;
 
@@ -111,8 +114,9 @@ private:
 
     int _selectedChannel;
 
-
     QTimer _timer;
+
+    QMessageBox _pcmMessageBox;
 
     void windowClosed(MdiSubWindow* window);
 

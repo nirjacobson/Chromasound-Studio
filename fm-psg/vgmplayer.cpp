@@ -280,6 +280,7 @@ void VGMPlayer::runPlayback()
         _lastPCMBlockChecksum = checksum(_pcmBlock);
 
         if (!(lastPCMBlockSize == _lastPCMBlockSize && lastPCMBlockChecksum == _lastPCMBlockChecksum)) {
+            emit pcmUploadStarted();
             uint32_t position = 0;
             while (true) {
                 _stopLock.lock();
@@ -316,6 +317,7 @@ void VGMPlayer::runPlayback()
                     }
                 }
             }
+            emit pcmUploadFinished();
         }
     }
 

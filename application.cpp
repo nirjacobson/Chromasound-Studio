@@ -15,6 +15,9 @@ Application::Application(int &argc, char **argv, int flags)
     } else {
         _fmPSG = new FM_PSG_Impl(_project);
     }
+
+    connect(_fmPSG, &FM_PSG::pcmUploadStarted, this, &Application::pcmUploadStarted);
+    connect(_fmPSG, &FM_PSG::pcmUploadFinished, this, &Application::pcmUploadFinished);
 }
 
 Application::~Application()
