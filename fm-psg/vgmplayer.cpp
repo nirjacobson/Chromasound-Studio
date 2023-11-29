@@ -152,10 +152,12 @@ void VGMPlayer::setTime(const uint32_t time)
 
 void VGMPlayer::start(Priority p)
 {
-    if (_paused) {
-        spi_write(PAUSE_RESUME);
-    } else if (_stop) {
-        spi_write(STOP_START);
+    if (_mode == Mode::Playback) {
+        if (_paused) {
+            spi_write(PAUSE_RESUME);
+        } else if (_stop) {
+            spi_write(STOP_START);
+        }
     }
 
     _stopLock.lock();
@@ -212,7 +214,6 @@ void VGMPlayer::runInteractive()
         bool stop = _stop;
         _stopLock.unlock();
         if (stop) {
-            spi_write(STOP_START);
             break;
         }
 
