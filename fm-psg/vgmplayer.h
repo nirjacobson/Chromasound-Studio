@@ -49,7 +49,7 @@ class VGMPlayer : public QThread
             RECEIVE_DATA,
             REPORT_TIME,
             PAUSE_RESUME,
-            STOP_START,
+            STOP,
             SET_LOOP_TIME,
             SET_TIME
         } Command;
