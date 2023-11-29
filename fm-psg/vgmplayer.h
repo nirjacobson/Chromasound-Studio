@@ -40,7 +40,7 @@ class VGMPlayer : public QThread
 
     private:
         static constexpr int SPI_DELAY_FAST = 30000;
-        static constexpr int SPI_DELAY      = 100000;
+        static constexpr int SPI_DELAY      = 120000;
         static constexpr int SPI_DELAY_SLOW = 10000000;
 
         enum {
