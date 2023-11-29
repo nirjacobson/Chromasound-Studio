@@ -217,11 +217,6 @@ void VGMPlayer::runInteractive()
     char rx, tx;
     uint16_t space;
 
-    _stopLock.lock();
-    _stop = false;
-    _paused = false;
-    _stopLock.unlock();
-
     while (true) {
         _stopLock.lock();
         bool stop = _stop;
