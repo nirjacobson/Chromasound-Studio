@@ -150,16 +150,6 @@ void VGMPlayer::setTime(const uint32_t time)
     _timeLock.unlock();
 }
 
-void VGMPlayer::start(Priority p)
-{
-    _stopLock.lock();
-    _stop = false;
-    _paused = false;
-    _stopLock.unlock();
-
-    QThread::start(p);
-}
-
 quint32 VGMPlayer::checksum(const QByteArray& data)
 {
     quint32 result = 0;
@@ -200,6 +190,9 @@ void VGMPlayer::runInteractive()
     uint16_t space;
 
     _spiDelay = SPI_DELAY;
+
+    _paused = false;
+    _stop = false;
 
     while (true) {
         _stopLock.lock();
@@ -247,7 +240,6 @@ void VGMPlayer::runPlayback()
 
     if (_paused) {
         spi_write(PAUSE_RESUME);
-        _paused = false;
     } else {
         spi_write(SET_LOOP_TIME);
         for (int i = 0; i < 4; i++) {
@@ -312,6 +304,9 @@ void VGMPlayer::runPlayback()
             }
         }
     }
+
+    _paused = false;
+    _stop = false;
 
     _timer.restart();
     _playing = true;
