@@ -10,10 +10,10 @@ VGMPlayer::VGMPlayer(int spi, QObject *parent)
     , _paused(false)
     , _loopOffsetSamples(0)
     , _loopOffsetData(0)
-    , _pcmPlaying(false)
     , _playing(false)
     , _lastPCMBlockSize(0)
     , _lastPCMBlockChecksum(0)
+    , _spiDelay(SPI_DELAY)
 {
 
 }
@@ -118,7 +118,6 @@ void VGMPlayer::stop()
 
     _position = 0;
     _playing = false;
-    _pcmPlaying = false;
 }
 
 void VGMPlayer::pause()
@@ -129,7 +128,6 @@ void VGMPlayer::pause()
     _stopLock.unlock();
 
     _playing = false;
-    _pcmPlaying = false;
 }
 
 uint32_t VGMPlayer::time()
@@ -182,14 +180,14 @@ quint32 VGMPlayer::checksum(const QByteArray& data)
 
 void VGMPlayer::spi_write(char val)
 {
-    while (_spiTimer.isValid() && _spiTimer.nsecsElapsed() < (_pcmPlaying ? PCM_DELAY : SPI_DELAY));
+    while (_spiTimer.isValid() && _spiTimer.nsecsElapsed() < _spiDelay);
     spiWrite(_spi, &val, 1);
     _spiTimer.restart();
 }
 
 void VGMPlayer::spi_xfer(char* tx, char* rx)
 {
-    while (_spiTimer.isValid() && _spiTimer.nsecsElapsed() < (_pcmPlaying ? PCM_DELAY : SPI_DELAY));
+    while (_spiTimer.isValid() && _spiTimer.nsecsElapsed() < _spiDelay);
     spiXfer(_spi, tx, rx, 1);
     _spiTimer.restart();
 }
@@ -206,6 +204,8 @@ void VGMPlayer::runInteractive()
 {
     char rx, tx;
     uint16_t space;
+
+    _spiDelay = SPI_DELAY_FAST;
 
     while (true) {
         _stopLock.lock();
@@ -250,6 +250,8 @@ void VGMPlayer::runPlayback()
 
     bool loop = _loopOffsetData >= 0 && _loopOffsetSamples >= 0;
 
+    _spiDelay = SPI_DELAY;
+
     spi_write(SET_LOOP_TIME);
     for (int i = 0; i < 4; i++) {
         spi_write(loop ? ((char*)&_loopOffsetSamples)[i] : 0);
@@ -271,6 +273,7 @@ void VGMPlayer::runPlayback()
 
         if (!(lastPCMBlockSize == _lastPCMBlockSize && lastPCMBlockChecksum == _lastPCMBlockChecksum)) {
             emit pcmUploadStarted();
+            _spiDelay = SPI_DELAY_FAST;
             uint32_t position = 0;
             while (true) {
                 _stopLock.lock();
@@ -307,6 +310,7 @@ void VGMPlayer::runPlayback()
                     }
                 }
             }
+            _spiDelay = SPI_DELAY;
             emit pcmUploadFinished();
         }
     }
@@ -355,7 +359,7 @@ void VGMPlayer::runPlayback()
                     spi_xfer(&tx, &rx);
 
                     if (i > 0) {
-                        _pcmPlaying = !!rx;
+                        _spiDelay = !!rx ? SPI_DELAY_SLOW : SPI_DELAY;
                     }
                 }
             }
