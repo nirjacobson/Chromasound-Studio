@@ -152,14 +152,6 @@ void VGMPlayer::setTime(const uint32_t time)
 
 void VGMPlayer::start(Priority p)
 {
-    if (_mode == Mode::Playback) {
-        if (_paused) {
-            spi_write(PAUSE_RESUME);
-        } else if (_stop) {
-            spi_write(STOP_START);
-        }
-    }
-
     _stopLock.lock();
     _stop = false;
     _paused = false;
@@ -253,66 +245,71 @@ void VGMPlayer::runPlayback()
 
     _spiDelay = SPI_DELAY;
 
-    spi_write(SET_LOOP_TIME);
-    for (int i = 0; i < 4; i++) {
-        spi_write(loop ? ((char*)&_loopOffsetSamples)[i] : 0);
-    }
+    if (_paused) {
+        spi_write(PAUSE_RESUME);
+        _paused = false;
+    } else {
+        spi_write(SET_LOOP_TIME);
+        for (int i = 0; i < 4; i++) {
+            spi_write(loop ? ((char*)&_loopOffsetSamples)[i] : 0);
+        }
 
-    _timeLock.lock();
-    spi_write(SET_TIME);
-    for (int i = 0; i < 4; i++) {
-        spi_write(((char*)&_time)[i]);
-    }
-    _timeLock.unlock();
+        _timeLock.lock();
+        spi_write(SET_TIME);
+        for (int i = 0; i < 4; i++) {
+            spi_write(((char*)&_time)[i]);
+        }
+        _timeLock.unlock();
 
-    if (!_pcmBlock.isEmpty()) {
-        quint32 lastPCMBlockSize = _lastPCMBlockSize;
-        quint32 lastPCMBlockChecksum = _lastPCMBlockChecksum;
+        if (!_pcmBlock.isEmpty()) {
+            quint32 lastPCMBlockSize = _lastPCMBlockSize;
+            quint32 lastPCMBlockChecksum = _lastPCMBlockChecksum;
 
-        _lastPCMBlockSize = _pcmBlock.size();
-        _lastPCMBlockChecksum = checksum(_pcmBlock);
+            _lastPCMBlockSize = _pcmBlock.size();
+            _lastPCMBlockChecksum = checksum(_pcmBlock);
 
-        if (!(lastPCMBlockSize == _lastPCMBlockSize && lastPCMBlockChecksum == _lastPCMBlockChecksum)) {
-            emit pcmUploadStarted();
-            _spiDelay = SPI_DELAY_FAST;
-            uint32_t position = 0;
-            while (true) {
-                _stopLock.lock();
-                bool stop = _stop;
-                _stopLock.unlock();
-                if (stop) {
-                    return;
-                }
-
-                spi_write(REPORT_SPACE);
-                spi_xfer(&tx, &rx);
-                space = rx;
-                spi_xfer(&tx, &rx);
-                space |= (int)rx << 8;
-
-                if (space > 0) {
-                    int remaining = _pcmBlock.size() - position;
-                    long count = space < remaining ? space : remaining;
-
-                    if (count > 0) {
-                        spi_write(RECEIVE_DATA);
-
-                        for (int i = 0; i < 4; i++) {
-                            spi_write(((char*)&count)[i]);
-                        }
-
-                        for (int i = 0; i < count; i++) {
-                            spi_write(_pcmBlock[position++]);
-                        }
+            if (!(lastPCMBlockSize == _lastPCMBlockSize && lastPCMBlockChecksum == _lastPCMBlockChecksum)) {
+                emit pcmUploadStarted();
+                _spiDelay = SPI_DELAY_FAST;
+                uint32_t position = 0;
+                while (true) {
+                    _stopLock.lock();
+                    bool stop = _stop;
+                    _stopLock.unlock();
+                    if (stop) {
+                        return;
                     }
 
-                    if (count == remaining) {
-                        break;
+                    spi_write(REPORT_SPACE);
+                    spi_xfer(&tx, &rx);
+                    space = rx;
+                    spi_xfer(&tx, &rx);
+                    space |= (int)rx << 8;
+
+                    if (space > 0) {
+                        int remaining = _pcmBlock.size() - position;
+                        long count = space < remaining ? space : remaining;
+
+                        if (count > 0) {
+                            spi_write(RECEIVE_DATA);
+
+                            for (int i = 0; i < 4; i++) {
+                                spi_write(((char*)&count)[i]);
+                            }
+
+                            for (int i = 0; i < count; i++) {
+                                spi_write(_pcmBlock[position++]);
+                            }
+                        }
+
+                        if (count == remaining) {
+                            break;
+                        }
                     }
                 }
+                _spiDelay = SPI_DELAY;
+                emit pcmUploadFinished();
             }
-            _spiDelay = SPI_DELAY;
-            emit pcmUploadFinished();
         }
     }
 
@@ -325,7 +322,7 @@ void VGMPlayer::runPlayback()
         bool paused = _paused;
         _stopLock.unlock();
         if (stop) {
-            spi_write(paused ? PAUSE_RESUME : STOP_START);
+            spi_write(paused ? PAUSE_RESUME : STOP);
             if (!paused) {
                 _timeLock.lock();
                 _time = 0;
