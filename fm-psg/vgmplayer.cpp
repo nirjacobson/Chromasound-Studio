@@ -182,26 +182,16 @@ quint32 VGMPlayer::checksum(const QByteArray& data)
 
 void VGMPlayer::spi_write(char val)
 {
+    while (_spiTimer.isValid() && _spiTimer.nsecsElapsed() < (_pcmPlaying ? PCM_DELAY : SPI_DELAY));
     spiWrite(_spi, &val, 1);
-    gpioDelay(SPI_DELAY);
-
-    if (_pcmPlaying) {
-        QElapsedTimer timer;
-        timer.start();
-        while (timer.elapsed() < 10) ;
-    }
+    _spiTimer.restart();
 }
 
 void VGMPlayer::spi_xfer(char* tx, char* rx)
 {
+    while (_spiTimer.isValid() && _spiTimer.nsecsElapsed() < (_pcmPlaying ? PCM_DELAY : SPI_DELAY));
     spiXfer(_spi, tx, rx, 1);
-    gpioDelay(SPI_DELAY);
-
-    if (_pcmPlaying) {
-        QElapsedTimer timer;
-        timer.start();
-        while (timer.elapsed() < 10) ;
-    }
+    _spiTimer.restart();
 }
 
 void VGMPlayer::run() {

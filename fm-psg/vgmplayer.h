@@ -39,7 +39,8 @@ class VGMPlayer : public QThread
         void start(Priority p = InheritPriority);
 
     private:
-        static constexpr int SPI_DELAY = 100;
+        static constexpr int SPI_DELAY = 100000;
+        static constexpr int PCM_DELAY = 10000000;
 
         enum {
             IDLE,
@@ -73,6 +74,8 @@ class VGMPlayer : public QThread
         QElapsedTimer _timer;
         bool _playing;
         bool _pcmPlaying;
+
+        QElapsedTimer _spiTimer;
 
         quint32 checksum(const QByteArray& data);
         quint32 _lastPCMBlockSize;
