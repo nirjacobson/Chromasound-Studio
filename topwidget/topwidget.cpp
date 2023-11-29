@@ -78,6 +78,11 @@ void TopWidget::updateFromProject(const Project& project)
     ui->lfoComboBox->blockSignals(false);
 }
 
+void TopWidget::setStatusMessage(const QString& message)
+{
+    ui->statusLabel->setText(message);
+}
+
 void TopWidget::playPauseClicked()
 {
     _isPlaying = !_isPlaying;
