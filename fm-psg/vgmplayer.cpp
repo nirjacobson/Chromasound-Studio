@@ -235,10 +235,14 @@ void VGMPlayer::runPlayback()
     uint16_t space;
 
     bool loop = _loopOffsetData >= 0 && _loopOffsetSamples >= 0;
+    bool paused = _paused;
 
     _spiDelay = SPI_DELAY;
 
-    if (_paused) {
+    _paused = false;
+    _stop = false;
+
+    if (paused) {
         spi_write(PAUSE_RESUME);
     } else {
         spi_write(SET_LOOP_TIME);
@@ -304,9 +308,6 @@ void VGMPlayer::runPlayback()
             }
         }
     }
-
-    _paused = false;
-    _stop = false;
 
     _timer.restart();
     _playing = true;
