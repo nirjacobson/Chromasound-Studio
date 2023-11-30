@@ -1306,9 +1306,21 @@ FMChannelSettings& VGMStream::FMChannel::settings()
     return _settings;
 }
 
+void VGMStream::FMChannel::reset()
+{
+    PhysicalChannel::reset();
+    _settings = FMChannelSettings();
+}
+
 NoiseChannelSettings& VGMStream::NoiseChannel::settings()
 {
     return _settings;
+}
+
+void VGMStream::NoiseChannel::reset()
+{
+    PhysicalChannel::reset();
+    _settings = NoiseChannelSettings();
 }
 
 VGMStream::StreamEndItem::StreamEndItem(const float time)
