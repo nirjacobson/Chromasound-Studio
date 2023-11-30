@@ -650,6 +650,9 @@ void MainWindow::mdiViewModeChanged(const QString& viewMode)
         delete ui->centralwidget->layout()->replaceWidget(ui->mdiArea, mdiArea);
         ui->mdiArea = mdiArea;
     }
+
+    showChannelsWindow();
+    showPlaylistWindow();
 }
 
 void MainWindow::pcmUploadStarted()

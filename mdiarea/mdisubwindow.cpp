@@ -9,5 +9,6 @@ MdiSubWindow::MdiSubWindow(MdiArea* mdiArea)
 void MdiSubWindow::closeEvent(QCloseEvent* event)
 {
     emit closed();
-    event->accept();
+
+    QMdiSubWindow::closeEvent(event);
 }
