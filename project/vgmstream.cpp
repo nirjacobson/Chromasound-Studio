@@ -70,6 +70,8 @@ void VGMStream::releaseChannel(const Channel::Type type, const int channel)
         _noiseChannels[channel].release();
     } else if (type == Channel::Type::FM) {
         _fmChannels[channel].release();
+    } else if (type == Channel::Type::PCM) {
+        _pcmChannels[channel].release();
     }
 }
 
