@@ -152,13 +152,13 @@ void GanttEditorWidget::paintEvent(QPaintEvent*)
         QPoint thisBottomLeft = topLeft + QPoint(0, i * _rowHeight);
         QPoint thisBottomRight = thisBottomLeft + QPoint(width(), 0);
 
-        painter.setPen(_borderColor.lighter(140));
+        painter.setPen(_borderColor.lighter(120));
         for (int j = _rowMajors.size() - 1; j >= 0 ; j--) {
             int r = firstRow + i;
             if (_invertRows) r = _rows - 1 - r;
 
             if (r % _rowMajors[j] == (_rowMajors[j] - 1)) {
-                painter.setPen(QPen(_borderColor.lighter(140), pow(2, j+1)));
+                painter.setPen(QPen(_borderColor.lighter(120), pow(2, j+1)));
                 break;
             }
         }
@@ -176,7 +176,7 @@ void GanttEditorWidget::paintEvent(QPaintEvent*)
         QPoint thisTopRight = topLeft + QPoint((i + 1) * _cellWidth, 0);
         QPoint thisBottomRight = thisTopRight + QPoint(0, height());
 
-        painter.setPen(_borderColor.lighter(140));
+        painter.setPen(_borderColor.lighter(120));
         for (int j = _cellMajors.size() - 1; j >= 0 ; j--) {
             if ((firstCell + i) % _cellMajors[j] == (_cellMajors[j] - 1)) {
                 painter.setPen(QPen(_borderColor, pow(2, j+1)));
