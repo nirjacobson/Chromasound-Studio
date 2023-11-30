@@ -104,11 +104,12 @@ class VGMStream
 
                 bool acquire(float time, float duration, bool& first);
                 void release();
-                void reset();
+                virtual void reset();
         };
         class FMChannel : public PhysicalChannel {
             public:
                 FMChannelSettings& settings();
+                void reset() override;
             private:
                 FMChannelSettings _settings;
         };
@@ -118,6 +119,7 @@ class VGMStream
         class NoiseChannel : public PhysicalChannel {
             public:
                 NoiseChannelSettings& settings();
+                void reset() override;
             private:
                 NoiseChannelSettings _settings;
         };
@@ -135,7 +137,7 @@ class VGMStream
         FMChannel _fmChannels[FM_CHANNELS];
         ToneChannel _toneChannels[TONE_CHANNELS];
         NoiseChannel _noiseChannels[NOISE_CHANNELS];
-        NoiseChannel _pcmChannels[PCM_CHANNELS];
+        PCMChannel _pcmChannels[PCM_CHANNELS];
 
         QList<Track::SettingsChange*> _createdSCs;
 
