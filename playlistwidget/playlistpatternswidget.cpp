@@ -73,6 +73,10 @@ void PlaylistPatternsWidget::paintEvent(QPaintEvent*)
             Pattern& pat = _app->project().getPattern(pattern);
             QList<int> activeTracks = pat.activeTracksAtTime(appPosition - activePatterns[pattern]);
             for (int t : activeTracks) {
+                if (!_app->project().getChannel(t).enabled()) {
+                    continue;
+                }
+
                 Track& track = pat.getTrack(t);
                 bool noneAreInDelta = std::find_if(track.items().begin(), track.items().end(),
                                             [&](const Track::Item* item){
