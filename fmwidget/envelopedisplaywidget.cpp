@@ -9,7 +9,7 @@ EnvelopeDisplayWidget::EnvelopeDisplayWidget(QWidget *parent)
     , _borderColor(Qt::gray)
     , _envelopeColor(Qt::blue)
     , _levelColor(Qt::gray)
-    , _releaseColor(Qt::cyan)
+    , _releaseColor(QColor(0, 192, 255))
 {
 
 }
@@ -36,40 +36,44 @@ void EnvelopeDisplayWidget::paintEvent(QPaintEvent* event)
 
     painter.fillRect(event->rect(), QBrush(_backgroundColor, Qt::SolidPattern));
 
-    painter.setPen(_envelopeColor);
-
     if (points[0] == NULL_POINTF) {
+        painter.setPen(QPen(_envelopeColor, 2));
         painter.drawLine(0, rect().height(), rect().width(), rect().height());
     } else {
         QPoint p1(points[0].x() * rect().height(), points[0].y() * rect().height());
+
+        painter.setPen(QPen(_levelColor, 2));
+        painter.drawLine(p1, QPoint(p1.x(), rect().height()));
+
+        painter.setPen(QPen(_envelopeColor, 2));
         painter.drawLine(QPoint(0, rect().height()), p1);
 
-        painter.setPen(_levelColor);
-        painter.drawLine(p1, QPoint(p1.x(), rect().height()));
-        painter.setPen(_envelopeColor);
-
         if (points[1] == NULL_POINTF) {
+            painter.setPen(QPen(_envelopeColor, 2));
             painter.drawLine(p1, QPoint(rect().width(), p1.y()));
         } else {
             QPoint p2(points[1].x() * rect().height(), points[1].y() * rect().height());
+
+            painter.setPen(QPen(_levelColor, 2));
+            painter.drawLine(p2, QPoint(p2.x(), rect().height()));
+
+            painter.setPen(QPen(_envelopeColor, 2));
             painter.drawLine(p1, p2);
 
-            painter.setPen(_levelColor);
-            painter.drawLine(p2, QPoint(p2.x(), rect().height()));
-            painter.setPen(_envelopeColor);
-
             if (points[2] == NULL_POINTF) {
+                painter.setPen(QPen(_envelopeColor, 2));
                 painter.drawLine(p2, QPoint(rect().width(), p2.y()));
             } else {
+                painter.setPen(QPen(_envelopeColor, 2));
                 QPoint p3(points[2].x() * rect().height(), points[2].y() * rect().height());
                 painter.drawLine(p2, p3);
             }
 
-            painter.setPen(_releaseColor);
-
             if (points[3] == NULL_POINTF) {
+                painter.setPen(QPen(_releaseColor, 2));
                 painter.drawLine(p2, QPoint(rect().width(), p2.y()));
             } else {
+                painter.setPen(QPen(_releaseColor, 2));
                 QPoint p4(points[3].x() * rect().height(), points[3].y() * rect().height());
                 painter.drawLine(p2, p4);
             }
