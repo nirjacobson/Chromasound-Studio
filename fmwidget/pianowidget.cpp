@@ -47,6 +47,7 @@ void PianoWidget::releaseKey(const int key)
 void PianoWidget::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
 
     drawOctaves(event, painter);
 }

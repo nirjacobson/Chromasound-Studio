@@ -121,6 +121,7 @@ void GanttHeaderWidget::paintEvent(QPaintEvent*)
     setMinimumHeight((!_markers || _markers->isEmpty()) ? 24 : 48);
 
     QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
 
     int beatsPerBar = _app->project().beatsPerBar();
 

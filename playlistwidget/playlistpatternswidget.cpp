@@ -56,6 +56,7 @@ void PlaylistPatternsWidget::paintEvent(QPaintEvent*)
     int numPatternsAcrossHeight = qCeil((float)height()/_rowHeight) + 1;
 
     QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
 
     QPoint topLeft(0, firstPatternStart);
 

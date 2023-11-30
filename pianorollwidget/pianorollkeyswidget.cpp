@@ -64,6 +64,7 @@ int PianoRollKeysWidget::length() const
 void PianoRollKeysWidget::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
     painter.setPen(_outlineColor);
 
     int absBottom = _rowHeight * _rows;

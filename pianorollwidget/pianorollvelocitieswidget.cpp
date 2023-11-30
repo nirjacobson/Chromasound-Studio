@@ -67,6 +67,7 @@ int PianoRollVelocitiesWidget::length() const
 void PianoRollVelocitiesWidget::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
 
     painter.setPen(_barColor.darker());
     painter.setBrush(_barColor);
