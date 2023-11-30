@@ -87,7 +87,7 @@ void OperatorWidget::setSettings(OperatorSettings* settings)
 
 int OperatorWidget::dtToIndex(const int dt) const
 {
-    if (dt > 4) {
+    if (dt >= 4) {
         return 7 - dt;
     } else {
         return 3 + dt;
