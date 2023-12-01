@@ -9,7 +9,7 @@ EnvelopeDisplayWidget::EnvelopeDisplayWidget(QWidget *parent)
     , _borderColor(Qt::gray)
     , _envelopeColor(Qt::blue)
     , _levelColor(Qt::gray)
-    , _releaseColor(QColor(0, 192, 255))
+    , _releaseColor(0, 192, 255)
 {
 
 }
