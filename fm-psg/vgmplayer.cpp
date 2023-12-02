@@ -189,7 +189,7 @@ void VGMPlayer::runInteractive()
     char rx, tx;
     uint16_t space;
 
-    _spiDelay = SPI_DELAY;
+    _spiDelay = SPI_DELAY_FAST;
 
     _paused = false;
     _stop = false;
