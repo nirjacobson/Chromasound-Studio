@@ -58,6 +58,7 @@ void GanttHeaderWidget::setItems(QList<GanttItem*>* items)
 void GanttHeaderWidget::setCellWidth(int width)
 {
     _cellWidth = width;
+    update();
 }
 
 void GanttHeaderWidget::setCellBeats(float beats)

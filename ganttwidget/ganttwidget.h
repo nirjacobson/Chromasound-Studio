@@ -46,6 +46,8 @@ class GanttWidget : public QWidget
         void selectItems(const QList<GanttItem*>& items);
         void selectAllItems();
 
+        void setCellWidth(const int width);
+
         void setCellMajors(const QList<int>& majors);
         void setRowMajors(const QList<int>& majors);
 
@@ -55,6 +57,7 @@ class GanttWidget : public QWidget
         float loopStart() const;
         float loopEnd() const;
 
+        void setDefaultCellWidth(int width);
 
     private:
         Ui::GanttWidget *ui;
@@ -67,6 +70,7 @@ class GanttWidget : public QWidget
         int _rowHeight;
         int _cellWidth;
         float _cellBeats;
+        int _defaultCellWidth;
 
         const QColor& cursorColor() const;
         const QColor& loopColor() const;
@@ -83,6 +87,7 @@ class GanttWidget : public QWidget
         void wheelHorizontalScroll(int pixels);
         void wheelVerticalScroll(int pixels);
         void loopChanged();
+        void scaleChanged(float scale);
 
     signals:
         void markerClicked(GanttMarker* marker);

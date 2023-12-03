@@ -20,6 +20,7 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
     ui->actionDelete->setShortcuts(QKeySequence::Delete);
 
     ui->ganttWidget->setApplication(_app);
+    ui->ganttWidget->setDefaultCellWidth(CellWidth);
     ui->ganttWidget->setLeftWidget(_patternsWidget);
     ui->ganttWidget->setItems(reinterpret_cast<QList<GanttItem*>*>(&app->project().playlist()));
     ui->ganttWidget->setMarkers(reinterpret_cast<QList<GanttMarker*>*>(&app->project().playlist().lfoChanges()));
