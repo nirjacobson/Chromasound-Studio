@@ -10,7 +10,8 @@ GanttWidget::GanttWidget(QWidget *parent, Application* app) :
     _rows(0),
     _rowHeight(16),
     _cellWidth(16),
-    _cellBeats(1)
+    _cellBeats(1),
+    _defaultCellWidth(16)
 {
     ui->setupUi(this);
     ui->headerWidget->setApplication(_app);
@@ -35,6 +36,7 @@ GanttWidget::GanttWidget(QWidget *parent, Application* app) :
     connect(ui->editorWidget, &GanttEditorWidget::verticalScroll, this, &GanttWidget::wheelVerticalScroll);
     connect(ui->editorWidget, &GanttEditorWidget::itemReleased, this, &GanttWidget::itemReleased);
     connect(ui->editorWidget, &GanttEditorWidget::contextMenuRequested, this, &GanttWidget::contextMenuRequested);
+    connect(ui->scaleWidget, &GanttScaleWidget::scaleChanged, this, &GanttWidget::scaleChanged);
 }
 
 GanttWidget::~GanttWidget()
@@ -154,6 +156,13 @@ void GanttWidget::selectAllItems()
     ui->editorWidget->selectAllItems();
 }
 
+void GanttWidget::setCellWidth(const int width)
+{
+    ui->headerWidget->setCellWidth(width);
+    ui->editorWidget->setCellWidth(width);
+    if (_bottomWidget) _bottomWidget->setCellWidth(width);
+}
+
 void GanttWidget::setCellMajors(const QList<int>& majors)
 {
     ui->editorWidget->setCellMajors(majors);
@@ -182,6 +191,11 @@ float GanttWidget::loopStart() const
 float GanttWidget::loopEnd() const
 {
     return ui->headerWidget->loopEnd();
+}
+
+void GanttWidget::setDefaultCellWidth(int width)
+{
+    _defaultCellWidth = width;
 }
 
 const QColor& GanttWidget::cursorColor() const
@@ -262,4 +276,9 @@ void GanttWidget::wheelVerticalScroll(int pixels)
 void GanttWidget::loopChanged()
 {
     ui->editorWidget->setLoop(ui->headerWidget->loopStart(), ui->headerWidget->loopEnd());
+}
+
+void GanttWidget::scaleChanged(float scale)
+{
+    setCellWidth(scale * _defaultCellWidth);
 }

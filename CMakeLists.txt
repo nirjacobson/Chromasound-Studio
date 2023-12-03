@@ -259,6 +259,8 @@ set(PROJECT_SOURCES
     fmwidget/fmlfowidget.ui
     commands/editlfosettingscommand.h
     commands/editlfosettingscommand.cpp
+    ganttwidget/ganttscalewidget.h
+    ganttwidget/ganttscalewidget.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

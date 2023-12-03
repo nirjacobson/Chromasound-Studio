@@ -94,6 +94,9 @@
    <item row="3" column="1">
     <widget class="QWidget" name="bottomWidget" native="true"/>
    </item>
+   <item row="1" column="2">
+    <widget class="GanttScaleWidget" name="scaleWidget" native="true"/>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -107,6 +110,12 @@
    <class>GanttHeaderWidget</class>
    <extends>QWidget</extends>
    <header>ganttwidget/ganttheaderwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GanttScaleWidget</class>
+   <extends>QWidget</extends>
+   <header>ganttwidget/ganttscalewidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
