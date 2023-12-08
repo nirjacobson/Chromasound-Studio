@@ -41,6 +41,8 @@ void FMImportDialog::load(const QString& path)
 
     quint8 ym2612_1[0xFF];
     quint8 ym2612_2[0xFF];
+    memset(ym2612_1, 0, 0xFF);
+    memset(ym2612_2, 0, 0xFF);
 
     QFile file(path);
     file.open(QIODevice::ReadOnly);
