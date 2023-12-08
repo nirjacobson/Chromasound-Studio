@@ -28,7 +28,7 @@ void GanttScaleWidget::paintEvent(QPaintEvent* event)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    painter.setPen(Qt::gray);
+    painter.setPen(QWidget::palette().color(QWidget::backgroundRole()).darker());
     painter.setBrush(Qt::NoBrush);
 
     int minWidth = 4;
