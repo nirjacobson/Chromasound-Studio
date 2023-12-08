@@ -37,6 +37,7 @@ class ChannelWidget : public QWidget
         Q_PROPERTY(QColor fmColor READ fmColor WRITE setFMColor)
         Q_PROPERTY(QColor toneColor READ toneColor WRITE setToneColor)
         Q_PROPERTY(QColor noiseColor READ noiseColor WRITE setNoiseColor)
+        Q_PROPERTY(QColor pcmColor READ pcmColor WRITE setPCMColor)
 
     public:
         explicit ChannelWidget(QWidget *parent = nullptr, Application* app = nullptr, int index = 0);
