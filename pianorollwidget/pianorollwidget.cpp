@@ -16,8 +16,7 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
 
     ui->setupUi(this);
 
-    ui->fmWidget->setApplication(app);
-    ui->noiseWidget->setApplication(app);
+    ui->settingsChangeWidget->setApplication(app);
 
     ui->actionCopy->setShortcuts(QKeySequence::Copy);
     ui->actionPaste->setShortcuts(QKeySequence::Paste);
@@ -58,16 +57,13 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
     connect(ui->ganttWidget, &GanttWidget::itemReleased, this, &PianoRollWidget::ganttItemReleased);
     connect(ui->ganttWidget, &GanttWidget::contextMenuRequested, this, &PianoRollWidget::contextMenuRequested);
 
-    connect(ui->fmDoneButton, &QPushButton::pressed, this, &PianoRollWidget::doneButtonClicked);
-    connect(ui->noiseDoneButton, &QPushButton::pressed, this, &PianoRollWidget::doneButtonClicked);
-    connect(ui->fmRemoveButton, &QPushButton::pressed, this, &PianoRollWidget::removeButtonClicked);
-    connect(ui->noiseRemoveButton, &QPushButton::pressed, this, &PianoRollWidget::removeButtonClicked);
-
     connect(_keysWidget, &PianoRollKeysWidget::keyOn, this, &PianoRollWidget::keyOn);
     connect(_keysWidget, &PianoRollKeysWidget::keyOff, this, &PianoRollWidget::keyOff);
 
-    connect(ui->fmWidget, &FMWidget::keyPressed, this, &PianoRollWidget::keyOn);
-    connect(ui->fmWidget, &FMWidget::keyReleased, this, &PianoRollWidget::keyOff);
+    connect(ui->settingsChangeWidget, &SettingsChangeWidget::keyOn, this, &PianoRollWidget::keyOn);
+    connect(ui->settingsChangeWidget, &SettingsChangeWidget::keyOff, this, &PianoRollWidget::keyOff);
+    connect(ui->settingsChangeWidget, &SettingsChangeWidget::removeClicked, this, &PianoRollWidget::removeButtonClicked);
+    connect(ui->settingsChangeWidget, &SettingsChangeWidget::doneClicked, this, &PianoRollWidget::doneButtonClicked);
 }
 
 PianoRollWidget::~PianoRollWidget()
@@ -121,13 +117,13 @@ Pattern& PianoRollWidget::pattern() const
 void PianoRollWidget::pressKey(const int key)
 {
     _keysWidget->pressKey(key);
-    ui->fmWidget->pressKey(key);
+    ui->settingsChangeWidget->pressKey(key);
 }
 
 void PianoRollWidget::releaseKey(const int key)
 {
     _keysWidget->releaseKey(key);
-    ui->fmWidget->releaseKey(key);
+    ui->settingsChangeWidget->releaseKey(key);
 }
 
 bool PianoRollWidget::hasLoop() const
@@ -147,11 +143,7 @@ float PianoRollWidget::loopEnd() const
 
 void PianoRollWidget::doUpdate()
 {
-    if (_app->project().getChannel(_channel).type() == Channel::Type::FM) {
-        ui->fmWidget->doUpdate();
-    } else if (_app->project().getChannel(_channel).type() == Channel::Type::NOISE) {
-        ui->noiseWidget->doUpdate();
-    }
+    ui->settingsChangeWidget->doUpdate();
 }
 
 ChannelSettings& PianoRollWidget::currentSettings()
@@ -186,28 +178,18 @@ void PianoRollWidget::ganttMarkerClicked(GanttMarker* marker)
 {
     Track::SettingsChange* settingsChange = dynamic_cast<Track::SettingsChange*>(marker);
 
-    if (_app->project().getChannel(_channel).type() == Channel::Type::FM) {
-        ui->fmWidget->setSettings(&dynamic_cast<FMChannelSettings&>(settingsChange->settings()));
-        ui->stackedWidget->setCurrentIndex(1);
-        _editingSettingsChange = dynamic_cast<Track::SettingsChange*>(marker);
-    } else if (_app->project().getChannel(_channel).type() == Channel::Type::NOISE) {
-        ui->noiseWidget->setSettings(&dynamic_cast<NoiseChannelSettings&>(settingsChange->settings()));
-        ui->stackedWidget->setCurrentIndex(2);
-        _editingSettingsChange = dynamic_cast<Track::SettingsChange*>(marker);
-    }
+    ui->settingsChangeWidget->setSettings(settingsChange->settings());
+    ui->stackedWidget->setCurrentIndex(1);
+
+    _editingSettingsChange = settingsChange;
 }
 
 void PianoRollWidget::ganttHeaderClicked(Qt::MouseButton button, float time)
 {
     if (button == Qt::LeftButton) {
         if (Qt::ShiftModifier == QApplication::keyboardModifiers()) {
-            if (_app->project().getChannel(_channel).type() == Channel::Type::NOISE) {
-                NoiseChannelSettings& ncs = dynamic_cast<NoiseChannelSettings&>(_app->project().getChannel(_channel).settings());
-                _app->undoStack().push(new AddTrackSettingsChangeCommand(_app->window(), *_track, time, &ncs));
-            } else if (_app->project().getChannel(_channel).type() == Channel::Type::FM) {
-                FMChannelSettings& fmcs = dynamic_cast<FMChannelSettings&>(_app->project().getChannel(_channel).settings());
-                _app->undoStack().push(new AddTrackSettingsChangeCommand(_app->window(), *_track, time, &fmcs));
-            }
+            ChannelSettings& cs = _app->project().getChannel(_channel).settings();
+            _app->undoStack().push(new AddTrackSettingsChangeCommand(_app->window(), *_track, time, &cs));
         } else if (_app->project().playMode() == Project::PlayMode::PATTERN) {
             _app->setPosition(time);
         }

@@ -17,81 +17,17 @@
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget">
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
       <widget class="QWidget" name="page">
-       <layout class="QGridLayout" name="gridLayout_2">
+       <layout class="QGridLayout" name="gridLayout_5">
         <item row="0" column="0">
          <widget class="GanttWidget" name="ganttWidget" native="true"/>
         </item>
        </layout>
       </widget>
       <widget class="QWidget" name="page_2">
-       <layout class="QGridLayout" name="gridLayout_3">
-        <item row="0" column="0" colspan="3">
-         <widget class="FMWidget" name="fmWidget" native="true"/>
-        </item>
-        <item row="1" column="2">
-         <widget class="QPushButton" name="fmDoneButton">
-          <property name="text">
-           <string>Done</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>675</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="1" column="1">
-         <widget class="QPushButton" name="fmRemoveButton">
-          <property name="text">
-           <string>Remove</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="page_3">
-       <layout class="QGridLayout" name="gridLayout_4">
-        <item row="1" column="2">
-         <widget class="QPushButton" name="noiseDoneButton">
-          <property name="text">
-           <string>Done</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0" colspan="3">
-         <widget class="NoiseWidget" name="noiseWidget" native="true"/>
-        </item>
-        <item row="1" column="0">
-         <spacer name="horizontalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>675</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="1" column="1">
-         <widget class="QPushButton" name="noiseRemoveButton">
-          <property name="text">
-           <string>Remove</string>
-          </property>
-         </widget>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="SettingsChangeWidget" name="settingsChangeWidget" native="true"/>
         </item>
        </layout>
       </widget>
@@ -183,15 +119,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>FMWidget</class>
+   <class>SettingsChangeWidget</class>
    <extends>QWidget</extends>
-   <header>fmwidget/fmwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>NoiseWidget</class>
-   <extends>QWidget</extends>
-   <header>noisewidget/noisewidget.h</header>
+   <header>pianorollwidget/settingschangewidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

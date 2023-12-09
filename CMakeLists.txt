@@ -261,6 +261,12 @@ set(PROJECT_SOURCES
     commands/editlfosettingscommand.cpp
     ganttwidget/ganttscalewidget.h
     ganttwidget/ganttscalewidget.cpp
+    pianorollwidget/settingschangefooterwidget.h
+    pianorollwidget/settingschangefooterwidget.cpp
+    pianorollwidget/settingschangefooterwidget.ui
+    pianorollwidget/settingschangewidget.h
+    pianorollwidget/settingschangewidget.cpp
+    pianorollwidget/settingschangewidget.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
