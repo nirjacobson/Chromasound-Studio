@@ -720,6 +720,14 @@ void MainWindow::setChannelType(Channel& channel, const Channel::Type type)
 
     channel.setType(type);
 
+    for (Pattern* pattern : _app->project().patterns()) {
+        for (Track* track : pattern->tracks()) {
+            for (Track::SettingsChange* sc : track->settingsChanges()) {
+                track->removeSettingsChange(sc);
+            }
+        }
+    }
+
     doUpdate();
 }
 
