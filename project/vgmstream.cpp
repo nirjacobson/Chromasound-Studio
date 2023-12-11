@@ -1106,7 +1106,7 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
                 int volume = pcmcs->volume() * item->note().velocity() / 100;
                 int att = 4 * (float)(100 - volume) / 100;
                 data.append(0xF0 | item->channel());
-                data.append((quint8)att);
+                data.append(att);
 
                 quint32 offset = project.pcmOffset(pcmcs->path());
 
