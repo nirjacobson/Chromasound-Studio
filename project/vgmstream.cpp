@@ -1103,10 +1103,10 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
         if (_format == Format::FM_PSG) {
             if (item->on()) {
                 const PCMChannelSettings* pcmcs = dynamic_cast<const PCMChannelSettings*>(item->channelSettings());
-//                int volume = pcmcs->volume() * item->note().velocity() / 100;
-//                int att = 4 * (float)(100 - volume) / 100;
-//                data.append(0xF0 | item->channel());
-//                data.append((char)0);
+                int volume = pcmcs->volume() * item->note().velocity() / 100;
+                int att = 4 * (float)(100 - volume) / 100;
+                data.append(0xF0 | item->channel());
+                data.append(att);
 
                 quint32 offset = project.pcmOffset(pcmcs->path());
 
