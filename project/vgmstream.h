@@ -131,6 +131,7 @@ class VGMStream
         static constexpr int TONE_CHANNELS = 3;
         static constexpr int NOISE_CHANNELS = 1;
         static constexpr int PCM_CHANNELS = 4;
+        static constexpr int MAX_PCM_ATTENUATION = 4;
 
         Format _format;
 
