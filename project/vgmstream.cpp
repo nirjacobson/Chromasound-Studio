@@ -736,16 +736,16 @@ void VGMStream::applySettingsChanges2(Project& project, const float time, const 
                 return !((sni->time() - time) < (*it2)->time() && (*it2)->time() < (sni->time() - time + sni->note().duration()));
             }), trackNoteItemsAtChange.end());
 
-            QList<int> channels;
+            QMap<int, int> channelsAndVelocities;
             for (StreamItem* si : trackNoteItemsAtChange) {
                 StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(si);
-                if (!channels.contains(sni->channel())) {
-                    channels.append(sni->channel());
+                if (!channelsAndVelocities.contains(sni->channel())) {
+                    channelsAndVelocities.insert(sni->channel(), sni->note().velocity());
                 }
             }
 
-            for (int c : channels) {
-                StreamSettingsItem* ssi = new StreamSettingsItem(time + (*it2)->time(), c, &(*it2)->settings());
+            for (auto it3 = channelsAndVelocities.begin(); it3 != channelsAndVelocities.end(); ++it3) {
+                StreamSettingsItem* ssi = new StreamSettingsItem(time + (*it2)->time(), it3.key(), &(*it2)->settings(), it3.value());
                 items.append(ssi);
             }
         }
@@ -774,30 +774,101 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
 
     sortItems(items);
 
-    for (int i = 0; i < NOISE_CHANNELS; i++) {
+    for (int i = 0; i < TONE_CHANNELS; i++) {
         auto it = std::find_if(items.rbegin(), items.rend(), [&](StreamItem* si) {
-            StreamSettingsItem* ssi;
-            return (ssi = dynamic_cast<StreamSettingsItem*>(si)) &&
-                   dynamic_cast<const NoiseChannelSettings*>(ssi->channelSettings()) &&
-                   ssi->channel() == i && ssi->time() <= currentTime;
+            StreamNoteItem* sni;
+            return (sni = dynamic_cast<StreamNoteItem*>(si)) &&
+                   sni->type() == Channel::Type::TONE &&
+                   sni->channel() == i && sni->time() <= currentTime;
         });
 
         if (it != items.rend()) {
-            StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamSettingsItem*>(*it)->channelSettings());
+            StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamNoteItem*>(*it)->channelSettings());
+            items.append(ssi);
+        } else {
+            auto it2 = std::find_if(items.rbegin(), items.rend(), [&](StreamItem* si) {
+                StreamSettingsItem* ssi;
+                return (ssi = dynamic_cast<StreamSettingsItem*>(si)) &&
+                       dynamic_cast<const ToneChannelSettings*>(ssi->channelSettings()) &&
+                       ssi->channel() == i && ssi->time() <= currentTime;
+            });
+
+            StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamSettingsItem*>(*it2)->channelSettings());
+            items.append(ssi);
+        }
+    }
+
+    for (int i = 0; i < NOISE_CHANNELS; i++) {
+        auto it = std::find_if(items.rbegin(), items.rend(), [&](StreamItem* si) {
+            StreamNoteItem* sni;
+            return (sni = dynamic_cast<StreamNoteItem*>(si)) &&
+                   sni->type() == Channel::Type::NOISE &&
+                   sni->channel() == i && sni->time() <= currentTime;
+        });
+
+        if (it != items.rend()) {
+            StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(*it);
+            StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, sni->channelSettings(), sni->note().velocity());
+            items.append(ssi);
+        } else {
+            auto it2 = std::find_if(items.rbegin(), items.rend(), [&](StreamItem* si) {
+                StreamSettingsItem* ssi;
+                return (ssi = dynamic_cast<StreamSettingsItem*>(si)) &&
+                       dynamic_cast<const NoiseChannelSettings*>(ssi->channelSettings()) &&
+                       ssi->channel() == i && ssi->time() <= currentTime;
+            });
+
+            StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamSettingsItem*>(*it2)->channelSettings());
             items.append(ssi);
         }
     }
 
     for (int i = 0; i < FM_CHANNELS; i++) {
         auto it = std::find_if(items.rbegin(), items.rend(), [&](StreamItem* si) {
-            StreamSettingsItem* ssi;
-            return (ssi = dynamic_cast<StreamSettingsItem*>(si)) &&
-                   dynamic_cast<const FMChannelSettings*>(ssi->channelSettings()) &&
-                   ssi->channel() == i && ssi->time() <= currentTime;
+            StreamNoteItem* sni;
+            return (sni = dynamic_cast<StreamNoteItem*>(si)) &&
+                   sni->type() == Channel::Type::FM &&
+                   sni->channel() == i && sni->time() <= currentTime;
         });
 
         if (it != items.rend()) {
-            StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamSettingsItem*>(*it)->channelSettings());
+            StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(*it);
+            StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, sni->channelSettings(), sni->note().velocity());
+            items.append(ssi);
+        } else {
+            auto it2 = std::find_if(items.rbegin(), items.rend(), [&](StreamItem* si) {
+                StreamSettingsItem* ssi;
+                return (ssi = dynamic_cast<StreamSettingsItem*>(si)) &&
+                       dynamic_cast<const FMChannelSettings*>(ssi->channelSettings()) &&
+                       ssi->channel() == i && ssi->time() <= currentTime;
+            });
+
+            StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamSettingsItem*>(*it2)->channelSettings());
+            items.append(ssi);
+        }
+    }
+
+    for (int i = 0; i < PCM_CHANNELS; i++) {
+        auto it = std::find_if(items.rbegin(), items.rend(), [&](StreamItem* si) {
+            StreamNoteItem* sni;
+            return (sni = dynamic_cast<StreamNoteItem*>(si)) &&
+                   sni->type() == Channel::Type::PCM &&
+                   sni->channel() == i && sni->time() <= currentTime;
+        });
+
+        if (it != items.rend()) {
+            StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(*it);
+            StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, sni->channelSettings(), sni->note().velocity());
+            items.append(ssi);
+        } else {
+            auto it2 = std::find_if(items.rbegin(), items.rend(), [&](StreamItem* si) {
+                StreamSettingsItem* ssi;
+                return (ssi = dynamic_cast<StreamSettingsItem*>(si)) &&
+                       dynamic_cast<const PCMChannelSettings*>(ssi->channelSettings()) &&
+                       ssi->channel() == i && ssi->time() <= currentTime;
+            });
+
+            StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamSettingsItem*>(*it2)->channelSettings());
             items.append(ssi);
         }
     }
@@ -960,20 +1031,38 @@ int VGMStream::encodeDelay(const quint32 samples, QByteArray& data, const bool p
 
 void VGMStream::encodeSettingsItem(const StreamSettingsItem* item, QByteArray& data)
 {
+    const ToneChannelSettings* tcs;
     const NoiseChannelSettings* ncs;
     const FMChannelSettings* fmcs;
-    if ((ncs = dynamic_cast<const NoiseChannelSettings*>(item->channelSettings())) != nullptr) {
+    const PCMChannelSettings* pcs;
+    if ((tcs = dynamic_cast<const ToneChannelSettings*>(item->channelSettings())) != nullptr) {
+        int addr = (item->channel() * 2) + 1;
+        int att;
+        att = (30.0f * (float)(100 - item->channelSettings()->volume())/100.0f);
+        att += (30.0f - att) * (float)(100 - item->velocity())/100.0f;
+        att >>= 1;
+        data.append(0x50);
+        data.append(0x80 | (addr << 4) | att);
+    } else if ((ncs = dynamic_cast<const NoiseChannelSettings*>(item->channelSettings())) != nullptr) {
         int fb = ncs->noiseType();
         int nfo = ncs->shiftRate();
         uint8_t datum = 0xE0 | (fb << 2) | nfo;
 
         data.append(0x50);
         data.append(datum);
+
+        int att;
+        att = (30.0f * (float)(100 - item->channelSettings()->volume())/100.0f);
+        att += (30.0f - att) * (float)(100 - item->velocity())/100.0f;
+        att >>= 1;
+        data.append(0x50);
+        data.append(0x80 | (7 << 4) | att);
     } else if ((fmcs = dynamic_cast<const FMChannelSettings*>(item->channelSettings())) != nullptr) {
         int part = 1 + (item->channel() >= 3);
         int channel = item->channel() % 3;
 
         uint8_t datum;
+        QList<int> sls = slotsByAlg[fmcs->algorithm().algorithm()];
         for (int i = 0; i < 4; i++) {
             int offset = (i * 4) + channel;
 
@@ -982,9 +1071,11 @@ void VGMStream::encodeSettingsItem(const StreamSettingsItem* item, QByteArray& d
             data.append(0x30 + offset);
             data.append(datum);
 
-            data.append((part == 1) ? 0x52 : 0x53);
-            data.append(0x40 + offset);
-            data.append(fmcs->operators()[i].envelopeSettings().t1l());
+            if (!sls.contains(i)) {
+                data.append((part == 1) ? 0x52 : 0x53);
+                data.append(0x40 + offset);
+                data.append(fmcs->operators()[i].envelopeSettings().t1l());
+            }
 
             datum = (fmcs->operators()[i].rs() << 6) | fmcs->operators()[i].envelopeSettings().ar();
             data.append((part == 1) ? 0x52 : 0x53);
@@ -1006,6 +1097,20 @@ void VGMStream::encodeSettingsItem(const StreamSettingsItem* item, QByteArray& d
             data.append(datum);
         }
 
+        for (int i = 0; i < sls.size(); i++) {
+            int offset = (sls[i] * 4) + channel;
+            int t1l = fmcs->operators()[sls[i]].envelopeSettings().t1l();
+
+            int amt = (127 - t1l) *
+                      (100 - item->channelSettings()->volume())/100.0f;
+            amt += ((127 - t1l) - amt) * (100 - item->velocity())/100.0f;
+            int newT1l = t1l + amt;
+
+            data.append((part == 1) ? 0x52 : 0x53);
+            data.append(0x40 + offset);
+            data.append(newT1l);
+        }
+
         datum = (fmcs->algorithm().feedback() << 3) | fmcs->algorithm().algorithm();
         data.append((part == 1) ? 0x52 : 0x53);
         data.append(0xB0 + channel);
@@ -1015,6 +1120,13 @@ void VGMStream::encodeSettingsItem(const StreamSettingsItem* item, QByteArray& d
         data.append((part == 1) ? 0x52 : 0x53);
         data.append(0xB4 + channel);
         data.append(datum);
+    } else if ((pcs = dynamic_cast<const PCMChannelSettings*>(item->channelSettings())) != nullptr) {
+        if (_format == Format::FM_PSG) {
+            int volume = pcs->volume() * item->velocity() / 100;
+            int att = MAX_PCM_ATTENUATION * (float)(100 - volume) / 100;
+            data.append(0xF0 | item->channel());
+            data.append(att);
+        }
     }
 }
 
@@ -1304,15 +1416,16 @@ void VGMStream::PhysicalChannel::reset()
     _acquiredIndefinitely = false;
 }
 
-VGMStream::StreamSettingsItem::StreamSettingsItem(const float time, const int channel, const Settings* channelSettings)
+VGMStream::StreamSettingsItem::StreamSettingsItem(const float time, const int channel, const ChannelSettings* channelSettings, const int velocity)
     : StreamItem(time)
     , _channel(channel)
     , _channelSettings(channelSettings)
+    , _velocity(velocity)
 {
 
 }
 
-const Settings* VGMStream::StreamSettingsItem::channelSettings() const
+const ChannelSettings* VGMStream::StreamSettingsItem::channelSettings() const
 {
     return _channelSettings;
 }
@@ -1320,6 +1433,11 @@ const Settings* VGMStream::StreamSettingsItem::channelSettings() const
 int VGMStream::StreamSettingsItem::channel() const
 {
     return _channel;
+}
+
+int VGMStream::StreamSettingsItem::velocity() const
+{
+    return _velocity;
 }
 
 FMChannelSettings& VGMStream::FMChannel::settings()
