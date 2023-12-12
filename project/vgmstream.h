@@ -78,13 +78,15 @@ class VGMStream
 
         class StreamSettingsItem : public StreamItem {
             public:
-                StreamSettingsItem(const float time, const int channel, const Settings* channelSettings);
+                StreamSettingsItem(const float time, const int channel, const ChannelSettings* channelSettings, const int velocity = 100);
 
-                const Settings* channelSettings() const;
+                const ChannelSettings* channelSettings() const;
                 int channel() const;
+                int velocity() const;
             private:
                 int _channel;
-                const Settings* _channelSettings;
+                const ChannelSettings* _channelSettings;
+                int _velocity;
         };
 
         class StreamEndItem : public StreamItem {
