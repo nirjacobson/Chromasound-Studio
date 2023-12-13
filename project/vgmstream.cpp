@@ -805,8 +805,10 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
                        ssi->channel() == i && ssi->time() <= currentTime;
             });
 
-            StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamSettingsItem*>(*it2)->channelSettings());
-            items.append(ssi);
+            if (it2 != items.rend()) {
+                StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamSettingsItem*>(*it2)->channelSettings());
+                items.append(ssi);
+            }
         }
     }
 
@@ -830,8 +832,10 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
                        ssi->channel() == i && ssi->time() <= currentTime;
             });
 
-            StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamSettingsItem*>(*it2)->channelSettings());
-            items.append(ssi);
+            if (it2 != items.rend()) {
+                StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamSettingsItem*>(*it2)->channelSettings());
+                items.append(ssi);
+            }
         }
     }
 
@@ -855,8 +859,10 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
                        ssi->channel() == i && ssi->time() <= currentTime;
             });
 
-            StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamSettingsItem*>(*it2)->channelSettings());
-            items.append(ssi);
+            if (it2 != items.rend()) {
+                StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamSettingsItem*>(*it2)->channelSettings());
+                items.append(ssi);
+            }
         }
     }
 
@@ -880,8 +886,10 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
                        ssi->channel() == i && ssi->time() <= currentTime;
             });
 
-            StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamSettingsItem*>(*it2)->channelSettings());
-            items.append(ssi);
+            if (it2 != items.rend()) {
+                StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamSettingsItem*>(*it2)->channelSettings());
+                items.append(ssi);
+            }
         }
     }
 }
