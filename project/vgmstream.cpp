@@ -468,17 +468,29 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const float loop
 
                 QByteArray dataToAppend((qsizetype)pcmLength, (char)0);
                 for (quint32 j = 0; j < pcmLength; j++) {
-                    dataToAppend[j] = 0x80;
+                    int result = 0x00;
 
                     for (auto it = pcmOffsetsByChannel.begin(); it != pcmOffsetsByChannel.end();) {
-                        quint8 sample = pcmData[pcmPathsByChannel[it.key()]][pcmOffsetsByChannel[it.key()]++];
+                        int sample = pcmData[pcmPathsByChannel[it.key()]][pcmOffsetsByChannel[it.key()]++];
                         if (pcmData[pcmPathsByChannel[it.key()]].size() == pcmOffsetsByChannel[it.key()]) {
                             it = pcmOffsetsByChannel.erase(it);
                         } else {
                             ++it;
                         }
 
-                        dataToAppend[j] += ((int)sample) - 0x80;
+                        StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(items[i]);
+                        int volume = sni->channelSettings()->volume() * sni->note().velocity() / 100;
+                        int att = MAX_PCM_ATTENUATION * (float)(100 - volume) / 100;
+
+                        result += (sample - 0x80) >> att;
+                    }
+
+                    if (result < -0x80) {
+                        dataToAppend[j] = 0;
+                    } else if (result >= 0x80) {
+                        dataToAppend[j] = 0xFF;
+                    } else {
+                        dataToAppend[j] = result + 0x80;
                     }
                 }
                 data.append(dataToAppend);
