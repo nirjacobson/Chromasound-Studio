@@ -103,7 +103,7 @@ void PianoRollVelocitiesWidget::paintEvent(QPaintEvent*)
 void PianoRollVelocitiesWidget::mousePressEvent(QMouseEvent* event)
 {
     if (_items) {
-        int barWidth = 4;
+        int barWidth = 8;
         int fullBarHeight = height() - 16;
         float beatsPerPixel = _cellBeats / _cellWidth;
 

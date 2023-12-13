@@ -1113,9 +1113,8 @@ void VGMStream::encodeSettingsItem(const StreamSettingsItem* item, QByteArray& d
             int offset = (sls[i] * 4) + channel;
             int t1l = fmcs->operators()[sls[i]].envelopeSettings().t1l();
 
-            int amt = (127 - t1l) *
-                      (100 - item->channelSettings()->volume())/100.0f;
-            amt += ((127 - t1l) - amt) * (100 - item->velocity())/100.0f;
+            int volume = fmcs->volume() * item->velocity() / 100;
+            int amt = (127 - t1l) * (100 - volume)/100.0f;
             int newT1l = t1l + amt;
 
             data.append((part == 1) ? 0x52 : 0x53);
@@ -1212,9 +1211,8 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
                 int offset = (sls[i] * 4) + channel;
                 int t1l = fmcs->operators()[sls[i]].envelopeSettings().t1l();
 
-                int amt = (127 - t1l) *
-                          (100 - item->channelSettings()->volume())/100.0f;
-                amt += ((127 - t1l) - amt) * (100 - item->note().velocity())/100.0f;
+                int volume = fmcs->volume() * item->note().velocity() / 100;
+                int amt = (127 - t1l) * (100 - volume)/100.0f;
                 int newT1l = t1l + amt;
 
                 data.append((part == 1) ? 0x52 : 0x53);
