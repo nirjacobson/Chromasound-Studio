@@ -73,7 +73,7 @@ void PianoRollVelocitiesWidget::paintEvent(QPaintEvent*)
     painter.setPen(_barColor.darker());
     painter.setBrush(_barColor);
 
-    int barWidth = 4;
+    int barWidth = 8;
 
     float beatsPerPixel = _cellBeats / _cellWidth;
     float leftPosition = _left * beatsPerPixel;
