@@ -267,6 +267,15 @@ set(PROJECT_SOURCES
     pianorollwidget/settingschangewidget.h
     pianorollwidget/settingschangewidget.cpp
     pianorollwidget/settingschangewidget.ui
+    pcmusage/pcmusagedialog.h
+    pcmusage/pcmusagedialog.cpp
+    pcmusage/pcmusagedialog.ui
+    pcmusage/pcmusagedisplaywidget.h
+    pcmusage/pcmusagedisplaywidget.cpp
+    pcmusage/pcmusagedisplayitem.h
+    pcmusage/pcmusagedisplayitem.cpp
+    pcmusage/pcmusagelegendwidget.h
+    pcmusage/pcmusagelegendwidget.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

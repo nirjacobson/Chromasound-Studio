@@ -8,6 +8,9 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _midiInput(MIDIInput::instance())
     , _channelsWindow(nullptr)
     , _playlistWindow(nullptr)
+    , _styleDialogWindow(nullptr)
+    , _fmImportDialogWindow(nullptr)
+    , _pcmUsageDialogWindow(nullptr)
 {
     _midiInput->init();
 
@@ -57,12 +60,10 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
    connect(ui->actionChannels, &QAction::triggered, this, &MainWindow::showChannelsWindow);
    connect(ui->actionPlaylist, &QAction::triggered, this, &MainWindow::showPlaylistWindow);
    connect(ui->actionImportFMPatches, &QAction::triggered, this, &MainWindow::fmImportTriggered);
+   connect(ui->actionPCMUsage, &QAction::triggered, this, &MainWindow::pcmUsageTriggered);
 
    connect(_app, &Application::pcmUploadStarted, this, &MainWindow::pcmUploadStarted);
    connect(_app, &Application::pcmUploadFinished, this, &MainWindow::pcmUploadFinished);
-
-   _styleDialog.setApplication(_app);
-   _fmImportDialog.setApplication(_app);
 
    showChannelsWindow();
    showPlaylistWindow();
@@ -125,7 +126,7 @@ void MainWindow::moveChannelUp(const int index)
 
 void MainWindow::moveChannelDown(const int index)
 {
-    if (index != _app->project().channels()-1) {
+    if (index != _app->project().channelCount()-1) {
         bool isSelected = _channelsWidget->selected() == index;
         bool isOtherSelected = _channelsWidget->selected() == index + 1;
 
@@ -158,7 +159,7 @@ Channel MainWindow::deleteChannel(const int index)
     _channelsWidget->remove(index);
 
     if (_channelsWidget->activeChannel() == index) {
-        if (_app->project().channels() > index) {
+        if (_app->project().channelCount() > index) {
             _channelsWidget->select(index);
         }
     }
@@ -196,7 +197,7 @@ void MainWindow::addChannel(const int index, const Channel& channel)
 void MainWindow::addChannel()
 {
     _app->project().addChannel();
-    _channelsWidget->add(_app->project().channels() - 1);
+    _channelsWidget->add(_app->project().channelCount() - 1);
 }
 
 int MainWindow::getChannelVolume(const int index)
@@ -211,7 +212,7 @@ void MainWindow::setChannelVolume(const int index, const int volume)
 
 int MainWindow::channels() const
 {
-    return _app->project().channels();
+    return _app->project().channelCount();
 }
 
 void MainWindow::play()
@@ -256,7 +257,8 @@ void MainWindow::stop()
 void MainWindow::patternChanged(int num)
 {
     _app->project().setFrontPattern(num - 1);
-    _channelsWidget->update();
+    if (_channelsWindow) _channelsWidget->update();
+    if (_pcmUsageDialogWindow) _pcmUsageDialog->update();
     ui->topWidget->updateFromProject(_app->project());
 }
 
@@ -439,9 +441,9 @@ void MainWindow::newTriggered()
 
     ui->topWidget->updateFromProject(_app->project());
 
-    _channelsWidget->rebuild();
-
-    _playlistWidget->update();
+    if (_channelsWindow) _channelsWidget->rebuild();
+    if (_playlistWindow) _playlistWidget->update();
+    if (_pcmUsageDialogWindow) _pcmUsageDialog->update();
 }
 
 void MainWindow::openTriggered()
@@ -582,12 +584,56 @@ void MainWindow::setMIDIDevice(const int device)
 
 void MainWindow::stylesTriggered()
 {
-    _styleDialog.show();
+    if (_styleDialogWindow == nullptr) {
+        _styleDialog = new StyleDialog(this);
+        _styleDialog->setApplication(_app);
+
+        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        connect(window, &MdiSubWindow::closed, this, [&](){ _styleDialogWindow = nullptr; });
+        window->setAttribute(Qt::WA_DeleteOnClose);
+        window->setWidget(_styleDialog);
+        _styleDialogWindow = window;
+        ui->mdiArea->addSubWindow(window);
+        window->show();
+    } else {
+        ui->mdiArea->setActiveSubWindow(_styleDialogWindow);
+    }
+}
+
+void MainWindow::pcmUsageTriggered()
+{
+    if (_pcmUsageDialogWindow == nullptr) {
+        _pcmUsageDialog = new PCMUsageDialog(this);
+        _pcmUsageDialog->setApplication(_app);
+
+        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        connect(window, &MdiSubWindow::closed, this, [&](){ _fmImportDialogWindow = nullptr; });
+        window->setAttribute(Qt::WA_DeleteOnClose);
+        window->setWidget(_pcmUsageDialog);
+        _pcmUsageDialogWindow = window;
+        ui->mdiArea->addSubWindow(window);
+        window->show();
+    } else {
+        ui->mdiArea->setActiveSubWindow(_pcmUsageDialogWindow);
+    }
 }
 
 void MainWindow::fmImportTriggered()
 {
-    _fmImportDialog.show();
+    if (_fmImportDialogWindow == nullptr) {
+        _fmImportDialog = new FMImportDialog(this);
+        _fmImportDialog->setApplication(_app);
+
+        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        connect(window, &MdiSubWindow::closed, this, [&](){ _fmImportDialogWindow = nullptr; });
+        window->setAttribute(Qt::WA_DeleteOnClose);
+        window->setWidget(_fmImportDialog);
+        _fmImportDialogWindow = window;
+        ui->mdiArea->addSubWindow(window);
+        window->show();
+    } else {
+        ui->mdiArea->setActiveSubWindow(_fmImportDialogWindow);
+    }
 }
 
 void MainWindow::showChannelsWindow()
@@ -675,8 +721,10 @@ void MainWindow::windowClosed(MdiSubWindow* window)
 void MainWindow::doUpdate()
 {
     update();
-    _channelsWidget->update();
-    _playlistWidget->update();
+    if (_channelsWindow) _channelsWidget->update();
+    if (_playlistWindow) _playlistWidget->update();
+    if (_pcmUsageDialogWindow) _pcmUsageDialog->update();
+
 
     for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
         for (MdiSubWindow* window : (*it)) {
@@ -770,12 +818,6 @@ void MainWindow::resizeEvent(QResizeEvent*)
     }
 }
 
-void MainWindow::closeEvent(QCloseEvent* event)
-{
-    _styleDialog.hide();
-    _fmImportDialog.hide();
-}
-
 void MainWindow::dragEnterEvent(QDragEnterEvent* event)
 {
     if (event->mimeData()->hasFormat("text/uri-list")) {
@@ -799,7 +841,9 @@ void MainWindow::dropEvent(QDropEvent* event)
 
         ui->topWidget->updateFromProject(_app->project());
 
-        _channelsWidget->rebuild();
+        if (_channelsWindow) _channelsWidget->rebuild();
+        if (_playlistWindow) _playlistWidget->update();
+        if (_pcmUsageDialogWindow) _pcmUsageDialog->update();
 
         _playlistWidget->update();
 

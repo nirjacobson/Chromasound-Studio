@@ -41,7 +41,7 @@ void ChannelsWidget::rebuild()
 
     _channelWidgets.clear();
 
-    for (int i = 0; i < _app->project().channels(); i++) {
+    for (int i = 0; i < _app->project().channelCount(); i++) {
         _channelWidgets.append(new ChannelWidget(this, _app, i));
     }
 
@@ -312,7 +312,7 @@ void ChannelsWidget::dropEvent(QDropEvent* event)
     QFile file(path);
     QFileInfo fileInfo(file);
 
-    int index = _app->project().channels();
+    int index = _app->project().channelCount();
 
 
     if (fileInfo.suffix() == "fm") {

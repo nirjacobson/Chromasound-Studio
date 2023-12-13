@@ -33,6 +33,6 @@ void AddFMChannelCommand::redo()
     _addChannelCommand = new AddChannelCommand(_mainWindow);
     _addChannelCommand->redo();
 
-    _setFMChannelCommand = new SetFMChannelCommand(_mainWindow, _mainWindow->app()->project().getChannel(_mainWindow->app()->project().channels() - 1), _settingsAfter, _name);
+    _setFMChannelCommand = new SetFMChannelCommand(_mainWindow, _mainWindow->app()->project().getChannel(_mainWindow->app()->project().channelCount() - 1), _settingsAfter, _name);
     _setFMChannelCommand->redo();
 }

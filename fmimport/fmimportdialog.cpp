@@ -297,7 +297,7 @@ void FMImportDialog::sendTriggered()
     } else if (ui->channelRadioButton->isChecked()) {
         int channelIndex = ui->channelSpinBox->value() - 1;
 
-        if (channelIndex < _app->project().channels()) {
+        if (channelIndex < _app->project().channelCount()) {
             Channel& channel = _app->project().getChannel(channelIndex);
             _app->undoStack().push(new SetFMChannelCommand(_app->window(), channel, _patchSettings[selectedIndex], _patchNames[selectedIndex]));
         } else {

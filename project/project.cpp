@@ -32,7 +32,7 @@ Project::~Project()
     }
 }
 
-int Project::channels() const
+int Project::channelCount() const
 {
     return _channels.size();
 }
@@ -164,6 +164,11 @@ void Project::setLFOMode(const int mode)
 const QList<Pattern*>& Project::patterns() const
 {
     return _patterns;
+}
+
+const QList<Channel>& Project::channels() const
+{
+    return _channels;
 }
 
 void Project::addChannel()

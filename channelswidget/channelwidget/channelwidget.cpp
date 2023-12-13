@@ -453,7 +453,7 @@ void ChannelWidget::moveUpTriggered()
 
 void ChannelWidget::moveDownTriggered()
 {
-    if (_index != _app->project().channels()-1) {
+    if (_index != _app->project().channelCount()-1) {
         _app->undoStack().push(new MoveChannelDownCommand(_app->window(), _index));
     }
 }

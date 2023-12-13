@@ -1,4 +1,5 @@
 #include "setpcmchannelcommand.h"
+#include "mainwindow.h"
 
 SetPCMChannelCommand::SetPCMChannelCommand(MainWindow* window, Channel& channel, PCMChannelSettings settingsAfter, const QString& name)
     : _mainWindow(window)
@@ -36,6 +37,8 @@ void SetPCMChannelCommand::undo()
         delete _setChannelTypeCommand;
         _setPCMChannelSettingsCommand = nullptr;
     }
+
+    _mainWindow->doUpdate();
 }
 
 void SetPCMChannelCommand::redo()
@@ -52,4 +55,6 @@ void SetPCMChannelCommand::redo()
         _setChannelNameCommand = new SetChannelNameCommand(_mainWindow, _channel, _name);
         _setChannelNameCommand->redo();
     }
+
+    _mainWindow->doUpdate();
 }
