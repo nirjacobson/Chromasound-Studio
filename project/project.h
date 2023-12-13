@@ -22,7 +22,7 @@ class Project
         Project();
         ~Project();
 
-        int channels() const;
+        int channelCount() const;
 
         Channel& getChannel(const int idx);
         const Channel& getChannel(const int idx) const;
@@ -56,6 +56,7 @@ class Project
         void setLFOMode(const int mode);
 
         const QList<Pattern*>& patterns() const;
+        const QList<Channel>& channels() const;
 
         void addChannel();
         void addChannel(const int index, const Channel& channel);

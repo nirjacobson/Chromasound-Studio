@@ -21,6 +21,7 @@
 #include "style/styledialog.h"
 #include "mdiarea/mdisubwindow.h"
 #include "fmimport/fmimportdialog.h"
+#include "pcmusage/pcmusagedialog.h"
 
 #include "commands/movechanneldowncommand.h"
 #include "commands/movechannelupcommand.h"
@@ -83,6 +84,7 @@ private slots:
     void setMIDIDevice(const int device);
 
     void stylesTriggered();
+    void pcmUsageTriggered();
     void fmImportTriggered();
 
     void showChannelsWindow();
@@ -109,8 +111,13 @@ private:
 
     QMap<int, QList<MdiSubWindow*>> _channelWindows;
 
-    StyleDialog _styleDialog;
-    FMImportDialog _fmImportDialog;
+    StyleDialog* _styleDialog;
+    FMImportDialog* _fmImportDialog;
+    PCMUsageDialog* _pcmUsageDialog;
+
+    MdiSubWindow* _styleDialogWindow;
+    MdiSubWindow* _fmImportDialogWindow;
+    MdiSubWindow* _pcmUsageDialogWindow;
 
     int _selectedChannel;
 
@@ -122,7 +129,6 @@ private:
 protected:
     void showEvent(QShowEvent*);
     void resizeEvent(QResizeEvent*);
-    void closeEvent(QCloseEvent* event);
     void dragEnterEvent(QDragEnterEvent* event);
     void dropEvent(QDropEvent* event);
 };

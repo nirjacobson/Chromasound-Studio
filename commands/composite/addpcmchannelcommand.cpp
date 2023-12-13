@@ -33,6 +33,6 @@ void AddPCMChannelCommand::redo()
     _addChannelCommand = new AddChannelCommand(_mainWindow);
     _addChannelCommand->redo();
 
-    _setPCMChannelCommand = new SetPCMChannelCommand(_mainWindow, _mainWindow->app()->project().getChannel(_mainWindow->app()->project().channels() - 1), _settingsAfter, _name);
+    _setPCMChannelCommand = new SetPCMChannelCommand(_mainWindow, _mainWindow->app()->project().getChannel(_mainWindow->app()->project().channelCount() - 1), _settingsAfter, _name);
     _setPCMChannelCommand->redo();
 }

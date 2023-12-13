@@ -39,10 +39,10 @@ void AddTrackCommand::redo()
     _addChannelCommand = new AddChannelCommand(_mainWindow);
     _addChannelCommand->redo();
 
-    _setChannelNameCommand = new SetChannelNameCommand(_mainWindow, _mainWindow->app()->project().getChannel(_mainWindow->app()->project().channels() - 1), _name);
+    _setChannelNameCommand = new SetChannelNameCommand(_mainWindow, _mainWindow->app()->project().getChannel(_mainWindow->app()->project().channelCount() - 1), _name);
     _setChannelNameCommand->redo();
 
-    Track& track = _mainWindow->app()->project().getFrontPattern().getTrack(_mainWindow->app()->project().channels() - 1);
+    Track& track = _mainWindow->app()->project().getFrontPattern().getTrack(_mainWindow->app()->project().channelCount() - 1);
 
     _addTrackItemsCommand = new AddTrackItemsCommand(_mainWindow,
                                                      track,

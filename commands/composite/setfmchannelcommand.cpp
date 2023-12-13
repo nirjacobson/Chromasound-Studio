@@ -1,4 +1,5 @@
 #include "setfmchannelcommand.h"
+#include "mainwindow.h"
 
 SetFMChannelCommand::SetFMChannelCommand(MainWindow* window, Channel& channel, const FMChannelSettings& settingsAfter, const QString& name)
     : _mainWindow(window)
@@ -36,6 +37,8 @@ void SetFMChannelCommand::undo()
         delete _setChannelTypeCommand;
         _setChannelTypeCommand = nullptr;
     }
+
+    _mainWindow->doUpdate();
 }
 
 void SetFMChannelCommand::redo()
@@ -52,4 +55,6 @@ void SetFMChannelCommand::redo()
         _setChannelNameCommand = new SetChannelNameCommand(_mainWindow, _channel, _name);
         _setChannelNameCommand->redo();
     }
+
+    _mainWindow->doUpdate();
 }

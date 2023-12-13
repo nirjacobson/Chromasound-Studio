@@ -78,6 +78,7 @@
      <string>&amp;Tools</string>
     </property>
     <addaction name="actionImportFMPatches"/>
+    <addaction name="actionPCMUsage"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -133,6 +134,11 @@
   <action name="actionFor3rdPartyPlayers">
    <property name="text">
     <string>For 3rd party players</string>
+   </property>
+  </action>
+  <action name="actionPCMUsage">
+   <property name="text">
+    <string>&amp;PCM Usage</string>
    </property>
   </action>
  </widget>
