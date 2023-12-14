@@ -342,6 +342,9 @@ void GanttEditorWidget::mouseReleaseEvent(QMouseEvent* event)
                     _selectedItems = QList<GanttItem*>({_itemUnderCursor});
                     update();
                 }
+
+                emit itemReleased(_itemUnderCursor);
+
                 return;
             }
             emit clicked(Qt::LeftButton, row, _snap ? mousePositionSnapped : mousePosition);
@@ -352,9 +355,6 @@ void GanttEditorWidget::mouseReleaseEvent(QMouseEvent* event)
             }
             emit clicked(Qt::RightButton, row, _snap ? mousePositionSnapped : mousePosition);
         }
-
-        if (_itemUnderCursor)
-            emit itemReleased(_itemUnderCursor);
 
         _selectedItems.removeAll(_itemUnderCursor);
         _itemUnderCursor = nullptr;
