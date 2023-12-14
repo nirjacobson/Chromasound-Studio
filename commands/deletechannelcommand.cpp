@@ -11,9 +11,13 @@ DeleteChannelCommand::DeleteChannelCommand(MainWindow* window, const Channel& ch
 void DeleteChannelCommand::undo()
 {
     _mainWindow->addChannel(_index, _deletedChannel);
+
+    _mainWindow->doUpdate();
 }
 
 void DeleteChannelCommand::redo()
 {
     _deletedChannel = _mainWindow->deleteChannel(_index);
+
+    _mainWindow->doUpdate();
 }
