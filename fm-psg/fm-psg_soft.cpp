@@ -18,6 +18,7 @@ FM_PSG_Soft::FM_PSG_Soft(const Project& project)
     : _position(0)
     , _positionOffset(0)
     , _project(project)
+    , _vgmStream(VGMStream::Format::STANDARD)
 {
     memset(_buffer, 0, sizeof(_buffer));
 
@@ -58,9 +59,6 @@ FM_PSG_Soft::FM_PSG_Soft(const Project& project)
 
     _stopped = true;
 
-    _info.intro_length = -1;
-    _info.loop_length = -1;
-
     _output->init();
     _output->start();
 }
@@ -97,6 +95,8 @@ void FM_PSG_Soft::setPosition(const float pos)
 
 void FM_PSG_Soft::play(const QByteArray& vgm, const bool loop, const int currentOffsetSamples, const int currentOffsetData)
 {
+    _output->stop();
+
     Mem_File_Reader reader(vgm.constData(), vgm.size());
     if (log_err(_emu->load(reader)))
         return;
@@ -118,10 +118,13 @@ void FM_PSG_Soft::play(const QByteArray& vgm, const bool loop, const int current
     _positionOffset = 0;
 
     _stopped = false;
+    _output->start();
 }
 
 void FM_PSG_Soft::play(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData, const int currentOffsetSamples, const int currentOffsetData, const float duration)
 {
+    _output->stop();
+
     Mem_File_Reader reader(vgm.constData(), vgm.size());
     if (log_err(_emu->load(reader)))
         return;
@@ -148,6 +151,7 @@ void FM_PSG_Soft::play(const QByteArray& vgm, const int loopOffsetSamples, const
     _emu->track_info(&_info);
 
     _stopped = false;
+    _output->start();
 }
 
 void FM_PSG_Soft::play()
@@ -167,9 +171,8 @@ void FM_PSG_Soft::stop()
     _stopped = true;
     _position = 0;
     _positionOffset = 0;
-    _info.intro_length = -1;
-    _info.loop_length = -1;
-    memset(_buffer, 0, sizeof(_buffer));
+
+    keyOff(0);
 }
 
 bool FM_PSG_Soft::isPlaying() const
@@ -179,18 +182,63 @@ bool FM_PSG_Soft::isPlaying() const
 
 void FM_PSG_Soft::keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity)
 {
-    // Not supported
+    _vgmStream.reset();
+
+    VGMStream::StreamLFOItem* sli = new VGMStream::StreamLFOItem(0, project.lfoMode());
+    VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(0, channelType, nullptr, Note(key, 0, velocity), &settings);
+    QList<VGMStream::StreamItem*> items;
+    QByteArray data;
+    items.append(sli);
+    items.append(sni);
+    _vgmStream.assignChannel(sni, items);
+    _vgmStream.encode(project, items, data);
+    data.append(0x61);
+    data.append(0xFF);
+    data.append(0xFF);
+    data.append(0x66);
+    data.prepend(_vgmStream.generateHeader(project, data, -1, 0, false));
+
+    Mem_File_Reader reader(data.constData(), data.size());
+    if (log_err(_emu->load(reader)))
+        return;
+
+    log_warning(_emu);
+
+    // start track
+    if (log_err(_emu->start_track(0)))
+        return;
+
+    log_warning(_emu);
+
+    delete sli;
+    delete sni;
 }
 
 void FM_PSG_Soft::keyOff(int key)
 {
-    // Not supported
+    QList<VGMStream::StreamItem*> items;
+    QByteArray data;
+    _vgmStream.encode(Project(), items, data);
+    data.append(0x66);
+    data.prepend(_vgmStream.generateHeader(_project, data, -1, 0, false));
+
+    Mem_File_Reader reader(data.constData(), data.size());
+    if (log_err(_emu->load(reader)))
+        return;
+
+    log_warning(_emu);
+
+    // start track
+    if (log_err(_emu->start_track(0)))
+        return;
+
+    log_warning(_emu);
 }
 
 int16_t* FM_PSG_Soft::next(int size)
 {
+    _emu->play(size, _buffer);
     if (!_stopped) {
-        _emu->play(size, _buffer);
         _position = _emu->tell();
     }
 
