@@ -7,11 +7,14 @@ Application::Application(int &argc, char **argv, int flags)
     , _paused(false)
     , _mainWindow(nullptr)
 {
-    const char* dummy_fm_psg = std::getenv("DUMMY_FM_PSG");
-    bool dummy = dummy_fm_psg != nullptr;
+    const char* fm_psg = std::getenv("FM_PSG");
 
-    if (dummy) {
+    if (!fm_psg) {
+        _fmPSG = new FM_PSG_Impl(_project);
+    } else if (QString(fm_psg).toLower() == "dummy") {
         _fmPSG = new FM_PSG_Dummy(_project);
+    } else if (QString(fm_psg).toLower() == "soft") {
+        _fmPSG = new FM_PSG_Soft(_project);
     } else {
         _fmPSG = new FM_PSG_Impl(_project);
     }
@@ -37,23 +40,43 @@ bool Application::paused() const
     return _paused;
 }
 
-
 void Application::play()
 {
     if (_paused) {
         _fmPSG->play();
     } else {
         int currentOffsetData;
-        if (_project.playMode() == Project::PlayMode::PATTERN) {
-            QByteArray vgm = VGMStream().compile(_project, _project.getFrontPattern(), false, nullptr, -1, -1, position(), &currentOffsetData);
-            _fmPSG->play(vgm, true, currentOffsetData);
-        } else {
-            int loopOffsetData;
-            QByteArray vgm = VGMStream().compile(_project, false, &loopOffsetData, -1, -1, position(), &currentOffsetData);
-            if (_project.playlist().doesLoop()) {
-                _fmPSG->play(vgm, _project.playlist().loopOffsetSamples(), loopOffsetData, currentOffsetData);
+        int currentOffsetSamples = position() / _project.tempo() * 60 * 44100;
+
+        if (_fmPSG->supportedFormats().contains(VGMStream::Format::FM_PSG)) {
+            VGMStream vgmStream;
+
+            if (_project.playMode() == Project::PlayMode::PATTERN) {
+                QByteArray vgm = vgmStream.compile(_project, _project.getFrontPattern(), false, nullptr, -1, -1, position(), &currentOffsetData);
+                _fmPSG->play(vgm, true, currentOffsetSamples, currentOffsetData);
             } else {
-                _fmPSG->play(vgm, false, currentOffsetData);
+                int loopOffsetData;
+                QByteArray vgm = vgmStream.compile(_project, false, &loopOffsetData, -1, -1, position(), &currentOffsetData);
+                if (_project.playlist().doesLoop()) {
+                    _fmPSG->play(vgm, _project.playlist().loopOffsetSamples(), loopOffsetData, currentOffsetSamples, currentOffsetData);
+                } else {
+                    _fmPSG->play(vgm, false, currentOffsetSamples, currentOffsetData);
+                }
+            }
+        } else {
+            VGMStream vgmStream(VGMStream::Format::STANDARD);
+
+            if (_project.playMode() == Project::PlayMode::PATTERN) {
+                QByteArray vgm = vgmStream.compile(_project, _project.getFrontPattern(), true, nullptr, -1, -1, position(), &currentOffsetData);
+                _fmPSG->play(vgm, true, currentOffsetSamples, currentOffsetData);
+            } else {
+                int loopOffsetData;
+                QByteArray vgm = vgmStream.compile(_project, true, &loopOffsetData, -1, -1, position(), &currentOffsetData);
+                if (_project.playlist().doesLoop()) {
+                    _fmPSG->play(vgm, _project.playlist().loopOffsetSamples(), loopOffsetData, currentOffsetSamples, currentOffsetData);
+                } else {
+                    _fmPSG->play(vgm, false, currentOffsetSamples, currentOffsetData);
+                }
             }
         }
 
@@ -66,10 +89,19 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
     int loopOffsetData;
     int currentOffsetData;
     int loopOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
-    QByteArray vgm = VGMStream().compile(_project, pattern, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
+    int currentOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
 
-    _fmPSG->setPosition(loopStart);
-    _fmPSG->play(vgm, loopOffsetSamples, loopOffsetData, currentOffsetData, loopEnd - loopStart);
+    if (_fmPSG->supportedFormats().contains(VGMStream::Format::FM_PSG)) {
+        QByteArray vgm = VGMStream().compile(_project, pattern, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
+
+        _fmPSG->setPosition(loopStart);
+        _fmPSG->play(vgm, loopOffsetSamples, loopOffsetData, currentOffsetSamples, currentOffsetData, loopEnd - loopStart);
+    } else {
+        QByteArray vgm = VGMStream(VGMStream::Format::STANDARD).compile(_project, pattern, true, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
+
+        _fmPSG->setPosition(loopStart);
+        _fmPSG->play(vgm, loopOffsetSamples, loopOffsetData, currentOffsetSamples, currentOffsetData, loopEnd - loopStart);
+    }
 }
 
 void Application::play(const float loopStart, const float loopEnd)
@@ -77,10 +109,19 @@ void Application::play(const float loopStart, const float loopEnd)
     int loopOffsetData;
     int currentOffsetData;
     int loopOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
-    QByteArray vgm = VGMStream().compile(_project, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
+    int currentOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
 
-    _fmPSG->setPosition(loopStart);
-    _fmPSG->play(vgm, loopOffsetSamples, loopOffsetData, currentOffsetData, loopEnd - loopStart);
+    if (_fmPSG->supportedFormats().contains(VGMStream::Format::FM_PSG)) {
+        QByteArray vgm = VGMStream().compile(_project, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
+
+        _fmPSG->setPosition(loopStart);
+        _fmPSG->play(vgm, loopOffsetSamples, loopOffsetData, currentOffsetSamples, currentOffsetData, loopEnd - loopStart);
+    } else {
+        QByteArray vgm = VGMStream(VGMStream::Format::STANDARD).compile(_project, true, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
+
+        _fmPSG->setPosition(loopStart);
+        _fmPSG->play(vgm, loopOffsetSamples, loopOffsetData, currentOffsetSamples, currentOffsetData, loopEnd - loopStart);
+    }
 }
 void Application::stop()
 {

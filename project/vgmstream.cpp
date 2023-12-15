@@ -161,7 +161,7 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool hea
     if (header) {
         _loopOffsetData += 64;
         _currentOffsetData += 64;
-        QByteArray headerData = generateHeader(project, data, totalSamples, _loopOffsetData);
+        QByteArray headerData = generateHeader(project, data, totalSamples, _loopOffsetData, !(loopStart < 0 || loopEnd < 0));
         data.prepend(headerData);
     }
 
@@ -268,10 +268,10 @@ QByteArray VGMStream::compile(Project& project, const bool header, int* loopOffs
         _loopOffsetData += 64;
         _currentOffsetData += 64;
         QByteArray headerData;
-        if (project.playlist().doesLoop()) {
-            headerData = generateHeader(project, data, totalSamples, _loopOffsetData);
+        if (project.playlist().doesLoop() || !(loopStart < 0 || loopEnd < 0)) {
+            headerData = generateHeader(project, data, totalSamples, _loopOffsetData, !(loopStart < 0 || loopEnd < 0));
         } else {
-            headerData = generateHeader(project, data, totalSamples, 0);
+            headerData = generateHeader(project, data, totalSamples, 0, false);
         }
         data.prepend(headerData);
     }
@@ -624,7 +624,7 @@ void VGMStream::processTrack(const float time, const Channel& channel, const Tra
             }
 
             if ((time + item->time() + item->duration()) > loopEnd) {
-                note.setDuration(loopEnd - item->time());
+                note.setDuration(loopEnd - (time + item->time()));
             }
         }
         items.append(new StreamNoteItem(time + item->time(), channel.type(), track, note, &channel.settings()));
@@ -1267,7 +1267,7 @@ void VGMStream::encodeLFOItem(const StreamLFOItem* item, QByteArray& data)
     }
 }
 
-QByteArray VGMStream::generateHeader(const Project& project, const QByteArray& data, const int totalSamples, const int loopOffsetData)
+QByteArray VGMStream::generateHeader(const Project& project, const QByteArray& data, const int totalSamples, const int loopOffsetData, const bool selectionLoop)
 {
     QByteArray headerData(64, 0);
 
@@ -1294,7 +1294,9 @@ QByteArray VGMStream::generateHeader(const Project& project, const QByteArray& d
     if (project.playMode() == Project::PlayMode::PATTERN) {
         *(uint32_t*)&headerData[0x20] = totalSamples;
     } else {
-        if (project.playlist().doesLoop()) {
+        if (selectionLoop) {
+            *(uint32_t*)&headerData[0x20] = totalSamples;
+        } else if (project.playlist().doesLoop()) {
             *(uint32_t*)&headerData[0x20] = totalSamples - project.playlist().loopOffsetSamples();
         } else {
             *(uint32_t*)&headerData[0x20] = 0;

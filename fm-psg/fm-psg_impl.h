@@ -16,8 +16,8 @@ class FM_PSG_Impl : public FM_PSG
 
         float position();
         void setPosition(const float pos);
-        void play(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData, const int currentOffsetData, const float);
-        void play(const QByteArray& vgm, const bool loop, const int currentOffsetData);
+        void play(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData, const int, const int currentOffsetData, const float);
+        void play(const QByteArray& vgm, const bool loop, const int, const int currentOffsetData);
         void play();
         void pause();
         void stop();
@@ -26,6 +26,7 @@ class FM_PSG_Impl : public FM_PSG
         void keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity);
         void keyOff(int key);
 
+        QList<VGMStream::Format> supportedFormats();
     private:
         const Project& _project;
         int _spi;

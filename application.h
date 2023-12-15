@@ -11,6 +11,7 @@
 #include "fm-psg/fm-psg.h"
 #include "fm-psg/fm-psg_dummy.h"
 #include "fm-psg/fm-psg_impl.h"
+#include "fm-psg/fm-psg_soft.h"
 
 class MainWindow;
 
