@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 11.0.3, 2023-12-13T18:21:06. -->
+<!-- Written by QtCreator 11.0.3, 2023-12-14T21:40:36. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -392,7 +392,7 @@
     <valuelist type="QVariantList" key="CustomOutputParsers"/>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes">
-     <value type="QString">DUMMY_FM_PSG=1</value>
+     <value type="QString">FM_PSG=soft</value>
     </valuelist>
     <value type="bool" key="PE.EnvironmentAspect.PrintOnRun">false</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">FM-PSG-Studio</value>

@@ -11,8 +11,8 @@ class FM_PSG_Dummy : public FM_PSG
     public:
         FM_PSG_Dummy(const Project& project);
 
-        void play(const QByteArray&, const int loopOffsetSamples, const int,  const int, const float duration);
-        void play(const QByteArray&, const bool loop, const int);
+        void play(const QByteArray&, const int loopOffsetSamples, const int,  const int, const int, const float duration);
+        void play(const QByteArray&, const bool loop, const int, const int);
         void play();
         void pause();
         void stop();
@@ -23,6 +23,7 @@ class FM_PSG_Dummy : public FM_PSG
         void keyOn(const Project&, const Channel::Type, const ChannelSettings&, const int, const int);
         void keyOff(int);
 
+        QList<VGMStream::Format> supportedFormats();
     private:
         const Project& _project;
         QElapsedTimer _timer;
@@ -32,6 +33,7 @@ class FM_PSG_Dummy : public FM_PSG
         float _duration;
 
         qint64 nanosecondsPerBeat() const;
+
 };
 
 #endif // DUMMY_FM_PSG_H

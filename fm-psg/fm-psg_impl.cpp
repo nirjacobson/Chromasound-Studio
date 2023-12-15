@@ -43,7 +43,7 @@ void FM_PSG_Impl::setPosition(const float pos)
     _vgmPlayer->setTime(pos / _project.tempo() * 60 * 44100);
 }
 
-void FM_PSG_Impl::play(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData, const int currentOffsetData, const float)
+void FM_PSG_Impl::play(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData, const int, const int currentOffsetData, const float)
 {
     _vgmPlayer->stop();
     _vgmPlayer->quit();
@@ -56,7 +56,7 @@ void FM_PSG_Impl::play(const QByteArray& vgm, const int loopOffsetSamples, const
     _vgmPlayer->start();
 }
 
-void FM_PSG_Impl::play(const QByteArray& vgm, const bool loop, const int currentOffsetData)
+void FM_PSG_Impl::play(const QByteArray& vgm, const bool loop, const int, const int currentOffsetData)
 {
     _vgmPlayer->stop();
     _vgmPlayer->quit();
@@ -136,4 +136,9 @@ void FM_PSG_Impl::reset()
     gpioDelay(100);
 
     _vgmStream.reset();
+}
+
+QList<VGMStream::Format> FM_PSG_Impl::supportedFormats()
+{
+    return QList<VGMStream::Format>({VGMStream::Format::FM_PSG, VGMStream::Format::STANDARD});
 }

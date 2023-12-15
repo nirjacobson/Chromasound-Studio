@@ -276,6 +276,47 @@ set(PROJECT_SOURCES
     pcmusage/pcmusagedisplayitem.cpp
     pcmusage/pcmusagelegendwidget.h
     pcmusage/pcmusagelegendwidget.cpp
+    fm-psg/soft/audio_output.h
+    fm-psg/soft/blargg_common.h
+    fm-psg/soft/blargg_endian.h
+    fm-psg/soft/blargg_source.h
+    fm-psg/soft/Blip_Buffer.cc
+    fm-psg/soft/Blip_Buffer.h
+    fm-psg/soft/Classic_Emu.cc
+    fm-psg/soft/Classic_Emu.h
+    fm-psg/soft/consumer.h
+    fm-psg/soft/Data_Reader.cc
+    fm-psg/soft/Data_Reader.h
+    fm-psg/soft/Dual_Resampler.cc
+    fm-psg/soft/Dual_Resampler.h
+    fm-psg/soft/Effects_Buffer.cc
+    fm-psg/soft/Effects_Buffer.h
+    fm-psg/soft/Fir_Resampler.cc
+    fm-psg/soft/Fir_Resampler.h
+    fm-psg/soft/gme.cc fm-psg/soft/gme.h
+    fm-psg/soft/Gme_File.cc
+    fm-psg/soft/Gme_File.h
+    fm-psg/soft/gme_types.h
+    fm-psg/soft/M3u_Playlist.cc
+    fm-psg/soft/M3u_Playlist.h
+    fm-psg/soft/Multi_Buffer.cc
+    fm-psg/soft/Multi_Buffer.h
+    fm-psg/soft/Music_Emu.cc
+    fm-psg/soft/Music_Emu.h
+    fm-psg/soft/producer.h
+    fm-psg/soft/Sms_Apu.cc
+    fm-psg/soft/Sms_Apu.h
+    fm-psg/soft/Sms_Oscs.h
+    fm-psg/soft/Vgm_Emu.cc
+    fm-psg/soft/Vgm_Emu.h
+    fm-psg/soft/Vgm_Emu_Impl.cc
+    fm-psg/soft/Vgm_Emu_Impl.h
+    fm-psg/soft/Ym2413_Emu.cc
+    fm-psg/soft/Ym2413_Emu.h
+    fm-psg/soft/Ym2612_Emu.cc
+    fm-psg/soft/Ym2612_Emu.h
+    fm-psg/fm-psg_soft.cpp
+    fm-psg/fm-psg_soft.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -304,7 +345,9 @@ endif()
 target_link_libraries(FM-PSG-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
                                             /usr/lib64/libpigpio.so
                                             /usr/lib64/libportmidi.so
-                                            /usr/lib64/libbson-1.0.so)
+                                            /usr/lib64/libbson-1.0.so
+                                            /usr/lib64/libz.so
+                                            /usr/lib64/libportaudio.so)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an

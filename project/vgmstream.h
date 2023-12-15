@@ -74,6 +74,8 @@ class VGMStream
         QByteArray encodeStandardPCM(const Project& project, const Pattern& pattern, const float loopStart = -1, const float loopEnd = -1);
         QByteArray encodeStandardPCM(const Project& project, const float loopStart = -1, const float loopEnd = -1);
 
+        QByteArray generateHeader(const Project& project, const QByteArray& data, const int totalSamples, const int loopOffsetData, const bool selectionLoop);
+
     private:
         static QList<float> frequencies;
         static QList<QList<int>> slotsByAlg;
@@ -175,7 +177,6 @@ class VGMStream
         void encodeNoteItem(const Project& project, const StreamNoteItem* item, QByteArray& data);
         void encodeLFOItem(const StreamLFOItem* item, QByteArray& data);
 
-        QByteArray generateHeader(const Project& project, const QByteArray& data, const int totalSamples, const int loopOffsetData);
 };
 
 #endif // VGMSTREAM_H
