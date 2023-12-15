@@ -57,6 +57,8 @@
     <addaction name="separator"/>
     <addaction name="menuRender"/>
     <addaction name="separator"/>
+    <addaction name="actionInfo"/>
+    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -121,11 +123,6 @@
     <string>&amp;Import FM Patches</string>
    </property>
   </action>
-  <action name="actionExit">
-   <property name="text">
-    <string>E&amp;xit</string>
-   </property>
-  </action>
   <action name="actionForFMPSG">
    <property name="text">
     <string>For FM-PSG</string>
@@ -139,6 +136,16 @@
   <action name="actionPCMUsage">
    <property name="text">
     <string>&amp;PCM Usage</string>
+   </property>
+  </action>
+  <action name="actionInfo">
+   <property name="text">
+    <string>Project &amp;Info</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>E&amp;xit</string>
    </property>
   </action>
  </widget>

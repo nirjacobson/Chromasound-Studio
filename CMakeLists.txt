@@ -317,6 +317,9 @@ set(PROJECT_SOURCES
     fm-psg/soft/Ym2612_Emu.h
     fm-psg/fm-psg_soft.cpp
     fm-psg/fm-psg_soft.h
+    info/projectinfodialog.h
+    info/projectinfodialog.cpp
+    info/projectinfodialog.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _styleDialogWindow(nullptr)
     , _fmImportDialogWindow(nullptr)
     , _pcmUsageDialogWindow(nullptr)
+    , _infoDialogWindow(nullptr)
 {
     _midiInput->init();
 
@@ -55,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
    connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveTriggered);
    connect(ui->actionForFMPSG, &QAction::triggered, this, &MainWindow::renderForFMPSGTriggered);
    connect(ui->actionFor3rdPartyPlayers, &QAction::triggered, this, &MainWindow::renderFor3rdPartyTriggered);
+   connect(ui->actionInfo, &QAction::triggered, this, &MainWindow::projectInfoTriggered);
    connect(ui->actionExit, &QAction::triggered, this, &MainWindow::close);
    connect(ui->actionStyles, &QAction::triggered, this, &MainWindow::stylesTriggered);
    connect(ui->actionChannels, &QAction::triggered, this, &MainWindow::showChannelsWindow);
@@ -487,8 +489,8 @@ void MainWindow::renderForFMPSGTriggered()
 
         VGMStream vgmStream;
         QByteArray data = _app->project().playMode() == Project::PlayMode::PATTERN
-                              ? vgmStream.compile(_app->project(), _app->project().getFrontPattern(), true)
-                              : vgmStream.compile(_app->project(), true);
+                              ? vgmStream.compile(_app->project(), _app->project().getFrontPattern(), true, true)
+                              : vgmStream.compile(_app->project(), true, true);
         file.write(data);
         file.close();
 
@@ -506,8 +508,8 @@ void MainWindow::renderFor3rdPartyTriggered()
 
         VGMStream vgmStream(VGMStream::Format::STANDARD);
         QByteArray data = _app->project().playMode() == Project::PlayMode::PATTERN
-                              ? vgmStream.compile(_app->project(), _app->project().getFrontPattern(), true)
-                              : vgmStream.compile(_app->project(), true);
+                              ? vgmStream.compile(_app->project(), _app->project().getFrontPattern(), true, true)
+                              : vgmStream.compile(_app->project(), true, true);
         file.write(data);
         file.close();
 
@@ -580,6 +582,24 @@ void MainWindow::setMIDIDevice(const int device)
     _midiInput->setDevice(device);
 
     _midiPoller.start();
+}
+
+void MainWindow::projectInfoTriggered()
+{
+    if (_infoDialogWindow == nullptr) {
+        _infoDialog = new ProjectInfoDialog(this, _app);
+
+        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        connect(_infoDialog, &QDialog::finished, window, &MdiSubWindow::close);
+        connect(window, &MdiSubWindow::closed, this, [&](){ _infoDialogWindow = nullptr; });
+        window->setAttribute(Qt::WA_DeleteOnClose);
+        window->setWidget(_infoDialog);
+        _infoDialogWindow = window;
+        ui->mdiArea->addSubWindow(window);
+        window->show();
+    } else {
+        ui->mdiArea->setActiveSubWindow(_infoDialogWindow);
+    }
 }
 
 void MainWindow::stylesTriggered()

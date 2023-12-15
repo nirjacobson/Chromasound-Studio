@@ -196,7 +196,7 @@ void FM_PSG_Soft::keyOn(const Project& project, const Channel::Type channelType,
     data.append(0xFF);
     data.append(0xFF);
     data.append(0x66);
-    data.prepend(_vgmStream.generateHeader(project, data, -1, 0, false));
+    data.prepend(_vgmStream.generateHeader(project, data, -1, 0, 0, false));
 
     Mem_File_Reader reader(data.constData(), data.size());
     if (log_err(_emu->load(reader)))
@@ -220,7 +220,7 @@ void FM_PSG_Soft::keyOff(int key)
     QByteArray data;
     _vgmStream.encode(Project(), items, data);
     data.append(0x66);
-    data.prepend(_vgmStream.generateHeader(_project, data, -1, 0, false));
+    data.prepend(_vgmStream.generateHeader(_project, data, -1, 0, 0, false));
 
     Mem_File_Reader reader(data.constData(), data.size());
     if (log_err(_emu->load(reader)))

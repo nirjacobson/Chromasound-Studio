@@ -53,6 +53,9 @@ class BSON
 
         static void fromProject(bson_t* dst, const Project& project);
         static Project toProject(bson_iter_t& b);
+
+        static void fromProjectInfo(bson_t* dst, const Project::Info& info);
+        static Project::Info toProjectInfo(bson_iter_t& b);
 };
 
 #endif // _BSON_H
