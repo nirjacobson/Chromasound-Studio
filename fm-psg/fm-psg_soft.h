@@ -1,6 +1,8 @@
 #ifndef FM_PSG_SOFT_H
 #define FM_PSG_SOFT_H
 
+#include <QTimer>
+
 #include "fm-psg.h"
 #include "project/vgmstream.h"
 #include "soft/gme.h"
@@ -34,7 +36,7 @@ private:
     gme_type_t _type;
     AudioOutput<int16_t>* _output;
 
-    Music_Emu::sample_t _buffer[2048];
+    Music_Emu::sample_t _buffer[4096];
 
     long _position;
     long _positionOffset;
@@ -43,6 +45,10 @@ private:
     track_info_t _info;
 
     VGMStream _vgmStream;
+    QList<VGMStream::StreamItem*> _vgmStreamItems;
+    QByteArray _vgmData;
+
+    QTimer _timer;
 
     // FM_PSG interface
 public:

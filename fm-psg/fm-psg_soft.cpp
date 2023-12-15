@@ -20,6 +20,50 @@ FM_PSG_Soft::FM_PSG_Soft(const Project& project)
     , _project(project)
     , _vgmStream(VGMStream::Format::STANDARD)
 {
+    _timer.setSingleShot(true);
+
+    _timer.callOnTimeout([&](){
+        _vgmStream.encode(project, _vgmStreamItems, _vgmData);
+        _vgmData.append(0x61);
+        _vgmData.append(0xFF);
+        _vgmData.append(0xFF);
+        _vgmData.append(0x61);
+        _vgmData.append(0xFF);
+        _vgmData.append(0xFF);
+        _vgmData.append(0x61);
+        _vgmData.append(0xFF);
+        _vgmData.append(0xFF);
+        _vgmData.append(0x61);
+        _vgmData.append(0xFF);
+        _vgmData.append(0xFF);
+        _vgmData.append(0x66);
+        _vgmData.prepend(_vgmStream.generateHeader(project, _vgmData, -1, 0, 0, false));
+
+        _output->stop();
+
+        Mem_File_Reader reader(_vgmData.constData(), _vgmData.size());
+        if (log_err(_emu->load(reader)))
+            return;
+
+        log_warning(_emu);
+
+        // start track
+        if (log_err(_emu->start_track(0)))
+            return;
+
+        log_warning(_emu);
+
+        for (VGMStream::StreamItem* item : _vgmStreamItems) {
+            delete item;
+        }
+
+        _vgmStreamItems.clear();
+        _vgmData.clear();
+        _vgmStream.reset();
+
+        _output->start();
+    });
+
     memset(_buffer, 0, sizeof(_buffer));
 
     _audcfg.loop_length = 180;
@@ -182,40 +226,13 @@ bool FM_PSG_Soft::isPlaying() const
 
 void FM_PSG_Soft::keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity)
 {
-    _vgmStream.reset();
-
     VGMStream::StreamLFOItem* sli = new VGMStream::StreamLFOItem(0, project.lfoMode());
     VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(0, channelType, nullptr, Note(key, 0, velocity), &settings);
-    QList<VGMStream::StreamItem*> items;
-    QByteArray data;
-    items.append(sli);
-    items.append(sni);
-    _vgmStream.assignChannel(sni, items);
-    _vgmStream.encode(project, items, data);
-    data.append(0x61);
-    data.append(0xFF);
-    data.append(0xFF);
-    data.append(0x66);
-    data.prepend(_vgmStream.generateHeader(project, data, -1, 0, 0, false));
+    _vgmStreamItems.append(sli);
+    _vgmStreamItems.append(sni);
+    _vgmStream.assignChannel(sni, _vgmStreamItems);
 
-    _output->stop();
-
-    Mem_File_Reader reader(data.constData(), data.size());
-    if (log_err(_emu->load(reader)))
-        return;
-
-    log_warning(_emu);
-
-    // start track
-    if (log_err(_emu->start_track(0)))
-        return;
-
-    log_warning(_emu);
-
-    delete sli;
-    delete sni;
-
-    _output->start();
+    _timer.start(50);
 }
 
 void FM_PSG_Soft::keyOff(int key)
