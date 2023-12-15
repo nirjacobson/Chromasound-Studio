@@ -42,6 +42,8 @@ private:
 
     track_info_t _info;
 
+    VGMStream _vgmStream;
+
     // FM_PSG interface
 public:
     float position();
