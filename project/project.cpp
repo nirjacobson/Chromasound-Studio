@@ -261,6 +261,8 @@ Project& Project::operator=(Project&& src)
 
     _lfoMode = src._lfoMode;
 
+    _info = src._info;
+
     return *this;
 }
 
@@ -278,6 +280,20 @@ Project::Project(Project&& o)
 
     _tempo = o._tempo;
     _beatsPerBar = o._beatsPerBar;
+
+    _lfoMode = o._lfoMode;
+
+    _info = o._info;
+}
+
+Project::Info& Project::info()
+{
+    return _info;
+}
+
+const Project::Info& Project::info() const
+{
+    return _info;
 }
 
 void Project::swapChannels(const int idxa, const int idxb)
@@ -287,4 +303,54 @@ void Project::swapChannels(const int idxa, const int idxb)
     }
 
     _channels.swapItemsAt(idxa, idxb);
+}
+
+const QString& Project::Info::title() const
+{
+    return _title;
+}
+
+const QString& Project::Info::game() const
+{
+    return _game;
+}
+
+const QString& Project::Info::author() const
+{
+    return _author;
+}
+
+const QDate& Project::Info::releaseDate() const
+{
+    return _releaseDate;
+}
+
+const QString& Project::Info::notes() const
+{
+    return _notes;
+}
+
+void Project::Info::setTitle(const QString& title)
+{
+    _title = title;
+}
+
+void Project::Info::setGame(const QString& game)
+{
+    _game = game;
+}
+
+void Project::Info::setAuthor(const QString& author)
+{
+    _author = author;
+}
+
+void Project::Info::setReleaseDate(const QDate& date)
+{
+    _releaseDate = date;
+}
+
+void Project::Info::setNotes(const QString& notes)
+{
+    _notes = notes;
 }

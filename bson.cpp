@@ -547,6 +547,13 @@ void BSON::fromProject(bson_t* dst,const Project& project)
     // LFO
 
     BSON_APPEND_INT32(dst, "lfo", project._lfoMode);
+
+    // Info
+    bson_t b_info;
+    bson_init(&b_info);
+    fromProjectInfo(&b_info, project._info);
+
+    BSON_APPEND_DOCUMENT(dst, "info", &b_info);
 }
 
 Project BSON::toProject(bson_iter_t& b)
@@ -620,5 +627,55 @@ Project BSON::toProject(bson_iter_t& b)
        p._lfoMode = bson_iter_int32(&lfo);
    }
 
-    return p;
+   // Info
+
+   bson_iter_t info;
+
+   if (bson_iter_find_descendant(&b, "info", &info) && BSON_ITER_HOLDS_DOCUMENT(&info) && bson_iter_recurse(&info, &info)) {
+       p._info = toProjectInfo(info);
+   }
+
+   return p;
+}
+
+void BSON::fromProjectInfo(bson_t* dst, const Project::Info& info)
+{
+   BSON_APPEND_UTF8(dst, "title", info.title().toStdString().c_str());
+   BSON_APPEND_UTF8(dst, "game", info.game().toStdString().c_str());
+   BSON_APPEND_UTF8(dst, "author", info.author().toStdString().c_str());
+   BSON_APPEND_UTF8(dst, "releaseDate", info.releaseDate().toString("yyyy/MM/dd").toStdString().c_str());
+   BSON_APPEND_UTF8(dst, "notes", info.notes().toStdString().c_str());
+}
+
+Project::Info BSON::toProjectInfo(bson_iter_t& b)
+{
+   Project::Info info;
+
+   bson_iter_t title;
+   bson_iter_t game;
+   bson_iter_t author;
+   bson_iter_t releaseDate;
+   bson_iter_t notes;
+
+   if (bson_iter_find_descendant(&b, "title", &title) && BSON_ITER_HOLDS_UTF8(&title)) {
+       info.setTitle(bson_iter_utf8(&title, NULL));
+   }
+
+   if (bson_iter_find_descendant(&b, "game", &game) && BSON_ITER_HOLDS_UTF8(&game)) {
+       info.setGame(bson_iter_utf8(&game, NULL));
+   }
+
+   if (bson_iter_find_descendant(&b, "author", &author) && BSON_ITER_HOLDS_UTF8(&author)) {
+       info.setAuthor(bson_iter_utf8(&author, NULL));
+   }
+
+   if (bson_iter_find_descendant(&b, "releaseDate", &releaseDate) && BSON_ITER_HOLDS_UTF8(&releaseDate)) {
+       info.setReleaseDate(QDate::fromString(bson_iter_utf8(&releaseDate, NULL), "yyyy/MM/dd"));
+   }
+
+   if (bson_iter_find_descendant(&b, "notes", &notes) && BSON_ITER_HOLDS_UTF8(&notes)) {
+       info.setNotes(bson_iter_utf8(&notes, NULL));
+   }
+
+   return info;
 }

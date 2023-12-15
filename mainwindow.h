@@ -22,6 +22,7 @@
 #include "mdiarea/mdisubwindow.h"
 #include "fmimport/fmimportdialog.h"
 #include "pcmusage/pcmusagedialog.h"
+#include "info/projectinfodialog.h"
 
 #include "commands/movechanneldowncommand.h"
 #include "commands/movechannelupcommand.h"
@@ -83,6 +84,7 @@ private slots:
     void handleMIDIMessage(const long msg);
     void setMIDIDevice(const int device);
 
+    void projectInfoTriggered();
     void stylesTriggered();
     void pcmUsageTriggered();
     void fmImportTriggered();
@@ -111,10 +113,12 @@ private:
 
     QMap<int, QList<MdiSubWindow*>> _channelWindows;
 
+    ProjectInfoDialog* _infoDialog;
     StyleDialog* _styleDialog;
     FMImportDialog* _fmImportDialog;
     PCMUsageDialog* _pcmUsageDialog;
 
+    MdiSubWindow* _infoDialogWindow;
     MdiSubWindow* _styleDialogWindow;
     MdiSubWindow* _fmImportDialogWindow;
     MdiSubWindow* _pcmUsageDialogWindow;

@@ -66,15 +66,15 @@ class VGMStream
 
         void encode(const Project& project, QList<StreamItem*>& items, QByteArray& data);
 
-        QByteArray compile(Project& project, const Pattern& pattern, bool header = false, int* loopOffsetData = nullptr, const float loopStart = -1, const float loopEnd = -1, const float currentOffset = 0, int* const currentOffsetData = nullptr);
-        QByteArray compile(Project& project, const bool header = false, int* loopOffsetData = nullptr, const float loopStart = -1, const float loopEnd = -1, const float currentOffset = 0, int* const currentOffsetData = nullptr);
+        QByteArray compile(Project& project, const Pattern& pattern, bool header = false, bool gd3 = false, int* loopOffsetData = nullptr, const float loopStart = -1, const float loopEnd = -1, const float currentOffset = 0, int* const currentOffsetData = nullptr);
+        QByteArray compile(Project& project, const bool header = false, bool gd3 = false, int* loopOffsetData = nullptr, const float loopStart = -1, const float loopEnd = -1, const float currentOffset = 0, int* const currentOffsetData = nullptr);
 
         void reset();
 
         QByteArray encodeStandardPCM(const Project& project, const Pattern& pattern, const float loopStart = -1, const float loopEnd = -1);
         QByteArray encodeStandardPCM(const Project& project, const float loopStart = -1, const float loopEnd = -1);
 
-        QByteArray generateHeader(const Project& project, const QByteArray& data, const int totalSamples, const int loopOffsetData, const bool selectionLoop);
+        QByteArray generateHeader(const Project& project, const QByteArray& data, const int totalSamples, const int loopOffsetData, const int gd3size, const bool selectionLoop);
 
     private:
         static QList<float> frequencies;
@@ -177,6 +177,7 @@ class VGMStream
         void encodeNoteItem(const Project& project, const StreamNoteItem* item, QByteArray& data);
         void encodeLFOItem(const StreamLFOItem* item, QByteArray& data);
 
+        QByteArray generateGd3(const Project& project);
 };
 
 #endif // VGMSTREAM_H

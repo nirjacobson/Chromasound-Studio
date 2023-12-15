@@ -19,6 +19,28 @@ class Project
             SONG
         };
 
+        class Info {
+            public:
+                const QString& title() const;
+                const QString& game() const;
+                const QString& author() const;
+                const QDate& releaseDate() const;
+                const QString& notes() const;
+
+                void setTitle(const QString& title);
+                void setGame(const QString& game);
+                void setAuthor(const QString& author);
+                void setReleaseDate(const QDate& date);
+                void setNotes(const QString& notes);
+
+            private:
+                QString _title;
+                QString _game;
+                QString _author;
+                QDate _releaseDate;
+                QString _notes;
+        };
+
         Project();
         ~Project();
 
@@ -69,6 +91,9 @@ class Project
         Project& operator=(Project&& src);
         Project(Project&& o);
 
+        Info& info();
+        const Info& info() const;
+
     private:
         QList<Channel> _channels;
         QList<Pattern*> _patterns;
@@ -76,6 +101,7 @@ class Project
         PlayMode _playMode;
 
         Playlist _playlist;
+        Info _info;
 
         int _tempo;
         int _beatsPerBar;

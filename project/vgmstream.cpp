@@ -93,7 +93,7 @@ void VGMStream::encode(const Project& project, QList<StreamItem*>& items, QByteA
     sortItems(items);
 }
 
-QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool header, int* loopOffsetData, const float loopStart, const float loopEnd, const float currentOffset, int* const currentOffsetData)
+QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool header, bool gd3, int* loopOffsetData, const float loopStart, const float loopEnd, const float currentOffset, int* const currentOffsetData)
 {
     QList<StreamItem*> items;
     QByteArray data;
@@ -158,12 +158,19 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool hea
         data.prepend(pcmBlock);
     }
 
+    QByteArray gd3Data;
+    if (gd3) {
+         gd3Data = generateGd3(project);
+    }
+
     if (header) {
         _loopOffsetData += 64;
         _currentOffsetData += 64;
-        QByteArray headerData = generateHeader(project, data, totalSamples, _loopOffsetData, !(loopStart < 0 || loopEnd < 0));
+        QByteArray headerData = generateHeader(project, data, totalSamples, _loopOffsetData, gd3Data.size(), !(loopStart < 0 || loopEnd < 0));
         data.prepend(headerData);
     }
+
+    data.append(gd3Data);
 
     if (currentOffsetData) {
         *currentOffsetData = _currentOffsetData;
@@ -176,7 +183,7 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool hea
     return data;
 }
 
-QByteArray VGMStream::compile(Project& project, const bool header, int* loopOffsetData, const float loopStart, const float loopEnd, const float currentOffset, int* const currentOffsetData)
+QByteArray VGMStream::compile(Project& project, const bool header, bool gd3, int* loopOffsetData, const float loopStart, const float loopEnd, const float currentOffset, int* const currentOffsetData)
 {
     QList<StreamItem*> items;
     QByteArray data;
@@ -264,17 +271,24 @@ QByteArray VGMStream::compile(Project& project, const bool header, int* loopOffs
         data.prepend(pcmBlock);
     }
 
+    QByteArray gd3Data;
+    if (gd3) {
+        gd3Data = generateGd3(project);
+    }
+
     if (header) {
         _loopOffsetData += 64;
         _currentOffsetData += 64;
         QByteArray headerData;
         if (project.playlist().doesLoop() || !(loopStart < 0 || loopEnd < 0)) {
-            headerData = generateHeader(project, data, totalSamples, _loopOffsetData, !(loopStart < 0 || loopEnd < 0));
+            headerData = generateHeader(project, data, totalSamples, _loopOffsetData, gd3Data.size(), !(loopStart < 0 || loopEnd < 0));
         } else {
-            headerData = generateHeader(project, data, totalSamples, 0, false);
+            headerData = generateHeader(project, data, totalSamples, 0, gd3Data.size(), false);
         }
         data.prepend(headerData);
     }
+
+    data.append(gd3Data);
 
     if (currentOffsetData) {
         *currentOffsetData = _currentOffsetData;
@@ -1267,7 +1281,72 @@ void VGMStream::encodeLFOItem(const StreamLFOItem* item, QByteArray& data)
     }
 }
 
-QByteArray VGMStream::generateHeader(const Project& project, const QByteArray& data, const int totalSamples, const int loopOffsetData, const bool selectionLoop)
+QByteArray VGMStream::generateGd3(const Project& project)
+{
+    QByteArray gd3;
+
+    // Header
+    gd3.append('G');
+    gd3.append('d');
+    gd3.append('3');
+    gd3.append(' ');
+
+    // Version
+    gd3.append((quint8)0x00);
+    gd3.append((quint8)0x01);
+    gd3.append((quint8)0x00);
+    gd3.append((quint8)0x00);
+
+    // Data
+    QByteArray data;
+
+    // Title
+    data.append(QByteArray((const char*)project.info().title().utf16(), 2*(project.info().title().size() + 1)));
+
+    data.append((quint8)0x00);
+    data.append((quint8)0x00);
+
+    // Game
+    data.append(QByteArray((const char*)project.info().game().utf16(), 2*(project.info().game().size() + 1)));
+
+    data.append((quint8)0x00);
+    data.append((quint8)0x00);
+
+    // System
+    QString system = "Sega Mega Drive / Genesis";
+    data.append(QByteArray((const char*)system.utf16(), 2*(system.size() + 1)));
+
+    data.append((quint8)0x00);
+    data.append((quint8)0x00);
+
+    // Author
+    data.append(QByteArray((const char*)project.info().author().utf16(), 2*(project.info().author().size() + 1)));
+
+    data.append((quint8)0x00);
+    data.append((quint8)0x00);
+
+    // Release date
+    QString releaseDate = project.info().releaseDate().toString("yyyy/MM/dd");
+    data.append(QByteArray((const char*)releaseDate.utf16(), 2*(releaseDate.size() + 1)));
+
+    // Arranger
+    data.append((quint8)0x00);
+    data.append((quint8)0x00);
+
+    // Notes
+    data.append(QByteArray((const char*)project.info().notes().utf16(), 2*(project.info().notes().size() + 1)));
+
+    // Data size
+    quint32 dataSize = data.size();
+    gd3.append((char*)&dataSize, sizeof(dataSize));
+
+    // Data
+    gd3.append(data);
+
+    return gd3;
+}
+
+QByteArray VGMStream::generateHeader(const Project& project, const QByteArray& data, const int totalSamples, const int loopOffsetData, const int gd3size, const bool selectionLoop)
 {
     QByteArray headerData(64, 0);
 
@@ -1278,7 +1357,7 @@ QByteArray VGMStream::generateHeader(const Project& project, const QByteArray& d
     headerData[3] = ' ';
 
     // EOF
-    *(uint32_t*)&headerData[0x4] = data.size() + 64 - 0x4;
+    *(uint32_t*)&headerData[0x4] = data.size() + gd3size + 64 - 0x4;
     // Version
     headerData[0x8] = 0x50;
     headerData[0x9] = 0x01;
