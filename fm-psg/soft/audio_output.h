@@ -80,7 +80,7 @@ void AudioOutput<T>::init() {
                                      2,          /* stereo output */
                                      format,
                                      SAMPLE_RATE,
-                                     paFramesPerBufferUnspecified, /* frames per buffer, i.e. the number
+                                     1024, /* frames per buffer, i.e. the number
                                                   of sample frames that PortAudio will
                                                   request from the callback. Many apps
                                                   may want to use

@@ -198,6 +198,8 @@ void FM_PSG_Soft::keyOn(const Project& project, const Channel::Type channelType,
     data.append(0x66);
     data.prepend(_vgmStream.generateHeader(project, data, -1, 0, 0, false));
 
+    _output->stop();
+
     Mem_File_Reader reader(data.constData(), data.size());
     if (log_err(_emu->load(reader)))
         return;
@@ -212,6 +214,8 @@ void FM_PSG_Soft::keyOn(const Project& project, const Channel::Type channelType,
 
     delete sli;
     delete sni;
+
+    _output->start();
 }
 
 void FM_PSG_Soft::keyOff(int key)
@@ -221,6 +225,8 @@ void FM_PSG_Soft::keyOff(int key)
     _vgmStream.encode(Project(), items, data);
     data.append(0x66);
     data.prepend(_vgmStream.generateHeader(_project, data, -1, 0, 0, false));
+
+    _output->stop();
 
     Mem_File_Reader reader(data.constData(), data.size());
     if (log_err(_emu->load(reader)))
@@ -233,6 +239,8 @@ void FM_PSG_Soft::keyOff(int key)
         return;
 
     log_warning(_emu);
+
+    _output->start();
 }
 
 int16_t* FM_PSG_Soft::next(int size)
