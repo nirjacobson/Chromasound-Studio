@@ -320,6 +320,7 @@ set(PROJECT_SOURCES
     info/projectinfodialog.h
     info/projectinfodialog.cpp
     info/projectinfodialog.ui
+    fm-psg/soft/audio.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
