@@ -58,6 +58,8 @@ public:
 	// Load from custom data source (see Data_Reader.h)
 	blargg_err_t load( Data_Reader& );
 
+    blargg_err_t append( Data_Reader& );
+
 	// Load from file already read into memory. Keeps pointer to data, so you
 	// must not free it until you're done with the file.
 	blargg_err_t load_mem( void const* data, long size );
@@ -115,7 +117,9 @@ protected:
 	// Overridable
 	virtual void unload();  // called before loading file and if loading fails
 	virtual blargg_err_t load_( Data_Reader& ); // default loads then calls load_mem_()
+    virtual blargg_err_t append_( Data_Reader& );
 	virtual blargg_err_t load_mem_( byte const* data, long size ); // use data in memory
+    virtual blargg_err_t append_mem_( byte const* data, long size );
 	virtual blargg_err_t track_info_( track_info_t* out, int track ) const = 0;
 	virtual void pre_load();
 	virtual void post_load_();

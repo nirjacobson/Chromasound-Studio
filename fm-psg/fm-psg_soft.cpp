@@ -19,50 +19,8 @@ FM_PSG_Soft::FM_PSG_Soft(const Project& project)
     , _positionOffset(0)
     , _project(project)
     , _vgmStream(VGMStream::Format::STANDARD)
+    , _startedInteractive(false)
 {
-    _timer.setSingleShot(true);
-
-    _timer.callOnTimeout([&](){
-        _vgmStream.encode(project, _vgmStreamItems, _vgmData);
-        _vgmData.append(0x61);
-        _vgmData.append(0xFF);
-        _vgmData.append(0xFF);
-        _vgmData.append(0x61);
-        _vgmData.append(0xFF);
-        _vgmData.append(0xFF);
-        _vgmData.append(0x61);
-        _vgmData.append(0xFF);
-        _vgmData.append(0xFF);
-        _vgmData.append(0x61);
-        _vgmData.append(0xFF);
-        _vgmData.append(0xFF);
-        _vgmData.append(0x66);
-        _vgmData.prepend(_vgmStream.generateHeader(project, _vgmData, -1, 0, 0, false));
-
-        _output->stop();
-
-        Mem_File_Reader reader(_vgmData.constData(), _vgmData.size());
-        if (log_err(_emu->load(reader)))
-            return;
-
-        log_warning(_emu);
-
-        // start track
-        if (log_err(_emu->start_track(0)))
-            return;
-
-        log_warning(_emu);
-
-        for (VGMStream::StreamItem* item : _vgmStreamItems) {
-            delete item;
-        }
-
-        _vgmStreamItems.clear();
-        _vgmData.clear();
-        _vgmStream.reset();
-
-        _output->start();
-    });
 
     memset(_buffer, 0, sizeof(_buffer));
 
@@ -161,6 +119,8 @@ void FM_PSG_Soft::play(const QByteArray& vgm, const bool loop, const int current
     _position = 0;
     _positionOffset = 0;
 
+    _startedInteractive = false;
+
     _stopped = false;
     _output->start();
 }
@@ -194,6 +154,8 @@ void FM_PSG_Soft::play(const QByteArray& vgm, const int loopOffsetSamples, const
 
     _emu->track_info(&_info);
 
+    _startedInteractive = false;
+
     _stopped = false;
     _output->start();
 }
@@ -212,11 +174,12 @@ void FM_PSG_Soft::pause()
 
 void FM_PSG_Soft::stop()
 {
+    _output->stop();
+
     _stopped = true;
     _position = 0;
     _positionOffset = 0;
-
-    keyOff(0);
+    _startedInteractive = false;
 }
 
 bool FM_PSG_Soft::isPlaying() const
@@ -228,36 +191,64 @@ void FM_PSG_Soft::keyOn(const Project& project, const Channel::Type channelType,
 {
     VGMStream::StreamLFOItem* sli = new VGMStream::StreamLFOItem(0, project.lfoMode());
     VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(0, channelType, nullptr, Note(key, 0, velocity), &settings);
-    _vgmStreamItems.append(sli);
-    _vgmStreamItems.append(sni);
-    _vgmStream.assignChannel(sni, _vgmStreamItems);
+    QList<VGMStream::StreamItem*> items;
+    QByteArray data;
+    items.append(sli);
+    items.append(sni);
+    _vgmStream.assignChannel(sni, items);
+    _vgmStream.encode(project, items, data);
+    _keys[key] = sni;
 
-    _timer.start(50);
+    delete sli;
+
+    if (!_startedInteractive) {
+        data.prepend(_vgmStream.generateHeader(project, data, -1, 0, 0, false));
+    }
+
+    Mem_File_Reader reader(data.constData(), data.size());
+
+    if (!_startedInteractive) {
+        if (log_err(_emu->load(reader)))
+            return;
+    } else {
+        if (log_err(_emu->append(reader)))
+            return;
+    }
+
+    log_warning(_emu);
+
+    if (!_startedInteractive) {
+        // start track
+        if (log_err(_emu->start_track(0)))
+            return;
+
+        log_warning(_emu);
+    }
+
+    if (!_startedInteractive) {
+        _startedInteractive = true;
+    }
 }
 
 void FM_PSG_Soft::keyOff(int key)
 {
+    if (!_keys.contains(key)) return;
+
+    VGMStream::StreamNoteItem* sni = _keys[key];
+    _vgmStream.releaseChannel(sni->type(), sni->channel());
+    sni->setOn(false);
     QList<VGMStream::StreamItem*> items;
     QByteArray data;
+    items.append(sni);
     _vgmStream.encode(Project(), items, data);
-    data.append(0x66);
-    data.prepend(_vgmStream.generateHeader(_project, data, -1, 0, 0, false));
-
-    _output->stop();
+    _keys.remove(key);
 
     Mem_File_Reader reader(data.constData(), data.size());
-    if (log_err(_emu->load(reader)))
+
+    if (log_err(_emu->append(reader)))
         return;
 
     log_warning(_emu);
-
-    // start track
-    if (log_err(_emu->start_track(0)))
-        return;
-
-    log_warning(_emu);
-
-    _output->start();
 }
 
 int16_t* FM_PSG_Soft::next(int size)

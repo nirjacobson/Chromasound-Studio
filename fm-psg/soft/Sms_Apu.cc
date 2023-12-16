@@ -233,10 +233,10 @@ void Sms_Apu::reset( unsigned feedback, int noise_width )
 
 void Sms_Apu::run_until( blip_time_t end_time )
 {
-	require( end_time >= last_time ); // end_time must not be before previous time
+    require( end_time >= last_time ); // end_time must not be before previous time
 
-	if ( end_time > last_time )
-	{
+    if ( end_time > last_time )
+    {
 		// run oscillators
 		for ( int i = 0; i < osc_count; ++i )
 		{
@@ -252,7 +252,7 @@ void Sms_Apu::run_until( blip_time_t end_time )
 		}
 
 		last_time = end_time;
-	}
+    }
 }
 
 void Sms_Apu::end_frame( blip_time_t end_time )

@@ -308,8 +308,17 @@ blargg_err_t Vgm_Emu::load_mem_( byte const* new_data, long new_size )
 	static const char* const psg_names [] = { "Square 1", "Square 2", "Square 3", "Noise" };
 	set_voice_names( uses_fm ? fm_names : psg_names );
 
-	// do after FM in case output buffer is changed
-	return Classic_Emu::setup_buffer( psg_rate );
+    // do after FM in case output buffer is changed
+    return Classic_Emu::setup_buffer( psg_rate );
+}
+
+blargg_err_t Vgm_Emu::append_mem_( byte const* new_data, long new_size )
+{
+    data     = new_data;
+    data_end = new_data + new_size;
+    pos      = data;
+
+    return 0;
 }
 
 blargg_err_t Vgm_Emu::setup_fm()

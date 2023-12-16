@@ -62,6 +62,7 @@ public:
 protected:
 	blargg_err_t track_info_( track_info_t*, int track ) const;
 	blargg_err_t load_mem_( byte const*, long );
+    blargg_err_t append_mem_( byte const*, long );
 	blargg_err_t set_sample_rate_( long sample_rate );
 	blargg_err_t start_track_( int );
 	blargg_err_t play_( long count, sample_t* );
