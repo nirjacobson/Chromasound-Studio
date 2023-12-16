@@ -174,12 +174,26 @@ void FM_PSG_Soft::pause()
 
 void FM_PSG_Soft::stop()
 {
-    _output->stop();
-
     _stopped = true;
     _position = 0;
     _positionOffset = 0;
     _startedInteractive = false;
+
+    QByteArray data;
+    data.prepend(_vgmStream.generateHeader(_project, data, -1, 0, 0, false));
+    data.append(0x66);
+    Mem_File_Reader reader(data.constData(), data.size());
+
+    if (log_err(_emu->load(reader)))
+        return;
+
+    log_warning(_emu);
+
+    // start track
+    if (log_err(_emu->start_track(0)))
+        return;
+
+    log_warning(_emu);
 }
 
 bool FM_PSG_Soft::isPlaying() const
