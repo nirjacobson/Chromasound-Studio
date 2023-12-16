@@ -21,6 +21,46 @@ FM_PSG_Soft::FM_PSG_Soft(const Project& project)
     , _vgmStream(VGMStream::Format::STANDARD)
     , _startedInteractive(false)
 {
+    _timer.setSingleShot(true);
+
+    _timer.callOnTimeout([&](){
+        QByteArray data;
+        _vgmStream.encode(project, _items, data);
+
+        for (VGMStream::StreamItem* item : _items)
+            if (!dynamic_cast<VGMStream::StreamNoteItem*>(item))
+                delete item;
+
+        _items.clear();
+
+        if (!_startedInteractive) {
+            data.prepend(_vgmStream.generateHeader(project, data, -1, 0, 0, false));
+        }
+
+        Mem_File_Reader reader(data.constData(), data.size());
+
+        if (!_startedInteractive) {
+            if (log_err(_emu->load(reader)))
+                return;
+        } else {
+            if (log_err(_emu->append(reader)))
+                return;
+        }
+
+        log_warning(_emu);
+
+        if (!_startedInteractive) {
+            // start track
+            if (log_err(_emu->start_track(0)))
+                return;
+
+            log_warning(_emu);
+        }
+
+        if (!_startedInteractive) {
+            _startedInteractive = true;
+        }
+    });
 
     memset(_buffer, 0, sizeof(_buffer));
 
@@ -179,6 +219,8 @@ void FM_PSG_Soft::stop()
     _positionOffset = 0;
     _startedInteractive = false;
 
+    _vgmStream.reset();
+
     QByteArray data;
     data.prepend(_vgmStream.generateHeader(_project, data, -1, 0, 0, false));
     data.append(0x66);
@@ -205,43 +247,14 @@ void FM_PSG_Soft::keyOn(const Project& project, const Channel::Type channelType,
 {
     VGMStream::StreamLFOItem* sli = new VGMStream::StreamLFOItem(0, project.lfoMode());
     VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(0, channelType, nullptr, Note(key, 0, velocity), &settings);
-    QList<VGMStream::StreamItem*> items;
-    QByteArray data;
-    items.append(sli);
-    items.append(sni);
-    _vgmStream.assignChannel(sni, items);
-    _vgmStream.encode(project, items, data);
+
     _keys[key] = sni;
 
-    delete sli;
+    _items.append(sli);
+    _items.append(sni);
+    _vgmStream.assignChannel(sni, _items);
 
-    if (!_startedInteractive) {
-        data.prepend(_vgmStream.generateHeader(project, data, -1, 0, 0, false));
-    }
-
-    Mem_File_Reader reader(data.constData(), data.size());
-
-    if (!_startedInteractive) {
-        if (log_err(_emu->load(reader)))
-            return;
-    } else {
-        if (log_err(_emu->append(reader)))
-            return;
-    }
-
-    log_warning(_emu);
-
-    if (!_startedInteractive) {
-        // start track
-        if (log_err(_emu->start_track(0)))
-            return;
-
-        log_warning(_emu);
-    }
-
-    if (!_startedInteractive) {
-        _startedInteractive = true;
-    }
+    _timer.start(20);
 }
 
 void FM_PSG_Soft::keyOff(int key)
@@ -256,6 +269,8 @@ void FM_PSG_Soft::keyOff(int key)
     items.append(sni);
     _vgmStream.encode(Project(), items, data);
     _keys.remove(key);
+
+    delete sni;
 
     Mem_File_Reader reader(data.constData(), data.size());
 
