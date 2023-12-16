@@ -1,10 +1,10 @@
 #include "pcmusagedialog.h"
 #include "ui_pcmusagedialog.h"
 
-PCMUsageDialog::PCMUsageDialog(QWidget *parent) :
+PCMUsageDialog::PCMUsageDialog(QWidget *parent, Application* app) :
     QWidget(parent),
     ui(new Ui::PCMUsageDialog),
-    _app(nullptr),
+    _app(app),
     _color1(Qt::cyan),
     _color2(Qt::magenta),
     _color3(Qt::yellow),
@@ -26,6 +26,8 @@ PCMUsageDialog::PCMUsageDialog(QWidget *parent) :
     _colors.append(&_color7);
     _colors.append(&_color8);
 
+    doUpdate();
+
     ui->displayWidget->setItems(&_items);
     ui->legendWidget->setItems(&_items);}
 
@@ -34,9 +36,39 @@ PCMUsageDialog::~PCMUsageDialog()
     delete ui;
 }
 
-void PCMUsageDialog::setApplication(Application* app)
+void PCMUsageDialog::doUpdate()
 {
-    _app = app;
+    _items.clear();
+
+    QList<QString> paths;
+    for (const Channel& channel : _app->project().channels()) {
+        if (channel.type() == Channel::Type::PCM) {
+            paths.append(dynamic_cast<const PCMChannelSettings&>(channel.settings()).path());
+        }
+    }
+
+    quint32 totalSize = 0;
+    for (int i = 0; i < paths.size(); i++) {
+        QFile file(paths[i]);
+        QFileInfo fileInfo(file);
+
+        QString name = fileInfo.fileName();
+        quint32 size = fileInfo.size();
+
+        totalSize += size;
+
+        _items.append(PCMUsageDisplayItem(name, size, *_colors[i]));
+    }
+
+    _items.append(PCMUsageDisplayItem("Free space", MAX_SIZE - totalSize, _freeSpaceColor));
+
+    quint32 pcmSizeFrontPattern = VGMStream().encodeStandardPCM(_app->project(), _app->project().getFrontPattern()).size();
+    quint32 pcmSizeSong = VGMStream().encodeStandardPCM(_app->project()).size();
+
+    ui->frontPatternSizeLabel->setText(sizeString(pcmSizeFrontPattern));
+    ui->songSizeLabel->setText(sizeString(pcmSizeSong));
+
+    update();
 }
 
 const QColor& PCMUsageDialog::color1() const
@@ -138,37 +170,3 @@ QString PCMUsageDialog::sizeString(quint32 bytes)
     }
 }
 
-void PCMUsageDialog::paintEvent(QPaintEvent* event)
-{
-    _items.clear();
-
-    QList<QString> paths;
-    for (const Channel& channel : _app->project().channels()) {
-        if (channel.type() == Channel::Type::PCM) {
-            paths.append(dynamic_cast<const PCMChannelSettings&>(channel.settings()).path());
-        }
-    }
-
-    quint32 totalSize = 0;
-    for (int i = 0; i < paths.size(); i++) {
-        QFile file(paths[i]);
-        QFileInfo fileInfo(file);
-
-        QString name = fileInfo.fileName();
-        quint32 size = fileInfo.size();
-
-        totalSize += size;
-
-        _items.append(PCMUsageDisplayItem(name, size, *_colors[i]));
-    }
-
-    _items.append(PCMUsageDisplayItem("Free space", MAX_SIZE - totalSize, _freeSpaceColor));
-
-    quint32 pcmSizeFrontPattern = VGMStream().encodeStandardPCM(_app->project(), _app->project().getFrontPattern()).size();
-    quint32 pcmSizeSong = VGMStream().encodeStandardPCM(_app->project()).size();
-
-    ui->frontPatternSizeLabel->setText(sizeString(pcmSizeFrontPattern));
-    ui->songSizeLabel->setText(sizeString(pcmSizeSong));
-
-    QWidget::paintEvent(event);
-}

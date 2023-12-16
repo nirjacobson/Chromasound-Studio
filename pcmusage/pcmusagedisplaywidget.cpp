@@ -25,13 +25,17 @@ void PCMUsageDisplayWidget::setOutlineColor(const QColor& color)
 
 void PCMUsageDisplayWidget::paintEvent(QPaintEvent* event)
 {
+    QWidget::paintEvent(event);
+
+    if (!_items) {
+        return;
+    }
+
     QPainter painter(this);
 
     painter.setPen(_outlineColor);
     painter.setBrush(_items->last().color());
     painter.drawRect(rect().adjusted(0, 0, -1, -1));
-
-    if (!_items) return;
 
     int lastStart = height() - 1;
     for (int i = 0; i < _items->size() - 1; i++) {
