@@ -48,6 +48,9 @@ class FM_PSG_Soft : public FM_PSG, public Producer<int16_t>
         QMap<int, VGMStream::StreamNoteItem*> _keys;
         bool _startedInteractive;
 
+        QTimer _timer;
+        QList<VGMStream::StreamItem*> _items;
+
         // FM_PSG interface
     public:
         float position();
