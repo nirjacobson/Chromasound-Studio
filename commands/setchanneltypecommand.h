@@ -9,19 +9,19 @@ class MainWindow;
 
 class SetChannelTypeCommand : public QUndoCommand
 {
-public:
-    SetChannelTypeCommand(MainWindow* window, Channel& channel, const Channel::Type type);
+    public:
+        SetChannelTypeCommand(MainWindow* window, Channel& channel, const Channel::Type type);
 
-private:
-    MainWindow* _mainWindow;
-    Channel& _channel;
-    Channel::Type _originalType;
-    Channel::Type _newType;
+    private:
+        MainWindow* _mainWindow;
+        Channel& _channel;
+        Channel::Type _originalType;
+        Channel::Type _newType;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 };
 
 #endif // SETCHANNELTYPECOMMAND_H

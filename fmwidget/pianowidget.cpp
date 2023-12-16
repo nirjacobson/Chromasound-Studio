@@ -64,22 +64,22 @@ void PianoWidget::drawBlackKey(const int octave, const int key, QPaintEvent* eve
 
     int x = 0;
     switch (key) {
-    case 0:
-        x = whiteWidth * 1 - ((2.0f/3.0f) * blackWidth);
-        break;
-    case 1:
-        x = whiteWidth * 2 - ((1.0f/3.0f) * blackWidth);
-        break;
-    case 2:
-        x = whiteWidth * 4 - ((2.0f/3.0f) * blackWidth);
-        break;
-    case 3:
-        x = whiteWidth * 5 - ((1.0f/2.0f) * blackWidth);
-        break;
-    case 4:
-        x = whiteWidth * 6 - ((1.0f/3.0f) * blackWidth);
-    default:
-        break;
+        case 0:
+            x = whiteWidth * 1 - ((2.0f/3.0f) * blackWidth);
+            break;
+        case 1:
+            x = whiteWidth * 2 - ((1.0f/3.0f) * blackWidth);
+            break;
+        case 2:
+            x = whiteWidth * 4 - ((2.0f/3.0f) * blackWidth);
+            break;
+        case 3:
+            x = whiteWidth * 5 - ((1.0f/2.0f) * blackWidth);
+            break;
+        case 4:
+            x = whiteWidth * 6 - ((1.0f/3.0f) * blackWidth);
+        default:
+            break;
     }
 
     QRect keyRectTranslated = keyRect.translated(QPoint(startX + x, 0));
@@ -118,7 +118,7 @@ void PianoWidget::drawOctaveHeader(const int octave, QPaintEvent* event, QPainte
     int octaveWidth = whiteWidth * WHITE_KEYS_PER_OCTAVE;
 
     QRect rect = QRect(QPoint(), QSize(octaveWidth, HEADER_HEIGHT))
-                     .translated(QPoint((octave - _baseOctave) * octaveWidth, 0));
+                 .translated(QPoint((octave - _baseOctave) * octaveWidth, 0));
 
     painter.setPen(_headerColor.darker());
     painter.fillRect(rect, QBrush(_headerColor, Qt::SolidPattern));

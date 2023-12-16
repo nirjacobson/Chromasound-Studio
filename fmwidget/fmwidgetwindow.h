@@ -6,34 +6,34 @@
 #include "application.h"
 
 namespace Ui {
-class FMWidgetWindow;
+    class FMWidgetWindow;
 }
 
 class FMWidgetWindow : public QMainWindow
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    explicit FMWidgetWindow(QWidget *parent = nullptr, Application* app = nullptr);
-    ~FMWidgetWindow();
+    public:
+        explicit FMWidgetWindow(QWidget *parent = nullptr, Application* app = nullptr);
+        ~FMWidgetWindow();
 
-    void setSettings(FMChannelSettings* settings);
+        void setSettings(FMChannelSettings* settings);
 
-    void pressKey(const int key);
-    void releaseKey(const int key);
+        void pressKey(const int key);
+        void releaseKey(const int key);
 
-    void doUpdate();
+        void doUpdate();
 
-signals:
-    void keyPressed(const int key, const int velocity);
-    void keyReleased(const int key);
+    signals:
+        void keyPressed(const int key, const int velocity);
+        void keyReleased(const int key);
 
-private:
-    Ui::FMWidgetWindow *ui;
+    private:
+        Ui::FMWidgetWindow *ui;
 
-    // QWidget interface
-protected:
-    void closeEvent(QCloseEvent* event);
+        // QWidget interface
+    protected:
+        void closeEvent(QCloseEvent* event);
 };
 
 #endif // FMWIDGETWINDOW_H

@@ -165,88 +165,90 @@ void ChannelWidget::setIndex(const int idx)
 
     switch (_app->project().getChannel(_index).type()) {
         case Channel::TONE:
-                ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_toneColor.name()));
-                break;
+            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_toneColor.name()));
+            break;
         case Channel::NOISE:
-                ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_noiseColor.name()));
-                break;
+            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_noiseColor.name()));
+            break;
         case Channel::FM:
-                ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_fmColor.name()));
-                break;
+            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_fmColor.name()));
+            break;
         case Channel::PCM:
-                ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_pcmColor.name()));
-                break;
-        }
+            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_pcmColor.name()));
+            break;
+    }
 
-   ui->pushButton->setText(_app->project().getChannel(_index).name());
-   ui->stepSequencer->setIndex(_index);
-   ui->prDisplay->setIndex(_index);
-   ui->led->setOn(_app->project().getChannel(_index).enabled());
-   ui->volumeDial->setValue(_app->project().getChannel(_index).settings().volume());
-   ui->rectLed->setOnFunction([=](){
-       float appPosition = _app->position();
+    ui->pushButton->setText(_app->project().getChannel(_index).name());
+    ui->stepSequencer->setIndex(_index);
+    ui->prDisplay->setIndex(_index);
+    ui->led->setOn(_app->project().getChannel(_index).enabled());
+    ui->volumeDial->setValue(_app->project().getChannel(_index).settings().volume());
+    ui->rectLed->setOnFunction([=]() {
+        float appPosition = _app->position();
 
-       QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(appPosition);
-       const Pattern& frontPattern = _app->project().getFrontPattern();
-       int frontPatternIdx = _app->project().frontPattern();
-       if (frontPattern.hasTrack(_index)) {
-           const Track& track = frontPattern.getTrack(_index);
-           if (_app->project().playMode() == Project::PlayMode::PATTERN) {
-               return _app->project().getChannel(_index).enabled() &&
+        QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(appPosition);
+        const Pattern& frontPattern = _app->project().getFrontPattern();
+        int frontPatternIdx = _app->project().frontPattern();
+        if (frontPattern.hasTrack(_index)) {
+            const Track& track = frontPattern.getTrack(_index);
+            if (_app->project().playMode() == Project::PlayMode::PATTERN) {
+                return _app->project().getChannel(_index).enabled() &&
                        frontPattern.activeTracksAtTime(appPosition).contains(_index) &&
                        std::find_if(track.items().begin(),
-                                 track.items().end(),
-                        [&](const Track::Item* item){
-                           float delta = item->time() - appPosition;
-                           return qAbs(delta) <= 0.0625; }) == track.items().end();
-           } else {
-              return activePatterns.contains(_app->project().frontPattern()) &&
-                     _app->project().getChannel(_index).enabled() &&
-                     frontPattern.activeTracksAtTime(appPosition - activePatterns[frontPatternIdx]).contains(_index) &&
-                     std::find_if(track.items().begin(), track.items().end(),
-                     [&](const Track::Item* item){
-                       float delta = item->time() - (appPosition - activePatterns[frontPatternIdx]);
-                       return qAbs(delta) <= 0.0625; }) == track.items().end();
-           }
-       }
+                                    track.items().end(),
+                [&](const Track::Item* item) {
+                    float delta = item->time() - appPosition;
+                    return qAbs(delta) <= 0.0625;
+                }) == track.items().end();
+            } else {
+                return activePatterns.contains(_app->project().frontPattern()) &&
+                       _app->project().getChannel(_index).enabled() &&
+                       frontPattern.activeTracksAtTime(appPosition - activePatterns[frontPatternIdx]).contains(_index) &&
+                       std::find_if(track.items().begin(), track.items().end(),
+                [&](const Track::Item* item) {
+                    float delta = item->time() - (appPosition - activePatterns[frontPatternIdx]);
+                    return qAbs(delta) <= 0.0625;
+                }) == track.items().end();
+            }
+        }
 
-       return false;
-   });
+        return false;
+    });
 
-   ui->stepKeys->setChannel(_index);
-   ui->stepVelocities->setChannel(_index);
+    ui->stepKeys->setChannel(_index);
+    ui->stepVelocities->setChannel(_index);
 
-   _noiseAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::NOISE);
-   _toneAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::TONE);
-   _fmAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::FM);
-   _pcmAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::PCM);
+    _noiseAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::NOISE);
+    _toneAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::TONE);
+    _fmAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::FM);
+    _pcmAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::PCM);
 
-   update();
+    update();
 }
 
 void ChannelWidget::setVolume(const int volume)
 {
-   _app->project().getChannel(_index).settings().setVolume(volume);
-   ui->volumeDial->blockSignals(true);
-   ui->volumeDial->setValue(volume);
-   ui->volumeDial->blockSignals(false);
+    _app->project().getChannel(_index).settings().setVolume(volume);
+    ui->volumeDial->blockSignals(true);
+    ui->volumeDial->setValue(volume);
+    ui->volumeDial->blockSignals(false);
 }
 
 void ChannelWidget::showStepKeysWidget()
 {
-   ui->stepsStackedWidget->setCurrentIndex(0);
-   ui->stepsStackedWidget->setVisible(true);
+    ui->stepsStackedWidget->setCurrentIndex(0);
+    ui->stepsStackedWidget->setVisible(true);
 }
 
 void ChannelWidget::showStepVelsWidget()
 {
-   ui->stepsStackedWidget->setCurrentIndex(1);
-   ui->stepsStackedWidget->setVisible(true);
+    ui->stepsStackedWidget->setCurrentIndex(1);
+    ui->stepsStackedWidget->setVisible(true);
 }
 
 void ChannelWidget::hideStepWidgets()
 {
-   ui->stepsStackedWidget->setVisible(false);
+    ui->stepsStackedWidget->setVisible(false);
 }
 
 const QRect ChannelWidget::getSequencerGeometry()
@@ -276,12 +278,16 @@ void ChannelWidget::fromPath(const QString& path)
     } else if (fileInfo.suffix() == "mid") {
         MIDIFile mfile(file);
 
-        auto it1 = std::find_if(mfile.chunks().begin(), mfile.chunks().end(), [](const MIDIChunk* chunk){ return dynamic_cast<const MIDIHeader*>(chunk); });
+        auto it1 = std::find_if(mfile.chunks().begin(), mfile.chunks().end(), [](const MIDIChunk* chunk) {
+            return dynamic_cast<const MIDIHeader*>(chunk);
+        });
 
         if (it1 != mfile.chunks().end()) {
             const MIDIHeader* header = dynamic_cast<const MIDIHeader*>(*it1);
 
-            auto it2 = std::find_if(mfile.chunks().begin(), mfile.chunks().end(), [](const MIDIChunk* chunk){ return dynamic_cast<const MIDITrack*>(chunk); });
+            auto it2 = std::find_if(mfile.chunks().begin(), mfile.chunks().end(), [](const MIDIChunk* chunk) {
+                return dynamic_cast<const MIDITrack*>(chunk);
+            });
 
             if (it2 != mfile.chunks().end()) {
                 const MIDITrack* track = dynamic_cast<const MIDITrack*>(*it2);
@@ -493,18 +499,18 @@ void ChannelWidget::paintEvent(QPaintEvent* event)
     ui->trackStackedWidget->setCurrentIndex(activePattern.hasTrack(_index) && activePattern.getTrack(_index).doesUsePianoRoll());
 
     switch (_app->project().getChannel(_index).type()) {
-    case Channel::TONE:
-        ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_toneColor.name()));
-        break;
-    case Channel::NOISE:
-        ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_noiseColor.name()));
-        break;
-    case Channel::FM:
-        ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_fmColor.name()));
-        break;
-    case Channel::PCM:
-        ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_pcmColor.name()));
-        break;
+        case Channel::TONE:
+            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_toneColor.name()));
+            break;
+        case Channel::NOISE:
+            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_noiseColor.name()));
+            break;
+        case Channel::FM:
+            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_fmColor.name()));
+            break;
+        case Channel::PCM:
+            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_pcmColor.name()));
+            break;
     }
 
     QWidget::paintEvent(event);

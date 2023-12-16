@@ -98,8 +98,8 @@ QList<int> Pattern::activeTracksAtTime(const float time) const
     QList<int> result;
 
     for (auto it = _tracks.begin(); it != _tracks.end(); ++it) {
-        if (std::find_if(it.value()->items().begin(), it.value()->items().end(), [=](const Track::Item* item){
-            return (item->time() <= time) && ((item->time() + item->duration()) >= time);
+        if (std::find_if(it.value()->items().begin(), it.value()->items().end(), [=](const Track::Item* item) {
+        return (item->time() <= time) && ((item->time() + item->duration()) >= time);
         }) != it.value()->items().end()) {
             result.append(it.key());
         }

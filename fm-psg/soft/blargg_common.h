@@ -26,29 +26,42 @@ typedef unsigned blargg_ulong;
 // blargg_vector - very lightweight vector of POD types (no constructor/destructor)
 template<class T>
 class blargg_vector {
-	T* begin_;
-	size_t size_;
-public:
-	blargg_vector() : begin_( 0 ), size_( 0 ) { }
-	~blargg_vector() { free( begin_ ); }
-	size_t size() const { return size_; }
-	T* begin() const { return begin_; }
-	T* end() const { return begin_ + size_; }
-	blargg_err_t resize( size_t n )
-	{
-		void* p = realloc( begin_, n * sizeof (T) );
-		if ( !p && n )
-			return "Out of memory";
-		begin_ = (T*) p;
-		size_ = n;
-		return 0;
-	}
-	void clear() { void* p = begin_; begin_ = 0; size_ = 0; free( p ); }
-	T& operator [] ( size_t n ) const
-	{
-		assert( n <= size_ ); // <= to allow past-the-end value
-		return begin_ [n];
-	}
+        T* begin_;
+        size_t size_;
+    public:
+        blargg_vector() : begin_( 0 ), size_( 0 ) { }
+        ~blargg_vector() {
+            free( begin_ );
+        }
+        size_t size() const {
+            return size_;
+        }
+        T* begin() const {
+            return begin_;
+        }
+        T* end() const {
+            return begin_ + size_;
+        }
+        blargg_err_t resize( size_t n )
+        {
+            void* p = realloc( begin_, n * sizeof (T) );
+            if ( !p && n )
+                return "Out of memory";
+            begin_ = (T*) p;
+            size_ = n;
+            return 0;
+        }
+        void clear() {
+            void* p = begin_;
+            begin_ = 0;
+            size_ = 0;
+            free( p );
+        }
+        T& operator [] ( size_t n ) const
+        {
+            assert( n <= size_ ); // <= to allow past-the-end value
+            return begin_ [n];
+        }
 };
 
 // BLARGG_4CHAR('a','b','c','d') = 'abcd' (four character integer constant)
@@ -57,16 +70,16 @@ public:
 
 // BOOST_STATIC_ASSERT( expr ): Generates compile error if expr is 0.
 #ifndef BOOST_STATIC_ASSERT
-	#ifdef _MSC_VER
-		// MSVC6 (_MSC_VER < 1300) fails for use of __LINE__ when /Zl is specified
-		#define BOOST_STATIC_ASSERT( expr ) \
+#ifdef _MSC_VER
+// MSVC6 (_MSC_VER < 1300) fails for use of __LINE__ when /Zl is specified
+#define BOOST_STATIC_ASSERT( expr ) \
 			void blargg_failed_( int (*arg) [2 / (int) !!(expr) - 1] )
-	#else
-		// Some other compilers fail when declaring same function multiple times in class,
-		// so differentiate them by line
-		#define BOOST_STATIC_ASSERT( expr ) \
+#else
+// Some other compilers fail when declaring same function multiple times in class,
+// so differentiate them by line
+#define BOOST_STATIC_ASSERT( expr ) \
 			void blargg_failed_( int (*arg) [2 / !!(expr) - 1] [__LINE__] )
-	#endif
+#endif
 #endif
 
 #endif

@@ -89,13 +89,13 @@ typedef unsigned char byte;
 
 // Setup compiler defines useful for exporting required public API symbols in gme.cpp
 #ifndef BLARGG_EXPORT
-    #if defined (_WIN32) && defined(BLARGG_BUILD_DLL)
-        #define BLARGG_EXPORT __declspec(dllexport)
-    #elif defined (LIBGME_VISIBILITY)
-        #define BLARGG_EXPORT __attribute__((visibility ("default")))
-    #else
-        #define BLARGG_EXPORT
-    #endif
+#if defined (_WIN32) && defined(BLARGG_BUILD_DLL)
+#define BLARGG_EXPORT __declspec(dllexport)
+#elif defined (LIBGME_VISIBILITY)
+#define BLARGG_EXPORT __attribute__((visibility ("default")))
+#else
+#define BLARGG_EXPORT
+#endif
 #endif
 
 // deprecated
@@ -104,7 +104,7 @@ typedef unsigned char byte;
 
 // BLARGG_SOURCE_BEGIN: If defined, #included, allowing redefition of debug_printf and check
 #ifdef BLARGG_SOURCE_BEGIN
-	#include BLARGG_SOURCE_BEGIN
+#include BLARGG_SOURCE_BEGIN
 #endif
 
 #endif

@@ -23,12 +23,13 @@
 #define AUD_MAX_CHANNELS 10
 
 enum {
- FMT_FLOAT,
- FMT_S8, FMT_U8,
- FMT_S16_LE, FMT_S16_BE, FMT_U16_LE, FMT_U16_BE,
- FMT_S24_LE, FMT_S24_BE, FMT_U24_LE, FMT_U24_BE, /* padded to 4 bytes */
- FMT_S32_LE, FMT_S32_BE, FMT_U32_LE, FMT_U32_BE,
- FMT_S24_3LE, FMT_S24_3BE, FMT_U24_3LE, FMT_U24_3BE }; /* packed in 3 bytes */
+    FMT_FLOAT,
+    FMT_S8, FMT_U8,
+    FMT_S16_LE, FMT_S16_BE, FMT_U16_LE, FMT_U16_BE,
+    FMT_S24_LE, FMT_S24_BE, FMT_U24_LE, FMT_U24_BE, /* padded to 4 bytes */
+    FMT_S32_LE, FMT_S32_BE, FMT_U32_LE, FMT_U32_BE,
+    FMT_S24_3LE, FMT_S24_3BE, FMT_U24_3LE, FMT_U24_3BE
+}; /* packed in 3 bytes */
 
 struct ReplayGainInfo {
     float track_gain; /* dB */
@@ -51,7 +52,9 @@ struct StereoVolume {
 
 /* GCC will optimize these to appropriate bswap instructions */
 constexpr uint16_t bswap16 (uint16_t x)
-    { return ((x & 0xff00) >> 8) | ((x & 0x00ff) << 8); }
+{
+    return ((x & 0xff00) >> 8) | ((x & 0x00ff) << 8);
+}
 
 constexpr uint32_t bswap32 (uint32_t x)
 {

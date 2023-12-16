@@ -11,95 +11,95 @@ class Project;
 
 class Playlist
 {
-    friend class BSON;
-    friend class Project;
-
-public:
-
-    class Item : public GanttItem {
         friend class BSON;
-        friend class Playlist;
+        friend class Project;
 
-        public:
-            Item(Project* const project, const float time, const int pattern);
+    public:
 
-            float time() const;
+        class Item : public GanttItem {
+                friend class BSON;
+                friend class Playlist;
 
-            int pattern() const;
+            public:
+                Item(Project* const project, const float time, const int pattern);
 
-            bool operator==(const Item& item);
+                float time() const;
 
-        private:
-            Item();
+                int pattern() const;
 
-            Project* _project;
-            float _time;
-            int _pattern;
+                bool operator==(const Item& item);
 
-            // GanttItem interface
-        public:
-            long row() const;
-            float duration() const;
-            int velocity() const;
-            void setRow(const long row);
-            void setTime(const float time);
-            void setDuration(const float);
-            void setVelocity(const int);
-    };
+            private:
+                Item();
 
-    class LFOChange : public GanttMarker {
-        friend class BSON;
+                Project* _project;
+                float _time;
+                int _pattern;
 
-        public:
-            LFOChange(const float time, const int mode);
+                // GanttItem interface
+            public:
+                long row() const;
+                float duration() const;
+                int velocity() const;
+                void setRow(const long row);
+                void setTime(const float time);
+                void setDuration(const float);
+                void setVelocity(const int);
+        };
 
-            float time() const;
-            QString name() const;
+        class LFOChange : public GanttMarker {
+                friend class BSON;
 
-            int mode() const;
-            void setMode(const int mode);
+            public:
+                LFOChange(const float time, const int mode);
 
-        private:
-            LFOChange();
+                float time() const;
+                QString name() const;
 
-            float _time;
-            int _mode;
-    };
+                int mode() const;
+                void setMode(const int mode);
 
-    Playlist(Project* const project);
-    Playlist(Playlist&& o);
-    ~Playlist();
+            private:
+                LFOChange();
 
-    const QList<Item*>& items() const;
-    void addItem(const float time, const int pattern);
-    void addItems(const QList<Item*>& items);
-    void removeItems(const QList<Item*>& items);
-    void removeItem(const float time, const int pattern);
+                float _time;
+                int _mode;
+        };
 
-    float getLength() const;
+        Playlist(Project* const project);
+        Playlist(Playlist&& o);
+        ~Playlist();
 
-    QMap<int, float> activePatternsAtTime(const float time) const;
-    Playlist& operator=(Playlist&& o);
+        const QList<Item*>& items() const;
+        void addItem(const float time, const int pattern);
+        void addItems(const QList<Item*>& items);
+        void removeItems(const QList<Item*>& items);
+        void removeItem(const float time, const int pattern);
 
-    bool doesLoop() const;
-    float loopOffset() const;
-    int loopOffsetSamples() const;
-    void setLoopOffset(const float offset);
+        float getLength() const;
 
-    const QList<LFOChange*>& lfoChanges() const;
-    QList<LFOChange*>& lfoChanges();
-    LFOChange* addLFOChange(const float time, const int mode);
-    void removeLFOChange(const LFOChange* lc, const bool keep = false);
+        QMap<int, float> activePatternsAtTime(const float time) const;
+        Playlist& operator=(Playlist&& o);
 
-private:
-    Playlist();
+        bool doesLoop() const;
+        float loopOffset() const;
+        int loopOffsetSamples() const;
+        void setLoopOffset(const float offset);
 
-    QList<Item*> _items;
-    QList<LFOChange*> _lfoChanges;
+        const QList<LFOChange*>& lfoChanges() const;
+        QList<LFOChange*>& lfoChanges();
+        LFOChange* addLFOChange(const float time, const int mode);
+        void removeLFOChange(const LFOChange* lc, const bool keep = false);
 
-    Project* _project;
+    private:
+        Playlist();
 
-    float _loopOffset;
+        QList<Item*> _items;
+        QList<LFOChange*> _lfoChanges;
+
+        Project* _project;
+
+        float _loopOffset;
 };
 
 #endif // PLAYLIST_H

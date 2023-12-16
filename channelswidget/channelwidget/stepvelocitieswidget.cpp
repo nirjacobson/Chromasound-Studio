@@ -45,7 +45,9 @@ void StepVelocitiesWidget::paintEvent(QPaintEvent*)
         Track& track = pattern.getTrack(_index);
 
         for (int i = 0; i < numSteps; i++) {
-            auto it = std::find_if(track.items().begin(), track.items().end(), [=](Track::Item* const item){ return item->time() == beatsPerStep * i; });
+            auto it = std::find_if(track.items().begin(), track.items().end(), [=](Track::Item* const item) {
+                return item->time() == beatsPerStep * i;
+            });
             if (it != track.items().end()) {
                 steps[i] = (*it)->note().velocity();
             } else {
@@ -91,7 +93,9 @@ void StepVelocitiesWidget::mousePressEvent(QMouseEvent* event)
     if (pattern.hasTrack(_index)) {
         Track& track = pattern.getTrack(_index);
 
-        auto it = std::find_if(track.items().begin(), track.items().end(), [=](Track::Item* const item){ return item->time() == beatsPerStep * stepClicked; });
+        auto it = std::find_if(track.items().begin(), track.items().end(), [=](Track::Item* const item) {
+            return item->time() == beatsPerStep * stepClicked;
+        });
         if (it != track.items().end()) {
             emit clicked(stepClicked, velocityClicked);
         }

@@ -9,22 +9,22 @@
 
 class MIDITrack : public MIDIChunk
 {
-    friend class MIDI;
+        friend class MIDI;
 
-public:
-    MIDITrack(const QString& chunkType, quint32 length, const std::function<qint64 ()>& posFunc);
-    ~MIDITrack();
+    public:
+        MIDITrack(const QString& chunkType, quint32 length, const std::function<qint64 ()>& posFunc);
+        ~MIDITrack();
 
-    MIDITrack& operator<<(QDataStream& stream);
+        MIDITrack& operator<<(QDataStream& stream);
 
-    int events() const;
-    const MIDITrackEvent& event(const int idx) const;
+        int events() const;
+        const MIDITrackEvent& event(const int idx) const;
 
-    QByteArray encode() const;
+        QByteArray encode() const;
 
-private:
-    QList<MIDITrackEvent*> _events;
-    std::function<qint64(void)> _pos;
+    private:
+        QList<MIDITrackEvent*> _events;
+        std::function<qint64(void)> _pos;
 };
 
 #endif // MIDITRACK_H

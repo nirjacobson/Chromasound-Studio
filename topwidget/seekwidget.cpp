@@ -13,7 +13,7 @@ void SeekWidget::setApplication(Application* app)
 }
 
 void SeekWidget::paintEvent(QPaintEvent* event)
-{   
+{
     if (_app->project().playMode() == Project::PlayMode::PATTERN) {
         float patternLength = _app->project().getPatternBarLength(_app->project().frontPattern());
         float percentage = _app->position() / (float)patternLength;

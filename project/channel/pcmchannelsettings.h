@@ -7,27 +7,27 @@
 
 class PCMChannelSettings : public ChannelSettings
 {
-public:
-    PCMChannelSettings();
+    public:
+        PCMChannelSettings();
 
-    const QString& path() const;
-    void setPath(const QString& path);
+        const QString& path() const;
+        void setPath(const QString& path);
 
-private:
-    QString _filePath;
+    private:
+        QString _filePath;
 
-    // Settings interface
-public:
-    bson_t toBSON() const;
-    void fromBSON(bson_iter_t& bson);
+        // Settings interface
+    public:
+        bson_t toBSON() const;
+        void fromBSON(bson_iter_t& bson);
 
-    // ChannelSettings interface
-public:
-    QString type() const;
+        // ChannelSettings interface
+    public:
+        QString type() const;
 
-    // ChannelSettings interface
-public:
-    ChannelSettings* copy() const;
+        // ChannelSettings interface
+    public:
+        ChannelSettings* copy() const;
 };
 
 #endif // PCMCHANNELSETTINGS_H

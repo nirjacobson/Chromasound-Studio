@@ -160,7 +160,7 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool hea
 
     QByteArray gd3Data;
     if (gd3) {
-         gd3Data = generateGd3(project);
+        gd3Data = generateGd3(project);
     }
 
     if (header) {
@@ -211,10 +211,10 @@ QByteArray VGMStream::compile(Project& project, const bool header, bool gd3, int
     });
 
     auto mostRecentLFOChangeIt = std::find_if(project.playlist().lfoChanges().rbegin(),
-                                              project.playlist().lfoChanges().rend(),
-                                              [&](Playlist::LFOChange* change){
-                                                  return change->time() <= currentOffset;
-                                              });
+                                 project.playlist().lfoChanges().rend(),
+    [&](Playlist::LFOChange* change) {
+        return change->time() <= currentOffset;
+    });
     if (mostRecentLFOChangeIt == project.playlist().lfoChanges().rend()) {
         items.prepend(new StreamLFOItem(currentOffset, project.lfoMode()));
     } else {
@@ -336,7 +336,7 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const Pattern& p
     QMap<int, int> pcmOffsetsByChannel;
     QMap<int, QString> pcmPathsByChannel;
 
-    items.erase(std::remove_if(items.begin(), items.end(), [](StreamItem* si){
+    items.erase(std::remove_if(items.begin(), items.end(), [](StreamItem* si) {
         StreamNoteItem* sni;
         if ((sni = dynamic_cast<StreamNoteItem*>(si))) {
             if (sni->type() == Channel::Type::PCM) {
@@ -445,15 +445,15 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const float loop
     QMap<int, int> pcmOffsetsByChannel;
     QMap<int, QString> pcmPathsByChannel;
 
-    items.erase(std::remove_if(items.begin(), items.end(), [](StreamItem* si){
-                    StreamNoteItem* sni;
-                    if ((sni = dynamic_cast<StreamNoteItem*>(si))) {
-                        if (sni->type() == Channel::Type::PCM) {
-                            return false;
-                        }
-                    }
-                    return true;
-                }), items.end());
+    items.erase(std::remove_if(items.begin(), items.end(), [](StreamItem* si) {
+        StreamNoteItem* sni;
+        if ((sni = dynamic_cast<StreamNoteItem*>(si))) {
+            if (sni->type() == Channel::Type::PCM) {
+                return false;
+            }
+        }
+        return true;
+    }), items.end());
 
     std::for_each(items.begin(), items.end(), [&](StreamItem* si) {
         StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(si);
@@ -628,7 +628,9 @@ void VGMStream::processPattern(const float time, const Project& project, const P
 void VGMStream::processTrack(const float time, const Channel& channel, const Track* track, QList<StreamItem*>& items, const float loopStart, const float loopEnd)
 {
     QList<Track::Item*> itemsCopy = track->items();
-    std::sort(itemsCopy.begin(), itemsCopy.end(), [](const Track::Item* a, const Track::Item* b){ return a->time() < b->time(); });
+    std::sort(itemsCopy.begin(), itemsCopy.end(), [](const Track::Item* a, const Track::Item* b) {
+        return a->time() < b->time();
+    });
 
     for (Track::Item* item : itemsCopy) {
         Note note = item->note();
@@ -648,7 +650,9 @@ void VGMStream::processTrack(const float time, const Channel& channel, const Tra
 void VGMStream::processProject(const Project& project, QList<StreamItem*>& items, const float loopStart, const float loopEnd)
 {
     QList<Playlist::Item*> itemsCopy(project.playlist().items());
-    std::sort(itemsCopy.begin(), itemsCopy.end(), [](const Playlist::Item* a, const Playlist::Item* b){ return a->time() < b->time(); });
+    std::sort(itemsCopy.begin(), itemsCopy.end(), [](const Playlist::Item* a, const Playlist::Item* b) {
+        return a->time() < b->time();
+    });
 
     for (Playlist::Item* item : itemsCopy) {
         if (loopStart >= 0 && loopEnd >= 0) {
@@ -675,7 +679,9 @@ void VGMStream::processProject(const Project& project, QList<StreamItem*>& items
 void VGMStream::assignChannelsAndExpand(QList<StreamItem*>& items, const int tempo)
 {
     QList<StreamItem*> itemsCopy = items;
-    std::sort(itemsCopy.begin(), itemsCopy.end(), [](const StreamItem* a, const StreamItem* b){ return a->time() < b->time(); });
+    std::sort(itemsCopy.begin(), itemsCopy.end(), [](const StreamItem* a, const StreamItem* b) {
+        return a->time() < b->time();
+    });
 
     for (StreamItem* item : itemsCopy) {
         StreamNoteItem* noteItem = dynamic_cast<StreamNoteItem*>(item);
@@ -712,7 +718,7 @@ void VGMStream::applySettingsChanges(Project& project, const float time, const P
         });
 
         QList<StreamItem*> trackNoteItems = items;
-        trackNoteItems.erase(std::remove_if(trackNoteItems.begin(), trackNoteItems.end(), [&](StreamItem* si){
+        trackNoteItems.erase(std::remove_if(trackNoteItems.begin(), trackNoteItems.end(), [&](StreamItem* si) {
             StreamNoteItem* sni;
             if ((sni = dynamic_cast<StreamNoteItem*>(si))) {
                 if (sni->track() == it.value()) {
@@ -744,7 +750,7 @@ void VGMStream::applySettingsChanges2(Project& project, const float time, const 
         });
 
         QList<StreamItem*> trackNoteItems = items;
-        trackNoteItems.erase(std::remove_if(trackNoteItems.begin(), trackNoteItems.end(), [&](StreamItem* si){
+        trackNoteItems.erase(std::remove_if(trackNoteItems.begin(), trackNoteItems.end(), [&](StreamItem* si) {
             StreamNoteItem* sni;
             if ((sni = dynamic_cast<StreamNoteItem*>(si))) {
                 if (sni->track() == it.value()) {
@@ -756,7 +762,7 @@ void VGMStream::applySettingsChanges2(Project& project, const float time, const 
 
         for (auto it2 = settingChanges.begin(); it2 != settingChanges.end(); ++it2) {
             QList<StreamItem*> trackNoteItemsAtChange = trackNoteItems;
-            trackNoteItemsAtChange.erase(std::remove_if(trackNoteItemsAtChange.begin(), trackNoteItemsAtChange.end(), [&](StreamItem* si){
+            trackNoteItemsAtChange.erase(std::remove_if(trackNoteItemsAtChange.begin(), trackNoteItemsAtChange.end(), [&](StreamItem* si) {
                 StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(si);
 
                 return !((sni->time() - time) < (*it2)->time() && (*it2)->time() < (sni->time() - time + sni->note().duration()));
@@ -910,7 +916,7 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
 
 void VGMStream::sortItems(QList<StreamItem*>& items)
 {
-    std::sort(items.begin(), items.end(), [](const StreamItem* a, const StreamItem* b){
+    std::sort(items.begin(), items.end(), [](const StreamItem* a, const StreamItem* b) {
         if (a->time() == b->time()) {
             const StreamNoteItem* an;
             const StreamNoteItem* bn;
@@ -918,7 +924,8 @@ void VGMStream::sortItems(QList<StreamItem*>& items)
                 if((bn = dynamic_cast<const StreamNoteItem*>(b)) != nullptr) {
                     if (!an->on() && bn->on()) {
                         return true;
-                    } if (an->on() && !bn->on()) {
+                    }
+                    if (an->on() && !bn->on()) {
                         return false;
                     } else {
                         return an->channel() < bn->channel();

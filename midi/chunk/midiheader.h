@@ -8,23 +8,23 @@
 
 class MIDIHeader : public MIDIChunk
 {
-    friend class MIDI;
+        friend class MIDI;
 
-public:
-    MIDIHeader(const QString& chunkType, quint32 length);
+    public:
+        MIDIHeader(const QString& chunkType, quint32 length);
 
-    quint16 format() const;
-    quint16 numTracks() const;
-    quint16 division() const;
+        quint16 format() const;
+        quint16 numTracks() const;
+        quint16 division() const;
 
-    MIDIHeader& operator<<(QDataStream& stream);
+        MIDIHeader& operator<<(QDataStream& stream);
 
-    QByteArray encode() const;
+        QByteArray encode() const;
 
-private:
-    quint16 _format;
-    quint16 _ntrks;
-    quint16 _division;
+    private:
+        quint16 _format;
+        quint16 _ntrks;
+        quint16 _division;
 };
 
 #endif // MIDIHEADER_H

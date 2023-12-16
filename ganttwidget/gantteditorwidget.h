@@ -48,7 +48,7 @@ class GanttEditorWidget : public QWidget
 
         void setCellMajors(const QList<int>& majors);
         void setRowMajors(const QList<int>& majors);
-        
+
         float mousePosition() const;
 
         void setLoop(const float start, const float end);

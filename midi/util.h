@@ -7,11 +7,11 @@
 
 class Util
 {
-public:
-    Util();
+    public:
+        Util();
 
-    static quint32 getVariableLengthQuantity(QDataStream& stream);
-    static QByteArray toVariableLengthQuantity(quint32 value);
+        static quint32 getVariableLengthQuantity(QDataStream& stream);
+        static QByteArray toVariableLengthQuantity(quint32 value);
 };
 
 #endif // UTIL_H

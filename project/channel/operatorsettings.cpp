@@ -67,10 +67,10 @@ void OperatorSettings::setAm(const bool am)
 bool OperatorSettings::operator==(const OperatorSettings& other) const
 {
     return _envelopeSettings == other._envelopeSettings &&
-            _rs == other._rs &&
-            _mul == other._mul &&
-            _dt == other._dt &&
-            _am == other._am;
+           _rs == other._rs &&
+           _mul == other._mul &&
+           _dt == other._dt &&
+           _am == other._am;
 }
 
 bson_t OperatorSettings::toBSON() const

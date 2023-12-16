@@ -72,7 +72,7 @@ void NoiseWidget::shiftRateChanged(int idx)
             break;
     }
 
-        _app->undoStack().push(new EditNoiseChannelSettingsCommand(_app->window(), *_settings, newSettings));
+    _app->undoStack().push(new EditNoiseChannelSettingsCommand(_app->window(), *_settings, newSettings));
 }
 
 void NoiseWidget::paintEvent(QPaintEvent* event)

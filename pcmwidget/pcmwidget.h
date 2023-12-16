@@ -10,35 +10,35 @@
 #include "commands/setpcmchannelsettingscommand.h"
 
 namespace Ui {
-class PCMWidget;
+    class PCMWidget;
 }
 
 class PCMWidget : public QMainWindow
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    explicit PCMWidget(QWidget *parent = nullptr, Application* app = nullptr);
-    ~PCMWidget();
+    public:
+        explicit PCMWidget(QWidget *parent = nullptr, Application* app = nullptr);
+        ~PCMWidget();
 
-    void setSettings(PCMChannelSettings* settings);
+        void setSettings(PCMChannelSettings* settings);
 
-    void doUpdate();
+        void doUpdate();
 
-private:
-    Ui::PCMWidget *ui;
-    Application* _app;
+    private:
+        Ui::PCMWidget *ui;
+        Application* _app;
 
-    PCMChannelSettings* _settings;
+        PCMChannelSettings* _settings;
 
-private slots:
-    void openTriggered();
+    private slots:
+        void openTriggered();
 
-    // QWidget interface
-protected:
-    void closeEvent(QCloseEvent* event);
-    void dragEnterEvent(QDragEnterEvent* event);
-    void dropEvent(QDropEvent* event);
+        // QWidget interface
+    protected:
+        void closeEvent(QCloseEvent* event);
+        void dragEnterEvent(QDragEnterEvent* event);
+        void dropEvent(QDropEvent* event);
 };
 
 #endif // PCMWIDGET_H

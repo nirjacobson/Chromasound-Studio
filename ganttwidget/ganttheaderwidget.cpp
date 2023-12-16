@@ -10,15 +10,17 @@ GanttHeaderWidget::GanttHeaderWidget(QWidget *parent)
     , _cellWidth(16)
     , _cellBeats(1)
     , _snap(true)
-    , _positionFunction([](){ return -1; })
-    , _headerPaintFunction([](QPainter&,QRect,float,float,float){})
-    , _activeColor(QColor(64, 64, 64))
-    , _inactiveColor(Qt::lightGray)
-    , _activeForegroundColor(Qt::gray)
-    , _inactiveForegroundColor(Qt::gray)
-    , _cursorColor(QColor(64, 192, 64))
-    , _loopColor(QColor(255, 192, 0))
-    , _markerColor(QColor(255, 128, 128))
+    , _positionFunction([]() {
+    return -1;
+})
+, _headerPaintFunction([](QPainter&,QRect,float,float,float) {})
+, _activeColor(QColor(64, 64, 64))
+, _inactiveColor(Qt::lightGray)
+, _activeForegroundColor(Qt::gray)
+, _inactiveForegroundColor(Qt::gray)
+, _cursorColor(QColor(64, 192, 64))
+, _loopColor(QColor(255, 192, 0))
+, _markerColor(QColor(255, 128, 128))
 {
 
 }

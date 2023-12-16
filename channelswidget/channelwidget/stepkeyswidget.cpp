@@ -59,7 +59,9 @@ void StepKeysWidget::paintEvent(QPaintEvent*)
         Track& track = pattern.getTrack(_index);
 
         for (int i = 0; i < numSteps; i++) {
-            auto it = std::find_if(track.items().begin(), track.items().end(), [=](Track::Item* const item){ return item->time() == beatsPerStep * i; });
+            auto it = std::find_if(track.items().begin(), track.items().end(), [=](Track::Item* const item) {
+                return item->time() == beatsPerStep * i;
+            });
             if (it != track.items().end()) {
                 steps[i] = (*it)->note().key();
             } else {

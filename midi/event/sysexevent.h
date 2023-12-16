@@ -11,19 +11,19 @@
 
 class SysexEvent : public Event
 {
-public:
-    SysexEvent(quint8 event);
+    public:
+        SysexEvent(quint8 event);
 
-    SysexEvent& operator<<(QDataStream& stream);
+        SysexEvent& operator<<(QDataStream& stream);
 
-private:
-    quint8 _event;
-    quint32 _length;
-    QByteArray _data;
+    private:
+        quint8 _event;
+        quint32 _length;
+        QByteArray _data;
 
-    // Event interface
-public:
-    QByteArray encode() const;
+        // Event interface
+    public:
+        QByteArray encode() const;
 };
 
 #endif // SYSEXEVENT_H

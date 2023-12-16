@@ -11,25 +11,25 @@ class MainWindow;
 
 class SetFMChannelCommand : public QUndoCommand
 {
-public:
-    SetFMChannelCommand(MainWindow* window, Channel& channel, const FMChannelSettings& settingsAfter, const QString& name = "");
-    ~SetFMChannelCommand();
+    public:
+        SetFMChannelCommand(MainWindow* window, Channel& channel, const FMChannelSettings& settingsAfter, const QString& name = "");
+        ~SetFMChannelCommand();
 
-private:
-    MainWindow* _mainWindow;
-    Channel& _channel;
-    FMChannelSettings _settingsAfter;
+    private:
+        MainWindow* _mainWindow;
+        Channel& _channel;
+        FMChannelSettings _settingsAfter;
 
-    SetChannelTypeCommand* _setChannelTypeCommand;
-    SetFMChannelSettingsCommand* _setFMChannelSettingsCommand;
-    SetChannelNameCommand* _setChannelNameCommand;
+        SetChannelTypeCommand* _setChannelTypeCommand;
+        SetFMChannelSettingsCommand* _setFMChannelSettingsCommand;
+        SetChannelNameCommand* _setChannelNameCommand;
 
-    QString _name;
+        QString _name;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 };
 
 #endif // SETFMCHANNELCOMMAND_H

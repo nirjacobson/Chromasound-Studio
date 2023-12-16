@@ -29,7 +29,8 @@ PCMUsageDialog::PCMUsageDialog(QWidget *parent, Application* app) :
     doUpdate();
 
     ui->displayWidget->setItems(&_items);
-    ui->legendWidget->setItems(&_items);}
+    ui->legendWidget->setItems(&_items);
+}
 
 PCMUsageDialog::~PCMUsageDialog()
 {

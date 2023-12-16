@@ -79,9 +79,10 @@ void PlaylistPatternsWidget::paintEvent(QPaintEvent*)
 
                 Track& track = pat.getTrack(t);
                 bool noneAreInDelta = std::find_if(track.items().begin(), track.items().end(),
-                                            [&](const Track::Item* item){
-                                              float delta = item->time() - (appPosition - activePatterns[pattern]);
-                                              return qAbs(delta)<= 0.0625; }) == track.items().end();
+                [&](const Track::Item* item) {
+                    float delta = item->time() - (appPosition - activePatterns[pattern]);
+                    return qAbs(delta)<= 0.0625;
+                }) == track.items().end();
                 if (noneAreInDelta) {
                     on = true;
                     break;

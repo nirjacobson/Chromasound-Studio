@@ -81,7 +81,7 @@ void PianoRollWidget::setTrack(const int pattern, const int track)
     _track = &_app->project().getPattern(pattern).getTrack(track);
     ui->ganttWidget->setItems(reinterpret_cast<QList<GanttItem*>*>(&_track->items()));
     ui->ganttWidget->setMarkers(reinterpret_cast<QList<GanttMarker*>*>(&_track->settingsChanges()));
-    ui->ganttWidget->setPositionFunction([=](){
+    ui->ganttWidget->setPositionFunction([=]() {
         float appPosition = _app->position();
 
         if (_app->project().playMode() == Project::PlayMode::SONG) {
@@ -157,12 +157,16 @@ ChannelSettings& PianoRollWidget::currentSettings()
 
 void PianoRollWidget::loadMIDI(const MIDIFile& file)
 {
-    auto it1 = std::find_if(file.chunks().begin(), file.chunks().end(), [](const MIDIChunk* chunk){ return dynamic_cast<const MIDIHeader*>(chunk); });
+    auto it1 = std::find_if(file.chunks().begin(), file.chunks().end(), [](const MIDIChunk* chunk) {
+        return dynamic_cast<const MIDIHeader*>(chunk);
+    });
 
     if (it1 != file.chunks().end()) {
         const MIDIHeader* header = dynamic_cast<const MIDIHeader*>(*it1);
 
-        auto it2 = std::find_if(file.chunks().begin(), file.chunks().end(), [](const MIDIChunk* chunk){ return dynamic_cast<const MIDITrack*>(chunk); });
+        auto it2 = std::find_if(file.chunks().begin(), file.chunks().end(), [](const MIDIChunk* chunk) {
+            return dynamic_cast<const MIDITrack*>(chunk);
+        });
 
         if (it2 != file.chunks().end()) {
             const MIDITrack* track = dynamic_cast<const MIDITrack*>(*it2);

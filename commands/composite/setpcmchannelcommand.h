@@ -9,25 +9,25 @@
 
 class SetPCMChannelCommand : public QUndoCommand
 {
-public:
-    SetPCMChannelCommand(MainWindow* window, Channel& channel, PCMChannelSettings settingsAfter, const QString& name = "");
-    ~SetPCMChannelCommand();
+    public:
+        SetPCMChannelCommand(MainWindow* window, Channel& channel, PCMChannelSettings settingsAfter, const QString& name = "");
+        ~SetPCMChannelCommand();
 
-private:
-    MainWindow* _mainWindow;
-    Channel& _channel;
-    PCMChannelSettings _settingsAfter;
+    private:
+        MainWindow* _mainWindow;
+        Channel& _channel;
+        PCMChannelSettings _settingsAfter;
 
-    SetChannelTypeCommand* _setChannelTypeCommand;
-    SetPCMChannelSettingsCommand* _setPCMChannelSettingsCommand;
-    SetChannelNameCommand* _setChannelNameCommand;
+        SetChannelTypeCommand* _setChannelTypeCommand;
+        SetPCMChannelSettingsCommand* _setPCMChannelSettingsCommand;
+        SetChannelNameCommand* _setChannelNameCommand;
 
-    QString _name;
+        QString _name;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 };
 
 #endif // SETPCMCHANNELCOMMAND_H

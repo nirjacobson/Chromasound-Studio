@@ -8,22 +8,22 @@
 
 class AddFMChannelCommand : public QUndoCommand
 {
-public:
-    AddFMChannelCommand(MainWindow* window, const FMChannelSettings& settingsAfter, const QString& name);
-    ~AddFMChannelCommand();
+    public:
+        AddFMChannelCommand(MainWindow* window, const FMChannelSettings& settingsAfter, const QString& name);
+        ~AddFMChannelCommand();
 
-private:
-    MainWindow* _mainWindow;
-    FMChannelSettings _settingsAfter;
-    QString _name;
+    private:
+        MainWindow* _mainWindow;
+        FMChannelSettings _settingsAfter;
+        QString _name;
 
-    AddChannelCommand* _addChannelCommand;
-    SetFMChannelCommand* _setFMChannelCommand;
+        AddChannelCommand* _addChannelCommand;
+        SetFMChannelCommand* _setFMChannelCommand;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 };
 
 #endif // ADDFMCHANNELCOMMAND_H

@@ -9,19 +9,19 @@ class MainWindow;
 
 class SetChannelNameCommand : public QUndoCommand
 {
-public:
-    SetChannelNameCommand(MainWindow* window, Channel& channel, const QString& name);
+    public:
+        SetChannelNameCommand(MainWindow* window, Channel& channel, const QString& name);
 
-private:
-    MainWindow* _mainWindow;
-    Channel& _channel;
-    QString _nameBefore;
-    QString _nameAfter;
+    private:
+        MainWindow* _mainWindow;
+        Channel& _channel;
+        QString _nameBefore;
+        QString _nameAfter;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 };
 
 #endif // SETCHANNELNAMECOMMAND_H

@@ -50,7 +50,7 @@ void Channel::setType(const Type type)
         case PCM:
             _settings = new PCMChannelSettings;
             break;
-        }
+    }
 }
 
 QString Channel::name() const

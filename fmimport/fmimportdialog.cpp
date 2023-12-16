@@ -67,40 +67,40 @@ void FMImportDialog::load(const QString& path)
         in >> command;
 
         switch (command) {
-        case 0x50:
-            in >> dd;
-            break;
-        case 0x52:
-            in >> aa;
-            in >> dd;
-            ym2612_1[aa] = dd;
-            break;
-        case 0x53:
-            in >> aa;
-            in >> dd;
-            ym2612_2[aa] = dd;
-            break;
-        case 0x58:
-        case 0x59:
-        case 0x61:
-            in >> dd;
-            in >> dd;
-            break;
-        case 0x67:
-            in.skipRawData(1);
-            quint8 type;
-            in >> type;
-            quint32 size;
-            in >> size;
+            case 0x50:
+                in >> dd;
+                break;
+            case 0x52:
+                in >> aa;
+                in >> dd;
+                ym2612_1[aa] = dd;
+                break;
+            case 0x53:
+                in >> aa;
+                in >> dd;
+                ym2612_2[aa] = dd;
+                break;
+            case 0x58:
+            case 0x59:
+            case 0x61:
+                in >> dd;
+                in >> dd;
+                break;
+            case 0x67:
+                in.skipRawData(1);
+                quint8 type;
+                in >> type;
+                quint32 size;
+                in >> size;
 
-            in.skipRawData(size);
-            break;
-        case 0xE0:
-            quint32 address;
-            in >> address;
-            break;
-        default:
-            break;
+                in.skipRawData(size);
+                break;
+            case 0xE0:
+                quint32 address;
+                in >> address;
+                break;
+            default:
+                break;
         }
 
         if (command == 0x52 && aa == 0x28 && (dd & 0xF0) > 0) {

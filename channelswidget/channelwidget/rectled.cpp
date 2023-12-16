@@ -5,7 +5,9 @@ RectLED::RectLED(QWidget *parent, const QColor& color, const QColor& selectedCol
     , _color(color)
     , _selectedColor(selectedColor)
     , _selected(false)
-    , _onFunction([](){ return false; })
+    , _onFunction([]() {
+    return false;
+})
 {
     setMinimumWidth(8);
     setMaximumWidth(8);

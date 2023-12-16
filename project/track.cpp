@@ -66,7 +66,9 @@ Track::Item* Track::addItem(const float time, const Note& note)
     Item* ret = nullptr;
 
     Item item(time, note);
-    if (std::find_if(_items.begin(), _items.end(), [=](Item* const noteItem){ return *noteItem == item; }) == _items.end()) {
+    if (std::find_if(_items.begin(), _items.end(), [=](Item* const noteItem) {
+    return *noteItem == item;
+}) == _items.end()) {
         ret = new Item(time, note);
         _items.append(ret);
     }
@@ -82,7 +84,9 @@ void Track::addItems(const QList<Item*>& items)
 float Track::removeItem(const float time, const int key)
 {
     float tt;
-    auto it = std::remove_if(_items.begin(), _items.end(), [=](Item* const item){ return (item->note().key() == key) && (item->time() <= time) && (time < (item->time() + item->note().duration())); });
+    auto it = std::remove_if(_items.begin(), _items.end(), [=](Item* const item) {
+        return (item->note().key() == key) && (item->time() <= time) && (time < (item->time() + item->note().duration()));
+    });
     if (it != _items.end()) {
         tt = (*it)->time();
     }
@@ -94,7 +98,9 @@ float Track::removeItem(const float time, const int key)
 float Track::removeItem(const float time)
 {
     float tt;
-    auto it = std::remove_if(_items.begin(), _items.end(), [=](Item* const item){ return (item->time() <= time) && (time < (item->time() + item->note().duration())); });
+    auto it = std::remove_if(_items.begin(), _items.end(), [=](Item* const item) {
+        return (item->time() <= time) && (time < (item->time() + item->note().duration()));
+    });
     if (it != _items.end()) {
         tt = (*it)->time();
     }
@@ -105,14 +111,18 @@ float Track::removeItem(const float time)
 
 void Track::removeItems(const QList<Item*>& items)
 {
-    _items.erase(std::remove_if(_items.begin(), _items.end(), [&](const Track::Item* item){ return items.contains(item); }), _items.end());
+    _items.erase(std::remove_if(_items.begin(), _items.end(), [&](const Track::Item* item) {
+        return items.contains(item);
+    }), _items.end());
 }
 
 Track::SettingsChange* Track::addSettingsChange(const float time, ChannelSettings* settings)
 {
     SettingsChange* ret = nullptr;
 
-    if (std::find_if(_settingsChanges.begin(), _settingsChanges.end(), [=](SettingsChange* const sc){ return sc->time() == time; }) == _settingsChanges.end()) {
+    if (std::find_if(_settingsChanges.begin(), _settingsChanges.end(), [=](SettingsChange* const sc) {
+    return sc->time() == time;
+    }) == _settingsChanges.end()) {
         ret = new SettingsChange(time, settings);
         _settingsChanges.append(ret);
     }

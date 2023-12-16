@@ -9,22 +9,22 @@ class MainWindow;
 
 class EditAlgorithmSettingsCommand : public QUndoCommand
 {
-public:
-    EditAlgorithmSettingsCommand(MainWindow* window, AlgorithmSettings& settings, const AlgorithmSettings& update);
+    public:
+        EditAlgorithmSettingsCommand(MainWindow* window, AlgorithmSettings& settings, const AlgorithmSettings& update);
 
-private:
-    MainWindow* _mainWindow;
-    AlgorithmSettings& _settings;
-    AlgorithmSettings _settingsBefore;
-    AlgorithmSettings _settingsAfter;
+    private:
+        MainWindow* _mainWindow;
+        AlgorithmSettings& _settings;
+        AlgorithmSettings _settingsBefore;
+        AlgorithmSettings _settingsAfter;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 
-    int id() const;
-    bool mergeWith(const QUndoCommand* other);
+        int id() const;
+        bool mergeWith(const QUndoCommand* other);
 };
 
 #endif // EDITALGORITHMSETTINGSCOMMAND_H

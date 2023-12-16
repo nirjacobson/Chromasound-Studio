@@ -45,7 +45,9 @@ QList<Track::Item*> MIDI::toTrackItems(const MIDITrack& midiTrack, const int div
         }
     }
 
-    std::sort(items.begin(), items.end(), [](const Track::Item* a, const Track::Item* b){ return a->time() < b->time(); });
+    std::sort(items.begin(), items.end(), [](const Track::Item* a, const Track::Item* b) {
+        return a->time() < b->time();
+    });
 
     return items;
 }
@@ -54,7 +56,9 @@ void MIDI::fromTrackItems(const Track& track, MIDITrack& midiTrack, const int di
 {
     QList<Track::Item*> itemsCopy = track.items();
 
-    std::sort(itemsCopy.begin(), itemsCopy.end(), [](const Track::Item* a, const Track::Item* b){ return a->time() < b->time(); });
+    std::sort(itemsCopy.begin(), itemsCopy.end(), [](const Track::Item* a, const Track::Item* b) {
+        return a->time() < b->time();
+    });
 
     struct KeyEvent {
         bool on;
@@ -82,7 +86,9 @@ void MIDI::fromTrackItems(const Track& track, MIDITrack& midiTrack, const int di
         keyEvents.append(keyEvent);
     }
 
-    std::sort(keyEvents.begin(), keyEvents.end(), [](const KeyEvent& a, const KeyEvent& b){ return a.time < b.time; });
+    std::sort(keyEvents.begin(), keyEvents.end(), [](const KeyEvent& a, const KeyEvent& b) {
+        return a.time < b.time;
+    });
 
     float lastTime = 0.0f;
     for (const KeyEvent& keyEvent : keyEvents) {
@@ -118,7 +124,9 @@ void MIDI::fromTrack(const Track& track, MIDIFile& midiFile, const int division)
     header->_ntrks = 1;
     header->_division = division;
 
-    MIDITrack* midiTrack = new MIDITrack("MTrk", 0, [](){ return 0; });
+    MIDITrack* midiTrack = new MIDITrack("MTrk", 0, []() {
+        return 0;
+    });
     fromTrackItems(track, *midiTrack, division);
 
     midiFile._chunks.append(header);

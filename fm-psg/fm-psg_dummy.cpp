@@ -76,7 +76,9 @@ FM_PSG_Dummy::FM_PSG_Dummy(const Project& project)
 
 void FM_PSG_Dummy::play(const QByteArray&, const int loopOffsetSamples, const int, const int, const int, const float duration)
 {
-    QTimer::singleShot(3000, [&](){ emit pcmUploadFinished(); });
+    QTimer::singleShot(3000, [&]() {
+        emit pcmUploadFinished();
+    });
     emit pcmUploadStarted();
 
     _loopOffsetSamples = loopOffsetSamples;
@@ -87,7 +89,9 @@ void FM_PSG_Dummy::play(const QByteArray&, const int loopOffsetSamples, const in
 
 void FM_PSG_Dummy::play(const QByteArray&, const bool loop, const int, const int)
 {
-    QTimer::singleShot(3000, [&](){ emit pcmUploadFinished(); });
+    QTimer::singleShot(3000, [&]() {
+        emit pcmUploadFinished();
+    });
     emit pcmUploadStarted();
 
     _loopOffsetSamples = loop ? 0 : -1;
@@ -97,7 +101,9 @@ void FM_PSG_Dummy::play(const QByteArray&, const bool loop, const int, const int
 
 void FM_PSG_Dummy::play()
 {
-    QTimer::singleShot(3000, [&](){ emit pcmUploadFinished(); });
+    QTimer::singleShot(3000, [&]() {
+        emit pcmUploadFinished();
+    });
     emit pcmUploadStarted();
 
     _playing = true;

@@ -26,7 +26,9 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
     ui->ganttWidget->setMarkers(reinterpret_cast<QList<GanttMarker*>*>(&app->project().playlist().lfoChanges()));
     ui->ganttWidget->setParameters(Rows, RowHeight, CellWidth, 1);
     ui->ganttWidget->setItemsMovableX(true);
-    ui->ganttWidget->setPositionFunction([&](){ return _app->project().playMode() == Project::PlayMode::SONG ? _app->position() : 0.0f; });
+    ui->ganttWidget->setPositionFunction([&]() {
+        return _app->project().playMode() == Project::PlayMode::SONG ? _app->position() : 0.0f;
+    });
     ui->ganttWidget->setHeaderPaintFunction([&](QPainter& painter, QRect rect, float leftPosition, float rightPosition, float beatsPerPixel) {
         if (_app->project().playlist().doesLoop()) {
             float loopOffset = _app->project().playlist().loopOffset();

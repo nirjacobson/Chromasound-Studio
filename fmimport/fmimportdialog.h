@@ -20,45 +20,45 @@
 #include "commands/composite/setfmchannelcommand.h"
 
 namespace Ui {
-class FMImportDialog;
+    class FMImportDialog;
 }
 
 class FMImportDialog : public QMainWindow
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    explicit FMImportDialog(QWidget *parent = nullptr);
-    ~FMImportDialog();
+    public:
+        explicit FMImportDialog(QWidget *parent = nullptr);
+        ~FMImportDialog();
 
-    void setApplication(Application* app);
+        void setApplication(Application* app);
 
-private:
-    static constexpr quint8 VGM_HEADER_DATA_OFFSET = 0x34;
+    private:
+        static constexpr quint8 VGM_HEADER_DATA_OFFSET = 0x34;
 
-    Ui::FMImportDialog *ui;
-    Application* _app;
+        Ui::FMImportDialog *ui;
+        Application* _app;
 
-    PatchTableModel _tableModel;
-    QList<FMChannelSettings> _patchSettings;
-    QList<QString> _patchNames;
-    QList<QList<int>> _patchOctaves;
+        PatchTableModel _tableModel;
+        QList<FMChannelSettings> _patchSettings;
+        QList<QString> _patchNames;
+        QList<QList<int>> _patchOctaves;
 
-    void load(const QString& path);
-    void clear();
-    int ensurePatch(const FMChannelSettings& settings);
+        void load(const QString& path);
+        void clear();
+        int ensurePatch(const FMChannelSettings& settings);
 
-private slots:
-    void openTriggered();
-    void saveTriggered();
-    void saveAllTriggered();
-    void keyPressedOnTable(int key);
-    void sendTriggered();
+    private slots:
+        void openTriggered();
+        void saveTriggered();
+        void saveAllTriggered();
+        void keyPressedOnTable(int key);
+        void sendTriggered();
 
-    // QWidget interface
-protected:
-    void dragEnterEvent(QDragEnterEvent* event);
-    void dropEvent(QDropEvent* event);
+        // QWidget interface
+    protected:
+        void dragEnterEvent(QDragEnterEvent* event);
+        void dropEvent(QDropEvent* event);
 };
 
 #endif // FMIMPORTDIALOG_H

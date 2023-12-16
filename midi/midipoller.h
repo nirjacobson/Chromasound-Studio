@@ -8,29 +8,29 @@
 
 class MIDIPoller : public QThread
 {
-    Q_OBJECT
+        Q_OBJECT
 
-signals:
-    void receivedMessage(const long msg);
+    signals:
+        void receivedMessage(const long msg);
 
-public:
-    MIDIPoller(QObject *parent = nullptr);
-    ~MIDIPoller();
+    public:
+        MIDIPoller(QObject *parent = nullptr);
+        ~MIDIPoller();
 
-    void stop();
+        void stop();
 
-public slots:
-    void start(Priority p = InheritPriority);
+    public slots:
+        void start(Priority p = InheritPriority);
 
-    // QThread interface
-protected:
-    void run();
+        // QThread interface
+    protected:
+        void run();
 
-private:
-    MIDIInput* _midiInput;
+    private:
+        MIDIInput* _midiInput;
 
-    QMutex _stopLock;
-    bool _stop;
+        QMutex _stopLock;
+        bool _stop;
 };
 
 #endif // MIDIPOLLER_H

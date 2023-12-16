@@ -11,23 +11,23 @@ class MainWindow;
 
 class AddTrackCommand : public QUndoCommand
 {
-public:
-    AddTrackCommand(MainWindow* window, const QList<Track::Item*>& items, const QString& name);
-    ~AddTrackCommand();
+    public:
+        AddTrackCommand(MainWindow* window, const QList<Track::Item*>& items, const QString& name);
+        ~AddTrackCommand();
 
-private:
-    MainWindow* _mainWindow;
-    QList<Track::Item*> _items;
-    QString _name;
+    private:
+        MainWindow* _mainWindow;
+        QList<Track::Item*> _items;
+        QString _name;
 
-    AddChannelCommand* _addChannelCommand;
-    SetChannelNameCommand* _setChannelNameCommand;
-    AddTrackItemsCommand* _addTrackItemsCommand;
+        AddChannelCommand* _addChannelCommand;
+        SetChannelNameCommand* _setChannelNameCommand;
+        AddTrackItemsCommand* _addTrackItemsCommand;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 };
 
 #endif // ADDTRACKCOMMAND_H
