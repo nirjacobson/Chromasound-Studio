@@ -52,15 +52,30 @@ Gme_File::~Gme_File()
 blargg_err_t Gme_File::load_mem_( byte const* data, long size )
 {
 	require( data != file_data.begin() ); // load_mem_() or load_() must be overridden
-	Mem_File_Reader in( data, size );
-	return load_( in );
+    Mem_File_Reader in( data, size );
+    return load_( in );
+}
+
+blargg_err_t Gme_File::append_mem_(const byte* data, long size)
+{
+    Mem_File_Reader in( data, size );
+    return append_( in );
 }
 
 blargg_err_t Gme_File::load_( Data_Reader& in )
 {
 	RETURN_ERR( file_data.resize( in.remain() ) );
-	RETURN_ERR( in.read( file_data.begin(), file_data.size() ) );
-	return load_mem_( file_data.begin(), file_data.size() );
+    RETURN_ERR( in.read( file_data.begin(), file_data.size() ) );
+    return load_mem_( file_data.begin(), file_data.size() );
+}
+
+blargg_err_t Gme_File::append_(Data_Reader& in)
+{
+    size_t size = file_data.size();
+    size_t remain = in.remain();
+    RETURN_ERR( file_data.resize(size + remain) );
+    RETURN_ERR( in.read( file_data.begin() + size, remain) );
+    return append_mem_( file_data.begin() + size, remain );
 }
 
 // public load functions call this at beginning
@@ -91,8 +106,13 @@ blargg_err_t Gme_File::load_mem( void const* in, long size )
 
 blargg_err_t Gme_File::load( Data_Reader& in )
 {
-	pre_load();
-	return post_load( load_( in ) );
+    pre_load();
+    return post_load( load_( in ) );
+}
+
+blargg_err_t Gme_File::append(Data_Reader& in)
+{
+    return append_( in );
 }
 
 blargg_err_t Gme_File::load_file( const char* path )

@@ -45,10 +45,8 @@ private:
     track_info_t _info;
 
     VGMStream _vgmStream;
-    QList<VGMStream::StreamItem*> _vgmStreamItems;
-    QByteArray _vgmData;
-
-    QTimer _timer;
+    QMap<int, VGMStream::StreamNoteItem*> _keys;
+    bool _startedInteractive;
 
     // FM_PSG interface
 public:
