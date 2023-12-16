@@ -28,10 +28,10 @@ class PCMUsageDialog : public QWidget
 public:
     static constexpr quint32 MAX_SIZE = 524288;
 
-    explicit PCMUsageDialog(QWidget *parent = nullptr);
+    explicit PCMUsageDialog(QWidget *parent = nullptr, Application* app = nullptr);
     ~PCMUsageDialog();
 
-    void setApplication(Application* app);
+    void doUpdate();
 private:
     Ui::PCMUsageDialog *ui;
     Application* _app;
@@ -72,10 +72,6 @@ private:
     void setFreeSpaceColor(const QColor& color);
 
     QString sizeString(quint32 bytes);
-
-    // QWidget interface
-protected:
-    void paintEvent(QPaintEvent* event);
 };
 
 #endif // PCMUSAGEDIALOG_H

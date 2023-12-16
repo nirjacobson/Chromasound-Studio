@@ -260,7 +260,7 @@ void MainWindow::patternChanged(int num)
 {
     _app->project().setFrontPattern(num - 1);
     if (_channelsWindow) _channelsWidget->update();
-    if (_pcmUsageDialogWindow) _pcmUsageDialog->update();
+    if (_pcmUsageDialogWindow) _pcmUsageDialog->doUpdate();
     ui->topWidget->updateFromProject(_app->project());
 }
 
@@ -445,7 +445,7 @@ void MainWindow::newTriggered()
 
     if (_channelsWindow) _channelsWidget->rebuild();
     if (_playlistWindow) _playlistWidget->update();
-    if (_pcmUsageDialogWindow) _pcmUsageDialog->update();
+    if (_pcmUsageDialogWindow) _pcmUsageDialog->doUpdate();
 }
 
 void MainWindow::openTriggered()
@@ -623,8 +623,7 @@ void MainWindow::stylesTriggered()
 void MainWindow::pcmUsageTriggered()
 {
     if (_pcmUsageDialogWindow == nullptr) {
-        _pcmUsageDialog = new PCMUsageDialog(this);
-        _pcmUsageDialog->setApplication(_app);
+        _pcmUsageDialog = new PCMUsageDialog(this, _app);
 
         MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
         connect(window, &MdiSubWindow::closed, this, [&](){ _fmImportDialogWindow = nullptr; });
@@ -743,7 +742,7 @@ void MainWindow::doUpdate()
     update();
     if (_channelsWindow) _channelsWidget->update();
     if (_playlistWindow) _playlistWidget->update();
-    if (_pcmUsageDialogWindow) _pcmUsageDialog->update();
+    if (_pcmUsageDialogWindow) _pcmUsageDialog->doUpdate();
 
 
     for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
@@ -863,7 +862,7 @@ void MainWindow::dropEvent(QDropEvent* event)
 
         if (_channelsWindow) _channelsWidget->rebuild();
         if (_playlistWindow) _playlistWidget->update();
-        if (_pcmUsageDialogWindow) _pcmUsageDialog->update();
+        if (_pcmUsageDialogWindow) _pcmUsageDialog->doUpdate();
 
         _playlistWidget->update();
 
