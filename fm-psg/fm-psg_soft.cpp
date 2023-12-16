@@ -262,10 +262,11 @@ void FM_PSG_Soft::keyOff(int key)
 
 int16_t* FM_PSG_Soft::next(int size)
 {
-    _emu->play(size, _buffer);
     if (!_stopped) {
         _position = _emu->tell();
     }
+
+    _emu->play(size, _buffer);
 
     return _buffer;
 }
