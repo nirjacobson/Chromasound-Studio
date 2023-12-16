@@ -51,6 +51,8 @@ class FM_PSG_Soft : public FM_PSG, public Producer<int16_t>
         QTimer _timer;
         QList<VGMStream::StreamItem*> _items;
 
+        QMutex _mutex;
+
         // FM_PSG interface
     public:
         float position();

@@ -25,6 +25,9 @@ FM_PSG_Soft::FM_PSG_Soft(const Project& project)
 
     _timer.callOnTimeout([&](){
         QByteArray data;
+
+        _mutex.lock();
+
         _vgmStream.encode(project, _items, data);
 
         for (VGMStream::StreamItem* item : _items)
@@ -32,6 +35,8 @@ FM_PSG_Soft::FM_PSG_Soft(const Project& project)
                 delete item;
 
         _items.clear();
+
+        _mutex.unlock();
 
         if (!_startedInteractive) {
             data.prepend(_vgmStream.generateHeader(project, data, -1, 0, 0, false));
@@ -250,9 +255,13 @@ void FM_PSG_Soft::keyOn(const Project& project, const Channel::Type channelType,
 
     _keys[key] = sni;
 
+    _mutex.lock();
+
     _items.append(sli);
     _items.append(sni);
     _vgmStream.assignChannel(sni, _items);
+
+    _mutex.unlock();
 
     _timer.start(20);
 }
@@ -269,8 +278,6 @@ void FM_PSG_Soft::keyOff(int key)
     items.append(sni);
     _vgmStream.encode(Project(), items, data);
     _keys.remove(key);
-
-    delete sni;
 
     Mem_File_Reader reader(data.constData(), data.size());
 
