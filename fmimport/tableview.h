@@ -6,17 +6,17 @@
 
 class TableView : public QTableView
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    TableView(QWidget* parent = nullptr);
+    public:
+        TableView(QWidget* parent = nullptr);
 
-signals:
-    void keyPressed(int key);
+    signals:
+        void keyPressed(int key);
 
-    // QWidget interface
-protected:
-    void keyPressEvent(QKeyEvent* event);
+        // QWidget interface
+    protected:
+        void keyPressEvent(QKeyEvent* event);
 };
 
 #endif // TABLEVIEW_H

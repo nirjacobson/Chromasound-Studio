@@ -4,11 +4,11 @@ FM_PSG_Impl::FM_PSG_Impl(const Project& project)
     : _project(project)
 {
     if (gpioInitialise() < 0) {
-      throw "Error initializing pigpio.";
+        throw "Error initializing pigpio.";
     }
 
     if ((_spi = spiOpen(0, 2500000, 0)) < 0) {
-      throw "Error initializing SPI.";
+        throw "Error initializing SPI.";
     }
 
     _vgmPlayer = new VGMPlayer(_spi, this);

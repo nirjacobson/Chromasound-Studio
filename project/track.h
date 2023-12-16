@@ -22,7 +22,7 @@ class Track
         Track& operator=(Track&& o);
 
         class Item : public GanttItem {
-               friend class BSON;
+                friend class BSON;
                 friend class MIDI;
 
             public:

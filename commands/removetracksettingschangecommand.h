@@ -8,21 +8,21 @@ class MainWindow;
 
 class RemoveTrackSettingsChangeCommand : public QUndoCommand
 {
-public:
-    RemoveTrackSettingsChangeCommand(MainWindow* window, Track& track, Track::SettingsChange* change);
-    ~RemoveTrackSettingsChangeCommand();
+    public:
+        RemoveTrackSettingsChangeCommand(MainWindow* window, Track& track, Track::SettingsChange* change);
+        ~RemoveTrackSettingsChangeCommand();
 
-private:
-    MainWindow* _mainWindow;
-    Track& _track;
-    Track::SettingsChange* _change;
+    private:
+        MainWindow* _mainWindow;
+        Track& _track;
+        Track::SettingsChange* _change;
 
-    bool _performed;
+        bool _performed;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 };
 
 #endif // REMOVETRACKSETTINGSCHANGECOMMAND_H

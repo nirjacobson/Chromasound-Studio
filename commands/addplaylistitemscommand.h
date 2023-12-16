@@ -9,19 +9,19 @@ class MainWindow;
 
 class AddPlaylistItemsCommand : public QUndoCommand
 {
-public:
-    AddPlaylistItemsCommand(MainWindow* window, Playlist& playlist, const float time, const QList<Playlist::Item*>& items);
-private:
-    MainWindow* _mainWindow;
+    public:
+        AddPlaylistItemsCommand(MainWindow* window, Playlist& playlist, const float time, const QList<Playlist::Item*>& items);
+    private:
+        MainWindow* _mainWindow;
 
-    Playlist& _playlist;
-    float _time;
-    QList<Playlist::Item*> _items;
+        Playlist& _playlist;
+        float _time;
+        QList<Playlist::Item*> _items;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 };
 
 #endif // ADDPLAYLISTITEMSCOMMAND_H

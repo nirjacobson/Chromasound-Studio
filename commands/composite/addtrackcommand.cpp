@@ -45,9 +45,9 @@ void AddTrackCommand::redo()
     Track& track = _mainWindow->app()->project().getFrontPattern().getTrack(_mainWindow->app()->project().channelCount() - 1);
 
     _addTrackItemsCommand = new AddTrackItemsCommand(_mainWindow,
-                                                     track,
-                                                     0,
-                                                     _items);
+            track,
+            0,
+            _items);
     _addTrackItemsCommand->redo();
 
     track.usePianoRoll();

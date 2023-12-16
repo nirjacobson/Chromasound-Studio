@@ -7,17 +7,17 @@ class MainWindow;
 
 class MoveChannelDownCommand : public QUndoCommand
 {
-public:
-    MoveChannelDownCommand(MainWindow* window, const int index);
+    public:
+        MoveChannelDownCommand(MainWindow* window, const int index);
 
-private:
-    MainWindow* _mainWindow;
-    int _index;
+    private:
+        MainWindow* _mainWindow;
+        int _index;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 };
 
 #endif // MOVECHANNELDOWNCOMMAND_H

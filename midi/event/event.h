@@ -5,11 +5,11 @@
 
 class Event
 {
-public:
-    Event();
-    virtual ~Event();
+    public:
+        Event();
+        virtual ~Event();
 
-    virtual QByteArray encode() const = 0;
+        virtual QByteArray encode() const = 0;
 };
 
 #endif // EVENT_H

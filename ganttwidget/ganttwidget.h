@@ -15,10 +15,10 @@ namespace Ui {
 
 class GanttWidget : public QWidget
 {
-    Q_OBJECT
-    Q_PROPERTY(QColor cursorColor READ cursorColor WRITE setCursorColor)
-    Q_PROPERTY(QColor loopColor READ loopColor WRITE setLoopColor)
-    Q_PROPERTY(QColor markerColor READ markerColor WRITE setMarkerColor)
+        Q_OBJECT
+        Q_PROPERTY(QColor cursorColor READ cursorColor WRITE setCursorColor)
+        Q_PROPERTY(QColor loopColor READ loopColor WRITE setLoopColor)
+        Q_PROPERTY(QColor markerColor READ markerColor WRITE setMarkerColor)
 
     public:
         explicit GanttWidget(QWidget *parent = nullptr, Application* app = nullptr);

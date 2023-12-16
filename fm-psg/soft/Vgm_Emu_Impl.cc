@@ -128,102 +128,102 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
         // so we don't read past end
         switch ( *pos++ )
         {
-        case cmd_end:
-            pos = loop_begin; // if not looped, loop_begin == data_end
-            break;
+            case cmd_end:
+                pos = loop_begin; // if not looped, loop_begin == data_end
+                break;
 
-        case cmd_delay_735:
-            vgm_time += 735;
-            break;
+            case cmd_delay_735:
+                vgm_time += 735;
+                break;
 
-        case cmd_delay_882:
-            vgm_time += 882;
-            break;
+            case cmd_delay_882:
+                vgm_time += 882;
+                break;
 
-        case cmd_gg_stereo:
-            psg.write_ggstereo( to_blip_time( vgm_time ), *pos++ );
-            break;
+            case cmd_gg_stereo:
+                psg.write_ggstereo( to_blip_time( vgm_time ), *pos++ );
+                break;
 
-        case cmd_psg:
-            psg.write_data( to_blip_time( vgm_time ), *pos++ );
-            break;
+            case cmd_psg:
+                psg.write_data( to_blip_time( vgm_time ), *pos++ );
+                break;
 
-        case cmd_delay:
-            vgm_time += pos [1] * 0x100L + pos [0];
-            pos += 2;
-            break;
+            case cmd_delay:
+                vgm_time += pos [1] * 0x100L + pos [0];
+                pos += 2;
+                break;
 
-        case cmd_byte_delay:
-            vgm_time += *pos++;
-            break;
+            case cmd_byte_delay:
+                vgm_time += *pos++;
+                break;
 
-        case cmd_ym2413:
-            if ( ym2413.run_until( to_fm_time( vgm_time ) ) )
-                ym2413.write( pos [0], pos [1] );
-            pos += 2;
-            break;
+            case cmd_ym2413:
+                if ( ym2413.run_until( to_fm_time( vgm_time ) ) )
+                    ym2413.write( pos [0], pos [1] );
+                pos += 2;
+                break;
 
-        case cmd_ym2612_port0:
-            if ( pos [0] == ym2612_dac_port )
-            {
-                write_pcm( vgm_time, pos [1] );
-            }
-            else if ( ym2612.run_until( to_fm_time( vgm_time ) ) )
-            {
-                if ( pos [0] == 0x2B )
+            case cmd_ym2612_port0:
+                if ( pos [0] == ym2612_dac_port )
                 {
-                    dac_disabled = (pos [1] >> 7 & 1) - 1;
-                    dac_amp |= dac_disabled;
+                    write_pcm( vgm_time, pos [1] );
                 }
-                ym2612.write0( pos [0], pos [1] );
+                else if ( ym2612.run_until( to_fm_time( vgm_time ) ) )
+                {
+                    if ( pos [0] == 0x2B )
+                    {
+                        dac_disabled = (pos [1] >> 7 & 1) - 1;
+                        dac_amp |= dac_disabled;
+                    }
+                    ym2612.write0( pos [0], pos [1] );
+                }
+                pos += 2;
+                break;
+
+            case cmd_ym2612_port1:
+                if ( ym2612.run_until( to_fm_time( vgm_time ) ) )
+                    ym2612.write1( pos [0], pos [1] );
+                pos += 2;
+                break;
+
+            case cmd_data_block: {
+                check( *pos == cmd_end );
+                int type = pos [1];
+                long size = GET_LE32( pos + 2 );
+                pos += 6;
+                if ( type == pcm_block_type )
+                    pcm_data = pos;
+                pos += size;
+                break;
             }
-            pos += 2;
-            break;
 
-        case cmd_ym2612_port1:
-            if ( ym2612.run_until( to_fm_time( vgm_time ) ) )
-                ym2612.write1( pos [0], pos [1] );
-            pos += 2;
-            break;
+            case cmd_pcm_seek:
+                pcm_pos = pcm_data + pos [3] * 0x1000000L + pos [2] * 0x10000L +
+                          pos [1] * 0x100L + pos [0];
+                pos += 4;
+                break;
 
-        case cmd_data_block: {
-            check( *pos == cmd_end );
-            int type = pos [1];
-            long size = GET_LE32( pos + 2 );
-            pos += 6;
-            if ( type == pcm_block_type )
-                pcm_data = pos;
-            pos += size;
-            break;
-        }
+            default:
+                int cmd = pos [-1];
+                switch ( cmd & 0xF0 )
+                {
+                    case cmd_pcm_delay:
+                        write_pcm( vgm_time, *pcm_pos++ );
+                        vgm_time += cmd & 0x0F;
+                        break;
 
-        case cmd_pcm_seek:
-            pcm_pos = pcm_data + pos [3] * 0x1000000L + pos [2] * 0x10000L +
-                    pos [1] * 0x100L + pos [0];
-            pos += 4;
-            break;
+                    case cmd_short_delay:
+                        vgm_time += (cmd & 0x0F) + 1;
+                        break;
 
-        default:
-            int cmd = pos [-1];
-            switch ( cmd & 0xF0 )
-            {
-                case cmd_pcm_delay:
-                    write_pcm( vgm_time, *pcm_pos++ );
-                    vgm_time += cmd & 0x0F;
-                    break;
+                    case 0x50:
+                        pos += 2;
+                        break;
 
-                case cmd_short_delay:
-                    vgm_time += (cmd & 0x0F) + 1;
-                    break;
-
-                case 0x50:
-                    pos += 2;
-                    break;
-
-                default:
-                    pos += command_len( cmd ) - 1;
-                    set_warning( "Unknown stream event" );
-            }
+                    default:
+                        pos += command_len( cmd ) - 1;
+                        set_warning( "Unknown stream event" );
+                }
         }
     }
     if (vgm_time >= end_time)
@@ -262,7 +262,7 @@ int Vgm_Emu_Impl::play_frame( blip_time_t blip_time, int sample_count, sample_t*
     ym2413.run_until( pairs );
 
     fm_time_offset = (vgm_time * fm_time_factor + fm_time_offset) -
-            ((long) pairs << fm_time_bits);
+                     ((long) pairs << fm_time_bits);
 
     psg.end_frame( blip_time );
 
@@ -277,39 +277,39 @@ void Vgm_Emu_Impl::update_fm_rates( long* ym2413_rate, long* ym2612_rate ) const
     {
         switch ( *p )
         {
-        case cmd_end:
-            return;
+            case cmd_end:
+                return;
 
-        case cmd_psg:
-        case cmd_byte_delay:
-            p += 2;
-            break;
+            case cmd_psg:
+            case cmd_byte_delay:
+                p += 2;
+                break;
 
-        case cmd_delay:
-            p += 3;
-            break;
+            case cmd_delay:
+                p += 3;
+                break;
 
-        case cmd_data_block:
-            p += 7 + GET_LE32( p + 3 );
-            break;
+            case cmd_data_block:
+                p += 7 + GET_LE32( p + 3 );
+                break;
 
-        case cmd_ym2413:
-            *ym2612_rate = 0;
-            return;
+            case cmd_ym2413:
+                *ym2612_rate = 0;
+                return;
 
-        case cmd_ym2612_port0:
-        case cmd_ym2612_port1:
-            *ym2612_rate = *ym2413_rate;
-            *ym2413_rate = 0;
-            return;
+            case cmd_ym2612_port0:
+            case cmd_ym2612_port1:
+                *ym2612_rate = *ym2413_rate;
+                *ym2413_rate = 0;
+                return;
 
-        case cmd_ym2151:
-            *ym2413_rate = 0;
-            *ym2612_rate = 0;
-            return;
+            case cmd_ym2151:
+                *ym2413_rate = 0;
+                *ym2612_rate = 0;
+                return;
 
-        default:
-            p += command_len( *p );
+            default:
+                p += command_len( *p );
         }
     }
 }

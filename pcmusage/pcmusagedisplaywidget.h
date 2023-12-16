@@ -9,27 +9,27 @@
 
 class PCMUsageDisplayWidget : public QWidget
 {
-    Q_OBJECT
-    Q_PROPERTY(QColor outlineColor READ outlineColor WRITE setOutlineColor)
+        Q_OBJECT
+        Q_PROPERTY(QColor outlineColor READ outlineColor WRITE setOutlineColor)
 
-public:
-    explicit PCMUsageDisplayWidget(QWidget *parent = nullptr);
+    public:
+        explicit PCMUsageDisplayWidget(QWidget *parent = nullptr);
 
-    void setItems(const QList<PCMUsageDisplayItem>* items);
+        void setItems(const QList<PCMUsageDisplayItem>* items);
 
-signals:
+    signals:
 
-private:
-    QColor _outlineColor;
+    private:
+        QColor _outlineColor;
 
-    const QList<PCMUsageDisplayItem>* _items;
+        const QList<PCMUsageDisplayItem>* _items;
 
-    const QColor& outlineColor() const;
-    void setOutlineColor(const QColor& color);
+        const QColor& outlineColor() const;
+        void setOutlineColor(const QColor& color);
 
-    // QWidget interface
-protected:
-    void paintEvent(QPaintEvent* event);
+        // QWidget interface
+    protected:
+        void paintEvent(QPaintEvent* event);
 };
 
 #endif // PCMUSAGEDISPLAYWIDGET_H

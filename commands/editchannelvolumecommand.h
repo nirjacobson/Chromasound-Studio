@@ -9,21 +9,21 @@ class MainWindow;
 
 class EditChannelVolumeCommand : public QUndoCommand
 {
-public:
-    EditChannelVolumeCommand(MainWindow* window, const int index, const int newVolume);
+    public:
+        EditChannelVolumeCommand(MainWindow* window, const int index, const int newVolume);
 
-private:
-    MainWindow* _mainWindow;
-    int _index;
-    int _originalVolume;
-    int _newVolume;
+    private:
+        MainWindow* _mainWindow;
+        int _index;
+        int _originalVolume;
+        int _newVolume;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
-    int id() const;
-    bool mergeWith(const QUndoCommand* other);
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
+        int id() const;
+        bool mergeWith(const QUndoCommand* other);
 };
 
 #endif // EDITCHANNELVOLUMECOMMAND_H

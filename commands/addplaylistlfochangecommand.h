@@ -9,19 +9,19 @@ class MainWindow;
 
 class AddPlaylistLFOChangeCommand : public QUndoCommand
 {
-public:
-    AddPlaylistLFOChangeCommand(MainWindow* window, Playlist& playlist, const float time, const int mode);
+    public:
+        AddPlaylistLFOChangeCommand(MainWindow* window, Playlist& playlist, const float time, const int mode);
 
-    void undo();
-    void redo();
+        void undo();
+        void redo();
 
-private:
-    MainWindow* _mainWindow;
-    Playlist& _playlist;
-    float _time;
-    int _mode;
+    private:
+        MainWindow* _mainWindow;
+        Playlist& _playlist;
+        float _time;
+        int _mode;
 
-    Playlist::LFOChange* _change;
+        Playlist::LFOChange* _change;
 };
 
 #endif // ADDPLAYLISTLFOCHANGECOMMAND_H

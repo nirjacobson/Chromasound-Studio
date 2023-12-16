@@ -7,22 +7,22 @@
 
 class MdiArea : public QMdiArea
 {
-    Q_OBJECT
-    Q_PROPERTY(QString viewMode READ viewModeName WRITE setViewModeName)
-    Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor);
+        Q_OBJECT
+        Q_PROPERTY(QString viewMode READ viewModeName WRITE setViewModeName)
+        Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor);
 
-public:
-    MdiArea(QWidget* parent = nullptr);
+    public:
+        MdiArea(QWidget* parent = nullptr);
 
-signals:
-    void viewModeChanged(const QString& viewMode);
+    signals:
+        void viewModeChanged(const QString& viewMode);
 
-private:
-    QString viewModeName() const;
-    void setViewModeName(const QString& name);
+    private:
+        QString viewModeName() const;
+        void setViewModeName(const QString& name);
 
-    const QColor& backgroundColor() const;
-    void setBackgroundColor(const QColor& color);
+        const QColor& backgroundColor() const;
+        void setBackgroundColor(const QColor& color);
 };
 
 #endif // MDIAREA_H

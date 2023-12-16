@@ -113,12 +113,12 @@ QPoint AlgorithmGraph::connector(const int op, const AlgorithmGraph::Connector c
     QPoint topLeft = this->topLeft(op);
 
     switch (c) {
-    case AlgorithmGraph::Left:
-        return QPoint(topLeft.x(), topLeft.y() + (OP_SIZE / 2));
-    case AlgorithmGraph::Right:
-        return QPoint(topLeft.x() + OP_SIZE - 1, topLeft.y() + (OP_SIZE / 2));
-    case AlgorithmGraph::Top:
-        return QPoint(topLeft.x() + OP_SIZE / 2, topLeft.y());
+        case AlgorithmGraph::Left:
+            return QPoint(topLeft.x(), topLeft.y() + (OP_SIZE / 2));
+        case AlgorithmGraph::Right:
+            return QPoint(topLeft.x() + OP_SIZE - 1, topLeft.y() + (OP_SIZE / 2));
+        case AlgorithmGraph::Top:
+            return QPoint(topLeft.x() + OP_SIZE / 2, topLeft.y());
     }
 
     return QPoint(-1, -1);

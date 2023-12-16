@@ -9,34 +9,34 @@
 #include "application.h"
 
 namespace Ui {
-class StyleDialog;
+    class StyleDialog;
 }
 
 class StyleDialog : public QMainWindow
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    explicit StyleDialog(QWidget *parent = nullptr);
-    ~StyleDialog();
+    public:
+        explicit StyleDialog(QWidget *parent = nullptr);
+        ~StyleDialog();
 
-    void setApplication(Application* app);
+        void setApplication(Application* app);
 
-private:
-    Ui::StyleDialog *ui;
-    Application* _app;
+    private:
+        Ui::StyleDialog *ui;
+        Application* _app;
 
-private slots:
-    void newTriggered();
-    void openTriggered();
-    void saveTriggered();
+    private slots:
+        void newTriggered();
+        void openTriggered();
+        void saveTriggered();
 
-    void reset();
-    void apply();
+        void reset();
+        void apply();
 
-    // QWidget interface
-protected:
-    void paintEvent(QPaintEvent* event);
+        // QWidget interface
+    protected:
+        void paintEvent(QPaintEvent* event);
 };
 
 #endif // STYLEDIALOG_H

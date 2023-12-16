@@ -11,21 +11,21 @@
 
 class MetaEvent : public Event
 {
-    friend class MIDI;
+        friend class MIDI;
 
-public:
-    MetaEvent(quint8 type);
+    public:
+        MetaEvent(quint8 type);
 
-    MetaEvent& operator<<(QDataStream& stream);
+        MetaEvent& operator<<(QDataStream& stream);
 
-private:
-    quint8 _type;
-    quint32 _length;
-    QByteArray _data;
+    private:
+        quint8 _type;
+        quint32 _length;
+        QByteArray _data;
 
-    // Event interface
-public:
-    QByteArray encode() const;
+        // Event interface
+    public:
+        QByteArray encode() const;
 };
 
 #endif // METAEVENT_H

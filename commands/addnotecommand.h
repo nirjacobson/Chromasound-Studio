@@ -11,20 +11,20 @@ class MainWindow;
 
 class AddNoteCommand : public QUndoCommand
 {
-public:
-    AddNoteCommand(MainWindow* window, Track& track, const float time, const Note& note);
+    public:
+        AddNoteCommand(MainWindow* window, Track& track, const float time, const Note& note);
 
-private:
-    MainWindow* _mainWindow;
+    private:
+        MainWindow* _mainWindow;
 
-    Track& _track;
-    float _time;
-    Note _note;
+        Track& _track;
+        float _time;
+        Note _note;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 };
 
 #endif // ADDNOTECOMMAND_H

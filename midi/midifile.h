@@ -10,21 +10,21 @@
 
 class MIDIFile
 {
-    friend class MIDI;
+        friend class MIDI;
 
-public:
-    MIDIFile();
-    MIDIFile(QFile& file);
-    ~MIDIFile();
+    public:
+        MIDIFile();
+        MIDIFile(QFile& file);
+        ~MIDIFile();
 
-    const QList<MIDIChunk*>& chunks() const;
+        const QList<MIDIChunk*>& chunks() const;
 
-    QByteArray encode() const;
+        QByteArray encode() const;
 
-private:
-    QList<MIDIChunk*> _chunks;
+    private:
+        QList<MIDIChunk*> _chunks;
 
-    void readFile(QIODevice& device);
+        void readFile(QIODevice& device);
 };
 
 #endif // MIDIFILE_H

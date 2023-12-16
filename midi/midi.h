@@ -7,12 +7,12 @@
 
 class MIDI
 {
-public:
-    MIDI();
+    public:
+        MIDI();
 
-    static QList<Track::Item*> toTrackItems(const MIDITrack& midiTrack, const int division);
-    static void fromTrackItems(const Track& track, MIDITrack& midiTrack, const int division);
-    static void fromTrack(const Track& track, MIDIFile& midiFile, const int division);
+        static QList<Track::Item*> toTrackItems(const MIDITrack& midiTrack, const int division);
+        static void fromTrackItems(const Track& track, MIDITrack& midiTrack, const int division);
+        static void fromTrack(const Track& track, MIDIFile& midiFile, const int division);
 
 };
 

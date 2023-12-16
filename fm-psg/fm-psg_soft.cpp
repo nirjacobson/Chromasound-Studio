@@ -83,8 +83,8 @@ float FM_PSG_Soft::position()
         return (_positionOffset + (_position % _info.loop_length)) / 1000.0f / 60.0f * _project.tempo();
     } else {
         return (_positionOffset + ((_position < _info.intro_length)
-                                       ? _position
-                                       : (((_position - _info.intro_length) % _info.loop_length) + _info.intro_length)))
+                                   ? _position
+                                   : (((_position - _info.intro_length) % _info.loop_length) + _info.intro_length)))
                / 1000.0f / 60.0f * _project.tempo();
     }
 }

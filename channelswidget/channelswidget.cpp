@@ -47,13 +47,25 @@ void ChannelsWidget::rebuild()
 
     for (ChannelWidget* channelWidget : _channelWidgets) {
         ui->verticalLayout->addWidget(channelWidget);
-        connect(channelWidget, &ChannelWidget::ledShiftClicked, this, [=](){ toggleSolo(channelWidget); });
-        connect(channelWidget, &ChannelWidget::toggled, this, [=](bool selected){ handleToggle(channelWidget, selected); });
-        connect(channelWidget, &ChannelWidget::rectLedClicked, this, [=](){ handleSelect(channelWidget); });
+        connect(channelWidget, &ChannelWidget::ledShiftClicked, this, [=]() {
+            toggleSolo(channelWidget);
+        });
+        connect(channelWidget, &ChannelWidget::toggled, this, [=](bool selected) {
+            handleToggle(channelWidget, selected);
+        });
+        connect(channelWidget, &ChannelWidget::rectLedClicked, this, [=]() {
+            handleSelect(channelWidget);
+        });
         connect(channelWidget, &ChannelWidget::rectLedDoubleClicked, this, &ChannelsWidget::handleSelectAll);
-        connect(channelWidget, &ChannelWidget::pianoRollTriggered, this, [=](bool on){ emit pianoRollTriggered(channelWidget->index(), on); });
-        connect(channelWidget, &ChannelWidget::selected, this, [=](){ select(channelWidget->index()); });
-        connect(channelWidget, &ChannelWidget::nameChanged, this, [=](){ emit nameChanged(channelWidget->index()); });
+        connect(channelWidget, &ChannelWidget::pianoRollTriggered, this, [=](bool on) {
+            emit pianoRollTriggered(channelWidget->index(), on);
+        });
+        connect(channelWidget, &ChannelWidget::selected, this, [=]() {
+            select(channelWidget->index());
+        });
+        connect(channelWidget, &ChannelWidget::nameChanged, this, [=]() {
+            emit nameChanged(channelWidget->index());
+        });
         connect(channelWidget, &ChannelWidget::pianoKeyClicked, this, &ChannelsWidget::pianoKeyClicked);
         connect(channelWidget, &ChannelWidget::velocityClicked, this, &ChannelsWidget::velocityClicked);
     }
@@ -84,13 +96,25 @@ void ChannelsWidget::remove(const int index)
 void ChannelsWidget::add(const int index)
 {
     ChannelWidget* cw = new ChannelWidget(this, _app, index);
-    connect(cw, &ChannelWidget::ledShiftClicked, this, [=](){ toggleSolo(cw); });
-    connect(cw, &ChannelWidget::toggled, this, [=](bool selected){ handleToggle(cw, selected); });
-    connect(cw, &ChannelWidget::rectLedClicked, this, [=](){ handleSelect(cw); });
+    connect(cw, &ChannelWidget::ledShiftClicked, this, [=]() {
+        toggleSolo(cw);
+    });
+    connect(cw, &ChannelWidget::toggled, this, [=](bool selected) {
+        handleToggle(cw, selected);
+    });
+    connect(cw, &ChannelWidget::rectLedClicked, this, [=]() {
+        handleSelect(cw);
+    });
     connect(cw, &ChannelWidget::rectLedDoubleClicked, this, &ChannelsWidget::handleSelectAll);
-    connect(cw, &ChannelWidget::pianoRollTriggered, this, [=](bool on){ emit pianoRollTriggered(cw->index(), on); });
-    connect(cw, &ChannelWidget::selected, this, [=](){ select(cw->index()); });
-    connect(cw, &ChannelWidget::nameChanged, this, [=](){ emit nameChanged(cw->index()); });
+    connect(cw, &ChannelWidget::pianoRollTriggered, this, [=](bool on) {
+        emit pianoRollTriggered(cw->index(), on);
+    });
+    connect(cw, &ChannelWidget::selected, this, [=]() {
+        select(cw->index());
+    });
+    connect(cw, &ChannelWidget::nameChanged, this, [=]() {
+        emit nameChanged(cw->index());
+    });
     connect(cw, &ChannelWidget::pianoKeyClicked, this, &ChannelsWidget::pianoKeyClicked);
     connect(cw, &ChannelWidget::velocityClicked, this, &ChannelsWidget::velocityClicked);
     ui->verticalLayout->insertWidget(index, cw);
@@ -256,7 +280,9 @@ void ChannelsWidget::pianoKeyClicked(const Qt::MouseButton button, const int ste
     Track& track = _app->project().getFrontPattern().getTrack(_activeChannelWidget->index());
 
     if (button == Qt::LeftButton) {
-        auto existingItem = std::find_if(track.items().begin(), track.items().end(), [=](const Track::Item* item){ return item->time() == step * beatsPerStep; });
+        auto existingItem = std::find_if(track.items().begin(), track.items().end(), [=](const Track::Item* item) {
+            return item->time() == step * beatsPerStep;
+        });
         if (existingItem == track.items().end()) {
             _app->undoStack().push(new AddNoteCommand(_app->window(), track, step * beatsPerStep, Note(key, beatsPerStep)));
         } else {
@@ -273,7 +299,9 @@ void ChannelsWidget::velocityClicked(const int step, const int velocity)
     float beatsPerStep = 0.25;
     Track& track = _app->project().getFrontPattern().getTrack(_activeChannelWidget->index());
 
-    auto existingItem = std::find_if(track.items().begin(), track.items().end(), [=](const Track::Item* item){ return item->time() == step * beatsPerStep; });
+    auto existingItem = std::find_if(track.items().begin(), track.items().end(), [=](const Track::Item* item) {
+        return item->time() == step * beatsPerStep;
+    });
     if (existingItem != track.items().end()) {
         Note newNote = (*existingItem)->note();
         newNote.setVelocity(velocity);
@@ -329,12 +357,16 @@ void ChannelsWidget::dropEvent(QDropEvent* event)
     } else if (fileInfo.suffix() == "mid") {
         MIDIFile mfile(file);
 
-        auto it1 = std::find_if(mfile.chunks().begin(), mfile.chunks().end(), [](const MIDIChunk* chunk){ return dynamic_cast<const MIDIHeader*>(chunk); });
+        auto it1 = std::find_if(mfile.chunks().begin(), mfile.chunks().end(), [](const MIDIChunk* chunk) {
+            return dynamic_cast<const MIDIHeader*>(chunk);
+        });
 
         if (it1 != mfile.chunks().end()) {
             const MIDIHeader* header = dynamic_cast<const MIDIHeader*>(*it1);
 
-            auto it2 = std::find_if(mfile.chunks().begin(), mfile.chunks().end(), [](const MIDIChunk* chunk){ return dynamic_cast<const MIDITrack*>(chunk); });
+            auto it2 = std::find_if(mfile.chunks().begin(), mfile.chunks().end(), [](const MIDIChunk* chunk) {
+                return dynamic_cast<const MIDITrack*>(chunk);
+            });
 
             if (it2 != mfile.chunks().end()) {
                 const MIDITrack* track = dynamic_cast<const MIDITrack*>(*it2);

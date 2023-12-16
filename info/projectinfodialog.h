@@ -6,23 +6,23 @@
 #include "application.h"
 
 namespace Ui {
-class ProjectInfoWidget;
+    class ProjectInfoWidget;
 }
 
 class ProjectInfoDialog : public QDialog
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    explicit ProjectInfoDialog(QWidget *parent = nullptr, Application* app = nullptr);
-    ~ProjectInfoDialog();
+    public:
+        explicit ProjectInfoDialog(QWidget *parent = nullptr, Application* app = nullptr);
+        ~ProjectInfoDialog();
 
-private:
-    Ui::ProjectInfoWidget *ui;
-    Application* _app;
+    private:
+        Ui::ProjectInfoWidget *ui;
+        Application* _app;
 
-private slots:
-    void accepted();
+    private slots:
+        void accepted();
 };
 
 #endif // PROJECTINFODIALOG_H

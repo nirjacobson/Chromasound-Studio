@@ -14,45 +14,45 @@
 #include "mdiarea/mdisubwindow.h"
 
 namespace Ui {
-class FMWidget;
+    class FMWidget;
 }
 
 class FMWidget : public QWidget
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    explicit FMWidget(QWidget *parent = nullptr, Application* app = nullptr);
-    ~FMWidget();
+    public:
+        explicit FMWidget(QWidget *parent = nullptr, Application* app = nullptr);
+        ~FMWidget();
 
-    void setApplication(Application* app);
+        void setApplication(Application* app);
 
-    void setSettings(FMChannelSettings* settings);
+        void setSettings(FMChannelSettings* settings);
 
-    void pressKey(const int key);
-    void releaseKey(const int key);
+        void pressKey(const int key);
+        void releaseKey(const int key);
 
-    void doUpdate();
+        void doUpdate();
 
-signals:
-    void keyPressed(const char key, const int velocity);
-    void keyReleased(const char key);
+    signals:
+        void keyPressed(const char key, const int velocity);
+        void keyReleased(const char key);
 
-private:
-    Ui::FMWidget *ui;
-    Application* _app;
-    FMChannelSettings* _settings;
+    private:
+        Ui::FMWidget *ui;
+        Application* _app;
+        FMChannelSettings* _settings;
 
-public slots:
-    void newTriggered();
-    void openTriggered();
-    void saveTriggered();
+    public slots:
+        void newTriggered();
+        void openTriggered();
+        void saveTriggered();
 
-    // QWidget interface
-protected:
-    void paintEvent(QPaintEvent* event);
-    void dragEnterEvent(QDragEnterEvent* event);
-    void dropEvent(QDropEvent* event);
+        // QWidget interface
+    protected:
+        void paintEvent(QPaintEvent* event);
+        void dragEnterEvent(QDragEnterEvent* event);
+        void dropEvent(QDropEvent* event);
 };
 
 #endif // FMWIDGET_H

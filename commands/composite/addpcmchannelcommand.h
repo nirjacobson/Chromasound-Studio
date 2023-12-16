@@ -8,22 +8,22 @@
 
 class AddPCMChannelCommand : public QUndoCommand
 {
-public:
-    AddPCMChannelCommand(MainWindow* window, const PCMChannelSettings& settingsAfter, const QString& name);
-    ~AddPCMChannelCommand();
+    public:
+        AddPCMChannelCommand(MainWindow* window, const PCMChannelSettings& settingsAfter, const QString& name);
+        ~AddPCMChannelCommand();
 
-private:
-    MainWindow* _mainWindow;
-    PCMChannelSettings _settingsAfter;
-    QString _name;
+    private:
+        MainWindow* _mainWindow;
+        PCMChannelSettings _settingsAfter;
+        QString _name;
 
-    AddChannelCommand* _addChannelCommand;
-    SetPCMChannelCommand* _setPCMChannelCommand;
+        AddChannelCommand* _addChannelCommand;
+        SetPCMChannelCommand* _setPCMChannelCommand;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 };
 
 #endif // ADDPCMCHANNELCOMMAND_H

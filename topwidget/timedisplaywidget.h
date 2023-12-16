@@ -13,8 +13,8 @@ class TimeDisplayWidget : public QLCDNumber
         Q_OBJECT
     public:
         enum Mode {
-          MSZ,
-          BS
+            MSZ,
+            BS
         };
 
         TimeDisplayWidget(QWidget* parent = nullptr, Application* app = nullptr);

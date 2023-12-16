@@ -64,7 +64,9 @@ void MIDIFile::readFile(QIODevice& device)
             *header << stream;
             chunk = header;
         } else if (QString(chunkType) == "MTrk") {
-            MIDITrack* track = new MIDITrack(chunkType, length, [&](){ return device.pos(); });
+            MIDITrack* track = new MIDITrack(chunkType, length, [&]() {
+                return device.pos();
+            });
             *track << stream;
             chunk = track;
         }

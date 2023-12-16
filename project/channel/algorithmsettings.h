@@ -5,25 +5,25 @@
 
 class AlgorithmSettings : public Settings
 {
-public:
-    AlgorithmSettings();
+    public:
+        AlgorithmSettings();
 
-    int algorithm() const;
-    int feedback() const;
+        int algorithm() const;
+        int feedback() const;
 
-    void setAlgorithm(const int algorithm);
-    void setFeedback(const int feedback);
+        void setAlgorithm(const int algorithm);
+        void setFeedback(const int feedback);
 
-    bool operator==(const AlgorithmSettings& other) const;
+        bool operator==(const AlgorithmSettings& other) const;
 
-private:
-    int _algorithm;
-    int _feedback;
+    private:
+        int _algorithm;
+        int _feedback;
 
-    // Settings interface
-public:
-    bson_t toBSON() const;
-    void fromBSON(bson_iter_t& bson);
+        // Settings interface
+    public:
+        bson_t toBSON() const;
+        void fromBSON(bson_iter_t& bson);
 };
 
 #endif // ALGORITHMSETTINGS_H

@@ -8,26 +8,26 @@
 
 class PCMUsageLegendWidget : public QWidget
 {
-    Q_OBJECT
-    Q_PROPERTY(QColor foregroundColor READ foregroundColor WRITE setForegroundColor)
+        Q_OBJECT
+        Q_PROPERTY(QColor foregroundColor READ foregroundColor WRITE setForegroundColor)
 
-public:
-    explicit PCMUsageLegendWidget(QWidget *parent = nullptr);
+    public:
+        explicit PCMUsageLegendWidget(QWidget *parent = nullptr);
 
-    void setItems(const QList<PCMUsageDisplayItem>* items);
+        void setItems(const QList<PCMUsageDisplayItem>* items);
 
-signals:
+    signals:
 
-private:
-    const QList<PCMUsageDisplayItem>* _items;
-    QColor _foregroundColor;
+    private:
+        const QList<PCMUsageDisplayItem>* _items;
+        QColor _foregroundColor;
 
-    const QColor& foregroundColor() const;
-    void setForegroundColor(const QColor& color);
+        const QColor& foregroundColor() const;
+        void setForegroundColor(const QColor& color);
 
-    // QWidget interface
-protected:
-    void paintEvent(QPaintEvent* event);
+        // QWidget interface
+    protected:
+        void paintEvent(QPaintEvent* event);
 };
 
 #endif // PCMUSAGELEGENDWIDGET_H

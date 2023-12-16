@@ -90,7 +90,9 @@ void PianoRollVelocitiesWidget::paintEvent(QPaintEvent*)
                 rects.append(QRect(topLeft, topLeft + QPoint(barWidth, height() - topLeft.y())));
             }
         }
-        std::sort(rects.begin(), rects.end(), [](QRect& a, QRect& b){ return a.height() > b.height(); });
+        std::sort(rects.begin(), rects.end(), [](QRect& a, QRect& b) {
+            return a.height() > b.height();
+        });
 
         for (const QRect& rect : rects) {
             painter.fillRect(rect, painter.brush());
@@ -111,7 +113,9 @@ void PianoRollVelocitiesWidget::mousePressEvent(QMouseEvent* event)
         int invertY = height() - event->position().y();
         int velocityClicked = qMin(100, (int)((float)invertY/(float)fullBarHeight * 100));
 
-        auto it = std::find_if(_items->begin(), _items->end(), [=](GanttItem* const item){ return item->time() <= mousePosition && mousePosition <= item->time() + barWidth * beatsPerPixel; });
+        auto it = std::find_if(_items->begin(), _items->end(), [=](GanttItem* const item) {
+            return item->time() <= mousePosition && mousePosition <= item->time() + barWidth * beatsPerPixel;
+        });
 
         if (it != _items->end()) {
             Track::Item* item = dynamic_cast<Track::Item*>(*it);

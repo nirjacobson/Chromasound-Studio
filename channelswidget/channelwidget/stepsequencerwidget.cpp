@@ -38,7 +38,9 @@ void StepSequencerWidget::paintEvent(QPaintEvent*)
         Track& track = pattern.getTrack(_index);
 
         for (int i = 0; i < numSteps; i++) {
-            steps[i] = std::find_if(track.items().begin(), track.items().end(), [=](Track::Item* const item){ return item->time() == beatsPerStep * i; }) != track.items().end();
+            steps[i] = std::find_if(track.items().begin(), track.items().end(), [=](Track::Item* const item) {
+                return item->time() == beatsPerStep * i;
+            }) != track.items().end();
         }
     } else {
         for (int i = 0; i < numSteps; i++) {
@@ -61,7 +63,7 @@ void StepSequencerWidget::paintEvent(QPaintEvent*)
     painter.setRenderHint(QPainter::Antialiasing);
     for (int i = 0; i < numSteps; i++) {
         bool isAlt = (i % 8) >= 4;
-        
+
         QColor stepColor = isAlt ? steps[i] ? _otherStepColor : _otherStepColor.darker() : steps[i] ? _stepColor : _stepColor.darker();
         QColor borderColor = stepColor.darker();
 

@@ -19,57 +19,57 @@
 #include "mdiarea/mdisubwindow.h"
 
 namespace Ui {
-class PlaylistWidget;
+    class PlaylistWidget;
 }
 
 class PlaylistWidget : public QMainWindow
 {
-    Q_OBJECT
-    Q_PROPERTY(QColor loopColor READ loopColor WRITE setLoopColor)
+        Q_OBJECT
+        Q_PROPERTY(QColor loopColor READ loopColor WRITE setLoopColor)
 
-public:
-    explicit PlaylistWidget(QWidget *parent = nullptr, Application* app = nullptr);
-    ~PlaylistWidget();
+    public:
+        explicit PlaylistWidget(QWidget *parent = nullptr, Application* app = nullptr);
+        ~PlaylistWidget();
 
-    static constexpr int Rows = 100;
-    static constexpr int RowHeight = 24;
-    static constexpr int CellWidth = 24;
+        static constexpr int Rows = 100;
+        static constexpr int RowHeight = 24;
+        static constexpr int CellWidth = 24;
 
-    bool hasLoop() const;
-    float loopStart() const;
-    float loopEnd() const;
+        bool hasLoop() const;
+        float loopStart() const;
+        float loopEnd() const;
 
-signals:
-    void patternClicked(const int pattern);
+    signals:
+        void patternClicked(const int pattern);
 
-private:
-    QColor _loopColor;
+    private:
+        QColor _loopColor;
 
-    const QColor& loopColor() const;
-    void setLoopColor(const QColor& color);
+        const QColor& loopColor() const;
+        void setLoopColor(const QColor& color);
 
-    Application* _app;
-    Ui::PlaylistWidget *ui;
-    PlaylistPatternsWidget* _patternsWidget;
+        Application* _app;
+        Ui::PlaylistWidget *ui;
+        PlaylistPatternsWidget* _patternsWidget;
 
-    Playlist::LFOChange* _editingLFOChange;
+        Playlist::LFOChange* _editingLFOChange;
 
-private slots:
-    void ganttMarkerClicked(GanttMarker* marker);
-    void ganttHeaderClicked(Qt::MouseButton button, float time);
-    void ganttEditorClicked(Qt::MouseButton button, int row, float time);
-    void ganttItemChanged(GanttItem* item, const float toTime, const int toRow, const float toDuration);
-    void copy();
-    void paste();
-    void selectAll();
-    void deleteTriggered();
-    void doneButtonClicked();
-    void removeButtonClicked();
+    private slots:
+        void ganttMarkerClicked(GanttMarker* marker);
+        void ganttHeaderClicked(Qt::MouseButton button, float time);
+        void ganttEditorClicked(Qt::MouseButton button, int row, float time);
+        void ganttItemChanged(GanttItem* item, const float toTime, const int toRow, const float toDuration);
+        void copy();
+        void paste();
+        void selectAll();
+        void deleteTriggered();
+        void doneButtonClicked();
+        void removeButtonClicked();
 
-    // QWidget interface
-protected:
-    void paintEvent(QPaintEvent* event);
-    void closeEvent(QCloseEvent* event);
+        // QWidget interface
+    protected:
+        void paintEvent(QPaintEvent* event);
+        void closeEvent(QCloseEvent* event);
 };
 
 #endif // PLAYLISTWIDGET_H

@@ -18,16 +18,18 @@ GanttEditorWidget::GanttEditorWidget(QWidget *parent)
     , _itemsResizable(false)
     , _itemsMovableX(false)
     , _itemsMovableY(false)
-    , _positionFunction([](){ return -1; })
-    , _backgroundColor(Qt::white)
-    , _borderColor(Qt::gray)
-    , _itemColor(QColor(128, 128, 255))
-    , _cursorColor(QColor(64, 192, 64))
-    , _selectionColor(QColor(192, 192, 255))
-    , _loopColor(QColor(255, 192, 0))
-    , _markerColor(QColor(255, 128, 128))
-    , _selecting(false)
-    , _cellMajors({ 4 })
+    , _positionFunction([]() {
+    return -1;
+})
+, _backgroundColor(Qt::white)
+, _borderColor(Qt::gray)
+, _itemColor(QColor(128, 128, 255))
+, _cursorColor(QColor(64, 192, 64))
+, _selectionColor(QColor(192, 192, 255))
+, _loopColor(QColor(255, 192, 0))
+, _markerColor(QColor(255, 128, 128))
+, _selecting(false)
+, _cellMajors({ 4 })
 {
     setMouseTracking(true);
 }
@@ -306,13 +308,13 @@ void GanttEditorWidget::mouseReleaseEvent(QMouseEvent* event)
         }
 
         QList<GanttItem*> selectedItems = *_items;
-        selectedItems.erase(std::remove_if(selectedItems.begin(), selectedItems.end(), [=](GanttItem* item){
+        selectedItems.erase(std::remove_if(selectedItems.begin(), selectedItems.end(), [=](GanttItem* item) {
             return (item->row() < fromRow || item->row() > toRow) ||
                    ((item->time() + item->duration()) <= fromPosition || item->time() > toPosition);
         }), selectedItems.end());
 
         if (Qt::ShiftModifier == QApplication::keyboardModifiers()) {
-            std::for_each(selectedItems.begin(), selectedItems.end(), [&](GanttItem* item){
+            std::for_each(selectedItems.begin(), selectedItems.end(), [&](GanttItem* item) {
                 if (!_selectedItems.contains(item)) {
                     _selectedItems.append(item);
                 }
@@ -422,7 +424,7 @@ void GanttEditorWidget::mouseMoveEvent(QMouseEvent* event)
                         if (_itemsMovableY)
                             newRow = newRow + rowDelta;
 
-                        if (_itemsMovableX || _itemsMovableY){
+                        if (_itemsMovableX || _itemsMovableY) {
                             emit itemChanged(item, time, newRow, item->duration());
                         }
                     }

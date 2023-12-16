@@ -70,7 +70,7 @@ void AlgorithmDisplayWidget::drawOutputEdges(QPaintEvent* event, QPainter& paint
 void AlgorithmDisplayWidget::drawNodes(QPaintEvent* event, QPainter& painter, const AlgorithmGraph& graph) const {
     for (int i = 1; i <= 4; i++) {
         const QRect opRect(centered(event->rect(), graph.rect(), graph.topLeft(i)),
-                            QSize(AlgorithmGraph::OP_SIZE, AlgorithmGraph::OP_SIZE));
+                           QSize(AlgorithmGraph::OP_SIZE, AlgorithmGraph::OP_SIZE));
 
         painter.setPen(graph.slotOps().contains(i) ? _slotTextColor : _operatorTextColor);
         painter.fillRect(opRect, QBrush(graph.slotOps().contains(i) ? _slotColor : _operatorColor, Qt::SolidPattern));
@@ -212,8 +212,8 @@ void AlgorithmDisplayWidget::setEdgeColor(const QColor& color)
 
 QPoint AlgorithmDisplayWidget::centered(const QRect& oRect, const QRect& iRect, const QPoint& point) const {
     return QPoint(
-                point.x() + ((oRect.width() - iRect.width()) / 2),
-                point.y() + ((oRect.height() - iRect.height()) / 2));
+               point.x() + ((oRect.width() - iRect.width()) / 2),
+               point.y() + ((oRect.height() - iRect.height()) / 2));
 }
 
 QLine AlgorithmDisplayWidget::centered(const QRect& oRect, const QRect& iRect, const QLine& line) const

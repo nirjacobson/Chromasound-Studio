@@ -5,16 +5,16 @@
 
 class ToneChannelSettings : public ChannelSettings
 {
-public:
-    ToneChannelSettings();
+    public:
+        ToneChannelSettings();
 
-    // ChannelSettings interface
-public:
-    QString type() const;
+        // ChannelSettings interface
+    public:
+        QString type() const;
 
-    // ChannelSettings interface
-public:
-    ChannelSettings* copy() const;
+        // ChannelSettings interface
+    public:
+        ChannelSettings* copy() const;
 };
 
 #endif // TONECHANNELSETTINGS_H

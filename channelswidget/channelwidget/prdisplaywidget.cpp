@@ -29,8 +29,8 @@ void PRDisplayWidget::paintEvent(QPaintEvent*)
     painter.setBrush(QBrush(_backgroundColor, Qt::SolidPattern));
     painter.setPen(QPen(_borderColor));
     painter.drawRect(rect());
-    
-    
+
+
     painter.setPen(QPen(_itemColor));
     int visibleLength =  _app->project().getPatternBarLength(_app->project().frontPattern());
     int visibleHeight = (float)height() * 0.8f;
@@ -67,7 +67,7 @@ void PRDisplayWidget::paintEvent(QPaintEvent*)
 
         QPoint p1(appPositionPixel, 0);
         QPoint p2(appPositionPixel, height());
-        
+
         painter.setPen(_cursorColor);
         painter.drawLine(p1, p2);
     }

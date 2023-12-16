@@ -9,18 +9,18 @@ class MainWindow;
 
 class RemoveTrackItemsCommand : public QUndoCommand
 {
-public:
-    RemoveTrackItemsCommand(MainWindow* window, Track& track, const QList<Track::Item*>& items);
-private:
-    MainWindow* _mainWindow;
+    public:
+        RemoveTrackItemsCommand(MainWindow* window, Track& track, const QList<Track::Item*>& items);
+    private:
+        MainWindow* _mainWindow;
 
-    Track& _track;
-    QList<Track::Item*> _items;
+        Track& _track;
+        QList<Track::Item*> _items;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 };
 
 #endif // REMOVETRACKITEMSCOMMAND_H

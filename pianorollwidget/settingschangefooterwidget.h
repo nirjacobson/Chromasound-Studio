@@ -6,29 +6,29 @@
 #include "project/channel/channelsettings.h"
 
 namespace Ui {
-class SettingsChangeFooterWidget;
+    class SettingsChangeFooterWidget;
 }
 
 class SettingsChangeFooterWidget : public QWidget
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    explicit SettingsChangeFooterWidget(QWidget *parent = nullptr);
-    ~SettingsChangeFooterWidget();
+    public:
+        explicit SettingsChangeFooterWidget(QWidget *parent = nullptr);
+        ~SettingsChangeFooterWidget();
 
-    void setSettings(ChannelSettings& settings);
+        void setSettings(ChannelSettings& settings);
 
-signals:
-    void removeClicked();
-    void doneClicked();
+    signals:
+        void removeClicked();
+        void doneClicked();
 
-private:
-    Ui::SettingsChangeFooterWidget *ui;
-    ChannelSettings* _settings;
+    private:
+        Ui::SettingsChangeFooterWidget *ui;
+        ChannelSettings* _settings;
 
-private slots:
-    void volumeChanged(int volume);
+    private slots:
+        void volumeChanged(int volume);
 };
 
 #endif // SETTINGSCHANGEFOOTERWIDGET_H

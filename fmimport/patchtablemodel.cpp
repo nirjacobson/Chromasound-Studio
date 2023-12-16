@@ -15,12 +15,12 @@ QVariant PatchTableModel::headerData(int section, Qt::Orientation orientation, i
     }
 
     switch (section) {
-    case 0:
-        return "Name";
-    case 1:
-        return "Octaves";
-    default:
-        return "";
+        case 0:
+            return "Name";
+        case 1:
+            return "Octaves";
+        default:
+            return "";
     }
 }
 
@@ -54,16 +54,16 @@ QVariant PatchTableModel::data(const QModelIndex &index, int role) const
 
     QStringList octaves;
     switch (index.column()) {
-    case 0:
-        return _names[index.row()];
-    case 1:
-        for (int octave : _octaves[index.row()]) {
-            octaves.append(QString::number(octave));
-        }
+        case 0:
+            return _names[index.row()];
+        case 1:
+            for (int octave : _octaves[index.row()]) {
+                octaves.append(QString::number(octave));
+            }
 
-        return octaves.join(", ");
-    default:
-        break;
+            return octaves.join(", ");
+        default:
+            break;
     }
 
     return QVariant();

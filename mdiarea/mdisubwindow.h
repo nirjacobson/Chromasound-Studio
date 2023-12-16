@@ -8,17 +8,17 @@
 
 class MdiSubWindow : public QMdiSubWindow
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    MdiSubWindow(MdiArea* mdiArea);
+    public:
+        MdiSubWindow(MdiArea* mdiArea);
 
-signals:
-    void closed();
+    signals:
+        void closed();
 
-    // QWidget interface
-protected:
-    void closeEvent(QCloseEvent* event);
+        // QWidget interface
+    protected:
+        void closeEvent(QCloseEvent* event);
 };
 
 #endif // MDISUBWINDOW_H

@@ -20,7 +20,7 @@ class FMChannelSettings : public ChannelSettings
 
         AlgorithmSettings& algorithm();
         const AlgorithmSettings& algorithm() const;
-        
+
         LFOSettings& lfo();
         const LFOSettings& lfo() const;
 

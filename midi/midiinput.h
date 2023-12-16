@@ -8,29 +8,29 @@
 
 class MIDIInput
 {
-public:
-    MIDIInput();
+    public:
+        MIDIInput();
 
-    static MIDIInput* instance();
+        static MIDIInput* instance();
 
-    void init();
-    void destroy();
+        void init();
+        void destroy();
 
-    QList<QString> devices() const;
+        QList<QString> devices() const;
 
-    void setDevice(const int index);
-    int device() const;
+        void setDevice(const int index);
+        int device() const;
 
-    QList<long> read() const;
+        QList<long> read() const;
 
-private:
-    static MIDIInput* _instance;
+    private:
+        static MIDIInput* _instance;
 
-    static PmError _pmError;
-    static PmDeviceID _pmDeviceId;
-    static PortMidiStream* _pmStream;
+        static PmError _pmError;
+        static PmDeviceID _pmDeviceId;
+        static PortMidiStream* _pmStream;
 
-    int _deviceIndex;
+        int _deviceIndex;
 };
 
 #endif // MIDIINPUT_H

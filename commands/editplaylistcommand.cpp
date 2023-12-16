@@ -55,7 +55,7 @@ bool EditPlaylistCommand::mergeWith(const QUndoCommand* other)
                         epc->_item,
                         epc->_toTime,
                         epc->_group
-                        );
+                    );
                     epc2->_fromTime = epc->_fromTime;
 
                     _groupCommands.insert(epc->_item, epc2);

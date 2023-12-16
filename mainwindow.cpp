@@ -39,36 +39,36 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
 
     ui->topWidget->setApplication(app);
 
-   _timer.setInterval(1000 / 30);
-   connect(&_timer, &QTimer::timeout, this, &MainWindow::frame);
+    _timer.setInterval(1000 / 30);
+    connect(&_timer, &QTimer::timeout, this, &MainWindow::frame);
 
-   connect(ui->topWidget, &TopWidget::play, this, &MainWindow::play);
-   connect(ui->topWidget, &TopWidget::pause, this, &MainWindow::pause);
-   connect(ui->topWidget, &TopWidget::stop, this, &MainWindow::stop);
-   connect(ui->topWidget, &TopWidget::patternChanged, this, &MainWindow::patternChanged);
-   connect(ui->topWidget, &TopWidget::beatsPerBarChanged, this, &MainWindow::beatsPerBarChanged);
-   connect(ui->topWidget, &TopWidget::midiDeviceSet, this, &MainWindow::setMIDIDevice);
+    connect(ui->topWidget, &TopWidget::play, this, &MainWindow::play);
+    connect(ui->topWidget, &TopWidget::pause, this, &MainWindow::pause);
+    connect(ui->topWidget, &TopWidget::stop, this, &MainWindow::stop);
+    connect(ui->topWidget, &TopWidget::patternChanged, this, &MainWindow::patternChanged);
+    connect(ui->topWidget, &TopWidget::beatsPerBarChanged, this, &MainWindow::beatsPerBarChanged);
+    connect(ui->topWidget, &TopWidget::midiDeviceSet, this, &MainWindow::setMIDIDevice);
 
-   connect(ui->mdiArea, &MdiArea::viewModeChanged, this, &MainWindow::mdiViewModeChanged);
+    connect(ui->mdiArea, &MdiArea::viewModeChanged, this, &MainWindow::mdiViewModeChanged);
 
-   connect(ui->actionNew, &QAction::triggered, this, &MainWindow::newTriggered);
-   connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openTriggered);
-   connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveTriggered);
-   connect(ui->actionForFMPSG, &QAction::triggered, this, &MainWindow::renderForFMPSGTriggered);
-   connect(ui->actionFor3rdPartyPlayers, &QAction::triggered, this, &MainWindow::renderFor3rdPartyTriggered);
-   connect(ui->actionInfo, &QAction::triggered, this, &MainWindow::projectInfoTriggered);
-   connect(ui->actionExit, &QAction::triggered, this, &MainWindow::close);
-   connect(ui->actionStyles, &QAction::triggered, this, &MainWindow::stylesTriggered);
-   connect(ui->actionChannels, &QAction::triggered, this, &MainWindow::showChannelsWindow);
-   connect(ui->actionPlaylist, &QAction::triggered, this, &MainWindow::showPlaylistWindow);
-   connect(ui->actionImportFMPatches, &QAction::triggered, this, &MainWindow::fmImportTriggered);
-   connect(ui->actionPCMUsage, &QAction::triggered, this, &MainWindow::pcmUsageTriggered);
+    connect(ui->actionNew, &QAction::triggered, this, &MainWindow::newTriggered);
+    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openTriggered);
+    connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveTriggered);
+    connect(ui->actionForFMPSG, &QAction::triggered, this, &MainWindow::renderForFMPSGTriggered);
+    connect(ui->actionFor3rdPartyPlayers, &QAction::triggered, this, &MainWindow::renderFor3rdPartyTriggered);
+    connect(ui->actionInfo, &QAction::triggered, this, &MainWindow::projectInfoTriggered);
+    connect(ui->actionExit, &QAction::triggered, this, &MainWindow::close);
+    connect(ui->actionStyles, &QAction::triggered, this, &MainWindow::stylesTriggered);
+    connect(ui->actionChannels, &QAction::triggered, this, &MainWindow::showChannelsWindow);
+    connect(ui->actionPlaylist, &QAction::triggered, this, &MainWindow::showPlaylistWindow);
+    connect(ui->actionImportFMPatches, &QAction::triggered, this, &MainWindow::fmImportTriggered);
+    connect(ui->actionPCMUsage, &QAction::triggered, this, &MainWindow::pcmUsageTriggered);
 
-   connect(_app, &Application::pcmUploadStarted, this, &MainWindow::pcmUploadStarted);
-   connect(_app, &Application::pcmUploadFinished, this, &MainWindow::pcmUploadFinished);
+    connect(_app, &Application::pcmUploadStarted, this, &MainWindow::pcmUploadStarted);
+    connect(_app, &Application::pcmUploadFinished, this, &MainWindow::pcmUploadFinished);
 
-   showChannelsWindow();
-   showPlaylistWindow();
+    showChannelsWindow();
+    showPlaylistWindow();
 }
 
 MainWindow::~MainWindow()
@@ -285,7 +285,7 @@ void MainWindow::pianoRollTriggered(const int index, const bool on)
 
     _channelsWidget->update();
 
-    auto it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [&](MdiSubWindow* window){
+    auto it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [&](MdiSubWindow* window) {
         PianoRollWidget* prw;
         if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
             if (&prw->pattern() == &_app->project().getFrontPattern()) {
@@ -316,7 +316,9 @@ void MainWindow::pianoRollTriggered(const int index, const bool on)
         ui->mdiArea->addSubWindow(pianoRollWindow);
 
         pianoRollWindow->setWidget(pianoRollWidget);
-        connect(pianoRollWindow, &MdiSubWindow::closed, this, [=](){ windowClosed(pianoRollWindow); });
+        connect(pianoRollWindow, &MdiSubWindow::closed, this, [=]() {
+            windowClosed(pianoRollWindow);
+        });
 
         if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
             pianoRollWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
@@ -352,7 +354,9 @@ void MainWindow::channelSelected(const int index)
 
     switch (_app->project().getChannel(index).type()) {
         case Channel::Type::NOISE:
-            it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window){ return dynamic_cast<NoiseWidget*>(window->widget()); });
+            it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window) {
+                return dynamic_cast<NoiseWidget*>(window->widget());
+            });
             if (it != _channelWindows[index].end()) {
                 ui->mdiArea->setActiveSubWindow(*it);
             } else {
@@ -365,11 +369,15 @@ void MainWindow::channelSelected(const int index)
                     channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
                 }
                 _channelWindows[index].append(channelWindow);
-                connect(channelWindow, &MdiSubWindow::closed, this, [=](){ windowClosed(channelWindow); });
+                connect(channelWindow, &MdiSubWindow::closed, this, [=]() {
+                    windowClosed(channelWindow);
+                });
             }
             break;
         case Channel::Type::FM:
-            it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window){ return dynamic_cast<FMWidgetWindow*>(window->widget()); });
+            it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window) {
+                return dynamic_cast<FMWidgetWindow*>(window->widget());
+            });
             if (it != _channelWindows[index].end()) {
                 ui->mdiArea->setActiveSubWindow(*it);
             } else {
@@ -384,13 +392,17 @@ void MainWindow::channelSelected(const int index)
                     channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
                 }
                 _channelWindows[index].append(channelWindow);
-                connect(channelWindow, &MdiSubWindow::closed, this, [=](){ windowClosed(channelWindow); });
+                connect(channelWindow, &MdiSubWindow::closed, this, [=]() {
+                    windowClosed(channelWindow);
+                });
             }
             break;
         case Channel::TONE:
             break;
         case Channel::PCM:
-            it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window){ return dynamic_cast<PCMWidget*>(window->widget()); });
+            it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window) {
+                return dynamic_cast<PCMWidget*>(window->widget());
+            });
             if (it != _channelWindows[index].end()) {
                 ui->mdiArea->setActiveSubWindow(*it);
             } else {
@@ -403,7 +415,9 @@ void MainWindow::channelSelected(const int index)
                     channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
                 }
                 _channelWindows[index].append(channelWindow);
-                connect(channelWindow, &MdiSubWindow::closed, this, [=](){ windowClosed(channelWindow); });
+                connect(channelWindow, &MdiSubWindow::closed, this, [=]() {
+                    windowClosed(channelWindow);
+                });
             }
             break;
     }
@@ -489,8 +503,8 @@ void MainWindow::renderForFMPSGTriggered()
 
         VGMStream vgmStream;
         QByteArray data = _app->project().playMode() == Project::PlayMode::PATTERN
-                              ? vgmStream.compile(_app->project(), _app->project().getFrontPattern(), true, true)
-                              : vgmStream.compile(_app->project(), true, true);
+                          ? vgmStream.compile(_app->project(), _app->project().getFrontPattern(), true, true)
+                          : vgmStream.compile(_app->project(), true, true);
         file.write(data);
         file.close();
 
@@ -508,8 +522,8 @@ void MainWindow::renderFor3rdPartyTriggered()
 
         VGMStream vgmStream(VGMStream::Format::STANDARD);
         QByteArray data = _app->project().playMode() == Project::PlayMode::PATTERN
-                              ? vgmStream.compile(_app->project(), _app->project().getFrontPattern(), true, true)
-                              : vgmStream.compile(_app->project(), true, true);
+                          ? vgmStream.compile(_app->project(), _app->project().getFrontPattern(), true, true)
+                          : vgmStream.compile(_app->project(), true, true);
         file.write(data);
         file.close();
 
@@ -591,7 +605,9 @@ void MainWindow::projectInfoTriggered()
 
         MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
         connect(_infoDialog, &QDialog::finished, window, &MdiSubWindow::close);
-        connect(window, &MdiSubWindow::closed, this, [&](){ _infoDialogWindow = nullptr; });
+        connect(window, &MdiSubWindow::closed, this, [&]() {
+            _infoDialogWindow = nullptr;
+        });
         window->setAttribute(Qt::WA_DeleteOnClose);
         window->setWidget(_infoDialog);
         _infoDialogWindow = window;
@@ -609,7 +625,9 @@ void MainWindow::stylesTriggered()
         _styleDialog->setApplication(_app);
 
         MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
-        connect(window, &MdiSubWindow::closed, this, [&](){ _styleDialogWindow = nullptr; });
+        connect(window, &MdiSubWindow::closed, this, [&]() {
+            _styleDialogWindow = nullptr;
+        });
         window->setAttribute(Qt::WA_DeleteOnClose);
         window->setWidget(_styleDialog);
         _styleDialogWindow = window;
@@ -626,7 +644,9 @@ void MainWindow::pcmUsageTriggered()
         _pcmUsageDialog = new PCMUsageDialog(this, _app);
 
         MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
-        connect(window, &MdiSubWindow::closed, this, [&](){ _fmImportDialogWindow = nullptr; });
+        connect(window, &MdiSubWindow::closed, this, [&]() {
+            _fmImportDialogWindow = nullptr;
+        });
         window->setAttribute(Qt::WA_DeleteOnClose);
         window->setWidget(_pcmUsageDialog);
         _pcmUsageDialogWindow = window;
@@ -644,7 +664,9 @@ void MainWindow::fmImportTriggered()
         _fmImportDialog->setApplication(_app);
 
         MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
-        connect(window, &MdiSubWindow::closed, this, [&](){ _fmImportDialogWindow = nullptr; });
+        connect(window, &MdiSubWindow::closed, this, [&]() {
+            _fmImportDialogWindow = nullptr;
+        });
         window->setAttribute(Qt::WA_DeleteOnClose);
         window->setWidget(_fmImportDialog);
         _fmImportDialogWindow = window;
@@ -665,7 +687,9 @@ void MainWindow::showChannelsWindow()
         connect(_channelsWidget, &ChannelsWidget::nameChanged, this, &MainWindow::channelNameChanged);
 
         MdiSubWindow* channelsWindow = new MdiSubWindow(ui->mdiArea);
-        connect(channelsWindow, &MdiSubWindow::closed, this, [&](){ _channelsWindow = nullptr; });
+        connect(channelsWindow, &MdiSubWindow::closed, this, [&]() {
+            _channelsWindow = nullptr;
+        });
         channelsWindow->setAttribute(Qt::WA_DeleteOnClose);
         channelsWindow->setWidget(_channelsWidget);
         if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
@@ -686,7 +710,9 @@ void MainWindow::showPlaylistWindow()
         connect(_playlistWidget, &PlaylistWidget::patternClicked, this, &MainWindow::patternChanged);
 
         MdiSubWindow* playlistWindow = new MdiSubWindow(ui->mdiArea);
-        connect(playlistWindow, &MdiSubWindow::closed, this, [&](){ _playlistWindow = nullptr; });
+        connect(playlistWindow, &MdiSubWindow::closed, this, [&]() {
+            _playlistWindow = nullptr;
+        });
         playlistWindow->setAttribute(Qt::WA_DeleteOnClose);
         playlistWindow->setWidget(_playlistWidget);
 

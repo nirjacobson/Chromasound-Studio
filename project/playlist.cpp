@@ -100,7 +100,9 @@ const QList<Playlist::Item*>& Playlist::items() const
 void Playlist::addItem(const float time, const int pattern)
 {
     Playlist::Item item(_project, time, pattern);
-    if (std::find_if(_items.begin(), _items.end(), [=](Playlist::Item* const pitem){ return *pitem == item; }) == _items.end()) {
+    if (std::find_if(_items.begin(), _items.end(), [=](Playlist::Item* const pitem) {
+    return *pitem == item;
+}) == _items.end()) {
         _items.append(new Playlist::Item(_project, time, pattern));
     }
 }
@@ -112,12 +114,16 @@ void Playlist::addItems(const QList<Item*>& items)
 
 void Playlist::removeItems(const QList<Item*>& items)
 {
-    _items.erase(std::remove_if(_items.begin(), _items.end(), [&](const Playlist::Item* item){ return items.contains(item); }), _items.end());
+    _items.erase(std::remove_if(_items.begin(), _items.end(), [&](const Playlist::Item* item) {
+        return items.contains(item);
+    }), _items.end());
 }
 
 void Playlist::removeItem(const float time, const int pattern)
 {
-    auto it = std::remove_if(_items.begin(), _items.end(), [=](Playlist::Item* const item){ return (item->pattern() == pattern) && (item->time() <= time) && (time < (item->time() + _project->getPatternBarLength(item->pattern()))); });
+    auto it = std::remove_if(_items.begin(), _items.end(), [=](Playlist::Item* const item) {
+        return (item->pattern() == pattern) && (item->time() <= time) && (time < (item->time() + _project->getPatternBarLength(item->pattern())));
+    });
     _items.erase(it, _items.end());
 }
 
@@ -139,7 +145,9 @@ QMap<int, float> Playlist::activePatternsAtTime(const float time) const
     QMap<int, float> result;
 
     QList<Playlist::Item*>::ConstIterator it = _items.begin();
-    while ((it = std::find_if(it, _items.end(), [=](const Playlist::Item* item){ return (item->time() <= time) && ((item->time() + _project->getPatternBarLength(item->pattern())) >= time); })) != _items.end()) {
+    while ((it = std::find_if(it, _items.end(), [=](const Playlist::Item* item) {
+    return (item->time() <= time) && ((item->time() + _project->getPatternBarLength(item->pattern())) >= time);
+    })) != _items.end()) {
         result.insert((*it)->pattern(), (*it)->time());
         it++;
     }
@@ -198,7 +206,9 @@ Playlist::LFOChange* Playlist::addLFOChange(const float time, const int mode)
 {
     LFOChange* ret = nullptr;
 
-    if (std::find_if(_lfoChanges.begin(), _lfoChanges.end(), [=](LFOChange* const lc) { return lc->time() == time; }) == _lfoChanges.end()) {
+    if (std::find_if(_lfoChanges.begin(), _lfoChanges.end(), [=](LFOChange* const lc) {
+    return lc->time() == time;
+    }) == _lfoChanges.end()) {
         ret = new LFOChange(time, mode);
         _lfoChanges.append(ret);
     }
@@ -235,24 +245,24 @@ float Playlist::LFOChange::time() const
 QString Playlist::LFOChange::name() const
 {
     switch (_mode) {
-    case 0:
-        return "LFO: Off";
-    case 1:
-        return "LFO: 3.98 Hz";
-    case 2:
-        return "LFO: 5.56 Hz";
-    case 3:
-        return "LFO: 6.02 Hz";
-    case 4:
-        return "LFO: 6.37 Hz";
-    case 5:
-        return "LFO: 6.88 Hz";
-    case 6:
-        return "LFO: 9.63 Hz";
-    case 7:
-        return "LFO: 48.1 Hz";
-    case 8:
-        return "LFO: 72.2 Hz";
+        case 0:
+            return "LFO: Off";
+        case 1:
+            return "LFO: 3.98 Hz";
+        case 2:
+            return "LFO: 5.56 Hz";
+        case 3:
+            return "LFO: 6.02 Hz";
+        case 4:
+            return "LFO: 6.37 Hz";
+        case 5:
+            return "LFO: 6.88 Hz";
+        case 6:
+            return "LFO: 9.63 Hz";
+        case 7:
+            return "LFO: 48.1 Hz";
+        case 8:
+            return "LFO: 72.2 Hz";
     }
 
     return "LFO change";
