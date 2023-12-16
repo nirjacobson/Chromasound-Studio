@@ -30,9 +30,15 @@ FM_PSG_Soft::FM_PSG_Soft(const Project& project)
 
         _vgmStream.encode(project, _items, data);
 
-        for (VGMStream::StreamItem* item : _items)
-            if (!dynamic_cast<VGMStream::StreamNoteItem*>(item))
-                delete item;
+        for (VGMStream::StreamItem* item : _items) {
+            VGMStream::StreamNoteItem* sni;
+            if ((sni = dynamic_cast<VGMStream::StreamNoteItem*>(item))) {
+                if (sni->on()) {
+                    continue;
+                }
+            }
+            delete item;
+        }
 
         _items.clear();
 
@@ -250,14 +256,15 @@ bool FM_PSG_Soft::isPlaying() const
 
 void FM_PSG_Soft::keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity)
 {
-    VGMStream::StreamLFOItem* sli = new VGMStream::StreamLFOItem(0, project.lfoMode());
     VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(0, channelType, nullptr, Note(key, 0, velocity), &settings);
 
     _keys[key] = sni;
 
     _mutex.lock();
 
+    VGMStream::StreamLFOItem* sli = new VGMStream::StreamLFOItem(0, project.lfoMode());
     _items.append(sli);
+
     _items.append(sni);
     _vgmStream.assignChannel(sni, _items);
 
@@ -273,18 +280,10 @@ void FM_PSG_Soft::keyOff(int key)
     VGMStream::StreamNoteItem* sni = _keys[key];
     _vgmStream.releaseChannel(sni->type(), sni->channel());
     sni->setOn(false);
-    QList<VGMStream::StreamItem*> items;
-    QByteArray data;
-    items.append(sni);
-    _vgmStream.encode(Project(), items, data);
+    _items.append(sni);
     _keys.remove(key);
 
-    Mem_File_Reader reader(data.constData(), data.size());
-
-    if (log_err(_emu->append(reader)))
-        return;
-
-    log_warning(_emu);
+    _timer.start(20);
 }
 
 int16_t* FM_PSG_Soft::next(int size)
