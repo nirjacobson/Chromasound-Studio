@@ -40,7 +40,6 @@ PCMUsageDialog::~PCMUsageDialog()
 void PCMUsageDialog::doUpdate()
 {
     _items.clear();
-
     QList<QString> paths;
     for (const Channel& channel : _app->project().channels()) {
         if (channel.type() == Channel::Type::PCM) {
@@ -63,13 +62,22 @@ void PCMUsageDialog::doUpdate()
 
     _items.append(PCMUsageDisplayItem("Free space", MAX_SIZE - totalSize, _freeSpaceColor));
 
-    quint32 pcmSizeFrontPattern = VGMStream().encodeStandardPCM(_app->project(), _app->project().getFrontPattern()).size();
-    quint32 pcmSizeSong = VGMStream().encodeStandardPCM(_app->project()).size();
 
-    ui->frontPatternSizeLabel->setText(sizeString(pcmSizeFrontPattern));
-    ui->songSizeLabel->setText(sizeString(pcmSizeSong));
+    QThread* thread = QThread::create([&]() {
+        quint32 pcmSizeFrontPattern = VGMStream().encodeStandardPCM(_app->project(), _app->project().getFrontPattern()).size();
+        quint32 pcmSizeSong = VGMStream().encodeStandardPCM(_app->project()).size();
 
-    update();
+        ui->frontPatternSizeLabel->setText(sizeString(pcmSizeFrontPattern));
+        ui->songSizeLabel->setText(sizeString(pcmSizeSong));
+
+        update();
+    });
+
+    connect(thread, &QThread::finished, this, [=]() {
+        delete thread;
+    });
+
+    thread->start();
 }
 
 const QColor& PCMUsageDialog::color1() const

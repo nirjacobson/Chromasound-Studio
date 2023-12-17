@@ -102,6 +102,8 @@ class MainWindow : public QMainWindow
 
         void pcmUploadStarted();
         void pcmUploadFinished();
+        void compileStarted();
+        void compileFinished();
 
     private:
         Ui::MainWindow* ui;

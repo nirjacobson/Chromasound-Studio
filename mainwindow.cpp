@@ -87,6 +87,8 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
 
     connect(_app, &Application::pcmUploadStarted, this, &MainWindow::pcmUploadStarted);
     connect(_app, &Application::pcmUploadFinished, this, &MainWindow::pcmUploadFinished);
+    connect(_app, &Application::compileStarted, this, &MainWindow::compileStarted);
+    connect(_app, &Application::compileFinished, this, &MainWindow::compileFinished);
 
     showChannelsWindow();
     showPlaylistWindow();
@@ -519,17 +521,26 @@ void MainWindow::renderForFMPSGTriggered()
     const QString path = QFileDialog::getSaveFileName(nullptr, tr("Save file"), "", "VGM files (*.vgm)");
 
     if (!path.isNull()) {
-        QFile file(path);
-        file.open(QIODevice::WriteOnly);
+        QThread* thread = QThread::create([&](const QString path) {
+            QFile file(path);
+            file.open(QIODevice::WriteOnly);
 
-        VGMStream vgmStream;
-        QByteArray data = _app->project().playMode() == Project::PlayMode::PATTERN
-                          ? vgmStream.compile(_app->project(), _app->project().getFrontPattern(), true, true)
-                          : vgmStream.compile(_app->project(), true, true);
-        file.write(data);
-        file.close();
+            VGMStream vgmStream;
+            compileStarted();
+            QByteArray data = _app->project().playMode() == Project::PlayMode::PATTERN
+                              ? vgmStream.compile(_app->project(), _app->project().getFrontPattern(), true, true)
+                              : vgmStream.compile(_app->project(), true, true);
+            file.write(data);
+            file.close();
 
-        ui->topWidget->setStatusMessage(QString("Saved %1.").arg(QFileInfo(path).fileName()));
+            ui->topWidget->setStatusMessage(QString("Saved %1.").arg(QFileInfo(path).fileName()));
+        }, path);
+
+        connect(thread, &QThread::finished, this, [=]() {
+            delete thread;
+        });
+
+        thread->start();
     }
 }
 
@@ -538,17 +549,26 @@ void MainWindow::renderFor3rdPartyTriggered()
     const QString path = QFileDialog::getSaveFileName(nullptr, tr("Save file"), "", "VGM files (*.vgm)");
 
     if (!path.isNull()) {
-        QFile file(path);
-        file.open(QIODevice::WriteOnly);
+        QThread* thread = QThread::create([&](const QString path) {
+            QFile file(path);
+            file.open(QIODevice::WriteOnly);
 
-        VGMStream vgmStream(VGMStream::Format::STANDARD);
-        QByteArray data = _app->project().playMode() == Project::PlayMode::PATTERN
-                          ? vgmStream.compile(_app->project(), _app->project().getFrontPattern(), true, true)
-                          : vgmStream.compile(_app->project(), true, true);
-        file.write(data);
-        file.close();
+            VGMStream vgmStream(VGMStream::Format::STANDARD);
+            compileStarted();
+            QByteArray data = _app->project().playMode() == Project::PlayMode::PATTERN
+                              ? vgmStream.compile(_app->project(), _app->project().getFrontPattern(), true, true)
+                              : vgmStream.compile(_app->project(), true, true);
+            file.write(data);
+            file.close();
 
-        ui->topWidget->setStatusMessage(QString("Saved %1.").arg(QFileInfo(path).fileName()));
+            ui->topWidget->setStatusMessage(QString("Saved %1.").arg(QFileInfo(path).fileName()));
+        }, path);
+
+        connect(thread, &QThread::finished, this, [=]() {
+            delete thread;
+        });
+
+        thread->start();
     }
 }
 
@@ -771,7 +791,17 @@ void MainWindow::pcmUploadStarted()
 
 void MainWindow::pcmUploadFinished()
 {
-    ui->topWidget->setStatusMessage("Done.");
+    ui->topWidget->setStatusMessage("Ready.");
+}
+
+void MainWindow::compileStarted()
+{
+    ui->topWidget->setStatusMessage("Compiling song...");
+}
+
+void MainWindow::compileFinished()
+{
+    ui->topWidget->setStatusMessage("Ready.");
 }
 
 void MainWindow::windowClosed(MdiSubWindow* window)
