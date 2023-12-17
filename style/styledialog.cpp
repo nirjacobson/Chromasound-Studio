@@ -34,7 +34,7 @@ void StyleDialog::newTriggered()
 
 void StyleDialog::openTriggered()
 {
-    const QString path = QFileDialog::getOpenFileName(nullptr, tr("Open file"), "", "Cascading style sheets (*.css)");
+    const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "Cascading style sheets (*.css)", nullptr, QFileDialog::DontUseNativeDialog);
 
     if (!path.isNull()) {
         QFile file(path);
@@ -51,7 +51,7 @@ void StyleDialog::openTriggered()
 
 void StyleDialog::saveTriggered()
 {
-    const QString path = QFileDialog::getSaveFileName(nullptr, tr("Save file"), "", "Cascading style sheets (*.css)");
+    const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "Cascading style sheets (*.css)", nullptr, QFileDialog::DontUseNativeDialog);
 
     if (!path.isNull()) {
         QFile file(path);

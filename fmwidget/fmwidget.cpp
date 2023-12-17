@@ -94,7 +94,7 @@ void FMWidget::newTriggered()
 
 void FMWidget::openTriggered()
 {
-    const QString path = QFileDialog::getOpenFileName(nullptr, tr("Open file"), "", "YM2612 Patch (*.fm)");
+    const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "YM2612 Patch (*.fm)", nullptr, QFileDialog::DontUseNativeDialog);
 
     if (!path.isNull()) {
         FMChannelSettings* settings = BSON::decodePatch(path);
@@ -107,7 +107,7 @@ void FMWidget::openTriggered()
 
 void FMWidget::saveTriggered()
 {
-    const QString path = QFileDialog::getSaveFileName(nullptr, tr("Save file"), "", "YM2612 Patch (*.fm)");
+    const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "YM2612 Patch (*.fm)", nullptr, QFileDialog::DontUseNativeDialog);
 
     if (!path.isNull()) {
         QFile file(path);
