@@ -6,6 +6,7 @@
 #include <QRect>
 #include <QFile>
 #include <QFileDialog>
+#include <QStandardPaths>
 
 #include "application.h"
 #include "bson.h"
@@ -29,6 +30,9 @@
 #include "commands/deletechannelcommand.h"
 #include "commands/addchannelcommand.h"
 #include "commands/setchanneltypecommand.h"
+
+#include "browser/filesystemmodel.h"
+#include "browser/sortfilterproxymodel.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -124,6 +128,9 @@ class MainWindow : public QMainWindow
         MdiSubWindow* _styleDialogWindow;
         MdiSubWindow* _fmImportDialogWindow;
         MdiSubWindow* _pcmUsageDialogWindow;
+
+        FilesystemModel _filesystemModel;
+        SortFilterProxyModel _proxyModel;
 
         int _selectedChannel;
 
