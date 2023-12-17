@@ -11,16 +11,6 @@
 #include "soft/producer.h"
 #include "soft/audio_output.h"
 
-typedef struct {
-    int loop_length;           /* length of tracks that lack timing information */
-    bool resample;          /* whether or not to resample */
-    int resample_rate;         /* rate to resample at */
-    int treble;                /* -100 to +100 */
-    int bass;                  /* -100 to +100 */
-    bool ignore_spc_length; /* if true, ignore length from SPC tags */
-    int echo;                  /* 0 to +100 */
-    bool inc_spc_reverb;    /* if true, increases the default reverb */
-} AudaciousConsoleConfig;
 
 class FM_PSG_Soft : public FM_PSG, public Producer<int16_t>
 {
@@ -28,10 +18,15 @@ class FM_PSG_Soft : public FM_PSG, public Producer<int16_t>
         FM_PSG_Soft(const Project& project);
         ~FM_PSG_Soft();
 
+        typedef struct {
+            int treble;                /* -100 to +100 */
+            int bass;                  /* -100 to +100 */
+        } Equalizer;
+
     private:
         const Project& _project;
 
-        AudaciousConsoleConfig _audcfg;
+        Equalizer _eq;
         Music_Emu* _emu;
         gme_type_t _type;
         AudioOutput<int16_t>* _output;
