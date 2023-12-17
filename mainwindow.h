@@ -24,6 +24,7 @@
 #include "fmimport/fmimportdialog.h"
 #include "pcmusage/pcmusagedialog.h"
 #include "info/projectinfodialog.h"
+#include "settings/settingsdialog.h"
 
 #include "commands/movechanneldowncommand.h"
 #include "commands/movechannelupcommand.h"
@@ -91,6 +92,7 @@ class MainWindow : public QMainWindow
         void setMIDIDevice(const int device);
 
         void projectInfoTriggered();
+        void settingsTriggered();
         void stylesTriggered();
         void pcmUsageTriggered();
         void fmImportTriggered();
@@ -121,11 +123,13 @@ class MainWindow : public QMainWindow
 
         QMap<int, QList<MdiSubWindow*>> _channelWindows;
 
+        SettingsDialog* _settingsDialog;
         ProjectInfoDialog* _infoDialog;
         StyleDialog* _styleDialog;
         FMImportDialog* _fmImportDialog;
         PCMUsageDialog* _pcmUsageDialog;
 
+        MdiSubWindow* _settingsDialogWindow;
         MdiSubWindow* _infoDialogWindow;
         MdiSubWindow* _styleDialogWindow;
         MdiSubWindow* _fmImportDialogWindow;

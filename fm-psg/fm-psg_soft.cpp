@@ -80,28 +80,11 @@ FM_PSG_Soft::FM_PSG_Soft(const Project& project)
 
     memset(_buffer, 0, sizeof(_buffer));
 
-    _eq.treble = 0;
-    _eq.bass = 0;
-
     _type = gme_vgm_type;
     _emu = gme_new_emu(_type, 44100);
     _emu->ignore_silence(true);
 
-    // set equalizer
-    if (_eq.treble || _eq.bass)
-    {
-        Music_Emu::equalizer_t eq;
-
-        // bass - logarithmic, 2 to 8194 Hz
-        double bass = 1.0 - (_eq.bass / 200.0 + 0.5);
-        eq.bass = (long) (2.0 + pow( 2.0, bass * 13 ));
-
-        // treble - -50 to 0 to +5 dB
-        double treble = _eq.treble / 100.0;
-        eq.treble = treble * (treble < 0 ? 50.0 : 5.0);
-
-        _emu->set_equalizer(eq);
-    }
+    setEqualizer();
 
     _output = AudioOutput<int16_t>::instance();
     _output->producer(this);
@@ -118,6 +101,26 @@ FM_PSG_Soft::~FM_PSG_Soft()
     _output->destroy();
 
     gme_delete(_emu);
+}
+
+void FM_PSG_Soft::setEqualizer()
+{
+    QSettings settings(FM_PSG_Studio::Organization, FM_PSG_Studio::Application);
+
+    int _bass = settings.value(FM_PSG_Studio::EqualizerBass, 0).toInt();
+    int _treble = settings.value(FM_PSG_Studio::EqualizerTreble, 0).toInt();
+
+    Music_Emu::equalizer_t eq;
+
+    // bass - logarithmic, 2 to 8194 Hz
+    double bass = 1.0 - (_bass / 200.0 + 0.5);
+    eq.bass = (long) (2.0 + pow( 2.0, bass * 13 ));
+
+    // treble - -50 to 0 to +5 dB
+    double treble = _treble / 100.0;
+    eq.treble = treble * (treble < 0 ? 50.0 : 5.0);
+
+    _emu->set_equalizer(eq);
 }
 
 float FM_PSG_Soft::position()
@@ -168,6 +171,8 @@ void FM_PSG_Soft::play(const QByteArray& vgm, const bool loop, const int current
 
     _startedInteractive = false;
 
+    setEqualizer();
+
     _stopped = false;
     _output->start();
 }
@@ -203,12 +208,15 @@ void FM_PSG_Soft::play(const QByteArray& vgm, const int loopOffsetSamples, const
 
     _startedInteractive = false;
 
+    setEqualizer();
+
     _stopped = false;
     _output->start();
 }
 
 void FM_PSG_Soft::play()
 {
+    setEqualizer();
     _output->start();
     _stopped = false;
 }
@@ -243,6 +251,8 @@ void FM_PSG_Soft::stop()
         return;
 
     log_warning(_emu);
+
+    setEqualizer();
 }
 
 bool FM_PSG_Soft::isPlaying() const
