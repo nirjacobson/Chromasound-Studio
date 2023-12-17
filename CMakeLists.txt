@@ -321,6 +321,10 @@ set(PROJECT_SOURCES
     info/projectinfodialog.cpp
     info/projectinfodialog.ui
     fm-psg/soft/audio.h
+    browser/filesystemmodel.h
+    browser/filesystemmodel.cpp
+    browser/sortfilterproxymodel.h
+    browser/sortfilterproxymodel.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

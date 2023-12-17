@@ -42,6 +42,27 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     _timer.setInterval(1000 / 30);
     connect(&_timer, &QTimer::timeout, this, &MainWindow::frame);
 
+    QStringList filters;
+    filters << "*.fsp";
+    filters << "*.fm";
+    filters << "*.mid";
+    filters << "*.pcm";
+    filters << "*.vgm";
+    _filesystemModel.setNameFilters(filters);
+    _filesystemModel.setNameFilterDisables(false);
+    _filesystemModel.setRootPath(QDir::currentPath());
+
+    _proxyModel.setSourceModel(&_filesystemModel);
+
+    ui->treeView->setModel(&_proxyModel);
+    ui->treeView->setRootIndex(_proxyModel.mapFromSource(_filesystemModel.index(QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first())));
+    ui->treeView->setColumnHidden(2, true);
+    ui->treeView->setColumnHidden(3, true);
+    ui->treeView->setSortingEnabled(true);
+    ui->treeView->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
+    ui->treeView->setDragEnabled(true);
+    ui->treeView->setColumnWidth(0, 192);
+
     connect(ui->topWidget, &TopWidget::play, this, &MainWindow::play);
     connect(ui->topWidget, &TopWidget::pause, this, &MainWindow::pause);
     connect(ui->topWidget, &TopWidget::stop, this, &MainWindow::stop);
