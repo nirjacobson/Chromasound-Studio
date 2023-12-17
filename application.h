@@ -48,6 +48,8 @@ class Application : public QApplication
     signals:
         void pcmUploadStarted();
         void pcmUploadFinished();
+        void compileStarted();
+        void compileFinished();
 
     private:
         MainWindow* _mainWindow;
