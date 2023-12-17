@@ -345,6 +345,7 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const Pattern& p
     QMap<QString, QByteArray> pcmData;
     QMap<int, int> pcmOffsetsByChannel;
     QMap<int, QString> pcmPathsByChannel;
+    QMap<int, int> pcmVolumeByChannel;
 
     items.erase(std::remove_if(items.begin(), items.end(), [](StreamItem* si) {
         StreamNoteItem* sni;
@@ -387,25 +388,26 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const Pattern& p
 
                     for (auto it = pcmOffsetsByChannel.begin(); it != pcmOffsetsByChannel.end();) {
                         int sample = pcmData[pcmPathsByChannel[it.key()]][pcmOffsetsByChannel[it.key()]++];
+                        int volume = pcmVolumeByChannel[it.key()];
+                        int att = MAX_PCM_ATTENUATION * (100 - volume) / 100.0f;
+
                         if (pcmData[pcmPathsByChannel[it.key()]].size() == pcmOffsetsByChannel[it.key()]) {
                             it = pcmOffsetsByChannel.erase(it);
                         } else {
                             ++it;
                         }
 
-                        StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(items[i]);
-                        int volume = sni->channelSettings()->volume() * sni->note().velocity() / 100;
-                        int att = MAX_PCM_ATTENUATION * (float)(100 - volume) / 100;
-
                         result += (sample - 0x80) >> att;
                     }
 
-                    if (result < -0x80) {
+                    result += 0x80;
+
+                    if (result < 0) {
                         dataToAppend[j] = 0;
-                    } else if (result >= 0x80) {
+                    } else if (result >= 0xFF) {
                         dataToAppend[j] = 0xFF;
                     } else {
-                        dataToAppend[j] = result + 0x80;
+                        dataToAppend[j] = result;
                     }
                 }
                 data.append(dataToAppend);
@@ -425,6 +427,7 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const Pattern& p
 
             pcmOffsetsByChannel[sni->channel()] = 0;
             pcmPathsByChannel[sni->channel()] = channelSettings->path();
+            pcmVolumeByChannel[sni->channel()] = channelSettings->volume() * sni->note().velocity() / 100.0f;
 
             if (pcmWritten + newPcmSize > pcmSize) {
                 lastPCM = sni;
@@ -433,6 +436,7 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const Pattern& p
         } else {
             pcmOffsetsByChannel.remove(sni->channel());
             pcmPathsByChannel.remove(sni->channel());
+            pcmVolumeByChannel.remove(sni->channel());
         }
     }
 
@@ -454,6 +458,7 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const float loop
     QMap<QString, QByteArray> pcmData;
     QMap<int, int> pcmOffsetsByChannel;
     QMap<int, QString> pcmPathsByChannel;
+    QMap<int, int> pcmVolumeByChannel;
 
     items.erase(std::remove_if(items.begin(), items.end(), [](StreamItem* si) {
         StreamNoteItem* sni;
@@ -496,25 +501,25 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const float loop
 
                     for (auto it = pcmOffsetsByChannel.begin(); it != pcmOffsetsByChannel.end();) {
                         int sample = pcmData[pcmPathsByChannel[it.key()]][pcmOffsetsByChannel[it.key()]++];
+                        int volume = pcmVolumeByChannel[it.key()];
+                        int att = MAX_PCM_ATTENUATION * (100 - volume) / 100.0f;
                         if (pcmData[pcmPathsByChannel[it.key()]].size() == pcmOffsetsByChannel[it.key()]) {
                             it = pcmOffsetsByChannel.erase(it);
                         } else {
                             ++it;
                         }
 
-                        StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(items[i]);
-                        int volume = sni->channelSettings()->volume() * sni->note().velocity() / 100;
-                        int att = MAX_PCM_ATTENUATION * (float)(100 - volume) / 100;
-
                         result += (sample - 0x80) >> att;
                     }
 
-                    if (result < -0x80) {
+                    result += 0x80;
+
+                    if (result < 0) {
                         dataToAppend[j] = 0;
-                    } else if (result >= 0x80) {
+                    } else if (result >= 0xFF) {
                         dataToAppend[j] = 0xFF;
                     } else {
-                        dataToAppend[j] = result + 0x80;
+                        dataToAppend[j] = result;
                     }
                 }
                 data.append(dataToAppend);
@@ -534,6 +539,7 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const float loop
 
             pcmOffsetsByChannel[sni->channel()] = 0;
             pcmPathsByChannel[sni->channel()] = channelSettings->path();
+            pcmVolumeByChannel[sni->channel()] = channelSettings->volume() * sni->note().velocity() / 100.0f;
 
             if (pcmWritten + newPcmSize > pcmSize) {
                 lastPCM = sni;
@@ -541,6 +547,8 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const float loop
             }
         } else {
             pcmOffsetsByChannel.remove(sni->channel());
+            pcmPathsByChannel.remove(sni->channel());
+            pcmVolumeByChannel.remove(sni->channel());
         }
     }
 
