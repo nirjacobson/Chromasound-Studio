@@ -4,6 +4,8 @@
 #ifndef VGM_EMU_IMPL_H
 #define VGM_EMU_IMPL_H
 
+#define PCM_CHANNELS    4
+
 #include "Dual_Resampler.h"
 #include "Classic_Emu.h"
 #include "Ym2413_Emu.h"
@@ -57,7 +59,8 @@ class Vgm_Emu_Impl : public Classic_Emu, private Dual_Resampler {
         int play_frame( blip_time_t blip_time, int sample_count, sample_t* buf );
 
         byte const* pcm_data;
-        byte const* pcm_pos;
+        byte const* pcm_pos[PCM_CHANNELS];
+        byte        pcm_att[PCM_CHANNELS];
         int dac_amp;
         int dac_disabled; // -1 if disabled
         void write_pcm( vgm_time_t, int amp );
@@ -68,6 +71,11 @@ class Vgm_Emu_Impl : public Classic_Emu, private Dual_Resampler {
         Blip_Buffer blip_buf;
         Sms_Apu psg;
         Blip_Synth<blip_med_quality,1> dac_synth;
+
+        int pcm_read();
+
+        int samples = 0;
+        int samples_offset = 0;
 
         friend class Vgm_Emu;
 };

@@ -34,7 +34,9 @@ enum {
     cmd_data_block      = 0x67,
     cmd_short_delay     = 0x70,
     cmd_pcm_delay       = 0x80,
+    cmd_pcm_play        = 0x96,
     cmd_pcm_seek        = 0xE0,
+    cmd_pcm_attenuation = 0xF0,
 
     pcm_block_type      = 0x00,
     ym2612_dac_port     = 0x2A
@@ -112,6 +114,27 @@ void Vgm_Emu_Impl::write_pcm( vgm_time_t vgm_time, int amp )
         dac_amp |= dac_disabled;
 }
 
+int Vgm_Emu_Impl::pcm_read()
+{
+    int result = 0x00;
+
+    for (int i = 0; i < PCM_CHANNELS; i++) {
+        if (pcm_pos[i]) {
+            int sample = *pcm_pos[i] - 0x80;
+            pcm_pos[i]++;
+
+            result += sample >> pcm_att[i];
+        }
+    }
+
+    result += 0x80;
+
+    if (result < 0)    result = 0;
+    if (result > 0xFF) result = 0xFF;
+
+    return result;
+}
+
 blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
 {
     vgm_time_t vgm_time = this->vgm_time;
@@ -120,6 +143,11 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
     {
         this->vgm_time = 0;
         return to_blip_time( end_time );
+    }
+
+    for (uint32_t i = samples_offset; i < samples && vgm_time < end_time; i++) {
+        write_pcm( vgm_time++, pcm_read() );
+        samples_offset++;
     }
 
     while ( vgm_time < end_time && pos < data_end )
@@ -196,19 +224,41 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
                 pos += size;
                 break;
             }
-
-            case cmd_pcm_seek:
-                pcm_pos = pcm_data + pos [3] * 0x1000000L + pos [2] * 0x10000L +
-                          pos [1] * 0x100L + pos [0];
+            case cmd_pcm_play:
+                samples = *(uint32_t*)pos;
+                samples_offset = 0;
+                for (uint32_t i = 0; i < samples && vgm_time < end_time; i++) {
+                    write_pcm( vgm_time++, pcm_read() );
+                    samples_offset++;
+                }
                 pos += 4;
                 break;
 
             default:
                 int cmd = pos [-1];
+                int channel;
+                uint32_t offset;
+                uint8_t att;
                 switch ( cmd & 0xF0 )
                 {
+                    case cmd_pcm_seek:
+                        channel = (cmd & 0x0F);
+                        offset = *(uint32_t*)pos;
+                        if (offset == -1) {
+                            pcm_pos[channel] = 0;
+                        } else {
+                            pcm_pos[channel] = pcm_data + offset;
+                        }
+                        pos += 4;
+                        break;
+                    case cmd_pcm_attenuation:
+                        channel = (cmd & 0x0F);
+                        att = *pos;
+                        pcm_att[channel] = att;
+                        pos++;
+                        break;
                     case cmd_pcm_delay:
-                        write_pcm( vgm_time, *pcm_pos++ );
+                        write_pcm( vgm_time, pcm_read());
                         vgm_time += cmd & 0x0F;
                         break;
 

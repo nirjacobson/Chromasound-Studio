@@ -27,6 +27,7 @@ class FM_PSG_Impl : public FM_PSG
         void keyOff(int key);
 
         QList<VGMStream::Format> supportedFormats();
+        bool requiresHeader() const;
     private:
         const Project& _project;
         int _spi;

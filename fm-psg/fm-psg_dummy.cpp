@@ -64,6 +64,11 @@ qint64 FM_PSG_Dummy::nanosecondsPerBeat() const
     return 1e9 * 60 / _project.tempo();
 }
 
+bool FM_PSG_Dummy::requiresHeader() const
+{
+    return false;
+}
+
 FM_PSG_Dummy::FM_PSG_Dummy(const Project& project)
     : _project(project)
     , _ref(0)

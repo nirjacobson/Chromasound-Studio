@@ -150,8 +150,14 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool hea
         pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
         pcmBlock.append(dataBlock);
 
-        _loopOffsetData += 7 + dataBlockSize;
-        _currentOffsetData += 7 + dataBlockSize;
+        pcmBlock.append(0xE0);
+        pcmBlock.append((quint8)0x00);
+        pcmBlock.append((quint8)0x00);
+        pcmBlock.append((quint8)0x00);
+        pcmBlock.append((quint8)0x00);
+
+        _loopOffsetData += 12 + dataBlockSize;
+        _currentOffsetData += 12 + dataBlockSize;
 
         data.prepend(pcmBlock);
     }
@@ -263,8 +269,14 @@ QByteArray VGMStream::compile(Project& project, const bool header, bool gd3, int
         pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
         pcmBlock.append(dataBlock);
 
-        _loopOffsetData += 7 + dataBlockSize;
-        _currentOffsetData += 7 + dataBlockSize;
+        pcmBlock.append(0xE0);
+        pcmBlock.append((quint8)0x00);
+        pcmBlock.append((quint8)0x00);
+        pcmBlock.append((quint8)0x00);
+        pcmBlock.append((quint8)0x00);
+
+        _loopOffsetData += 12 + dataBlockSize;
+        _currentOffsetData += 12 + dataBlockSize;
 
         data.prepend(pcmBlock);
     }

@@ -24,6 +24,7 @@ class FM_PSG_Dummy : public FM_PSG
         void keyOff(int);
 
         QList<VGMStream::Format> supportedFormats();
+        bool requiresHeader() const;
     private:
         const Project& _project;
         QElapsedTimer _timer;
@@ -33,7 +34,6 @@ class FM_PSG_Dummy : public FM_PSG
         float _duration;
 
         qint64 nanosecondsPerBeat() const;
-
 };
 
 #endif // DUMMY_FM_PSG_H

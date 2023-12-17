@@ -67,6 +67,8 @@ class FM_PSG_Soft : public FM_PSG, public Producer<int16_t>
         void keyOff(int key);
 
         QList<VGMStream::Format> supportedFormats();
+        bool requiresHeader() const;
+
         // Producer interface
     public:
         int16_t* next(int size);

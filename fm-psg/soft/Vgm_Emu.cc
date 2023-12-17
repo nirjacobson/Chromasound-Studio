@@ -38,6 +38,11 @@ Vgm_Emu::Vgm_Emu()
 
     static equalizer_t const eq = { -14.0, 80 };
     set_equalizer( eq );
+
+    for (int i = 0; i < PCM_CHANNELS; i++) {
+        pcm_att[i] = 0;
+        pcm_pos[i] = 0;
+    }
 }
 
 Vgm_Emu::~Vgm_Emu() { }
@@ -388,7 +393,6 @@ blargg_err_t Vgm_Emu::start_track_( int track )
     dac_disabled = -1;
     pos          = data + header_size;
     pcm_data     = pos;
-    pcm_pos      = pos;
     dac_amp      = -1;
     vgm_time     = 0;
     if ( GET_LE32( header().version ) >= 0x150 )
