@@ -487,7 +487,7 @@ void MainWindow::newTriggered()
 
 void MainWindow::openTriggered()
 {
-    const QString path = QFileDialog::getOpenFileName(nullptr, tr("Open file"), "", "FM-PSG Studio Projects (*.fsp)");
+    const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "FM-PSG Studio Projects (*.fsp)", nullptr, QFileDialog::DontUseNativeDialog);
 
     if (!path.isNull()) {
         _app->project() = BSON::decode(path);
@@ -504,7 +504,7 @@ void MainWindow::openTriggered()
 
 void MainWindow::saveTriggered()
 {
-    const QString path = QFileDialog::getSaveFileName(nullptr, tr("Save file"), "", "FM-PSG Studio Projects (*.fsp)");
+    const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "FM-PSG Studio Projects (*.fsp)", nullptr, QFileDialog::DontUseNativeDialog);
 
     if (!path.isNull()) {
         QFile file(path);
@@ -518,7 +518,7 @@ void MainWindow::saveTriggered()
 
 void MainWindow::renderForFMPSGTriggered()
 {
-    const QString path = QFileDialog::getSaveFileName(nullptr, tr("Save file"), "", "VGM files (*.vgm)");
+    const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "VGM files (*.vgm)", nullptr, QFileDialog::DontUseNativeDialog);
 
     if (!path.isNull()) {
         QThread* thread = QThread::create([&](const QString path) {
@@ -546,7 +546,7 @@ void MainWindow::renderForFMPSGTriggered()
 
 void MainWindow::renderFor3rdPartyTriggered()
 {
-    const QString path = QFileDialog::getSaveFileName(nullptr, tr("Save file"), "", "VGM files (*.vgm)");
+    const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "VGM files (*.vgm)", nullptr, QFileDialog::DontUseNativeDialog);
 
     if (!path.isNull()) {
         QThread* thread = QThread::create([&](const QString path) {

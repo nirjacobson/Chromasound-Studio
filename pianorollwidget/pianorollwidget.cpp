@@ -246,7 +246,7 @@ void PianoRollWidget::newTriggered()
 
 void PianoRollWidget::openTriggered()
 {
-    const QString path = QFileDialog::getOpenFileName(nullptr, tr("Open file"), "", "MIDI File (*.mid)");
+    const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "MIDI File (*.mid)", nullptr, QFileDialog::DontUseNativeDialog);
 
     if (!path.isNull()) {
         QFile file(path);
@@ -258,7 +258,7 @@ void PianoRollWidget::openTriggered()
 
 void PianoRollWidget::saveTriggered()
 {
-    const QString path = QFileDialog::getSaveFileName(nullptr, tr("Save file"), "", "MIDI File (*.mid)");
+    const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "MIDI File (*.mid)", nullptr, QFileDialog::DontUseNativeDialog);
 
     if (!path.isNull()) {
         MIDIFile midiFile;
