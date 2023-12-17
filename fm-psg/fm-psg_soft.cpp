@@ -35,6 +35,11 @@ FM_PSG_Soft::FM_PSG_Soft(const Project& project)
             if ((sni = dynamic_cast<VGMStream::StreamNoteItem*>(item))) {
                 if (sni->on()) {
                     continue;
+                } else {
+                    delete _keys[sni->note().key()];
+                    _keys.remove(sni->note().key());
+                    delete item;
+                    continue;
                 }
             }
             delete item;
@@ -277,11 +282,10 @@ void FM_PSG_Soft::keyOff(int key)
 {
     if (!_keys.contains(key)) return;
 
-    VGMStream::StreamNoteItem* sni = _keys[key];
+    VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(*_keys[key]);
     _vgmStream.releaseChannel(sni->type(), sni->channel());
     sni->setOn(false);
     _items.append(sni);
-    _keys.remove(key);
 
     _timer.start(20);
 }

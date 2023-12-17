@@ -89,8 +89,6 @@ void VGMStream::encode(const Project& project, QList<StreamItem*>& items, QByteA
             encodeLFOItem(sli, data);
         }
     }
-
-    sortItems(items);
 }
 
 QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool header, bool gd3, int* loopOffsetData, const float loopStart, const float loopEnd, const float currentOffset, int* const currentOffsetData)
