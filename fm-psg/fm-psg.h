@@ -33,6 +33,7 @@ class FM_PSG : public QObject
         virtual void keyOff(int key) = 0;
 
         virtual QList<VGMStream::Format> supportedFormats() = 0;
+        virtual bool requiresHeader() const = 0;
 
     signals:
         void pcmUploadStarted();

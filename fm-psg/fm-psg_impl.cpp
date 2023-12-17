@@ -138,6 +138,11 @@ void FM_PSG_Impl::reset()
     _vgmStream.reset();
 }
 
+bool FM_PSG_Impl::requiresHeader() const
+{
+    return false;
+}
+
 QList<VGMStream::Format> FM_PSG_Impl::supportedFormats()
 {
     return QList<VGMStream::Format>({VGMStream::Format::FM_PSG, VGMStream::Format::STANDARD});

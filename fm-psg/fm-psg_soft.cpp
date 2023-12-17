@@ -303,5 +303,10 @@ int16_t* FM_PSG_Soft::next(int size)
 
 QList<VGMStream::Format> FM_PSG_Soft::supportedFormats()
 {
-    return QList<VGMStream::Format>({VGMStream::Format::STANDARD});
+    return QList<VGMStream::Format>({VGMStream::Format::FM_PSG, VGMStream::Format::STANDARD});
+}
+
+bool FM_PSG_Soft::requiresHeader() const
+{
+    return true;
 }
