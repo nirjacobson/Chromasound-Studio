@@ -325,6 +325,11 @@ set(PROJECT_SOURCES
     browser/filesystemmodel.cpp
     browser/sortfilterproxymodel.h
     browser/sortfilterproxymodel.cpp
+    settings/settingsdialog.h
+    settings/settingsdialog.cpp
+    settings/settingsdialog.ui
+    FM_PSG_Studio.h
+    FM_PSG_Studio.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

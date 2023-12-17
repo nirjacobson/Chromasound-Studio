@@ -2,6 +2,7 @@
 #define FM_PSG_SOFT_H
 
 #include <QTimer>
+#include <QSettings>
 
 #include "fm-psg.h"
 #include "project/vgmstream.h"
@@ -10,6 +11,7 @@
 #include "soft/Data_Reader.h"
 #include "soft/producer.h"
 #include "soft/audio_output.h"
+#include "FM_PSG_Studio.h"
 
 
 class FM_PSG_Soft : public FM_PSG, public Producer<int16_t>
@@ -18,15 +20,9 @@ class FM_PSG_Soft : public FM_PSG, public Producer<int16_t>
         FM_PSG_Soft(const Project& project);
         ~FM_PSG_Soft();
 
-        typedef struct {
-            int treble;                /* -100 to +100 */
-            int bass;                  /* -100 to +100 */
-        } Equalizer;
-
     private:
         const Project& _project;
 
-        Equalizer _eq;
         Music_Emu* _emu;
         gme_type_t _type;
         AudioOutput<int16_t>* _output;
@@ -47,6 +43,8 @@ class FM_PSG_Soft : public FM_PSG, public Producer<int16_t>
         QList<VGMStream::StreamItem*> _items;
 
         QMutex _mutex;
+
+        void setEqualizer();
 
         // FM_PSG interface
     public:

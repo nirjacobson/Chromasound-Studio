@@ -45,8 +45,14 @@ void Application::play()
     if (_paused) {
         _fmPSG->play();
     } else {
-        if (_fmPSG->supportedFormats().contains(VGMStream::Format::FM_PSG)) {
+        QSettings settings(FM_PSG_Studio::Organization, FM_PSG_Studio::Application);
+        QString format = settings.value(FM_PSG_Studio::Format, FM_PSG_Studio::FM_PSG).toString();
+        VGMStream::Format vgmFormat =
+            _fmPSG->supportedFormats().contains(VGMStream::Format::FM_PSG) && format == FM_PSG_Studio::FM_PSG
+                ? VGMStream::Format::FM_PSG
+                : VGMStream::Format::STANDARD;
 
+        if (vgmFormat == VGMStream::Format::FM_PSG) {
             if (_project.playMode() == Project::PlayMode::PATTERN) {
                 QThread* thread = QThread::create([&]() {
                     int loopOffsetData;
@@ -143,7 +149,14 @@ void Application::play()
 
 void Application::play(const Pattern& pattern, const float loopStart, const float loopEnd)
 {
-    if (_fmPSG->supportedFormats().contains(VGMStream::Format::FM_PSG)) {
+    QSettings settings(FM_PSG_Studio::Organization, FM_PSG_Studio::Application);
+    QString format = settings.value(FM_PSG_Studio::Format, FM_PSG_Studio::FM_PSG).toString();
+    VGMStream::Format vgmFormat =
+        _fmPSG->supportedFormats().contains(VGMStream::Format::FM_PSG) && format == FM_PSG_Studio::FM_PSG
+            ? VGMStream::Format::FM_PSG
+            : VGMStream::Format::STANDARD;
+
+    if (vgmFormat == VGMStream::Format::FM_PSG) {
         QThread* thread = QThread::create([&](const float loopStart, const float loopEnd) {
             int loopOffsetData;
             int currentOffsetData;
@@ -188,7 +201,14 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
 
 void Application::play(const float loopStart, const float loopEnd)
 {
-    if (_fmPSG->supportedFormats().contains(VGMStream::Format::FM_PSG)) {
+    QSettings settings(FM_PSG_Studio::Organization, FM_PSG_Studio::Application);
+    QString format = settings.value(FM_PSG_Studio::Format, FM_PSG_Studio::FM_PSG).toString();
+    VGMStream::Format vgmFormat =
+        _fmPSG->supportedFormats().contains(VGMStream::Format::FM_PSG) && format == FM_PSG_Studio::FM_PSG
+            ? VGMStream::Format::FM_PSG
+            : VGMStream::Format::STANDARD;
+
+    if (vgmFormat == VGMStream::Format::FM_PSG) {
         QThread* thread = QThread::create([&](const float loopStart, const float loopEnd) {
             int loopOffsetData;
             int currentOffsetData;

@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _midiInput(MIDIInput::instance())
     , _channelsWindow(nullptr)
     , _playlistWindow(nullptr)
+    , _settingsDialogWindow(nullptr)
     , _styleDialogWindow(nullptr)
     , _fmImportDialogWindow(nullptr)
     , _pcmUsageDialogWindow(nullptr)
@@ -79,6 +80,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(ui->actionFor3rdPartyPlayers, &QAction::triggered, this, &MainWindow::renderFor3rdPartyTriggered);
     connect(ui->actionInfo, &QAction::triggered, this, &MainWindow::projectInfoTriggered);
     connect(ui->actionExit, &QAction::triggered, this, &MainWindow::close);
+    connect(ui->actionSettings, &QAction::triggered, this, &MainWindow::settingsTriggered);
     connect(ui->actionStyles, &QAction::triggered, this, &MainWindow::stylesTriggered);
     connect(ui->actionChannels, &QAction::triggered, this, &MainWindow::showChannelsWindow);
     connect(ui->actionPlaylist, &QAction::triggered, this, &MainWindow::showPlaylistWindow);
@@ -653,6 +655,26 @@ void MainWindow::projectInfoTriggered()
         window->show();
     } else {
         ui->mdiArea->setActiveSubWindow(_infoDialogWindow);
+    }
+}
+
+void MainWindow::settingsTriggered()
+{
+    if (_settingsDialogWindow == nullptr) {
+        _settingsDialog = new SettingsDialog(this);
+
+        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        connect(_settingsDialog, &QDialog::finished, window, &MdiSubWindow::close);
+        connect(window, &MdiSubWindow::closed, this, [&]() {
+            _settingsDialogWindow = nullptr;
+        });
+        window->setAttribute(Qt::WA_DeleteOnClose);
+        window->setWidget(_settingsDialog);
+        _settingsDialogWindow = window;
+        ui->mdiArea->addSubWindow(window);
+        window->show();
+    } else {
+        ui->mdiArea->setActiveSubWindow(_settingsDialogWindow);
     }
 }
 

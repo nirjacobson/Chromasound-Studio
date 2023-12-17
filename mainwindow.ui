@@ -100,6 +100,8 @@
      <string>&amp;Edit</string>
     </property>
     <addaction name="separator"/>
+    <addaction name="actionSettings"/>
+    <addaction name="separator"/>
     <addaction name="actionStyles"/>
    </widget>
    <widget class="QMenu" name="menuView">
@@ -135,11 +137,6 @@
   <action name="actionSave">
    <property name="text">
     <string>&amp;Save</string>
-   </property>
-  </action>
-  <action name="actionStyles">
-   <property name="text">
-    <string>&amp;Styles...</string>
    </property>
   </action>
   <action name="actionChannels">
@@ -180,6 +177,16 @@
   <action name="actionExit">
    <property name="text">
     <string>E&amp;xit</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>&amp;Settings</string>
+   </property>
+  </action>
+  <action name="actionStyles">
+   <property name="text">
+    <string>Styles...</string>
    </property>
   </action>
  </widget>
