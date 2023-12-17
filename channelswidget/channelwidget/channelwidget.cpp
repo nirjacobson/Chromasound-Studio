@@ -493,26 +493,27 @@ void ChannelWidget::fillEvery4StepsTriggered()
 
 void ChannelWidget::paintEvent(QPaintEvent* event)
 {
-    ui->pushButton->setText(_app->project().getChannel(_index).name());
+    if (_index < _app->project().channelCount()) {
+        ui->pushButton->setText(_app->project().getChannel(_index).name());
 
-    const Pattern& activePattern = _app->project().getFrontPattern();
-    ui->trackStackedWidget->setCurrentIndex(activePattern.hasTrack(_index) && activePattern.getTrack(_index).doesUsePianoRoll());
+        const Pattern& activePattern = _app->project().getFrontPattern();
+        ui->trackStackedWidget->setCurrentIndex(activePattern.hasTrack(_index) && activePattern.getTrack(_index).doesUsePianoRoll());
 
-    switch (_app->project().getChannel(_index).type()) {
-        case Channel::TONE:
-            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_toneColor.name()));
-            break;
-        case Channel::NOISE:
-            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_noiseColor.name()));
-            break;
-        case Channel::FM:
-            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_fmColor.name()));
-            break;
-        case Channel::PCM:
-            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_pcmColor.name()));
-            break;
+        switch (_app->project().getChannel(_index).type()) {
+            case Channel::TONE:
+                ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_toneColor.name()));
+                break;
+            case Channel::NOISE:
+                ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_noiseColor.name()));
+                break;
+            case Channel::FM:
+                ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_fmColor.name()));
+                break;
+            case Channel::PCM:
+                ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_pcmColor.name()));
+                break;
+        }
     }
-
     QWidget::paintEvent(event);
 }
 
