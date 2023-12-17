@@ -23,7 +23,7 @@ FM_PSG_Soft::FM_PSG_Soft(const Project& project)
 {
     _timer.setSingleShot(true);
 
-    _timer.callOnTimeout([&](){
+    _timer.callOnTimeout([&]() {
         QByteArray data;
 
         _mutex.lock();
