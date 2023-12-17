@@ -538,25 +538,22 @@ void MainWindow::keyOn(const int key, const int velocity)
     if ((prw = dynamic_cast<PianoRollWidget*>(ui->mdiArea->activeSubWindow()->widget()))) {
         activeChannel = prw->channel();
     } else {
-        activeChannel = _channelsWidget->activeChannel();
+        activeChannel = qMax(0, _channelsWidget->activeChannel());
     }
 
-    if (activeChannel >= 0) {
-        Channel& channel = _app->project().getChannel(activeChannel);
+    Channel& channel = _app->project().getChannel(activeChannel);
 
-        PianoRollWidget* prw;
-        FMWidgetWindow* fmw;
-        if (_channelWindows[activeChannel].contains(ui->mdiArea->activeSubWindow())) {
-            if ((prw = dynamic_cast<PianoRollWidget*>(ui->mdiArea->activeSubWindow()->widget()))) {
-                prw->pressKey(key);
-                _app->keyOn(channel.type(), prw->currentSettings(), key, velocity);
-                return;
-            } else if ((fmw = dynamic_cast<FMWidgetWindow*>(ui->mdiArea->activeSubWindow()->widget()))) {
-                fmw->pressKey(key);
-            }
+    FMWidgetWindow* fmw;
+    if (_channelWindows[activeChannel].contains(ui->mdiArea->activeSubWindow())) {
+        if (prw) {
+            prw->pressKey(key);
+            _app->keyOn(channel.type(), prw->currentSettings(), key, velocity);
+            return;
+        } else if ((fmw = dynamic_cast<FMWidgetWindow*>(ui->mdiArea->activeSubWindow()->widget()))) {
+            fmw->pressKey(key);
         }
-        _app->keyOn(channel.type(), channel.settings(), key, velocity);
     }
+    _app->keyOn(channel.type(), channel.settings(), key, velocity);
 }
 
 void MainWindow::keyOff(const int key)
