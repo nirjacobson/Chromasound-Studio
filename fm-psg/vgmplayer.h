@@ -75,8 +75,7 @@ class VGMPlayer : public QThread
         QElapsedTimer _spiTimer;
         qint64 _spiDelay;
 
-        quint32 checksum(const QByteArray& data);
-        quint32 _lastPCMBlockSize;
+        quint32 fletcher32(const QByteArray& data);
         quint32 _lastPCMBlockChecksum;
 
         void spi_write(char val);
