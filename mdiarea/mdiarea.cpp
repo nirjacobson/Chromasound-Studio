@@ -3,7 +3,10 @@
 MdiArea::MdiArea(QWidget* parent)
     : QMdiArea(parent)
 {
+    QBrush brush = background();
+    brush.setStyle(Qt::Dense1Pattern);
 
+    setBackground(brush);
 }
 
 QString MdiArea::viewModeName() const
@@ -39,6 +42,8 @@ const QColor& MdiArea::backgroundColor() const
 
 void MdiArea::setBackgroundColor(const QColor& color)
 {
-    setBackground(QBrush(color));
+    QBrush brush = background();
+    brush.setColor(color);
+    setBackground(brush);
 }
 
