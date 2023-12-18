@@ -11,7 +11,6 @@ VGMPlayer::VGMPlayer(int spi, QObject *parent)
     , _loopOffsetSamples(0)
     , _loopOffsetData(0)
     , _playing(false)
-    , _lastPCMBlockSize(0)
     , _lastPCMBlockChecksum(0)
     , _spiDelay(SPI_DELAY)
 {
@@ -150,16 +149,29 @@ void VGMPlayer::setTime(const uint32_t time)
     _timeLock.unlock();
 }
 
-quint32 VGMPlayer::checksum(const QByteArray& data)
+quint32 VGMPlayer::fletcher32(const QByteArray& data)
 {
-    quint32 result = 0;
-    quint8 lastVal = 0;
-    for (int i = 0; i < data.size(); i++) {
-        result = (result << 8) | (lastVal ^ data[i]);
-        lastVal = data[i];
+    quint32 c0, c1, i;
+    quint32 len = data.size();
+    len = (len + 1) & ~1;
+
+    for (c0 = c1 = i = 0; len > 0; ) {
+        quint32 blocklen = len;
+        if (blocklen > 360*2) {
+            blocklen = 360*2;
+        }
+        len -= blocklen;
+
+        do {
+            c0 = c0 + data[i++];
+            c1 = c1 + c0;
+        } while ((blocklen -= 2));
+
+        c0 = c0 % 65535;
+        c1 = c1 % 65535;
     }
 
-    return result;
+    return ((c1 << 16) | c0);
 }
 
 void VGMPlayer::spi_write(char val)
@@ -258,13 +270,11 @@ void VGMPlayer::runPlayback()
         _timeLock.unlock();
 
         if (!_pcmBlock.isEmpty()) {
-            quint32 lastPCMBlockSize = _lastPCMBlockSize;
             quint32 lastPCMBlockChecksum = _lastPCMBlockChecksum;
 
-            _lastPCMBlockSize = _pcmBlock.size();
-            _lastPCMBlockChecksum = checksum(_pcmBlock);
+            _lastPCMBlockChecksum = fletcher32(_pcmBlock);
 
-            if (!(lastPCMBlockSize == _lastPCMBlockSize && lastPCMBlockChecksum == _lastPCMBlockChecksum)) {
+            if (lastPCMBlockChecksum != _lastPCMBlockChecksum) {
                 emit pcmUploadStarted();
                 _spiDelay = SPI_DELAY_FAST;
                 uint32_t position = 0;
