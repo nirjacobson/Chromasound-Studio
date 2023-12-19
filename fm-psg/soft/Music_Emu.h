@@ -9,7 +9,9 @@ class Multi_Buffer;
 
 struct Music_Emu : public Gme_File {
     public:
-// Basic functionality (see Gme_File.h for file loading/track info functions)
+        void set_fill_past_end_with_pcm(const bool enable);
+
+        // Basic functionality (see Gme_File.h for file loading/track info functions)
 
         // Set output sample rate. Must be called only once before loading file.
         blargg_err_t set_sample_rate( long sample_rate );
@@ -138,6 +140,7 @@ struct Music_Emu : public Gme_File {
         virtual void unload();
         virtual void pre_load();
         virtual void post_load_();
+        bool fill_past_end_with_pcm;
     private:
         // general
         equalizer_t equalizer_;

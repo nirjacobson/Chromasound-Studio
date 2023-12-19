@@ -35,6 +35,7 @@ enum {
     cmd_short_delay     = 0x70,
     cmd_pcm_delay       = 0x80,
     cmd_pcm_play        = 0x96,
+    cmd_pcm_size        = 0xD0,
     cmd_pcm_seek        = 0xE0,
     cmd_pcm_attenuation = 0xF0,
 
@@ -123,6 +124,9 @@ int Vgm_Emu_Impl::pcm_read()
             int sample = *pcm_pos[i] - 0x80;
             pcm_pos[i]++;
 
+            if (pcm_pos[i] == pcm_start[i] + pcm_size[i]) {
+                pcm_pos[i] = 0;
+            }
             result += sample >> pcm_att[i];
         }
     }
@@ -139,15 +143,24 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
 {
     vgm_time_t vgm_time = this->vgm_time;
     byte const* pos = this->pos;
-    if ( pos >= data_end )
-    {
-        this->vgm_time = 0;
-        return to_blip_time( end_time );
-    }
 
-    for (uint32_t i = samples_offset; i < samples && vgm_time < end_time; i++) {
-        write_pcm( vgm_time++, pcm_read() );
-        samples_offset++;
+    if (samples > 0) {
+        for (uint32_t i = samples_offset; i < samples && vgm_time < end_time; i++) {
+            write_pcm( vgm_time++, pcm_read() );
+            samples_offset++;
+        }
+        if (samples_offset == samples) {
+            samples = samples_offset = 0;
+        }
+    } else if ( pos >= data_end ) {
+        if (fill_past_end_with_pcm) {
+            while (vgm_time < end_time) {
+                write_pcm( vgm_time++, pcm_read() );
+            }
+        } else {
+            this->vgm_time = 0;
+            return to_blip_time( end_time );
+        }
     }
 
     while ( vgm_time < end_time && pos < data_end )
@@ -241,13 +254,18 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
                 uint8_t att;
                 switch ( cmd & 0xF0 )
                 {
+                    case cmd_pcm_size:
+                        channel = (cmd & 0x0F);
+                        pcm_size[channel] = *(uint32_t*)pos;
+                        pos += 4;
+                        break;
                     case cmd_pcm_seek:
                         channel = (cmd & 0x0F);
                         offset = *(uint32_t*)pos;
                         if (offset == -1) {
                             pcm_pos[channel] = 0;
                         } else {
-                            pcm_pos[channel] = pcm_data + offset;
+                            pcm_start[channel] = pcm_pos[channel] = pcm_data + offset;
                         }
                         pos += 4;
                         break;

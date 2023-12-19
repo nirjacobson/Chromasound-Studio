@@ -49,8 +49,8 @@ void Application::play()
         QString format = settings.value(FM_PSG_Studio::Format, FM_PSG_Studio::FM_PSG).toString();
         VGMStream::Format vgmFormat =
             _fmPSG->supportedFormats().contains(VGMStream::Format::FM_PSG) && format == FM_PSG_Studio::FM_PSG
-                ? VGMStream::Format::FM_PSG
-                : VGMStream::Format::STANDARD;
+            ? VGMStream::Format::FM_PSG
+            : VGMStream::Format::STANDARD;
 
         if (vgmFormat == VGMStream::Format::FM_PSG) {
             if (_project.playMode() == Project::PlayMode::PATTERN) {
@@ -153,8 +153,8 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
     QString format = settings.value(FM_PSG_Studio::Format, FM_PSG_Studio::FM_PSG).toString();
     VGMStream::Format vgmFormat =
         _fmPSG->supportedFormats().contains(VGMStream::Format::FM_PSG) && format == FM_PSG_Studio::FM_PSG
-            ? VGMStream::Format::FM_PSG
-            : VGMStream::Format::STANDARD;
+        ? VGMStream::Format::FM_PSG
+        : VGMStream::Format::STANDARD;
 
     if (vgmFormat == VGMStream::Format::FM_PSG) {
         QThread* thread = QThread::create([&](const float loopStart, const float loopEnd) {
@@ -205,8 +205,8 @@ void Application::play(const float loopStart, const float loopEnd)
     QString format = settings.value(FM_PSG_Studio::Format, FM_PSG_Studio::FM_PSG).toString();
     VGMStream::Format vgmFormat =
         _fmPSG->supportedFormats().contains(VGMStream::Format::FM_PSG) && format == FM_PSG_Studio::FM_PSG
-            ? VGMStream::Format::FM_PSG
-            : VGMStream::Format::STANDARD;
+        ? VGMStream::Format::FM_PSG
+        : VGMStream::Format::STANDARD;
 
     if (vgmFormat == VGMStream::Format::FM_PSG) {
         QThread* thread = QThread::create([&](const float loopStart, const float loopEnd) {

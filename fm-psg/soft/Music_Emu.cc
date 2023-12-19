@@ -76,6 +76,11 @@ Music_Emu::~Music_Emu() {
     delete effects_buffer;
 }
 
+void Music_Emu::set_fill_past_end_with_pcm(const bool enable)
+{
+    fill_past_end_with_pcm = enable;
+}
+
 blargg_err_t Music_Emu::set_sample_rate( long rate )
 {
     require( !sample_rate() ); // sample rate can't be changed once set
