@@ -1282,7 +1282,10 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
                 data.append(att);
 
                 quint32 offset = project.pcmOffset(pcmcs->path());
+                quint32 size = QFileInfo(pcmcs->path()).size();
 
+                data.append(0xD0 | item->channel());
+                data.append((char*)&size, sizeof(size));
                 data.append(0xE0 | item->channel());
                 data.append((char*)&offset, sizeof(offset));
             } else {

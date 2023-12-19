@@ -59,8 +59,10 @@ class Vgm_Emu_Impl : public Classic_Emu, private Dual_Resampler {
         int play_frame( blip_time_t blip_time, int sample_count, sample_t* buf );
 
         byte const* pcm_data;
-        byte const* pcm_pos[PCM_CHANNELS];
-        byte        pcm_att[PCM_CHANNELS];
+        byte const* pcm_pos  [PCM_CHANNELS];
+        byte        pcm_att  [PCM_CHANNELS];
+        uint32_t    pcm_size [PCM_CHANNELS];
+        byte const* pcm_start[PCM_CHANNELS];
         int dac_amp;
         int dac_disabled; // -1 if disabled
         void write_pcm( vgm_time_t, int amp );

@@ -7,22 +7,22 @@
 #include "FM_PSG_Studio.h"
 
 namespace Ui {
-class SettingsDialog;
+    class SettingsDialog;
 }
 
 class SettingsDialog : public QDialog
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    explicit SettingsDialog(QWidget *parent = nullptr);
-    ~SettingsDialog();
+    public:
+        explicit SettingsDialog(QWidget *parent = nullptr);
+        ~SettingsDialog();
 
-private:
-    Ui::SettingsDialog *ui;
+    private:
+        Ui::SettingsDialog *ui;
 
-private slots:
-    void accepted();
+    private slots:
+        void accepted();
 };
 
 #endif // SETTINGSDIALOG_H

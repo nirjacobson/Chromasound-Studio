@@ -41,8 +41,11 @@ Vgm_Emu::Vgm_Emu()
 
     for (int i = 0; i < PCM_CHANNELS; i++) {
         pcm_att[i] = 0;
+        pcm_size[i] = 0;
         pcm_pos[i] = 0;
+        pcm_start[i] = 0;
     }
+    fill_past_end_with_pcm = false;
 }
 
 Vgm_Emu::~Vgm_Emu() { }

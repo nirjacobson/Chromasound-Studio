@@ -18,7 +18,6 @@ FM_PSG_Soft::FM_PSG_Soft(const Project& project)
     : _position(0)
     , _positionOffset(0)
     , _project(project)
-    , _vgmStream(VGMStream::Format::STANDARD)
     , _startedInteractive(false)
 {
     _timer.setSingleShot(true);
@@ -30,10 +29,14 @@ FM_PSG_Soft::FM_PSG_Soft(const Project& project)
 
         _vgmStream.encode(project, _items, data);
 
+        bool havePCM = false;
         for (VGMStream::StreamItem* item : _items) {
             VGMStream::StreamNoteItem* sni;
             if ((sni = dynamic_cast<VGMStream::StreamNoteItem*>(item))) {
                 if (sni->on()) {
+                    if (sni->type() == Channel::Type::PCM) {
+                        havePCM = true;
+                    }
                     continue;
                 } else {
                     delete _keys[sni->note().key()];
@@ -48,6 +51,25 @@ FM_PSG_Soft::FM_PSG_Soft(const Project& project)
         _items.clear();
 
         _mutex.unlock();
+
+        QByteArray dataBlock = project.pcm();
+        quint32 dataBlockSize = dataBlock.size();
+
+        if (havePCM && dataBlockSize > 0) {
+            QByteArray pcmBlock;
+            pcmBlock.append(0x67);
+            pcmBlock.append(0x66);
+            pcmBlock.append((quint8)0x00);
+            pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
+            pcmBlock.append(dataBlock);
+            pcmBlock.append(0x52);
+            pcmBlock.append(0x2B);
+            pcmBlock.append(0x80);
+
+            data.prepend(pcmBlock);
+
+            _emu->set_fill_past_end_with_pcm(true);
+        }
 
         if (!_startedInteractive) {
             data.prepend(_vgmStream.generateHeader(project, data, -1, 0, 0, false));
@@ -287,6 +309,18 @@ void FM_PSG_Soft::keyOff(int key)
     _vgmStream.releaseChannel(sni->type(), sni->channel());
     sni->setOn(false);
     _items.append(sni);
+
+    bool havePCM = false;
+    for (auto it = _keys.begin(); it != _keys.end(); ++it) {
+        if (it.value()->type() == Channel::Type::PCM) {
+            havePCM = true;
+            break;
+        }
+    }
+
+    if (!havePCM) {
+        _emu->set_fill_past_end_with_pcm(false);
+    }
 
     _timer.start(20);
 }

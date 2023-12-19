@@ -194,10 +194,10 @@ void ChannelWidget::setIndex(const int idx)
                 return _app->project().getChannel(_index).enabled() &&
                        std::find_if(track.items().begin(),
                                     track.items().end(),
-                                    [&](const Track::Item* item) {
-                                        float delta = item->time() - appPosition;
-                                        return qAbs(delta) <= 0.0625;
-                                    }) == track.items().end();
+                [&](const Track::Item* item) {
+                    float delta = item->time() - appPosition;
+                    return qAbs(delta) <= 0.0625;
+                }) == track.items().end();
             }
         } else {
             QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(appPosition);
@@ -211,10 +211,10 @@ void ChannelWidget::setIndex(const int idx)
                     return _app->project().getChannel(_index).enabled() &&
                            std::find_if(track.items().begin(),
                                         track.items().end(),
-                                        [&](const Track::Item* item) {
-                                            float delta = item->time() - _appPosition;
-                                            return qAbs(delta) <= 0.0625;
-                                        }) == track.items().end();
+                    [&](const Track::Item* item) {
+                        float delta = item->time() - _appPosition;
+                        return qAbs(delta) <= 0.0625;
+                    }) == track.items().end();
                 }
             }
         }
