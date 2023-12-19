@@ -124,7 +124,7 @@ int Vgm_Emu_Impl::pcm_read()
             int sample = *pcm_pos[i] - 0x80;
             pcm_pos[i]++;
 
-            if (pcm_pos[i] == pcm_start[i] + pcm_size[i]) {
+            if (pcm_size[i] && pcm_pos[i] == (pcm_start[i] + pcm_size[i])) {
                 pcm_pos[i] = 0;
             }
             result += sample >> pcm_att[i];
