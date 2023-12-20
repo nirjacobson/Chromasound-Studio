@@ -33,9 +33,9 @@ FM_PSG_Impl::~FM_PSG_Impl()
     gpioTerminate();
 }
 
-float FM_PSG_Impl::position()
+quint32 FM_PSG_Impl::position()
 {
-    return ((float)_vgmPlayer->time() / 44100.0f) / 60.0f * _project.tempo();
+    return _vgmPlayer->time();
 }
 
 void FM_PSG_Impl::setPosition(const float pos)

@@ -1,32 +1,31 @@
 #include "fm-psg_dummy.h"
 
-float FM_PSG_Dummy::position()
+quint32 FM_PSG_Dummy::position()
 {
-    float beatNS = nanosecondsPerBeat();
+    float sampleNS = 1e9 / 44100;
 
-    float pos = (_ref + _timer.nsecsElapsed()) / beatNS;
+    quint32 pos = (_ref + _timer.nsecsElapsed()) / sampleNS;
 
     if (!_playing) {
-        pos = _ref / beatNS;
+        pos = _ref / sampleNS;
     }
 
     if (_duration >= 0) {
-        float loopPos = ((float)_loopOffsetSamples / 44100 / 60 * _project.tempo());
-        return loopPos + fmod(pos - loopPos, _duration);
+        return _loopOffsetSamples + ((pos - _loopOffsetSamples) % (int)(_duration / _project.tempo() * 60 * 44100));
     } else if (_project.playMode() == Project::PlayMode::PATTERN) {
         if (_loopOffsetSamples >= 0) {
-            float patternLength = _project.getPatternBarLength(_project.frontPattern());
+            quint32 patternLength = (float)_project.getPatternBarLength(_project.frontPattern()) / _project.tempo() * 60 * 44100;
 
-            return fmod(pos, patternLength);
+            return pos % patternLength;
         }
     } else {
         if (_loopOffsetSamples >= 0) {
-            float songLength = _project.getLength();
-            float loopPos = _project.playlist().loopOffset();
-            float loopLength = songLength - loopPos;
+            quint32 songLength = _project.getLength() / _project.tempo() * 60 * 44100;
+            quint32 loopPos = _project.playlist().loopOffset() / _project.tempo() * 60 * 44100;
+            quint32 loopLength = songLength - loopPos;
 
             if (pos >= loopPos) {
-                return loopPos + fmod(pos - loopPos, loopLength);
+                return loopPos + ((pos - loopPos) % loopLength);
             }
         }
     }

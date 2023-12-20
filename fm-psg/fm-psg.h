@@ -18,7 +18,7 @@ class FM_PSG : public QObject
     public:
         virtual ~FM_PSG() {};
 
-        virtual float position() = 0;
+        virtual quint32 position() = 0;
         virtual void setPosition(const float pos) = 0;
 
         virtual void play(const QByteArray& vgm, const bool loop, const int currentOffsetSamples, const int currentOffsetData) = 0;
