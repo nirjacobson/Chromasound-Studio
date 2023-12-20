@@ -55,6 +55,8 @@ private slots:
 
     void itemDoubleClicked(const QModelIndex& index);
     void frame();
+
+    QByteArray pcmToVgm(const QString& path);
 };
 
 #endif // PLAYER_H

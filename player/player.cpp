@@ -93,19 +93,29 @@ void Player::openFiles_(const QStringList& files, const bool clear)
 void Player::play(const int index)
 {
     QString path = _playlist[index].path();
-
     QFile file(path);
-    file.open(QIODevice::ReadOnly);
-    QByteArray vgm = file.readAll();
-    file.close();
+    QFileInfo fileInfo(file);
 
-    _isPlaying = true;
-    _currentTrack = index;
-    ui->playlistTableView->selectionModel()->setCurrentIndex(_playlistTableModel.index(index, 0), QItemSelectionModel::ClearAndSelect);
-    _app->ignoreFMPSGTime(true);
-    _app->fmPSG().play(vgm, true, 0, 0);
+    if (fileInfo.suffix().toLower() == "vgm") {
+        file.open(QIODevice::ReadOnly);
+        QByteArray vgm = file.readAll();
+        file.close();
+
+        _isPlaying = true;
+        _currentTrack = index;
+        ui->playlistTableView->selectionModel()->setCurrentIndex(_playlistTableModel.index(index, 0), QItemSelectionModel::ClearAndSelect);
+        _app->ignoreFMPSGTime(true);
+        _app->fmPSG().play(vgm, true, 0, 0);
+    } else if (fileInfo.suffix().toLower() == "pcm"){
+        QByteArray vgm = pcmToVgm(path);
+
+        _isPlaying = true;
+        _currentTrack = index;
+        ui->playlistTableView->selectionModel()->setCurrentIndex(_playlistTableModel.index(index, 0), QItemSelectionModel::ClearAndSelect);
+        _app->ignoreFMPSGTime(true);
+        _app->fmPSG().play(vgm, false, 0, 0);
+    }
     ui->playButton->setIcon(ui->playButton->style()->standardIcon(QStyle::SP_MediaPause));
-
     _timer.start();
 
 }
@@ -206,6 +216,7 @@ void Player::addFolder()
 void Player::itemDoubleClicked(const QModelIndex& index)
 {
     play(index.row());
+    ui->playlistTableView->selectRow(index.row());
 }
 
 void Player::frame()
@@ -222,4 +233,49 @@ void Player::frame()
 
     ui->seekSlider->setSliderPosition(percentage * ui->seekSlider->maximum());
     ui->positionLabel->setText(posString);
+}
+
+QByteArray Player::pcmToVgm(const QString& path)
+{
+    QFile file(path);
+    file.open(QIODevice::ReadOnly);
+
+    QByteArray pcm = file.readAll();
+
+    QByteArray vgm;
+
+    QByteArray enableDac;
+    enableDac.append(0x52);
+    enableDac.append(0x2B);
+    enableDac.append(0x80);
+
+    vgm.append(enableDac);
+
+    quint32 pcmSize = pcm.size();
+
+    QByteArray pcmBlock;
+    pcmBlock.append(0x67);
+    pcmBlock.append(0x66);
+    pcmBlock.append((quint8)0x00);
+    pcmBlock.append((char*)&pcmSize, sizeof(pcmSize));
+    pcmBlock.append(pcm);
+
+    pcmBlock.append(0xE0);
+    pcmBlock.append((quint8)0x00);
+    pcmBlock.append((quint8)0x00);
+    pcmBlock.append((quint8)0x00);
+    pcmBlock.append((quint8)0x00);
+
+    vgm.prepend(pcmBlock);
+
+    vgm.append(0x96);
+    vgm.append((char*)&pcmSize, sizeof(pcmSize));
+    vgm.append(0x66);
+
+    QByteArray headerData = VGMStream().generateHeader(Project(), vgm, pcm.size(), 0, 0, false);
+    vgm.prepend(headerData);
+
+    file.close();
+
+    return vgm;
 }
