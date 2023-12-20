@@ -95,3 +95,4 @@ void PlaylistTableModel::clear()
     _items.clear();
     endRemoveRows();
 }
+
