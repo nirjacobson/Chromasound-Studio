@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QList>
 #include <QFileDialog>
+#include <QTimer>
 
 #include "application.h"
 #include "playlistitem.h"
@@ -33,6 +34,8 @@ private:
     bool _isPlaying;
     bool _isPaused;
 
+    QTimer _timer;
+
     PlaylistItem getVGMPlaylistItem(const QString& path);
     PlaylistItem getPCMPlaylistItem(const QString& path);
 
@@ -51,6 +54,7 @@ private slots:
     void addFolder();
 
     void itemDoubleClicked(const QModelIndex& index);
+    void frame();
 };
 
 #endif // PLAYER_H
