@@ -164,7 +164,7 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool hea
 
     QByteArray gd3Data;
     if (gd3) {
-        gd3Data = generateGd3(project);
+        gd3Data = GD3::generateGd3(project);
     }
 
     if (header) {
@@ -283,7 +283,7 @@ QByteArray VGMStream::compile(Project& project, const bool header, bool gd3, int
 
     QByteArray gd3Data;
     if (gd3) {
-        gd3Data = generateGd3(project);
+        gd3Data = GD3::generateGd3(project);
     }
 
     if (header) {
@@ -1307,71 +1307,6 @@ void VGMStream::encodeLFOItem(const StreamLFOItem* item, QByteArray& data)
     } else {
         data.append((quint8)0x00);
     }
-}
-
-QByteArray VGMStream::generateGd3(const Project& project)
-{
-    QByteArray gd3;
-
-    // Header
-    gd3.append('G');
-    gd3.append('d');
-    gd3.append('3');
-    gd3.append(' ');
-
-    // Version
-    gd3.append((quint8)0x00);
-    gd3.append((quint8)0x01);
-    gd3.append((quint8)0x00);
-    gd3.append((quint8)0x00);
-
-    // Data
-    QByteArray data;
-
-    // Title
-    data.append(QByteArray((const char*)project.info().title().utf16(), 2*(project.info().title().size() + 1)));
-
-    data.append((quint8)0x00);
-    data.append((quint8)0x00);
-
-    // Game
-    data.append(QByteArray((const char*)project.info().game().utf16(), 2*(project.info().game().size() + 1)));
-
-    data.append((quint8)0x00);
-    data.append((quint8)0x00);
-
-    // System
-    QString system = "Sega Mega Drive / Genesis";
-    data.append(QByteArray((const char*)system.utf16(), 2*(system.size() + 1)));
-
-    data.append((quint8)0x00);
-    data.append((quint8)0x00);
-
-    // Author
-    data.append(QByteArray((const char*)project.info().author().utf16(), 2*(project.info().author().size() + 1)));
-
-    data.append((quint8)0x00);
-    data.append((quint8)0x00);
-
-    // Release date
-    QString releaseDate = project.info().releaseDate().toString("yyyy/MM/dd");
-    data.append(QByteArray((const char*)releaseDate.utf16(), 2*(releaseDate.size() + 1)));
-
-    // Arranger
-    data.append((quint8)0x00);
-    data.append((quint8)0x00);
-
-    // Notes
-    data.append(QByteArray((const char*)project.info().notes().utf16(), 2*(project.info().notes().size() + 1)));
-
-    // Data size
-    quint32 dataSize = data.size();
-    gd3.append((char*)&dataSize, sizeof(dataSize));
-
-    // Data
-    gd3.append(data);
-
-    return gd3;
 }
 
 QByteArray VGMStream::generateHeader(const Project& project, const QByteArray& data, const int totalSamples, const int loopOffsetData, const int gd3size, const bool selectionLoop)

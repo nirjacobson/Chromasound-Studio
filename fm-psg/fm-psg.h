@@ -38,6 +38,7 @@ class FM_PSG : public QObject
     signals:
         void pcmUploadStarted();
         void pcmUploadFinished();
+        void trackEnded();
 };
 
 #endif // FM_PSG_H

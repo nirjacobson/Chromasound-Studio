@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _fmImportDialogWindow(nullptr)
     , _pcmUsageDialogWindow(nullptr)
     , _infoDialogWindow(nullptr)
+    , _playerDialogWindow(nullptr)
 {
     _midiInput->init();
 
@@ -86,6 +87,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(ui->actionPlaylist, &QAction::triggered, this, &MainWindow::showPlaylistWindow);
     connect(ui->actionImportFMPatches, &QAction::triggered, this, &MainWindow::fmImportTriggered);
     connect(ui->actionPCMUsage, &QAction::triggered, this, &MainWindow::pcmUsageTriggered);
+    connect(ui->actionMediaPlayer, &QAction::triggered, this, &MainWindow::playerTriggered);
 
     connect(_app, &Application::pcmUploadStarted, this, &MainWindow::pcmUploadStarted);
     connect(_app, &Application::pcmUploadFinished, this, &MainWindow::pcmUploadFinished);
@@ -734,6 +736,25 @@ void MainWindow::fmImportTriggered()
         window->show();
     } else {
         ui->mdiArea->setActiveSubWindow(_fmImportDialogWindow);
+    }
+}
+
+void MainWindow::playerTriggered()
+{
+    if (_playerDialogWindow == nullptr) {
+        _player = new Player(this, _app);
+
+        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        connect(window, &MdiSubWindow::closed, this, [&]() {
+            _playerDialogWindow = nullptr;
+        });
+        window->setAttribute(Qt::WA_DeleteOnClose);
+        window->setWidget(_player);
+        _playerDialogWindow = window;
+        ui->mdiArea->addSubWindow(window);
+        window->show();
+    } else {
+        ui->mdiArea->setActiveSubWindow(_playerDialogWindow);
     }
 }
 

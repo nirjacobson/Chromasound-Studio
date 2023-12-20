@@ -25,6 +25,7 @@
 #include "pcmusage/pcmusagedialog.h"
 #include "info/projectinfodialog.h"
 #include "settings/settingsdialog.h"
+#include "player/player.h"
 
 #include "commands/movechanneldowncommand.h"
 #include "commands/movechannelupcommand.h"
@@ -96,6 +97,7 @@ class MainWindow : public QMainWindow
         void stylesTriggered();
         void pcmUsageTriggered();
         void fmImportTriggered();
+        void playerTriggered();
 
         void showChannelsWindow();
         void showPlaylistWindow();
@@ -128,12 +130,14 @@ class MainWindow : public QMainWindow
         StyleDialog* _styleDialog;
         FMImportDialog* _fmImportDialog;
         PCMUsageDialog* _pcmUsageDialog;
+        Player* _player;
 
         MdiSubWindow* _settingsDialogWindow;
         MdiSubWindow* _infoDialogWindow;
         MdiSubWindow* _styleDialogWindow;
         MdiSubWindow* _fmImportDialogWindow;
         MdiSubWindow* _pcmUsageDialogWindow;
+        MdiSubWindow* _playerDialogWindow;
 
         FilesystemModel _filesystemModel;
         SortFilterProxyModel _proxyModel;

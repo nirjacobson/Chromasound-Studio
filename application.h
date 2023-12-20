@@ -46,6 +46,10 @@ class Application : public QApplication
 
         QUndoStack& undoStack();
 
+        FM_PSG& fmPSG();
+
+        void ignoreFMPSGTime(const bool ignore);
+
     signals:
         void pcmUploadStarted();
         void pcmUploadFinished();
@@ -61,6 +65,7 @@ class Application : public QApplication
         Project _project;
 
         bool _paused;
+        bool _ignoreFMPSGTime;
 };
 
 #endif // APPLICATION_H

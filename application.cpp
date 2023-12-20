@@ -5,6 +5,7 @@ Application::Application(int &argc, char **argv, int flags)
     : QApplication(argc, argv, flags)
     , _undoStack(this)
     , _paused(false)
+    , _ignoreFMPSGTime(false)
     , _mainWindow(nullptr)
 {
     const char* fm_psg = std::getenv("FM_PSG");
@@ -258,7 +259,7 @@ void Application::stop()
 
 float Application::position() const
 {
-    return _fmPSG->position();
+    return _ignoreFMPSGTime ? 0 : _fmPSG->position();
 }
 
 void Application::setPosition(const float pos)
@@ -305,5 +306,15 @@ void Application::keyOff(int key)
 QUndoStack& Application::undoStack()
 {
     return _undoStack;
+}
+
+FM_PSG& Application::fmPSG()
+{
+    return *_fmPSG;
+}
+
+void Application::ignoreFMPSGTime(const bool ignore)
+{
+    _ignoreFMPSGTime = ignore;
 }
 

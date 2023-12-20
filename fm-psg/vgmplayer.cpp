@@ -41,9 +41,8 @@ void VGMPlayer::setVGM(const QByteArray& vgm, const bool loop, const int current
         if (vgm[64] == 0x67) {
             quint32 size = *(quint32*)&vgm.constData()[64 + 3];
             _pcmBlock = vgm.mid(64, 7 + size);
-            _vgm = vgm.mid(0, 64);
-            _vgm.append(vgm.mid(64 + 7 + size));
-            _currentOffsetData -= 7 + size;
+            _vgm = vgm.mid(64 + 7 + size);
+            _currentOffsetData -= 64 + 7 + size;
         }
     } else {
         if (vgm[0] == 0x67) {
@@ -76,10 +75,9 @@ void VGMPlayer::setVGM(const QByteArray& vgm, const int loopOffsetSamples, const
         if (vgm[64] == 0x67) {
             quint32 size = *(quint32*)&vgm.constData()[64 + 3];
             _pcmBlock = vgm.mid(64, 7 + size);
-            _vgm = vgm.mid(0, 64);
-            _vgm.append(vgm.mid(64 + 7 + size));
-            _currentOffsetData -= 7 + size;
-            _loopOffsetData -= 7 + size;
+            _vgm = vgm.mid(64 + 7 + size);
+            _currentOffsetData -= 64 + 7 + size;
+            _loopOffsetData -= 64 + 7 + size;
         }
     } else {
         if (vgm[0] == 0x67) {

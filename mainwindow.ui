@@ -14,42 +14,18 @@
    <string>FM-PSG Studio</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout_2">
+   <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0" colspan="2">
      <widget class="TopWidget" name="topWidget" native="true"/>
     </item>
     <item row="1" column="0">
-     <widget class="QScrollArea" name="scrollArea">
-      <property name="minimumSize">
-       <size>
-        <width>320</width>
-        <height>0</height>
-       </size>
-      </property>
+     <widget class="QTreeView" name="treeView">
       <property name="maximumSize">
        <size>
         <width>320</width>
         <height>16777215</height>
        </size>
       </property>
-      <property name="widgetResizable">
-       <bool>true</bool>
-      </property>
-      <widget class="QWidget" name="scrollAreaWidgetContents">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>318</width>
-         <height>1045</height>
-        </rect>
-       </property>
-       <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="0">
-         <widget class="QTreeView" name="treeView"/>
-        </item>
-       </layout>
-      </widget>
      </widget>
     </item>
     <item row="1" column="1">
@@ -117,6 +93,7 @@
     </property>
     <addaction name="actionImportFMPatches"/>
     <addaction name="actionPCMUsage"/>
+    <addaction name="actionMediaPlayer"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -187,6 +164,11 @@
   <action name="actionStyles">
    <property name="text">
     <string>Styles...</string>
+   </property>
+  </action>
+  <action name="actionMediaPlayer">
+   <property name="text">
+    <string>&amp;Media Player</string>
    </property>
   </action>
  </widget>
