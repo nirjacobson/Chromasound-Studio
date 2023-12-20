@@ -48,7 +48,7 @@ class FM_PSG_Soft : public FM_PSG, public Producer<int16_t>
 
         // FM_PSG interface
     public:
-        float position();
+        quint32 position();
         void setPosition(const float pos);
         void play(const QByteArray& vgm, const bool loop, const int currentOffsetSamples, const int currentOffsetData);
         void play(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData, const int currentOffsetSamples, const int currentOffsetData, const float duration);

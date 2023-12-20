@@ -145,19 +145,19 @@ void FM_PSG_Soft::setEqualizer()
     _emu->set_equalizer(eq);
 }
 
-float FM_PSG_Soft::position()
+quint32 FM_PSG_Soft::position()
 {
     if (_info.loop_length < 0) {
-        return (_position + _positionOffset) / 1000.0f / 60.0f * _project.tempo();
+        return (_position + _positionOffset) / 1000.0f * 44100;
     }
 
     if (_info.intro_length < 0) {
-        return (_positionOffset + (_position % _info.loop_length)) / 1000.0f / 60.0f * _project.tempo();
+        return (_positionOffset + (_position % _info.loop_length)) / 1000.0f * 44100;
     } else {
         return (_positionOffset + ((_position < _info.intro_length)
                                    ? _position
                                    : (((_position - _info.intro_length) % _info.loop_length) + _info.intro_length)))
-               / 1000.0f / 60.0f * _project.tempo();
+               / 1000.0f * 44100;
     }
 }
 

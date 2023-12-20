@@ -16,7 +16,7 @@ class FM_PSG_Dummy : public FM_PSG
         void play();
         void pause();
         void stop();
-        float position();
+        quint32 position();
         void setPosition(const float pos);
         bool isPlaying() const;
 

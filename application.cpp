@@ -259,7 +259,11 @@ void Application::stop()
 
 float Application::position() const
 {
-    return _ignoreFMPSGTime ? 0 : _fmPSG->position();
+    if (_ignoreFMPSGTime) {
+        return 0;
+    }
+
+    return _fmPSG->position() / 44100.0f / 60 * _project.tempo();
 }
 
 void Application::setPosition(const float pos)
