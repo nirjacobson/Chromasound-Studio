@@ -330,6 +330,14 @@ set(PROJECT_SOURCES
     settings/settingsdialog.ui
     FM_PSG_Studio.h
     FM_PSG_Studio.cpp
+    player/player.h
+    player/player.cpp
+    player/player.ui
+    player/playlisttablemodel.h
+    player/playlisttablemodel.cpp
+    player/playlistitem.h
+    player/playlistitem.cpp
+    gd3.h gd3.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

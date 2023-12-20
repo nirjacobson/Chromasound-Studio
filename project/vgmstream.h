@@ -7,6 +7,7 @@
 #include "channel/noisechannelsettings.h"
 #include "project.h"
 #include "note.h"
+#include "gd3.h"
 
 class VGMStream
 {
@@ -176,8 +177,6 @@ class VGMStream
         void encodeSettingsItem(const StreamSettingsItem* item, QByteArray& data);
         void encodeNoteItem(const Project& project, const StreamNoteItem* item, QByteArray& data);
         void encodeLFOItem(const StreamLFOItem* item, QByteArray& data);
-
-        QByteArray generateGd3(const Project& project);
 };
 
 #endif // VGMSTREAM_H
