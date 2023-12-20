@@ -21,6 +21,7 @@ Player::Player(QWidget *parent, Application* app)
     ui->playlistTableView->setColumnWidth(3, 64);
     ui->playlistTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->playlistTableView->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Fixed);
+    ui->playlistTableView->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
     ui->playlistTableView->verticalHeader()->setDefaultSectionSize(16);
 
     connect(ui->actionOpenFiles, &QAction::triggered, this, &Player::openFiles);
@@ -37,6 +38,9 @@ Player::Player(QWidget *parent, Application* app)
     connect(ui->nextButton, &QToolButton::clicked, this, &Player::next);
 
     connect(ui->playlistTableView, &QTableView::doubleClicked, this, &Player::itemDoubleClicked);
+
+    _timer.setInterval(1000 / 30);
+    connect(&_timer, &QTimer::timeout, this, &Player::frame);
 }
 
 Player::~Player()
@@ -102,6 +106,8 @@ void Player::play(const int index)
     _app->fmPSG().play(vgm, true, 0, 0);
     ui->playButton->setIcon(ui->playButton->style()->standardIcon(QStyle::SP_MediaPause));
 
+    _timer.start();
+
 }
 
 void Player::playPause()
@@ -110,11 +116,13 @@ void Player::playPause()
         _isPaused = true;
         _isPlaying = false;
         _app->fmPSG().pause();
+        _timer.stop();
     } else {
         if (_isPaused) {
             _isPaused = false;
             _isPlaying = true;
             _app->fmPSG().play();
+            _timer.start();
         } else {
             _isPlaying = true;
             play(0);
@@ -131,6 +139,8 @@ void Player::stop()
     _currentTrack = 0;
     _app->fmPSG().stop();
     ui->playButton->setIcon(ui->playButton->style()->standardIcon(QStyle::SP_MediaPlay));
+    _timer.stop();
+    frame();
 }
 
 void Player::prev()
@@ -196,4 +206,20 @@ void Player::addFolder()
 void Player::itemDoubleClicked(const QModelIndex& index)
 {
     play(index.row());
+}
+
+void Player::frame()
+{
+    quint32 totalLength = _playlist[_currentTrack].length() * 44100;
+    quint32 pos = _app->fmPSG().position();
+    float percentage = (float)pos / (float)totalLength;
+
+    QString posString = QString("%1:%2/%3:%4")
+                            .arg((pos / 44100) / 60)
+                            .arg((pos / 44100) % 60, 2, 10, QLatin1Char('0'))
+                            .arg((totalLength / 44100) / 60)
+                            .arg((totalLength / 44100) % 60, 2, 10, QLatin1Char('0'));
+
+    ui->seekSlider->setSliderPosition(percentage * ui->seekSlider->maximum());
+    ui->positionLabel->setText(posString);
 }
