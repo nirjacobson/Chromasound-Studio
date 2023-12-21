@@ -61,7 +61,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     ui->treeView->setColumnHidden(2, true);
     ui->treeView->setColumnHidden(3, true);
     ui->treeView->setSortingEnabled(true);
-    ui->treeView->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
+    ui->treeView->setSelectionMode(QAbstractItemView::SelectionMode::ExtendedSelection);
     ui->treeView->setDragEnabled(true);
     ui->treeView->setColumnWidth(0, 192);
 
