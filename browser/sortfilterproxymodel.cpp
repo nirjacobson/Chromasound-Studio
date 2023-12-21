@@ -54,15 +54,15 @@ QMimeData* SortFilterProxyModel::mimeData(const QModelIndexList& indexes) const
 {
     FilesystemModel* sourceModel = dynamic_cast<FilesystemModel*>(QSortFilterProxyModel::sourceModel());
     QMimeData* mimeData = new QMimeData;
-    QByteArray encodedData;
+    QStringList paths;
 
     for (const QModelIndex& index : indexes) {
         if (index.isValid()) {
-            QString text = QString("file://%1\r\n").arg(sourceModel->fileInfo(mapToSource(index)).absoluteFilePath());
-            encodedData = text.toUtf8();
+            paths.append(QString("file://%1").arg(sourceModel->fileInfo(mapToSource(index)).absoluteFilePath()));
         }
     }
+    QString pathsString = paths.join("\r\n");
 
-    mimeData->setData("text/uri-list", encodedData);
+    mimeData->setData("text/uri-list", pathsString.toUtf8());
     return mimeData;
 }

@@ -11,6 +11,8 @@ Player::Player(QWidget *parent, Application* app)
 {
     ui->setupUi(this);
 
+    setAcceptDrops(true);
+
     ui->openButton->setIcon(ui->playButton->style()->standardIcon(QStyle::SP_DirOpenIcon));
     ui->prevButton->setIcon(ui->playButton->style()->standardIcon(QStyle::SP_MediaSkipBackward));
     ui->playButton->setIcon(ui->playButton->style()->standardIcon(QStyle::SP_MediaPlay));
@@ -181,7 +183,7 @@ void Player::openFolder()
     QString path = QFileDialog::getExistingDirectory(this, tr("Open folder"), "", QFileDialog::DontUseNativeDialog | QFileDialog::ShowDirsOnly);
 
     if (!path.isNull()) {
-        QFileInfoList infoList = QDir(path).entryInfoList();
+        QFileInfoList infoList = QDir(path).entryInfoList(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs);
         QStringList paths;
         for (const QFileInfo& fileInfo : infoList) {
             paths.append(fileInfo.absoluteFilePath());
@@ -204,7 +206,7 @@ void Player::addFolder()
     QString path = QFileDialog::getExistingDirectory(this, tr("Add folder"), "", QFileDialog::DontUseNativeDialog | QFileDialog::ShowDirsOnly);
 
     if (!path.isNull()) {
-        QFileInfoList infoList = QDir(path).entryInfoList();
+        QFileInfoList infoList = QDir(path).entryInfoList(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs);
         QStringList paths;
         for (const QFileInfo& fileInfo : infoList) {
             paths.append(fileInfo.absoluteFilePath());
@@ -278,4 +280,44 @@ QByteArray Player::pcmToVgm(const QString& path)
     file.close();
 
     return vgm;
+}
+
+void Player::dragEnterEvent(QDragEnterEvent* event)
+{
+    if (event->mimeData()->hasFormat("text/uri-list")) {
+        event->acceptProposedAction();
+    }
+}
+
+void Player::dropEvent(QDropEvent* event)
+{
+    QByteArray data = event->mimeData()->data("text/uri-list");
+    QString pathsString(data);
+    QStringList paths = pathsString.split("\r\n");
+    paths.removeDuplicates();
+    paths.removeAll("");
+
+    for (QString& str : paths) {
+        str = str.mid(QString("file://").length());
+        str = str.replace("%20", " ");
+    }
+
+    for (auto it = paths.begin(); it != paths.end();) {
+        QString path = *it;
+        if (QFileInfo(QFile(path)).isDir()) {
+            QFileInfoList infoList = QDir(path).entryInfoList(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs);
+            auto before = it;
+            for (const QFileInfo& fileInfo : infoList) {
+                QString newPath = fileInfo.absoluteFilePath();
+                newPath = newPath.mid(QString("file://").length());
+                newPath = newPath.replace("%20", " ");
+                it = paths.insert(++it, fileInfo.absoluteFilePath());
+            }
+            paths.removeAll(path);
+        } else {
+            ++it;
+        }
+    }
+
+    openFiles_(paths, false);
 }

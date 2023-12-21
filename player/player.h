@@ -5,6 +5,9 @@
 #include <QList>
 #include <QFileDialog>
 #include <QTimer>
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QMimeData>
 
 #include "application.h"
 #include "playlistitem.h"
@@ -57,6 +60,11 @@ private slots:
     void frame();
 
     QByteArray pcmToVgm(const QString& path);
+
+    // QWidget interface
+protected:
+    void dragEnterEvent(QDragEnterEvent* event);
+    void dropEvent(QDropEvent* event);
 };
 
 #endif // PLAYER_H
