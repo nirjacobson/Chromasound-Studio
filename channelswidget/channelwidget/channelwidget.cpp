@@ -534,12 +534,17 @@ void ChannelWidget::dragEnterEvent(QDragEnterEvent* event)
 void ChannelWidget::dropEvent(QDropEvent* event)
 {
     QByteArray data = event->mimeData()->data("text/uri-list");
-    QString path(data);
-    path = path.mid(QString("file://").length());
-    path = path.replace("%20", " ");
-    path = path.replace("\r\n", "");
+    QString pathsString(data);
+    QStringList paths = pathsString.split("\r\n");
+    paths.removeDuplicates();
+    paths.removeAll("");
 
-    fromPath(path);
+    for (QString& str : paths) {
+        str = str.mid(QString("file://").length());
+        str = str.replace("%20", " ");
+    }
+
+    fromPath(paths.first());
 
     event->acceptProposedAction();
 }

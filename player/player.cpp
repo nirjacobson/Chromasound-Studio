@@ -25,6 +25,7 @@ Player::Player(QWidget *parent, Application* app)
     ui->playlistTableView->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Fixed);
     ui->playlistTableView->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
     ui->playlistTableView->verticalHeader()->setDefaultSectionSize(16);
+    ui->playlistTableView->setDragEnabled(true);
 
     connect(ui->actionOpenFiles, &QAction::triggered, this, &Player::openFiles);
     connect(ui->actionOpenFolder, &QAction::triggered, this, &Player::openFolder);
@@ -108,7 +109,7 @@ void Player::play(const int index)
         ui->playlistTableView->selectionModel()->setCurrentIndex(_playlistTableModel.index(index, 0), QItemSelectionModel::ClearAndSelect);
         _app->ignoreFMPSGTime(true);
         _app->fmPSG().play(vgm, true, 0, 0);
-    } else if (fileInfo.suffix().toLower() == "pcm"){
+    } else if (fileInfo.suffix().toLower() == "pcm") {
         QByteArray vgm = pcmToVgm(path);
 
         _isPlaying = true;
@@ -228,10 +229,10 @@ void Player::frame()
     float percentage = (float)pos / (float)totalLength;
 
     QString posString = QString("%1:%2/%3:%4")
-                            .arg((pos / 44100) / 60)
-                            .arg((pos / 44100) % 60, 2, 10, QLatin1Char('0'))
-                            .arg((totalLength / 44100) / 60)
-                            .arg((totalLength / 44100) % 60, 2, 10, QLatin1Char('0'));
+                        .arg((pos / 44100) / 60)
+                        .arg((pos / 44100) % 60, 2, 10, QLatin1Char('0'))
+                        .arg((totalLength / 44100) / 60)
+                        .arg((totalLength / 44100) % 60, 2, 10, QLatin1Char('0'));
 
     ui->seekSlider->setSliderPosition(percentage * ui->seekSlider->maximum());
     ui->positionLabel->setText(posString);

@@ -15,56 +15,56 @@
 #include "gd3.h"
 
 namespace Ui {
-class Player;
+    class Player;
 }
 
 class Player : public QMainWindow
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    explicit Player(QWidget *parent = nullptr, Application* app = nullptr);
-    ~Player();
+    public:
+        explicit Player(QWidget *parent = nullptr, Application* app = nullptr);
+        ~Player();
 
-private:
-    Ui::Player *ui;
-    Application* _app;
+    private:
+        Ui::Player *ui;
+        Application* _app;
 
-    QList<PlaylistItem> _playlist;
-    PlaylistTableModel _playlistTableModel;
+        QList<PlaylistItem> _playlist;
+        PlaylistTableModel _playlistTableModel;
 
-    int _currentTrack;
-    bool _isPlaying;
-    bool _isPaused;
+        int _currentTrack;
+        bool _isPlaying;
+        bool _isPaused;
 
-    QTimer _timer;
+        QTimer _timer;
 
-    PlaylistItem getVGMPlaylistItem(const QString& path);
-    PlaylistItem getPCMPlaylistItem(const QString& path);
+        PlaylistItem getVGMPlaylistItem(const QString& path);
+        PlaylistItem getPCMPlaylistItem(const QString& path);
 
-    void openFiles_(const QStringList& files, const bool clear = true);
-    void play(const int index);
+        void openFiles_(const QStringList& files, const bool clear = true);
+        void play(const int index);
 
-    void playPause();
-    void stop();
-    void prev();
-    void next();
+        void playPause();
+        void stop();
+        void prev();
+        void next();
 
-private slots:
-    void openFiles();
-    void openFolder();
-    void addFiles();
-    void addFolder();
+    private slots:
+        void openFiles();
+        void openFolder();
+        void addFiles();
+        void addFolder();
 
-    void itemDoubleClicked(const QModelIndex& index);
-    void frame();
+        void itemDoubleClicked(const QModelIndex& index);
+        void frame();
 
-    QByteArray pcmToVgm(const QString& path);
+        QByteArray pcmToVgm(const QString& path);
 
-    // QWidget interface
-protected:
-    void dragEnterEvent(QDragEnterEvent* event);
-    void dropEvent(QDropEvent* event);
+        // QWidget interface
+    protected:
+        void dragEnterEvent(QDragEnterEvent* event);
+        void dropEvent(QDropEvent* event);
 };
 
 #endif // PLAYER_H
