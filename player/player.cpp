@@ -314,6 +314,7 @@ void Player::dropEvent(QDropEvent* event)
                 it = paths.insert(++it, fileInfo.absoluteFilePath());
             }
             paths.removeAll(path);
+            it = paths.begin();
         } else {
             ++it;
         }
