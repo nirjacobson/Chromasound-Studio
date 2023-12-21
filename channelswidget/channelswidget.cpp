@@ -332,48 +332,54 @@ void ChannelsWidget::dragEnterEvent(QDragEnterEvent* event)
 void ChannelsWidget::dropEvent(QDropEvent* event)
 {
     QByteArray data = event->mimeData()->data("text/uri-list");
-    QString path(data);
-    path = path.mid(QString("file://").length());
-    path = path.replace("%20", " ");
-    path = path.replace("\r\n", "");
+    QString pathsString(data);
+    QStringList paths = pathsString.split("\r\n");
+    paths.removeDuplicates();
+    paths.removeAll("");
 
-    QFile file(path);
-    QFileInfo fileInfo(file);
+    for (QString& str : paths) {
+        str = str.mid(QString("file://").length());
+        str = str.replace("%20", " ");
+    }
 
-    int index = _app->project().channelCount();
+    for (const QString& path : paths) {
+        QFile file(path);
+        QFileInfo fileInfo(file);
 
+        int index = _app->project().channelCount();
 
-    if (fileInfo.suffix() == "fm") {
-        FMChannelSettings* settings = BSON::decodePatch(path);
-        _app->undoStack().push(new AddFMChannelCommand(_app->window(), *settings, QFileInfo(QFile(path)).baseName()));
+        if (fileInfo.suffix() == "fm") {
+            FMChannelSettings* settings = BSON::decodePatch(path);
+            _app->undoStack().push(new AddFMChannelCommand(_app->window(), *settings, QFileInfo(QFile(path)).baseName()));
 
-        delete settings;
-    } else if (fileInfo.suffix() == "pcm") {
-        PCMChannelSettings* settings = new PCMChannelSettings;
-        settings->setPath(path);
-        _app->undoStack().push(new AddPCMChannelCommand(_app->window(), *settings, QFileInfo(QFile(path)).baseName()));
+            delete settings;
+        } else if (fileInfo.suffix() == "pcm") {
+            PCMChannelSettings* settings = new PCMChannelSettings;
+            settings->setPath(path);
+            _app->undoStack().push(new AddPCMChannelCommand(_app->window(), *settings, QFileInfo(QFile(path)).baseName()));
 
-        delete settings;
-    } else if (fileInfo.suffix() == "mid") {
-        MIDIFile mfile(file);
+            delete settings;
+        } else if (fileInfo.suffix() == "mid") {
+            MIDIFile mfile(file);
 
-        auto it1 = std::find_if(mfile.chunks().begin(), mfile.chunks().end(), [](const MIDIChunk* chunk) {
-            return dynamic_cast<const MIDIHeader*>(chunk);
-        });
-
-        if (it1 != mfile.chunks().end()) {
-            const MIDIHeader* header = dynamic_cast<const MIDIHeader*>(*it1);
-
-            auto it2 = std::find_if(mfile.chunks().begin(), mfile.chunks().end(), [](const MIDIChunk* chunk) {
-                return dynamic_cast<const MIDITrack*>(chunk);
+            auto it1 = std::find_if(mfile.chunks().begin(), mfile.chunks().end(), [](const MIDIChunk* chunk) {
+                return dynamic_cast<const MIDIHeader*>(chunk);
             });
 
-            if (it2 != mfile.chunks().end()) {
-                const MIDITrack* track = dynamic_cast<const MIDITrack*>(*it2);
+            if (it1 != mfile.chunks().end()) {
+                const MIDIHeader* header = dynamic_cast<const MIDIHeader*>(*it1);
 
-                QList<Track::Item*> items = MIDI::toTrackItems(*track, header->division());
+                auto it2 = std::find_if(mfile.chunks().begin(), mfile.chunks().end(), [](const MIDIChunk* chunk) {
+                    return dynamic_cast<const MIDITrack*>(chunk);
+                });
 
-                _app->undoStack().push(new AddTrackCommand(_app->window(), items, QFileInfo(file).baseName()));
+                if (it2 != mfile.chunks().end()) {
+                    const MIDITrack* track = dynamic_cast<const MIDITrack*>(*it2);
+
+                    QList<Track::Item*> items = MIDI::toTrackItems(*track, header->division());
+
+                    _app->undoStack().push(new AddTrackCommand(_app->window(), items, QFileInfo(file).baseName()));
+                }
             }
         }
     }
