@@ -316,15 +316,20 @@ void FMImportDialog::dragEnterEvent(QDragEnterEvent* event)
 void FMImportDialog::dropEvent(QDropEvent* event)
 {
     QByteArray data = event->mimeData()->data("text/uri-list");
-    QString path(data);
-    path = path.mid(QString("file://").length());
-    path = path.replace("%20", " ");
-    path = path.replace("\r\n", "");
+    QString pathsString(data);
+    QStringList paths = pathsString.split("\r\n");
+    paths.removeDuplicates();
+    paths.removeAll("");
 
-    QFile file(path);
+    for (QString& str : paths) {
+        str = str.mid(QString("file://").length());
+        str = str.replace("%20", " ");
+    }
+
+    QFile file(paths.first());
     QFileInfo fileInfo(file);
 
     if (fileInfo.suffix() == "vgm") {
-        load(path);
+        load(paths.first());
     }
 }
