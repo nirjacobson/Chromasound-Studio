@@ -147,6 +147,11 @@ void VGMPlayer::setTime(const uint32_t time)
     _timeLock.unlock();
 }
 
+void VGMPlayer::fillWithPCM(const bool enable)
+{
+    spi_write(enable ? FILL_WITH_PCM : STOP_FILL_WITH_PCM);
+}
+
 quint32 VGMPlayer::fletcher32(const QByteArray& data)
 {
     quint32 c0, c1, i;

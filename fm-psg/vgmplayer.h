@@ -31,6 +31,8 @@ class VGMPlayer : public QThread
         uint32_t time();
         void setTime(const uint32_t time);
 
+        void fillWithPCM(const bool enable);
+
     signals:
         void pcmUploadStarted();
         void pcmUploadFinished();
@@ -48,7 +50,9 @@ class VGMPlayer : public QThread
             PAUSE_RESUME,
             STOP,
             SET_LOOP_TIME,
-            SET_TIME
+            SET_TIME,
+            FILL_WITH_PCM,
+            STOP_FILL_WITH_PCM
         } Command;
 
         Mode _mode;
