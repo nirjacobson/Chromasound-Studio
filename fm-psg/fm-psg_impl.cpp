@@ -108,6 +108,9 @@ void FM_PSG_Impl::keyOn(const Project& project, const Channel::Type channelType,
     _vgmStream.encode(project, items, data);
 
     if (sni->type() == Channel::Type::PCM) {
+        data.append(0x52);
+        data.append(0x2B);
+        data.append(0x80);
         _vgmPlayer->fillWithPCM(true);
     }
 
