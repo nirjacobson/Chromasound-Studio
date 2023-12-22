@@ -50,6 +50,9 @@ void VGMPlayer::setVGM(const QByteArray& vgm, const bool loop, const int current
                 _loopOffsetSamples = *(quint32*)&vgm.constData()[0x18] + *(quint32*)&vgm.constData()[0x20];
             }
         } else {
+            if (_currentOffsetData == 0) {
+                _currentOffsetData = 64;
+            }
             if (loop) {
                 _loopOffsetData = 64;
             }
