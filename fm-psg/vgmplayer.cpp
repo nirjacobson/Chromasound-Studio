@@ -42,14 +42,29 @@ void VGMPlayer::setVGM(const QByteArray& vgm, const bool loop, const int current
             quint32 size = *(quint32*)&vgm.constData()[64 + 3];
             _pcmBlock = vgm.mid(64, 7 + size);
             _vgm = vgm.mid(64 + 7 + size);
-            _currentOffsetData -= 64 + 7 + size;
+            if (_currentOffsetData != 0) {
+                _currentOffsetData -= 64 + 7 + size;
+            }
+            if (loop) {
+                _loopOffsetData = *(quint32*)&vgm.constData()[0x1C] + 0x1C;
+                _loopOffsetSamples = *(quint32*)&vgm.constData()[0x18] + *(quint32*)&vgm.constData()[0x20];
+            }
+        } else {
+            if (loop) {
+                _loopOffsetData = 64;
+            }
         }
     } else {
         if (vgm[0] == 0x67) {
             quint32 size = *(quint32*)&vgm.constData()[3];
             _pcmBlock = vgm.mid(0, 7 + size);
             _vgm = vgm.mid(7 + size);
-            _currentOffsetData -= 7 + size;
+            if (_currentOffsetData != 0) {
+                _currentOffsetData -= 7 + size;
+            }
+            if (loop) {
+                _loopOffsetData = 7 + size;
+            }
         }
     }
 
@@ -76,7 +91,9 @@ void VGMPlayer::setVGM(const QByteArray& vgm, const int loopOffsetSamples, const
             quint32 size = *(quint32*)&vgm.constData()[64 + 3];
             _pcmBlock = vgm.mid(64, 7 + size);
             _vgm = vgm.mid(64 + 7 + size);
-            _currentOffsetData -= 64 + 7 + size;
+            if (_currentOffsetData != 0) {
+                _currentOffsetData -= 64 + 7 + size;
+            }
             _loopOffsetData -= 64 + 7 + size;
         }
     } else {
@@ -84,7 +101,9 @@ void VGMPlayer::setVGM(const QByteArray& vgm, const int loopOffsetSamples, const
             quint32 size = *(quint32*)&vgm.constData()[3];
             _pcmBlock = vgm.mid(0, 7 + size);
             _vgm = vgm.mid(7 + size);
-            _currentOffsetData -= 7 + size;
+            if (_currentOffsetData != 0) {
+                _currentOffsetData -= 7 + size;
+            }
             _loopOffsetData -= 7 + size;
         }
     }
