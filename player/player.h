@@ -50,6 +50,8 @@ class Player : public QMainWindow
         void prev();
         void next();
 
+        QByteArray pcmToVgm(const QString& path);
+
     private slots:
         void openFiles();
         void openFolder();
@@ -59,7 +61,7 @@ class Player : public QMainWindow
         void itemDoubleClicked(const QModelIndex& index);
         void frame();
 
-        QByteArray pcmToVgm(const QString& path);
+        void fmpsgStopped();
 
         // QWidget interface
     protected:

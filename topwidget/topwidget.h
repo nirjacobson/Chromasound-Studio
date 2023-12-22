@@ -49,6 +49,7 @@ class TopWidget : public QWidget
         void patModeSelected();
         void songModeSelected();
         void lfoModeChanged(int mode);
+        void fmpsgStopped();
 
         // QWidget interface
     protected:
