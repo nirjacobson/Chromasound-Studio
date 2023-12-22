@@ -106,6 +106,11 @@ void FM_PSG_Impl::keyOn(const Project& project, const Channel::Type channelType,
     items.append(sni);
     _vgmStream.assignChannel(sni, items);
     _vgmStream.encode(project, items, data);
+
+    if (sni->type() == Channel::Type::PCM) {
+        _vgmPlayer->fillWithPCM(true);
+    }
+
     _keys[key] = sni;
     _vgmPlayer->setVGM(data, false, 0);
 
@@ -121,6 +126,20 @@ void FM_PSG_Impl::keyOff(int key)
     QByteArray data;
     items.append(sni);
     _vgmStream.encode(Project(), items, data);
+
+
+    bool havePCM = false;
+    for (auto it = _keys.begin(); it != _keys.end(); ++it) {
+        if (it.value()->type() == Channel::Type::PCM) {
+            havePCM = true;
+            break;
+        }
+    }
+
+    if (!havePCM) {
+        _vgmPlayer->fillWithPCM(false);
+    }
+
     _keys.remove(key);
     _vgmPlayer->setVGM(data, false, 0);
 
