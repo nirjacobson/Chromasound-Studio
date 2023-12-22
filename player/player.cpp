@@ -42,6 +42,8 @@ Player::Player(QWidget *parent, Application* app)
 
     connect(ui->playlistTableView, &QTableView::doubleClicked, this, &Player::itemDoubleClicked);
 
+    connect(&_app->fmPSG(), &FM_PSG::stopped, this, &Player::fmpsgStopped);
+
     _timer.setInterval(1000 / 30);
     connect(&_timer, &QTimer::timeout, this, &Player::frame);
 }
@@ -236,6 +238,14 @@ void Player::frame()
 
     ui->seekSlider->setSliderPosition(percentage * ui->seekSlider->maximum());
     ui->positionLabel->setText(posString);
+}
+
+void Player::fmpsgStopped()
+{
+    _isPlaying = false;
+    ui->playButton->setIcon(ui->playButton->style()->standardIcon(QStyle::SP_MediaPlay));
+    _timer.stop();
+    frame();
 }
 
 QByteArray Player::pcmToVgm(const QString& path)

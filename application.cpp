@@ -43,6 +43,8 @@ bool Application::paused() const
 
 void Application::play()
 {
+    _ignoreFMPSGTime = false;
+
     if (_paused) {
         _fmPSG->play();
     } else {
@@ -150,6 +152,8 @@ void Application::play()
 
 void Application::play(const Pattern& pattern, const float loopStart, const float loopEnd)
 {
+    _ignoreFMPSGTime = false;
+
     QSettings settings(FM_PSG_Studio::Organization, FM_PSG_Studio::Application);
     QString format = settings.value(FM_PSG_Studio::Format, FM_PSG_Studio::FM_PSG).toString();
     VGMStream::Format vgmFormat =
@@ -202,6 +206,8 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
 
 void Application::play(const float loopStart, const float loopEnd)
 {
+    _ignoreFMPSGTime = false;
+
     QSettings settings(FM_PSG_Studio::Organization, FM_PSG_Studio::Application);
     QString format = settings.value(FM_PSG_Studio::Format, FM_PSG_Studio::FM_PSG).toString();
     VGMStream::Format vgmFormat =

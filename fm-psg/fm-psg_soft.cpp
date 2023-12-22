@@ -147,11 +147,15 @@ void FM_PSG_Soft::setEqualizer()
 
 quint32 FM_PSG_Soft::position()
 {
-    if (_info.loop_length < 0) {
+    if (_info.loop_length <= 0) {
+        if ((_position + _positionOffset) >= _info.length) {
+            stop();
+            return 0;
+        }
         return (_position + _positionOffset) / 1000.0f * 44100;
     }
 
-    if (_info.intro_length < 0) {
+    if (_info.intro_length <= 0) {
         return (_positionOffset + (_position % _info.loop_length)) / 1000.0f * 44100;
     } else {
         return (_positionOffset + ((_position < _info.intro_length)
@@ -275,6 +279,8 @@ void FM_PSG_Soft::stop()
     log_warning(_emu);
 
     setEqualizer();
+
+    emit stopped();
 }
 
 bool FM_PSG_Soft::isPlaying() const
