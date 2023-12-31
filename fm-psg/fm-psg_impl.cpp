@@ -104,7 +104,7 @@ void FM_PSG_Impl::keyOn(const Project& project, const Channel::Type channelType,
     QByteArray data;
     items.append(sli);
     items.append(sni);
-    _vgmStream.assignChannel(sni, items);
+    _vgmStream.assignChannel(project, sni, items);
     _vgmStream.encode(project, items, data);
 
     if (sni->type() == Channel::Type::PCM) {
