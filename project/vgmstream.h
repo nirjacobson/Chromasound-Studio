@@ -62,7 +62,7 @@ class VGMStream
         VGMStream(const Format format = Format::FM_PSG);
         ~VGMStream();
 
-        void assignChannel(StreamNoteItem* noteItem, QList<StreamItem*>& items);
+        void assignChannel(const Project& project, StreamNoteItem* noteItem, QList<StreamItem*>& items);
         void releaseChannel(const Channel::Type type, const int channel);
 
         void encode(const Project& project, QList<StreamItem*>& items, QByteArray& data);
@@ -133,6 +133,13 @@ class VGMStream
         };
         class PCMChannel : public PhysicalChannel {
 
+            public:
+                PCMChannel();
+
+                bool isLong() const;
+                void setIsLong(const bool isLong);
+            private:
+                bool _isLong;
         };
 
         static constexpr int FM_CHANNELS = 6;
@@ -153,13 +160,13 @@ class VGMStream
         int acquireToneChannel(const float time, const float duration);
         int acquireNoiseChannel(const float time, const float duration, const NoiseChannelSettings* settings, QList<StreamItem*>& items);
         int acquireFMChannel(const float time, const float duration, const FMChannelSettings* settings, QList<StreamItem*>& items);
-        int acquirePCMChannel(const float time, const float duration);
+        int acquirePCMChannel(const Project& project, const float time, const float duration, const PCMChannelSettings* settings);
 
         void processProject(const Project& project, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
         void processPattern(const float time, const Project& project, const Pattern& pattern, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
         void processTrack(const float time, const Channel& channel, const Track* track, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
 
-        void assignChannelsAndExpand(QList<StreamItem*>& items, const int tempo);
+        void assignChannelsAndExpand(const Project& project, QList<StreamItem*>& items, const int tempo);
         void applySettingsChanges(Project& project, const float time, const Pattern& pattern, QList<StreamItem*>& items);
         void applySettingsChanges2(Project& project, const float time, const Pattern& pattern, QList<StreamItem*>& items);
         void applySettingsChanges(Project& project, QList<StreamItem*>& items);
@@ -177,6 +184,8 @@ class VGMStream
         void encodeSettingsItem(const StreamSettingsItem* item, QByteArray& data);
         void encodeNoteItem(const Project& project, const StreamNoteItem* item, QByteArray& data);
         void encodeLFOItem(const StreamLFOItem* item, QByteArray& data);
+
+        bool requiresLongPCMChannel(const Project& project, const QString& path);
 };
 
 #endif // VGMSTREAM_H

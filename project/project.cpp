@@ -212,6 +212,10 @@ quint32 Project::pcmOffset(const QString& path) const
         }
     }
 
+    std::sort(paths.begin(), paths.end(), [](const QString& a, const QString& b){
+        return QFileInfo(QFile(a)).size() < QFileInfo(QFile(b)).size();
+    });
+
     quint32 offset = 0;
     for (const QString& pcmPath : paths) {
         if (pcmPath == path) {
@@ -233,6 +237,10 @@ QByteArray Project::pcm() const
             paths.append(dynamic_cast<const PCMChannelSettings&>(channel.settings()).path());
         }
     }
+
+    std::sort(paths.begin(), paths.end(), [](const QString& a, const QString& b){
+        return QFileInfo(QFile(a)).size() < QFileInfo(QFile(b)).size();
+    });
 
     for (const QString& pcmPath : paths) {
         QFile pcmFile(pcmPath);

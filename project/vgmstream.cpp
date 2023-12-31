@@ -33,6 +33,8 @@ QList<int> VGMStream::ym2612_frequencies = {
 VGMStream::VGMStream(const Format format)
     : _format(format)
 {
+    _pcmChannels[0].setIsLong(true);
+
     reset();
 }
 
@@ -43,7 +45,7 @@ VGMStream::~VGMStream()
     }
 }
 
-void VGMStream::assignChannel(StreamNoteItem* noteItem, QList<StreamItem*>& items)
+void VGMStream::assignChannel(const Project& project, StreamNoteItem* noteItem, QList<StreamItem*>& items)
 {
     if (noteItem->type() == Channel::Type::TONE) {
         int channel = acquireToneChannel(noteItem->time(), noteItem->note().duration());
@@ -57,7 +59,8 @@ void VGMStream::assignChannel(StreamNoteItem* noteItem, QList<StreamItem*>& item
         int channel = acquireFMChannel(noteItem->time(), noteItem->note().duration(), fmcs, items);
         noteItem->setChannel(channel);
     } else if (noteItem->type() == Channel::Type::PCM) {
-        int channel = acquirePCMChannel(noteItem->time(), noteItem->note().duration());
+        const PCMChannelSettings* pcmcs = dynamic_cast<const PCMChannelSettings*>(noteItem->channelSettings());
+        int channel = acquirePCMChannel(project, noteItem->time(), noteItem->note().duration(), pcmcs);
         noteItem->setChannel(channel);
     }
 }
@@ -102,7 +105,7 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool hea
 
     processPattern(0, project, pattern, items, loopStart, loopEnd);
     applySettingsChanges(project, 0, pattern, items);
-    assignChannelsAndExpand(items, project.tempo());
+    assignChannelsAndExpand(project, items, project.tempo());
     applySettingsChanges2(project, 0, pattern, items);
     addSettingsAtCurrentOffset(items, currentOffset);
 
@@ -150,14 +153,19 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool hea
         pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
         pcmBlock.append(dataBlock);
 
-        pcmBlock.append(0xE0);
-        pcmBlock.append((quint8)0x00);
-        pcmBlock.append((quint8)0x00);
-        pcmBlock.append((quint8)0x00);
-        pcmBlock.append((quint8)0x00);
+        _loopOffsetData += 7 + dataBlockSize;
+        _currentOffsetData += 7 + dataBlockSize;
 
-        _loopOffsetData += 12 + dataBlockSize;
-        _currentOffsetData += 12 + dataBlockSize;
+        if (_format == Format::STANDARD) {
+            pcmBlock.append(0xE0);
+            pcmBlock.append((quint8)0x00);
+            pcmBlock.append((quint8)0x00);
+            pcmBlock.append((quint8)0x00);
+            pcmBlock.append((quint8)0x00);
+
+            _loopOffsetData += 5;
+            _currentOffsetData += 5;
+        }
 
         data.prepend(pcmBlock);
     }
@@ -198,7 +206,7 @@ QByteArray VGMStream::compile(Project& project, const bool header, bool gd3, int
 
     processProject(project, items, loopStart, loopEnd);
     applySettingsChanges(project, items);
-    assignChannelsAndExpand(items, project.tempo());
+    assignChannelsAndExpand(project, items, project.tempo());
     applySettingsChanges2(project, items);
     addSettingsAtCurrentOffset(items, currentOffset);
 
@@ -269,14 +277,19 @@ QByteArray VGMStream::compile(Project& project, const bool header, bool gd3, int
         pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
         pcmBlock.append(dataBlock);
 
-        pcmBlock.append(0xE0);
-        pcmBlock.append((quint8)0x00);
-        pcmBlock.append((quint8)0x00);
-        pcmBlock.append((quint8)0x00);
-        pcmBlock.append((quint8)0x00);
+        _loopOffsetData += 7 + dataBlockSize;
+        _currentOffsetData += 7 + dataBlockSize;
 
-        _loopOffsetData += 12 + dataBlockSize;
-        _currentOffsetData += 12 + dataBlockSize;
+        if (_format == Format::STANDARD) {
+            pcmBlock.append(0xE0);
+            pcmBlock.append((quint8)0x00);
+            pcmBlock.append((quint8)0x00);
+            pcmBlock.append((quint8)0x00);
+            pcmBlock.append((quint8)0x00);
+
+            _loopOffsetData += 5;
+            _currentOffsetData += 5;
+        }
 
         data.prepend(pcmBlock);
     }
@@ -340,7 +353,7 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const Pattern& p
     int _currentOffsetData;
 
     processPattern(0, project, pattern, items, loopStart, loopEnd);
-    assignChannelsAndExpand(items, project.tempo());
+    assignChannelsAndExpand(project, items, project.tempo());
 
     QMap<QString, QByteArray> pcmData;
     QMap<int, int> pcmOffsetsByChannel;
@@ -453,7 +466,7 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const float loop
     int _currentOffsetData;
 
     processProject(project, items, loopStart, loopEnd);
-    assignChannelsAndExpand(items, project.tempo());
+    assignChannelsAndExpand(project, items, project.tempo());
 
     QMap<QString, QByteArray> pcmData;
     QMap<int, int> pcmOffsetsByChannel;
@@ -619,9 +632,13 @@ int VGMStream::acquireFMChannel(const float time, const float duration, const FM
     return -1;
 }
 
-int VGMStream::acquirePCMChannel(const float time, const float duration)
+int VGMStream::acquirePCMChannel(const Project& project, const float time, const float duration, const PCMChannelSettings* settings)
 {
     for (int i = 0; i < PCM_CHANNELS; i++) {
+        if (_pcmChannels[i].isLong() != requiresLongPCMChannel(project, settings->path())) {
+            continue;
+        }
+
         bool first;
         if (_pcmChannels[i].acquire(time, duration, first)) {
             return i;
@@ -694,7 +711,7 @@ void VGMStream::processProject(const Project& project, QList<StreamItem*>& items
     }
 }
 
-void VGMStream::assignChannelsAndExpand(QList<StreamItem*>& items, const int tempo)
+void VGMStream::assignChannelsAndExpand(const Project& project, QList<StreamItem*>& items, const int tempo)
 {
     QList<StreamItem*> itemsCopy = items;
     std::sort(itemsCopy.begin(), itemsCopy.end(), [](const StreamItem* a, const StreamItem* b) {
@@ -706,7 +723,7 @@ void VGMStream::assignChannelsAndExpand(QList<StreamItem*>& items, const int tem
 
         if (!noteItem) continue;
 
-        assignChannel(noteItem, items);
+        assignChannel(project, noteItem, items);
         StreamNoteItem* noteOffItem = new StreamNoteItem(*noteItem);
 
         float duration = noteItem->note().duration();
@@ -1281,18 +1298,35 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
                 data.append(0xF0 | item->channel());
                 data.append(att);
 
-                quint32 offset = project.pcmOffset(pcmcs->path());
-                quint32 size = QFileInfo(pcmcs->path()).size();
+                if (_pcmChannels[item->channel()].isLong()) {
+                    quint32 offset = project.pcmOffset(pcmcs->path());
+                    quint32 size = QFileInfo(pcmcs->path()).size();
 
-                data.append(0xD0 | item->channel());
-                data.append((char*)&size, sizeof(size));
-                data.append(0xE0 | item->channel());
-                data.append((char*)&offset, sizeof(offset));
+                    data.append(0xD0 | item->channel());
+                    data.append((char*)&size, sizeof(size));
+                    data.append(0xE0 | item->channel());
+                    data.append((char*)&offset, sizeof(offset));
+                } else {
+                    quint16 offset = project.pcmOffset(pcmcs->path());
+                    quint16 size = QFileInfo(pcmcs->path()).size();
+
+                    data.append(0xD0 | item->channel());
+                    data.append((char*)&size, sizeof(size));
+                    data.append(0xE0 | item->channel());
+                    data.append((char*)&offset, sizeof(offset));
+                }
             } else {
-                quint32 offset = -1;
+                if (_pcmChannels[item->channel()].isLong()) {
+                    quint32 offset = -1;
 
-                data.append(0xE0 | item->channel());
-                data.append((char*)&offset, sizeof(offset));
+                    data.append(0xE0 | item->channel());
+                    data.append((char*)&offset, sizeof(offset));
+                } else {
+                    quint16 offset = -1;
+
+                    data.append(0xE0 | item->channel());
+                    data.append((char*)&offset, sizeof(offset));
+                }
             }
         }
     }
@@ -1307,6 +1341,16 @@ void VGMStream::encodeLFOItem(const StreamLFOItem* item, QByteArray& data)
     } else {
         data.append((quint8)0x00);
     }
+}
+
+bool VGMStream::requiresLongPCMChannel(const Project& project, const QString& path)
+{
+    if (_format == Format::STANDARD) {
+        return true;
+    }
+
+    qint64 pcmSize = QFileInfo(QFile(path)).size();
+    return (project.pcmOffset(path) + pcmSize) > 0xFFFF;
 }
 
 QByteArray VGMStream::generateHeader(const Project& project, const QByteArray& data, const int totalSamples, const int loopOffsetData, const int gd3size, const bool selectionLoop)
@@ -1540,4 +1584,20 @@ VGMStream::StreamLFOItem::StreamLFOItem(const float time, const int mode)
 int VGMStream::StreamLFOItem::mode() const
 {
     return _mode;
+}
+
+VGMStream::PCMChannel::PCMChannel()
+    : _isLong(false)
+{
+
+}
+
+bool VGMStream::PCMChannel::isLong() const
+{
+    return _isLong;
+}
+
+void VGMStream::PCMChannel::setIsLong(const bool isLong)
+{
+    _isLong = isLong;
 }

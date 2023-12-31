@@ -300,7 +300,7 @@ void FM_PSG_Soft::keyOn(const Project& project, const Channel::Type channelType,
     _items.append(sli);
 
     _items.append(sni);
-    _vgmStream.assignChannel(sni, _items);
+    _vgmStream.assignChannel(project, sni, _items);
 
     _mutex.unlock();
 

@@ -67,6 +67,8 @@ class Vgm_Emu_Impl : public Classic_Emu, private Dual_Resampler {
         int dac_disabled; // -1 if disabled
         void write_pcm( vgm_time_t, int amp );
 
+        bool is_pcm_long(int channel);
+
         Ym_Emu<Ym2612_Emu> ym2612;
         Ym_Emu<Ym2413_Emu> ym2413;
 
