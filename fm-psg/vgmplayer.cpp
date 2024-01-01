@@ -44,7 +44,7 @@ void VGMPlayer::setVGM(const QByteArray& vgm, const int currentOffsetData)
         }
     }
 
-    _loopOffsetData = *(quint32*)&vgm.constData()[0x1C] + 0x1C;
+    _loopOffsetData = *(quint32*)&vgm.constData()[0x1C] + 0x1C - dataOffset;
     _loopOffsetSamples = _introLength;
 
     if (_loopOffsetData == 0x1C) {
