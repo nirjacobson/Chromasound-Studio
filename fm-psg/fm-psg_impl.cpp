@@ -51,9 +51,10 @@ quint32 FM_PSG_Impl::position()
     if (_vgmPlayer->introLength() <= 0) {
         return (_timeOffset + (time % length));
     } else {
-        return (_timeOffset + ((time < introLength)
-                               ? time
-                               : (((time - introLength) % loopLength) + introLength)));
+        uint32_t t = _timeOffset + time;
+        return ((t < introLength)
+                ? t
+                : (((t - introLength) % loopLength) + introLength));
     }
 }
 
