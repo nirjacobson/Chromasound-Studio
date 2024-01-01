@@ -21,8 +21,7 @@ class FM_PSG : public QObject
         virtual quint32 position() = 0;
         virtual void setPosition(const float pos) = 0;
 
-        virtual void play(const QByteArray& vgm, const bool loop, const int currentOffsetSamples, const int currentOffsetData) = 0;
-        virtual void play(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData, const int currentOffsetSamples, const int currentOffsetData, const float duration = -1) = 0;
+        virtual void play(const QByteArray& vgm, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection = false) = 0;
         virtual void play() = 0;
         virtual void pause() = 0;
         virtual void stop() = 0;
@@ -33,7 +32,6 @@ class FM_PSG : public QObject
         virtual void keyOff(int key) = 0;
 
         virtual QList<VGMStream::Format> supportedFormats() = 0;
-        virtual bool requiresHeader() const = 0;
 
     signals:
         void pcmUploadStarted();

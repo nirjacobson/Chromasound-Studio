@@ -17,7 +17,7 @@ VGMPlayer::VGMPlayer(int spi, QObject *parent)
 
 }
 
-void VGMPlayer::setVGM(const QByteArray& vgm, const bool loop, const int currentOffsetData)
+void VGMPlayer::setVGM(const QByteArray& vgm, const int currentOffsetData)
 {
     int _currentOffsetData = currentOffsetData;
 
@@ -25,90 +25,31 @@ void VGMPlayer::setVGM(const QByteArray& vgm, const bool loop, const int current
     _vgm = vgm;
     _vgmLock.unlock();
 
-    if (loop) {
-        _loopOffsetSamples = 0;
-        _loopOffsetData = 0;
+    _length = *(quint32*)&vgm.constData()[0x18];
+    _loopLength = *(quint32*)&vgm.constData()[0x20];
+    _introLength = _length - _loopLength;
+
+    quint32 dataOffset = *(quint32*)&vgm.constData()[0x34] + 0x34;
+
+    if (vgm[dataOffset] == 0x67) {
+        quint32 size = *(quint32*)&vgm.constData()[dataOffset + 3];
+        _pcmBlock = vgm.mid(dataOffset, 7 + size);
+        _vgm = vgm.mid(dataOffset + 7 + size);
+        if (_currentOffsetData != 0) {
+            _currentOffsetData -= dataOffset + 7 + size;
+        }
     } else {
-        _loopOffsetSamples = -1;
+        if (_currentOffsetData == 0) {
+            _currentOffsetData = dataOffset;
+        }
+    }
+
+    _loopOffsetData = *(quint32*)&vgm.constData()[0x1C] + 0x1C;
+    _loopOffsetSamples = _introLength;
+
+    if (_loopOffsetData == 0x1C) {
         _loopOffsetData = -1;
-    }
-
-    if (_vgm.isEmpty()) {
-        return;
-    }
-
-    if (vgm[0] == 'V') {
-        if (vgm[64] == 0x67) {
-            quint32 size = *(quint32*)&vgm.constData()[64 + 3];
-            _pcmBlock = vgm.mid(64, 7 + size);
-            _vgm = vgm.mid(64 + 7 + size);
-            if (_currentOffsetData != 0) {
-                _currentOffsetData -= 64 + 7 + size;
-            }
-            if (loop) {
-                _loopOffsetData = *(quint32*)&vgm.constData()[0x1C] + 0x1C;
-                _loopOffsetSamples = *(quint32*)&vgm.constData()[0x18] + *(quint32*)&vgm.constData()[0x20];
-            }
-        } else {
-            if (_currentOffsetData == 0) {
-                _currentOffsetData = 64;
-            }
-            if (loop) {
-                _loopOffsetData = 64;
-            }
-        }
-    } else {
-        if (vgm[0] == 0x67) {
-            quint32 size = *(quint32*)&vgm.constData()[3];
-            _pcmBlock = vgm.mid(0, 7 + size);
-            _vgm = vgm.mid(7 + size);
-            if (_currentOffsetData != 0) {
-                _currentOffsetData -= 7 + size;
-            }
-            if (loop) {
-                _loopOffsetData = 7 + size;
-            }
-        }
-    }
-
-    _position = _currentOffsetData;
-}
-
-void VGMPlayer::setVGM(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData, const int currentOffsetData)
-{
-    int _currentOffsetData = currentOffsetData;
-
-    _vgmLock.lock();
-    _vgm = vgm;
-    _vgmLock.unlock();
-
-    _loopOffsetSamples = loopOffsetSamples;
-    _loopOffsetData = loopOffsetData;
-
-    if (_vgm.isEmpty()) {
-        return;
-    }
-
-    if (vgm[0] == 'V') {
-        if (vgm[64] == 0x67) {
-            quint32 size = *(quint32*)&vgm.constData()[64 + 3];
-            _pcmBlock = vgm.mid(64, 7 + size);
-            _vgm = vgm.mid(64 + 7 + size);
-            if (_currentOffsetData != 0) {
-                _currentOffsetData -= 64 + 7 + size;
-            }
-            _loopOffsetData -= 64 + 7 + size;
-        }
-    } else {
-        if (vgm[0] == 0x67) {
-            quint32 size = *(quint32*)&vgm.constData()[3];
-            _pcmBlock = vgm.mid(0, 7 + size);
-            _vgm = vgm.mid(7 + size);
-            if (_currentOffsetData != 0) {
-                _currentOffsetData -= 7 + size;
-            }
-            _loopOffsetData -= 7 + size;
-        }
+        _loopOffsetSamples = -1;
     }
 
     _position = _currentOffsetData;
@@ -147,6 +88,21 @@ void VGMPlayer::pause()
     _stopLock.unlock();
 
     _playing = false;
+}
+
+uint32_t VGMPlayer::length() const
+{
+    return _length;
+}
+
+uint32_t VGMPlayer::introLength() const
+{
+    return _introLength;
+}
+
+uint32_t VGMPlayer::loopLength() const
+{
+    return _loopLength;
 }
 
 uint32_t VGMPlayer::time()
@@ -282,17 +238,7 @@ void VGMPlayer::runPlayback()
     if (paused) {
         spi_write(PAUSE_RESUME);
     } else {
-        spi_write(SET_LOOP_TIME);
-        for (int i = 0; i < 4; i++) {
-            spi_write(loop ? ((char*)&_loopOffsetSamples)[i] : 0);
-        }
-
-        _timeLock.lock();
-        spi_write(SET_TIME);
-        for (int i = 0; i < 4; i++) {
-            spi_write(((char*)&_time)[i]);
-        }
-        _timeLock.unlock();
+        spi_write(RESET);
 
         if (!_pcmBlock.isEmpty()) {
             quint32 lastPCMBlockChecksum = _lastPCMBlockChecksum;

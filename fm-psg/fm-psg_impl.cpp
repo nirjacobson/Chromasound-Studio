@@ -35,16 +35,41 @@ FM_PSG_Impl::~FM_PSG_Impl()
 
 quint32 FM_PSG_Impl::position()
 {
-    return _vgmPlayer->time();
+    uint32_t time = _vgmPlayer->time();
+    uint32_t introLength = _vgmPlayer->introLength();
+    uint32_t loopLength = _vgmPlayer->loopLength();
+    uint32_t length = _vgmPlayer->length();
+
+    if (_vgmPlayer->loopLength() <= 0) {
+        if ((time + _timeOffset) >= _vgmPlayer->length()) {
+            stop();
+            return 0;
+        }
+        return (time + _timeOffset);
+    }
+
+    if (_vgmPlayer->introLength() <= 0) {
+        return (_timeOffset + (time % length));
+    } else {
+        return (_timeOffset + ((time < introLength)
+                                   ? time
+                                   : (((time - introLength) % loopLength) + introLength)));
+    }
 }
 
 void FM_PSG_Impl::setPosition(const float pos)
 {
-    _vgmPlayer->setTime(pos / _project.tempo() * 60 * 44100);
+    _timeOffset = pos / _project.tempo() * 60 * 44100;
 }
 
-void FM_PSG_Impl::play(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData, const int, const int currentOffsetData, const float)
+void FM_PSG_Impl::play(const QByteArray& vgm, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection)
 {
+    if (isSelection) {
+        _timeOffset = currentOffsetSamples / 44100.0f * 1000.0f;
+    } else {
+        _timeOffset = 0;
+    }
+
     _vgmPlayer->stop();
     _vgmPlayer->quit();
     _vgmPlayer->wait();
@@ -52,20 +77,7 @@ void FM_PSG_Impl::play(const QByteArray& vgm, const int loopOffsetSamples, const
     reset();
 
     _vgmPlayer->setMode(VGMPlayer::Mode::Playback);
-    _vgmPlayer->setVGM(vgm, loopOffsetSamples, loopOffsetData, currentOffsetData);
-    _vgmPlayer->start();
-}
-
-void FM_PSG_Impl::play(const QByteArray& vgm, const bool loop, const int, const int currentOffsetData)
-{
-    _vgmPlayer->stop();
-    _vgmPlayer->quit();
-    _vgmPlayer->wait();
-
-    reset();
-
-    _vgmPlayer->setMode(VGMPlayer::Mode::Playback);
-    _vgmPlayer->setVGM(vgm, loop, currentOffsetData);
+    _vgmPlayer->setVGM(vgm, currentOffsetData);
     _vgmPlayer->start();
 }
 
@@ -115,7 +127,7 @@ void FM_PSG_Impl::keyOn(const Project& project, const Channel::Type channelType,
     }
 
     _keys[key] = sni;
-    _vgmPlayer->setVGM(data, false, 0);
+    _vgmPlayer->setVGM(data, 0);
 
     delete sli;
 }
@@ -144,7 +156,7 @@ void FM_PSG_Impl::keyOff(int key)
     }
 
     _keys.remove(key);
-    _vgmPlayer->setVGM(data, false, 0);
+    _vgmPlayer->setVGM(data, 0);
 
     delete sni;
 }
@@ -158,11 +170,6 @@ void FM_PSG_Impl::reset()
     gpioDelay(100);
 
     _vgmStream.reset();
-}
-
-bool FM_PSG_Impl::requiresHeader() const
-{
-    return false;
 }
 
 QList<VGMStream::Format> FM_PSG_Impl::supportedFormats()

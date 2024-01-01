@@ -50,8 +50,7 @@ class FM_PSG_Soft : public FM_PSG, public Producer<int16_t>
     public:
         quint32 position();
         void setPosition(const float pos);
-        void play(const QByteArray& vgm, const bool loop, const int currentOffsetSamples, const int currentOffsetData);
-        void play(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData, const int currentOffsetSamples, const int currentOffsetData, const float duration);
+        void play(const QByteArray& vgm, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection);
         void play();
         void pause();
         void stop();
@@ -60,7 +59,6 @@ class FM_PSG_Soft : public FM_PSG, public Producer<int16_t>
         void keyOff(int key);
 
         QList<VGMStream::Format> supportedFormats();
-        bool requiresHeader() const;
 
         // Producer interface
     public:

@@ -94,7 +94,7 @@ void VGMStream::encode(const Project& project, QList<StreamItem*>& items, QByteA
     }
 }
 
-QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool header, bool gd3, int* loopOffsetData, const float loopStart, const float loopEnd, const float currentOffset, int* const currentOffsetData)
+QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3, int* loopOffsetData, const float loopStart, const float loopEnd, const float currentOffset, int* const currentOffsetData)
 {
     QList<StreamItem*> items;
     QByteArray data;
@@ -175,12 +175,10 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool hea
         gd3Data = GD3::generateGd3(project);
     }
 
-    if (header) {
-        _loopOffsetData += 64;
-        _currentOffsetData += 64;
-        QByteArray headerData = generateHeader(project, data, totalSamples, _loopOffsetData, gd3Data.size(), !(loopStart < 0 || loopEnd < 0));
-        data.prepend(headerData);
-    }
+    _loopOffsetData += 64;
+    _currentOffsetData += 64;
+    QByteArray headerData = generateHeader(project, data, totalSamples, _loopOffsetData, gd3Data.size(), !(loopStart < 0 || loopEnd < 0));
+    data.prepend(headerData);
 
     data.append(gd3Data);
 
@@ -195,7 +193,7 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool hea
     return data;
 }
 
-QByteArray VGMStream::compile(Project& project, const bool header, bool gd3, int* loopOffsetData, const float loopStart, const float loopEnd, const float currentOffset, int* const currentOffsetData)
+QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, const float loopStart, const float loopEnd, const float currentOffset, int* const currentOffsetData)
 {
     QList<StreamItem*> items;
     QByteArray data;
@@ -299,17 +297,15 @@ QByteArray VGMStream::compile(Project& project, const bool header, bool gd3, int
         gd3Data = GD3::generateGd3(project);
     }
 
-    if (header) {
-        _loopOffsetData += 64;
-        _currentOffsetData += 64;
-        QByteArray headerData;
-        if (project.playlist().doesLoop() || !(loopStart < 0 || loopEnd < 0)) {
-            headerData = generateHeader(project, data, totalSamples, _loopOffsetData, gd3Data.size(), !(loopStart < 0 || loopEnd < 0));
-        } else {
-            headerData = generateHeader(project, data, totalSamples, 0, gd3Data.size(), false);
-        }
-        data.prepend(headerData);
+    _loopOffsetData += 64;
+    _currentOffsetData += 64;
+    QByteArray headerData;
+    if (project.playlist().doesLoop() || !(loopStart < 0 || loopEnd < 0)) {
+        headerData = generateHeader(project, data, totalSamples, _loopOffsetData, gd3Data.size(), !(loopStart < 0 || loopEnd < 0));
+    } else {
+        headerData = generateHeader(project, data, totalSamples, 0, gd3Data.size(), false);
     }
+    data.prepend(headerData);
 
     data.append(gd3Data);
 
