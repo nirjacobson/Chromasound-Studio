@@ -64,7 +64,7 @@ void Application::play()
                     VGMStream vgmStream;
 
                     emit compileStarted();
-                    QByteArray vgm = vgmStream.compile(_project, _project.getFrontPattern(), _fmPSG->requiresHeader(), false, nullptr, -1, -1, position(), &currentOffsetData);
+                    QByteArray vgm = vgmStream.compile(_project, _project.getFrontPattern(), false, nullptr, -1, -1, position(), &currentOffsetData);
                     emit compileFinished();
 
                     _fmPSG->play(vgm, true, currentOffsetSamples, currentOffsetData);
@@ -84,14 +84,10 @@ void Application::play()
 
 
                     emit compileStarted();
-                    QByteArray vgm = vgmStream.compile(_project, _fmPSG->requiresHeader(), false, &loopOffsetData, -1, -1, position(), &currentOffsetData);
+                    QByteArray vgm = vgmStream.compile(_project, false, &loopOffsetData, -1, -1, position(), &currentOffsetData);
                     emit compileFinished();
 
-                    if (_project.playlist().doesLoop()) {
-                        _fmPSG->play(vgm, _project.playlist().loopOffsetSamples(), loopOffsetData, currentOffsetSamples, currentOffsetData);
-                    } else {
-                        _fmPSG->play(vgm, false, currentOffsetSamples, currentOffsetData);
-                    }
+                    _fmPSG->play(vgm, currentOffsetSamples, currentOffsetData);
                 });
 
                 connect(thread, &QThread::finished, this, [=]() {
@@ -109,7 +105,7 @@ void Application::play()
                     VGMStream vgmStream(VGMStream::Format::STANDARD);
 
                     emit compileStarted();
-                    QByteArray vgm = vgmStream.compile(_project, _project.getFrontPattern(), _fmPSG->requiresHeader(), false, nullptr, -1, -1, position(), &currentOffsetData);
+                    QByteArray vgm = vgmStream.compile(_project, _project.getFrontPattern(), false, nullptr, -1, -1, position(), &currentOffsetData);
                     emit compileFinished();
 
                     _fmPSG->play(vgm, true, currentOffsetSamples, currentOffsetData);
@@ -128,14 +124,10 @@ void Application::play()
                     VGMStream vgmStream(VGMStream::Format::STANDARD);
 
                     emit compileStarted();
-                    QByteArray vgm = vgmStream.compile(_project, _fmPSG->requiresHeader(), false, &loopOffsetData, -1, -1, position(), &currentOffsetData);
+                    QByteArray vgm = vgmStream.compile(_project, false, &loopOffsetData, -1, -1, position(), &currentOffsetData);
                     emit compileFinished();
 
-                    if (_project.playlist().doesLoop()) {
-                        _fmPSG->play(vgm, _project.playlist().loopOffsetSamples(), loopOffsetData, currentOffsetSamples, currentOffsetData);
-                    } else {
-                        _fmPSG->play(vgm, false, currentOffsetSamples, currentOffsetData);
-                    }
+                    _fmPSG->play(vgm, currentOffsetSamples, currentOffsetData);
                 });
 
                 connect(thread, &QThread::finished, this, [=]() {
@@ -169,11 +161,11 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
             int currentOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
 
             emit compileStarted();
-            QByteArray vgm = VGMStream().compile(_project, pattern, _fmPSG->requiresHeader(), false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
+            QByteArray vgm = VGMStream().compile(_project, pattern, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
             emit compileFinished();
 
             _fmPSG->setPosition(loopStart);
-            _fmPSG->play(vgm, loopOffsetSamples, loopOffsetData, currentOffsetSamples, currentOffsetData, loopEnd - loopStart);
+            _fmPSG->play(vgm, currentOffsetSamples, currentOffsetData, true);
         }, loopStart, loopEnd);
 
         connect(thread, &QThread::finished, this, [=]() {
@@ -189,11 +181,11 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
             int currentOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
 
             emit compileStarted();
-            QByteArray vgm = VGMStream(VGMStream::Format::STANDARD).compile(_project, pattern, _fmPSG->requiresHeader(), false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
+            QByteArray vgm = VGMStream(VGMStream::Format::STANDARD).compile(_project, pattern, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
             emit compileFinished();
 
             _fmPSG->setPosition(loopStart);
-            _fmPSG->play(vgm, loopOffsetSamples, loopOffsetData, currentOffsetSamples, currentOffsetData, loopEnd - loopStart);
+            _fmPSG->play(vgm, currentOffsetSamples, currentOffsetData, true);
         }, loopStart, loopEnd);
 
         connect(thread, &QThread::finished, this, [=]() {
@@ -223,11 +215,11 @@ void Application::play(const float loopStart, const float loopEnd)
             int currentOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
 
             emit compileStarted();
-            QByteArray vgm = VGMStream().compile(_project, _fmPSG->requiresHeader(), false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
+            QByteArray vgm = VGMStream().compile(_project, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
             emit compileFinished();
 
             _fmPSG->setPosition(loopStart);
-            _fmPSG->play(vgm, loopOffsetSamples, loopOffsetData, currentOffsetSamples, currentOffsetData, loopEnd - loopStart);
+            _fmPSG->play(vgm, currentOffsetSamples, currentOffsetData, true);
         }, loopStart, loopEnd);
 
         connect(thread, &QThread::finished, this, [=]() {
@@ -243,11 +235,11 @@ void Application::play(const float loopStart, const float loopEnd)
             int currentOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
 
             emit compileStarted();
-            QByteArray vgm = VGMStream(VGMStream::Format::STANDARD).compile(_project, _fmPSG->requiresHeader(), false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
+            QByteArray vgm = VGMStream(VGMStream::Format::STANDARD).compile(_project, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
             emit compileFinished();
 
             _fmPSG->setPosition(loopStart);
-            _fmPSG->play(vgm, loopOffsetSamples, loopOffsetData, currentOffsetSamples, currentOffsetData, loopEnd - loopStart);
+            _fmPSG->play(vgm, currentOffsetSamples, currentOffsetData, true);
         }, loopStart, loopEnd);
 
         connect(thread, &QThread::finished, this, [=]() {

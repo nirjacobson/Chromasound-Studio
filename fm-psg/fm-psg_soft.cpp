@@ -171,7 +171,7 @@ void FM_PSG_Soft::setPosition(const float pos)
     _position = 0;
 }
 
-void FM_PSG_Soft::play(const QByteArray& vgm, const bool loop, const int currentOffsetSamples, const int currentOffsetData)
+void FM_PSG_Soft::play(const QByteArray& vgm, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection)
 {
     _output->stop();
 
@@ -186,51 +186,17 @@ void FM_PSG_Soft::play(const QByteArray& vgm, const bool loop, const int current
         return;
 
     log_warning(_emu);
-
-    if (log_err(_emu->skip(currentOffsetSamples * 2)))
-        return;
 
     _emu->track_info(&_info);
 
     _position = 0;
-    _positionOffset = 0;
-
-    _startedInteractive = false;
-
-    setEqualizer();
-
-    _stopped = false;
-    _output->start();
-}
-
-void FM_PSG_Soft::play(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData, const int currentOffsetSamples, const int currentOffsetData, const float duration)
-{
-    _output->stop();
-
-    Mem_File_Reader reader(vgm.constData(), vgm.size());
-    if (log_err(_emu->load(reader)))
-        return;
-
-    log_warning(_emu);
-
-    // start track
-    if (log_err(_emu->start_track(0)))
-        return;
-
-    log_warning(_emu);
-
-    if (duration < 0) {
+    if (isSelection) {
+        _positionOffset = currentOffsetSamples / 44100.0f * 1000.0f;
+    } else {
         if (log_err(_emu->skip(currentOffsetSamples * 2)))
             return;
-
-        _position = 0;
         _positionOffset = 0;
-    } else {
-        _positionOffset = currentOffsetSamples / 44100.0f * 1000.0f;
-        _position = 0;
     }
-
-    _emu->track_info(&_info);
 
     _startedInteractive = false;
 
@@ -345,9 +311,4 @@ int16_t* FM_PSG_Soft::next(int size)
 QList<VGMStream::Format> FM_PSG_Soft::supportedFormats()
 {
     return QList<VGMStream::Format>({VGMStream::Format::FM_PSG, VGMStream::Format::STANDARD});
-}
-
-bool FM_PSG_Soft::requiresHeader() const
-{
-    return true;
 }

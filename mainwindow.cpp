@@ -532,8 +532,8 @@ void MainWindow::renderForFMPSGTriggered()
             VGMStream vgmStream;
             compileStarted();
             QByteArray data = _app->project().playMode() == Project::PlayMode::PATTERN
-                              ? vgmStream.compile(_app->project(), _app->project().getFrontPattern(), true, true)
-                              : vgmStream.compile(_app->project(), true, true);
+                              ? vgmStream.compile(_app->project(), _app->project().getFrontPattern(), true)
+                              : vgmStream.compile(_app->project(), true);
             file.write(data);
             file.close();
 
@@ -560,8 +560,8 @@ void MainWindow::renderFor3rdPartyTriggered()
             VGMStream vgmStream(VGMStream::Format::STANDARD);
             compileStarted();
             QByteArray data = _app->project().playMode() == Project::PlayMode::PATTERN
-                              ? vgmStream.compile(_app->project(), _app->project().getFrontPattern(), true, true)
-                              : vgmStream.compile(_app->project(), true, true);
+                              ? vgmStream.compile(_app->project(), _app->project().getFrontPattern(), true)
+                              : vgmStream.compile(_app->project(), true);
             file.write(data);
             file.close();
 

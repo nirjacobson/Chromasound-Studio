@@ -67,8 +67,8 @@ class VGMStream
 
         void encode(const Project& project, QList<StreamItem*>& items, QByteArray& data);
 
-        QByteArray compile(Project& project, const Pattern& pattern, bool header = false, bool gd3 = false, int* loopOffsetData = nullptr, const float loopStart = -1, const float loopEnd = -1, const float currentOffset = 0, int* const currentOffsetData = nullptr);
-        QByteArray compile(Project& project, const bool header = false, bool gd3 = false, int* loopOffsetData = nullptr, const float loopStart = -1, const float loopEnd = -1, const float currentOffset = 0, int* const currentOffsetData = nullptr);
+        QByteArray compile(Project& project, const Pattern& pattern, bool gd3 = false, int* loopOffsetData = nullptr, const float loopStart = -1, const float loopEnd = -1, const float currentOffset = 0, int* const currentOffsetData = nullptr);
+        QByteArray compile(Project& project, bool gd3 = false, int* loopOffsetData = nullptr, const float loopStart = -1, const float loopEnd = -1, const float currentOffset = 0, int* const currentOffsetData = nullptr);
 
         void reset();
 

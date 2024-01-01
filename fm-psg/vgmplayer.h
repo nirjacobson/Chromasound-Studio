@@ -19,14 +19,17 @@ class VGMPlayer : public QThread
 
         explicit VGMPlayer(int spi, QObject *parent = nullptr);
 
-        void setVGM(const QByteArray& vgm, const bool loop, const int currentOffsetData);
-        void setVGM(const QByteArray& vgm, const int loopOffsetSamples, const int loopOffsetData, const int currentOffsetData);
+        void setVGM(const QByteArray& vgm, const int currentOffsetData);
         void setMode(const Mode mode);
 
         bool isPlaying() const;
 
         void stop();
         void pause();
+
+        uint32_t length() const;
+        uint32_t introLength() const;
+        uint32_t loopLength() const;
 
         uint32_t time();
         void setTime(const uint32_t time);
@@ -49,8 +52,7 @@ class VGMPlayer : public QThread
             REPORT_TIME,
             PAUSE_RESUME,
             STOP,
-            SET_LOOP_TIME,
-            SET_TIME,
+            RESET,
             FILL_WITH_PCM,
             STOP_FILL_WITH_PCM
         } Command;
@@ -63,6 +65,10 @@ class VGMPlayer : public QThread
         QByteArray _pcmBlock;
         volatile uint32_t _time;
         uint32_t _position;
+
+        uint32_t _length;
+        uint32_t _introLength;
+        uint32_t _loopLength;
 
         QMutex _stopLock;
         QMutex _timeLock;

@@ -63,11 +63,6 @@ qint64 FM_PSG_Dummy::nanosecondsPerBeat() const
     return 1e9 * 60 / _project.tempo();
 }
 
-bool FM_PSG_Dummy::requiresHeader() const
-{
-    return false;
-}
-
 FM_PSG_Dummy::FM_PSG_Dummy(const Project& project)
     : _project(project)
     , _ref(0)
@@ -78,27 +73,19 @@ FM_PSG_Dummy::FM_PSG_Dummy(const Project& project)
 
 }
 
-void FM_PSG_Dummy::play(const QByteArray&, const int loopOffsetSamples, const int, const int, const int, const float duration)
+void FM_PSG_Dummy::play(const QByteArray& vgm, const int, const int, const bool)
 {
     QTimer::singleShot(3000, [&]() {
         emit pcmUploadFinished();
     });
     emit pcmUploadStarted();
 
-    _loopOffsetSamples = loopOffsetSamples;
-    _duration = duration;
-    _playing = true;
-    _timer.restart();
-}
+    quint32 length = *(quint32*)&vgm.constData()[0x18];
+    quint32 loopLength = *(quint32*)&vgm.constData()[0x20];
+    quint32 introLength = length - loopLength;
 
-void FM_PSG_Dummy::play(const QByteArray&, const bool loop, const int, const int)
-{
-    QTimer::singleShot(3000, [&]() {
-        emit pcmUploadFinished();
-    });
-    emit pcmUploadStarted();
-
-    _loopOffsetSamples = loop ? 0 : -1;
+    _loopOffsetSamples = introLength;
+    _duration = (float)length / 44100 / 60 * _project.tempo();
     _playing = true;
     _timer.restart();
 }
