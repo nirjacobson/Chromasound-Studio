@@ -67,7 +67,7 @@ void Application::play()
                     QByteArray vgm = vgmStream.compile(_project, _project.getFrontPattern(), false, nullptr, -1, -1, position(), &currentOffsetData);
                     emit compileFinished();
 
-                    _fmPSG->play(vgm, true, currentOffsetSamples, currentOffsetData);
+                    _fmPSG->play(vgm, currentOffsetSamples, currentOffsetData);
                 });
 
                 connect(thread, &QThread::finished, this, [=]() {
@@ -108,7 +108,7 @@ void Application::play()
                     QByteArray vgm = vgmStream.compile(_project, _project.getFrontPattern(), false, nullptr, -1, -1, position(), &currentOffsetData);
                     emit compileFinished();
 
-                    _fmPSG->play(vgm, true, currentOffsetSamples, currentOffsetData);
+                    _fmPSG->play(vgm, currentOffsetSamples, currentOffsetData);
                 });
 
                 connect(thread, &QThread::finished, this, [=]() {
