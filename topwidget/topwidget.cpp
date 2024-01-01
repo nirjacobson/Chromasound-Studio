@@ -84,6 +84,12 @@ void TopWidget::setStatusMessage(const QString& message)
     ui->statusLabel->setText(message);
 }
 
+void TopWidget::doUpdate(const float position)
+{
+    ui->seekWidget->doUpdate(position);
+    ui->positionDisplay->doUpdate(position);
+}
+
 void TopWidget::playPauseClicked()
 {
     _isPlaying = !_isPlaying;

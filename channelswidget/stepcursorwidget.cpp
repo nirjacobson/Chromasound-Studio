@@ -4,8 +4,15 @@ StepCursorWidget::StepCursorWidget(QWidget *parent, Application* app)
     : QWidget{parent}
     , _app(app)
     , _color(QColor(Qt::darkGray))
+    , _appPosition(0)
 {
 
+}
+
+void StepCursorWidget::doUpdate(const float position)
+{
+    _appPosition = position;
+    update();
 }
 
 void StepCursorWidget::paintEvent(QPaintEvent*)
@@ -18,15 +25,15 @@ void StepCursorWidget::paintEvent(QPaintEvent*)
 
     int step;
     if (_app->project().playMode() == Project::PlayMode::PATTERN) {
-        step = _app->position() / beatsPerStep;
+        step = _appPosition / beatsPerStep;
     } else {
-        QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(_app->position());
+        QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(_appPosition);
         int frontPatternIdx = _app->project().frontPattern();
         if (!activePatterns.contains(frontPatternIdx)) {
             return;
         }
 
-        step = (_app->position() - activePatterns[frontPatternIdx]) / beatsPerStep;
+        step = (_appPosition - activePatterns[frontPatternIdx]) / beatsPerStep;
     }
 
 

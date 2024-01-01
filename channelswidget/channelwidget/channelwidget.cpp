@@ -23,6 +23,7 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     , _noiseColor(Qt::lightGray)
     , _fmColor(Qt::magenta)
     , _pcmColor(Qt::blue)
+    , _appPosition(0)
 {
     ui->setupUi(this);
 
@@ -183,36 +184,34 @@ void ChannelWidget::setIndex(const int idx)
     ui->prDisplay->setIndex(_index);
     ui->led->setOn(_app->project().getChannel(_index).enabled());
     ui->volumeDial->setValue(_app->project().getChannel(_index).settings().volume());
-    ui->rectLed->setOnFunction([=]() {
-        float appPosition = _app->position();
-
+    ui->rectLed->setOnFunction([&]() {
         if (_app->project().playMode() == Project::PlayMode::PATTERN) {
             Pattern& pat = _app->project().getFrontPattern();
 
-            if (pat.activeTracksAtTime(appPosition).contains(_index)) {
+            if (pat.activeTracksAtTime(_appPosition).contains(_index)) {
                 const Track& track = pat.getTrack(_index);
                 return _app->project().getChannel(_index).enabled() &&
                        std::find_if(track.items().begin(),
                                     track.items().end(),
                 [&](const Track::Item* item) {
-                    float delta = item->time() - appPosition;
+                    float delta = item->time() - _appPosition;
                     return qAbs(delta) <= 0.0625;
                 }) == track.items().end();
             }
         } else {
-            QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(appPosition);
+            QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(_appPosition);
             for (auto it = activePatterns.begin(); it != activePatterns.end(); ++it) {
-                float _appPosition = appPosition;
+                float __appPosition = _appPosition;
                 Pattern& pat = _app->project().getPattern(it.key());
-                _appPosition -= it.value();
+                __appPosition -= it.value();
 
-                if (pat.activeTracksAtTime(_appPosition).contains(_index)) {
+                if (pat.activeTracksAtTime(__appPosition).contains(_index)) {
                     const Track& track = pat.getTrack(_index);
                     return _app->project().getChannel(_index).enabled() &&
                            std::find_if(track.items().begin(),
                                         track.items().end(),
                     [&](const Track::Item* item) {
-                        float delta = item->time() - _appPosition;
+                        float delta = item->time() - __appPosition;
                         return qAbs(delta) <= 0.0625;
                     }) == track.items().end();
                 }
@@ -308,6 +307,14 @@ void ChannelWidget::fromPath(const QString& path)
             }
         }
     }
+}
+
+void ChannelWidget::doUpdate(const float position)
+{
+    _appPosition = position;
+    ui->rectLed->update();
+    ui->stepSequencer->doUpdate(position);
+    ui->prDisplay->doUpdate(position);
 }
 
 const QColor& ChannelWidget::fmColor() const

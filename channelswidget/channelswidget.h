@@ -37,8 +37,9 @@ class ChannelsWidget : public QWidget
         void add(const int index);
         void setVolume(const int index, const int volume);
 
-        void update();
+        void doUpdate(const float position);
         void update(const int index);
+        void update();
 
         void select(const int index);
         int selected() const;
@@ -56,6 +57,7 @@ class ChannelsWidget : public QWidget
 
         QList<ChannelWidget*> _channelWidgets;
         ChannelWidget* _activeChannelWidget;
+        StepCursorWidget* _stepCursorWidget;
 
         void toggleSolo(ChannelWidget* channelWidget);
         void handleToggle(ChannelWidget* channelWidget, const bool selected);

@@ -27,12 +27,15 @@ class StepSequencerWidget : public QWidget
         void setApplication(Application* app);
         void setIndex(const int i);
 
+        void doUpdate(const float position);
+
     protected:
         void paintEvent(QPaintEvent*);
         void mousePressEvent(QMouseEvent* event);
 
     private:
         Application* _app;
+        float _appPosition;
 
         int _index;
 

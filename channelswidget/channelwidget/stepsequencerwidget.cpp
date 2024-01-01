@@ -8,6 +8,7 @@ StepSequencerWidget::StepSequencerWidget(QWidget *parent, Application* app, int 
     , _otherStepColor(QColor(255,192,192))
     , _activeStepLightColor(QColor(255,192,0))
     , _stepRadius(2)
+    , _appPosition(0)
 {
 
 }
@@ -20,6 +21,12 @@ void StepSequencerWidget::setApplication(Application* app)
 void StepSequencerWidget::setIndex(const int i)
 {
     _index = i;
+}
+
+void StepSequencerWidget::doUpdate(const float position)
+{
+    _appPosition = position;
+    update();
 }
 
 void StepSequencerWidget::paintEvent(QPaintEvent*)
@@ -50,12 +57,12 @@ void StepSequencerWidget::paintEvent(QPaintEvent*)
 
     int step = -1;
     if (_app->project().playMode() == Project::PlayMode::PATTERN) {
-        step = _app->position() / beatsPerStep;
+        step = _appPosition / beatsPerStep;
     } else {
-        QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(_app->position());
+        QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(_appPosition);
         int frontPatternIdx = _app->project().frontPattern();
         if (activePatterns.contains(frontPatternIdx)) {
-            step = (_app->position() - activePatterns[frontPatternIdx]) / beatsPerStep;
+            step = (_appPosition - activePatterns[frontPatternIdx]) / beatsPerStep;
         }
     }
 

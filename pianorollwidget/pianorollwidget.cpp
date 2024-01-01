@@ -81,19 +81,17 @@ void PianoRollWidget::setTrack(const int pattern, const int track)
     _track = &_app->project().getPattern(pattern).getTrack(track);
     ui->ganttWidget->setItems(reinterpret_cast<QList<GanttItem*>*>(&_track->items()));
     ui->ganttWidget->setMarkers(reinterpret_cast<QList<GanttMarker*>*>(&_track->settingsChanges()));
-    ui->ganttWidget->setPositionFunction([=]() {
-        float appPosition = _app->position();
-
+    ui->ganttWidget->setPositionFunction([&]() {
         if (_app->project().playMode() == Project::PlayMode::SONG) {
-            QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(appPosition);
+            QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(_appPosition);
 
             if (activePatterns.contains(pattern)) {
-                float delta = appPosition - activePatterns[pattern];
+                float delta = _appPosition - activePatterns[pattern];
 
                 return delta;
             }
         } else {
-            return appPosition;
+            return _appPosition;
         }
 
         return -1.0f;
@@ -138,8 +136,10 @@ float PianoRollWidget::loopEnd() const
     return ui->ganttWidget->loopEnd();
 }
 
-void PianoRollWidget::doUpdate()
+void PianoRollWidget::doUpdate(const float position)
 {
+    _appPosition = position;
+    ui->ganttWidget->update();
     ui->settingsChangeWidget->doUpdate();
 }
 

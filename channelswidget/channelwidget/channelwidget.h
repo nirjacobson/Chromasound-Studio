@@ -62,9 +62,13 @@ class ChannelWidget : public QWidget
 
         void fromPath(const QString& path);
 
+        void doUpdate(const float position);
+
     private:
         Ui::ChannelWidget *ui;
         Application* _app;
+        float _appPosition;
+
         int _index;
 
         QMenu _contextMenu;

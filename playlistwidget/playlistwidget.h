@@ -39,6 +39,8 @@ class PlaylistWidget : public QMainWindow
         float loopStart() const;
         float loopEnd() const;
 
+        void doUpdate(const float position);
+        void setCellMajors(const QList<int>& majors);
     signals:
         void patternClicked(const int pattern);
 
@@ -49,6 +51,8 @@ class PlaylistWidget : public QMainWindow
         void setLoopColor(const QColor& color);
 
         Application* _app;
+        float _appPosition;
+
         Ui::PlaylistWidget *ui;
         PlaylistPatternsWidget* _patternsWidget;
 

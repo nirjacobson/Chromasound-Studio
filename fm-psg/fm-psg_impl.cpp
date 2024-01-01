@@ -52,8 +52,8 @@ quint32 FM_PSG_Impl::position()
         return (_timeOffset + (time % length));
     } else {
         return (_timeOffset + ((time < introLength)
-                                   ? time
-                                   : (((time - introLength) % loopLength) + introLength)));
+                               ? time
+                               : (((time - introLength) % loopLength) + introLength)));
     }
 }
 
@@ -66,8 +66,6 @@ void FM_PSG_Impl::play(const QByteArray& vgm, const int currentOffsetSamples, co
 {
     if (isSelection) {
         _timeOffset = currentOffsetSamples / 44100.0f * 1000.0f;
-    } else {
-        _timeOffset = 0;
     }
 
     _vgmPlayer->stop();
@@ -170,6 +168,8 @@ void FM_PSG_Impl::reset()
     gpioDelay(100);
 
     _vgmStream.reset();
+
+    _timeOffset = 0;
 }
 
 QList<VGMStream::Format> FM_PSG_Impl::supportedFormats()

@@ -291,9 +291,10 @@ void MainWindow::patternChanged(int num)
     ui->topWidget->updateFromProject(_app->project());
 }
 
-void MainWindow::beatsPerBarChanged(int)
+void MainWindow::beatsPerBarChanged(int beatsPerBar)
 {
     _channelsWidget->update();
+    _playlistWidget->setCellMajors({ beatsPerBar });
     _playlistWidget->update();
 }
 
@@ -856,17 +857,17 @@ void MainWindow::windowClosed(MdiSubWindow* window)
 
 void MainWindow::doUpdate()
 {
-    update();
-    if (_channelsWindow) _channelsWidget->update();
-    if (_playlistWindow) _playlistWidget->update();
-    if (_pcmUsageDialogWindow) _pcmUsageDialog->doUpdate();
+    float position = _app->position();
 
+    ui->topWidget->doUpdate(position);
+    if (_channelsWindow) _channelsWidget->doUpdate(position);
+    if (_playlistWindow) _playlistWidget->doUpdate(position);
 
     for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
         for (MdiSubWindow* window : (*it)) {
             PianoRollWidget* prw;
             if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
-                prw->update();
+                prw->doUpdate(position);
             }
         }
     }
@@ -888,7 +889,7 @@ void MainWindow::channelSettingsUpdated()
             } else if ((pw = dynamic_cast<PCMWidget*>(window->widget()))) {
                 pw->doUpdate();
             } else if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
-                prw->doUpdate();
+                prw->doUpdate(0);
             }
         }
     }

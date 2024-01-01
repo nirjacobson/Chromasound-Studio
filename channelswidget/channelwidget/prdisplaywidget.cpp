@@ -8,6 +8,7 @@ PRDisplayWidget::PRDisplayWidget(QWidget* parent, Application* app, int index)
     , _backgroundColor(QColor(255,255,255))
     , _cursorColor(QColor(64, 192, 64))
     , _itemColor(QColor(128, 128, 255))
+    , _appPosition(0)
 {
     setMinimumWidth(192);
 }
@@ -20,6 +21,12 @@ void PRDisplayWidget::setApplication(Application* app)
 void PRDisplayWidget::setIndex(const int i)
 {
     _index = i;
+}
+
+void PRDisplayWidget::doUpdate(const float position)
+{
+    _appPosition = position;
+    update();
 }
 
 void PRDisplayWidget::paintEvent(QPaintEvent*)
@@ -49,14 +56,14 @@ void PRDisplayWidget::paintEvent(QPaintEvent*)
     }
 
     float beatsPerPixel = (float)visibleLength / (float)width();
-    float position = _app->position();
+    float position = _appPosition;
 
     if (_app->project().playMode() == Project::PlayMode::SONG) {
-        QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(_app->position());
+        QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(_appPosition);
         int frontPatternIdx = _app->project().frontPattern();
 
         if (activePatterns.contains(frontPatternIdx)) {
-            position = _app->position() - activePatterns[frontPatternIdx];
+            position = _appPosition - activePatterns[frontPatternIdx];
         } else {
             position = 0;
         }

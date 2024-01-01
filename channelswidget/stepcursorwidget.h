@@ -15,6 +15,8 @@ class StepCursorWidget : public QWidget
     public:
         explicit StepCursorWidget(QWidget *parent = nullptr, Application* app = nullptr);
 
+        void doUpdate(const float position);
+
     signals:
 
     protected:
@@ -22,6 +24,7 @@ class StepCursorWidget : public QWidget
 
     private:
         Application* _app;
+        float _appPosition;
 
         QColor _color;
 

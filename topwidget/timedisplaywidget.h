@@ -20,12 +20,15 @@ class TimeDisplayWidget : public QLCDNumber
         TimeDisplayWidget(QWidget* parent = nullptr, Application* app = nullptr);
         void setApplication(Application* app);
 
+        void doUpdate(const float position);
+
     protected:
         void paintEvent(QPaintEvent* event);
         void mousePressEvent(QMouseEvent*);
 
     private:
         Application* _app;
+        float _appPosition;
 
         Mode _mode;
 };
