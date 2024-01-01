@@ -41,7 +41,7 @@ quint32 FM_PSG_Impl::position()
     uint32_t length = _vgmPlayer->length();
 
     if (_vgmPlayer->loopLength() <= 0) {
-        if ((time + _timeOffset) >= _vgmPlayer->length()) {
+        if (_vgmPlayer->isPlaying() && (time + _timeOffset) >= _vgmPlayer->length()) {
             stop();
             return 0;
         }
