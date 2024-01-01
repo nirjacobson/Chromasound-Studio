@@ -97,6 +97,8 @@ void FM_PSG_Impl::stop()
 
     reset();
 
+    _timeOffset = 0;
+
     _vgmPlayer->setMode(VGMPlayer::Mode::Interactive);
     _vgmPlayer->start();
 }
@@ -168,8 +170,6 @@ void FM_PSG_Impl::reset()
     gpioDelay(100);
 
     _vgmStream.reset();
-
-    _timeOffset = 0;
 }
 
 QList<VGMStream::Format> FM_PSG_Impl::supportedFormats()
