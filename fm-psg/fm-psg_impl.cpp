@@ -65,7 +65,7 @@ void FM_PSG_Impl::setPosition(const float pos)
 void FM_PSG_Impl::play(const QByteArray& vgm, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection)
 {
     if (isSelection) {
-        _timeOffset = currentOffsetSamples / 44100.0f * 1000.0f;
+        _timeOffset = currentOffsetSamples;
     }
 
     _vgmPlayer->stop();
