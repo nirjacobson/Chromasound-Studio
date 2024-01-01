@@ -1376,7 +1376,7 @@ QByteArray VGMStream::generateHeader(const Project& project, const QByteArray& d
     if (project.playMode() == Project::PlayMode::PATTERN) {
         *(uint32_t*)&headerData[0x20] = totalSamples;
     } else {
-        if (selectionLoop) {
+        if (selectionLoop || project.playMode() == Project::PlayMode::PATTERN) {
             *(uint32_t*)&headerData[0x20] = totalSamples;
         } else if (project.playlist().doesLoop()) {
             *(uint32_t*)&headerData[0x20] = totalSamples - project.playlist().loopOffsetSamples();
