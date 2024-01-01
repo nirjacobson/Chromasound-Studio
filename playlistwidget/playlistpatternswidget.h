@@ -24,6 +24,8 @@ class PlaylistPatternsWidget : public GanttLeftWidget
         void setRows(int rows);
         void setRowHeight(int height);
 
+        void doUpdate(const float position);
+
     signals:
         void patternClicked(const int pattern);
 
@@ -42,6 +44,7 @@ class PlaylistPatternsWidget : public GanttLeftWidget
         void setLEDColor(const QColor& color);
 
         Application* _app;
+        float _appPosition;
 
         int _rows;
         int _top;

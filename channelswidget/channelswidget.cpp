@@ -5,7 +5,8 @@ ChannelsWidget::ChannelsWidget(QWidget *parent, Application* app) :
     QWidget(parent),
     ui(new Ui::ChannelsWidget),
     _app(app),
-    _activeChannelWidget(nullptr)
+    _activeChannelWidget(nullptr),
+    _stepCursorWidget(nullptr)
 {
     ui->setupUi(this);
 
@@ -71,11 +72,11 @@ void ChannelsWidget::rebuild()
     }
 
     if (!_channelWidgets.isEmpty()) {
-        StepCursorWidget* stepCursorWidget = new StepCursorWidget(this, _app);
+        _stepCursorWidget = new StepCursorWidget(this, _app);
         QWidget* widget = new QWidget();
         widget->setLayout(new QHBoxLayout);
         widget->layout()->addItem(new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Fixed));
-        widget->layout()->addWidget(stepCursorWidget);
+        widget->layout()->addWidget(_stepCursorWidget);
         ui->verticalLayout->addWidget(widget);
     }
 }
@@ -131,14 +132,24 @@ void ChannelsWidget::setVolume(const int index, const int volume)
     _channelWidgets[index]->setVolume(volume);
 }
 
-void ChannelsWidget::update()
+void ChannelsWidget::doUpdate(const float position)
 {
-    QWidget::update();
+    for (ChannelWidget* channelWidget : _channelWidgets) {
+        channelWidget->doUpdate(position);
+    }
+    if (_stepCursorWidget) {
+        _stepCursorWidget->doUpdate(position);
+    }
 }
 
 void ChannelsWidget::update(const int index)
 {
     _channelWidgets[index]->setIndex(index);
+}
+
+void ChannelsWidget::update()
+{
+    QWidget::update();
 }
 
 void ChannelsWidget::select(const int index)

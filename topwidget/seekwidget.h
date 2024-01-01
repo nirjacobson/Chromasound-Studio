@@ -13,8 +13,11 @@ class SeekWidget : public QSlider
 
         void setApplication(Application* app);
 
+        void doUpdate(const float position);
+
     private:
         Application* _app;
+        float _appPosition;
 
     protected:
         void paintEvent(QPaintEvent* event);

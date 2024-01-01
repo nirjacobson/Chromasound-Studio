@@ -23,6 +23,8 @@ class TopWidget : public QWidget
         void updateFromProject(const Project& project);
         void setStatusMessage(const QString& message);
 
+        void doUpdate(const float position);
+
     signals:
         void play();
         void pause();
@@ -35,6 +37,7 @@ class TopWidget : public QWidget
     private:
         Ui::TopWidget *ui;
         Application* _app;
+        float _appPosition;
 
         MIDIInput* _midiInput;
 

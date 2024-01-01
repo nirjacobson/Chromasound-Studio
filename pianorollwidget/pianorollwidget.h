@@ -52,7 +52,7 @@ class PianoRollWidget : public QMainWindow
         float loopStart() const;
         float loopEnd() const;
 
-        void doUpdate();
+        void doUpdate(const float position);
 
         ChannelSettings& currentSettings();
 
@@ -62,6 +62,8 @@ class PianoRollWidget : public QMainWindow
 
     private:
         Application* _app;
+        float _appPosition;
+
         Ui::PianoRollWidget *ui;
         PianoRollKeysWidget* _keysWidget;
         PianoRollVelocitiesWidget* _velocitiesWidget;

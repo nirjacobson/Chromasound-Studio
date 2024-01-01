@@ -7,6 +7,7 @@ PlaylistPatternsWidget::PlaylistPatternsWidget(QWidget *parent, Application* app
     , _top(0)
     , _rowHeight(16)
     , _ledColor(Qt::green)
+    , _appPosition(0)
 {
     setMinimumWidth(128);
     setMaximumWidth(128);
@@ -43,6 +44,12 @@ void PlaylistPatternsWidget::setRowHeight(int height)
     _rowHeight = height;
 }
 
+void PlaylistPatternsWidget::doUpdate(const float position)
+{
+    _appPosition = position;
+    update();
+}
+
 int PlaylistPatternsWidget::length() const
 {
     return _rowHeight * _rows;
@@ -60,9 +67,7 @@ void PlaylistPatternsWidget::paintEvent(QPaintEvent*)
 
     QPoint topLeft(0, firstPatternStart);
 
-    float appPosition = _app->position();
-
-    QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(appPosition);
+    QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(_appPosition);
 
 
     for (int i = 0; i < numPatternsAcrossHeight && (firstPattern + i) < _rows; i++) {
@@ -71,7 +76,7 @@ void PlaylistPatternsWidget::paintEvent(QPaintEvent*)
         bool on = false;
         if (_app->project().playMode() == Project::PlayMode::SONG && activePatterns.contains(pattern)) {
             Pattern& pat = _app->project().getPattern(pattern);
-            QList<int> activeTracks = pat.activeTracksAtTime(appPosition - activePatterns[pattern]);
+            QList<int> activeTracks = pat.activeTracksAtTime(_appPosition - activePatterns[pattern]);
             for (int t : activeTracks) {
                 if (!_app->project().getChannel(t).enabled()) {
                     continue;
@@ -80,7 +85,7 @@ void PlaylistPatternsWidget::paintEvent(QPaintEvent*)
                 Track& track = pat.getTrack(t);
                 bool noneAreInDelta = std::find_if(track.items().begin(), track.items().end(),
                 [&](const Track::Item* item) {
-                    float delta = item->time() - (appPosition - activePatterns[pattern]);
+                    float delta = item->time() - (_appPosition - activePatterns[pattern]);
                     return qAbs(delta)<= 0.0625;
                 }) == track.items().end();
                 if (noneAreInDelta) {

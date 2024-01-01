@@ -212,7 +212,7 @@ quint32 Project::pcmOffset(const QString& path) const
         }
     }
 
-    std::sort(paths.begin(), paths.end(), [](const QString& a, const QString& b){
+    std::sort(paths.begin(), paths.end(), [](const QString& a, const QString& b) {
         return QFileInfo(QFile(a)).size() < QFileInfo(QFile(b)).size();
     });
 
@@ -238,7 +238,7 @@ QByteArray Project::pcm() const
         }
     }
 
-    std::sort(paths.begin(), paths.end(), [](const QString& a, const QString& b){
+    std::sort(paths.begin(), paths.end(), [](const QString& a, const QString& b) {
         return QFileInfo(QFile(a)).size() < QFileInfo(QFile(b)).size();
     });
 

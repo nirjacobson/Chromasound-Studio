@@ -20,6 +20,8 @@ class PRDisplayWidget : public QWidget
         void setApplication(Application* app);
         void setIndex(const int i);
 
+        void doUpdate(const float position);
+
     signals:
         void pianoRollTriggered();
 
@@ -44,6 +46,7 @@ class PRDisplayWidget : public QWidget
         void setItemColor(const QColor& color);
 
         Application* _app;
+        float _appPosition;
 
         int _index;
 

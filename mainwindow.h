@@ -73,7 +73,7 @@ class MainWindow : public QMainWindow
         void stop();
 
         void patternChanged(int num);
-        void beatsPerBarChanged(int);
+        void beatsPerBarChanged(int beatsPerBar);
 
         void frame();
 

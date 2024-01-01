@@ -6,7 +6,8 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
     _app(app),
     ui(new Ui::PlaylistWidget),
     _patternsWidget(new PlaylistPatternsWidget(this, app)),
-    _loopColor(128, 192, 224)
+    _loopColor(128, 192, 224),
+    _appPosition(0)
 {
     ui->setupUi(this);
 
@@ -27,7 +28,7 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
     ui->ganttWidget->setParameters(Rows, RowHeight, CellWidth, 1);
     ui->ganttWidget->setItemsMovableX(true);
     ui->ganttWidget->setPositionFunction([&]() {
-        return _app->project().playMode() == Project::PlayMode::SONG ? _app->position() : 0.0f;
+        return _app->project().playMode() == Project::PlayMode::SONG ? _appPosition : 0.0f;
     });
     ui->ganttWidget->setHeaderPaintFunction([&](QPainter& painter, QRect rect, float leftPosition, float rightPosition, float beatsPerPixel) {
         if (_app->project().playlist().doesLoop()) {
@@ -84,6 +85,19 @@ float PlaylistWidget::loopStart() const
 float PlaylistWidget::loopEnd() const
 {
     return ui->ganttWidget->loopEnd();
+}
+
+void PlaylistWidget::doUpdate(const float position)
+{
+    _patternsWidget->doUpdate(position);
+
+    _appPosition = position;
+    ui->ganttWidget->update();
+}
+
+void PlaylistWidget::setCellMajors(const QList<int>& majors)
+{
+    ui->ganttWidget->setCellMajors(majors);
 }
 
 const QColor& PlaylistWidget::loopColor() const
