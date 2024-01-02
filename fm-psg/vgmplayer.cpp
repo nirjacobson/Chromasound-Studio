@@ -12,7 +12,7 @@ VGMPlayer::VGMPlayer(int spi, QObject *parent)
     , _loopOffsetData(0)
     , _playing(false)
     , _lastPCMBlockChecksum(0)
-    , _spiDelay(SPI_DELAY)
+    , _spiDelay(SPI_DELAY_FAST)
 {
 
 }
@@ -228,7 +228,7 @@ void VGMPlayer::runPlayback()
     bool loop = _loopOffsetData >= 0 && _loopOffsetSamples >= 0;
     bool paused = _paused;
 
-    _spiDelay = SPI_DELAY;
+    _spiDelay = SPI_DELAY_FAST;
 
     _paused = false;
     _stop = false;
@@ -245,7 +245,6 @@ void VGMPlayer::runPlayback()
 
             if (lastPCMBlockChecksum != _lastPCMBlockChecksum) {
                 emit pcmUploadStarted();
-                _spiDelay = SPI_DELAY_FAST;
                 uint32_t position = 0;
                 while (true) {
                     _stopLock.lock();
@@ -282,7 +281,6 @@ void VGMPlayer::runPlayback()
                         }
                     }
                 }
-                _spiDelay = SPI_DELAY;
                 emit pcmUploadFinished();
             }
         }
@@ -332,7 +330,7 @@ void VGMPlayer::runPlayback()
                     spi_xfer(&tx, &rx);
 
                     if (i > 0) {
-                        _spiDelay = !!rx ? SPI_DELAY_SLOW : SPI_DELAY;
+                        _spiDelay = !!rx ? SPI_DELAY_SLOW : SPI_DELAY_FAST;
                     }
                 }
             }
