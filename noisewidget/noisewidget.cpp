@@ -5,6 +5,7 @@ NoiseWidget::NoiseWidget(QWidget *parent, Application* app)
     : QWidget(parent)
     , ui(new Ui::NoiseWidget)
     , _app(app)
+    , _settings(nullptr)
 {
     ui->setupUi(this);
 
@@ -32,7 +33,7 @@ void NoiseWidget::setSettings(NoiseChannelSettings* settings)
 
 void NoiseWidget::doUpdate()
 {
-    setSettings(_settings);
+    if (_settings) setSettings(_settings);
 }
 
 void NoiseWidget::setApplication(Application* app)

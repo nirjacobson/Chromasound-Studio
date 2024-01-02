@@ -82,9 +82,7 @@ void FMWidget::releaseKey(const int key)
 
 void FMWidget::doUpdate()
 {
-    if (_settings) {
-        setSettings(_settings);
-    }
+    if (_settings) setSettings(_settings);
 }
 
 void FMWidget::newTriggered()
