@@ -55,6 +55,8 @@ FM_PSG_Impl::FM_PSG_Impl(const Project& project)
             _vgmPlayer->fillWithPCM(true);
         }
 
+        data.prepend(_vgmStream.generateHeader(project, data, 0, 0, 0, false));
+
         _vgmPlayer->setVGM(data, 0);
     });
     if (gpioInitialise() < 0) {
