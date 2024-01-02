@@ -110,7 +110,7 @@ void Player::play(const int index)
         _currentTrack = index;
         ui->playlistTableView->selectionModel()->setCurrentIndex(_playlistTableModel.index(index, 0), QItemSelectionModel::ClearAndSelect);
         _app->ignoreFMPSGTime(true);
-        _app->fmPSG().play(vgm, true, 0, 0);
+        _app->fmPSG().play(vgm, 0, 0);
     } else if (fileInfo.suffix().toLower() == "pcm") {
         QByteArray vgm = pcmToVgm(path);
 
@@ -118,7 +118,7 @@ void Player::play(const int index)
         _currentTrack = index;
         ui->playlistTableView->selectionModel()->setCurrentIndex(_playlistTableModel.index(index, 0), QItemSelectionModel::ClearAndSelect);
         _app->ignoreFMPSGTime(true);
-        _app->fmPSG().play(vgm, false, 0, 0);
+        _app->fmPSG().play(vgm, 0, 0);
     }
     ui->playButton->setIcon(ui->playButton->style()->standardIcon(QStyle::SP_MediaPause));
     _timer.start();
@@ -285,7 +285,7 @@ QByteArray Player::pcmToVgm(const QString& path)
     vgm.append((char*)&pcmSize, sizeof(pcmSize));
     vgm.append(0x66);
 
-    QByteArray headerData = VGMStream().generateHeader(Project(), vgm, pcm.size(), 0, 0, false);
+    QByteArray headerData = VGMStream().generateHeader(Project(), vgm, pcmSize, 0, 0, false);
     vgm.prepend(headerData);
 
     file.close();
