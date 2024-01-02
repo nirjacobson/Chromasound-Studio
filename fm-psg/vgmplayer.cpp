@@ -16,7 +16,7 @@ VGMPlayer::VGMPlayer(int spi, QObject *parent)
 {
 
 }
-#include <QtDebug>
+
 void VGMPlayer::setVGM(const QByteArray& vgm, const int currentOffsetData)
 {
     int _currentOffsetData = currentOffsetData;
@@ -25,17 +25,18 @@ void VGMPlayer::setVGM(const QByteArray& vgm, const int currentOffsetData)
     _loopLength = *(quint32*)&vgm.constData()[0x20];
     _introLength = _length - _loopLength;
 
+    quint32 gd3Offset = *(quint32*)&vgm.constData()[0x14] + 0x14;
     quint32 dataOffset = *(quint32*)&vgm.constData()[0x34] + 0x34;
 
     if (vgm[dataOffset] == 0x67) {
         quint32 size = *(quint32*)&vgm.constData()[dataOffset + 3];
         _pcmBlock = vgm.mid(dataOffset, 7 + size);
-        _vgm = vgm.mid(dataOffset + 7 + size);
+        _vgm = vgm.mid(dataOffset + 7 + size, gd3Offset - dataOffset - 7 - size);
         if (_currentOffsetData != 0) {
             _currentOffsetData -= dataOffset + 7 + size;
         }
     } else {
-        _vgm = vgm.mid(dataOffset);
+        _vgm = vgm.mid(dataOffset, gd3Offset - dataOffset);
         if (_currentOffsetData != 0) {
             _currentOffsetData -= dataOffset;
         }
@@ -43,8 +44,6 @@ void VGMPlayer::setVGM(const QByteArray& vgm, const int currentOffsetData)
 
     _loopOffsetData = *(quint32*)&vgm.constData()[0x1C] + 0x1C - dataOffset - _pcmBlock.size();
     _loopOffsetSamples = _introLength;
-
-    qDebug() << _loopOffsetData;
 
     if (_loopOffsetData < 0) {
         _loopOffsetData = -1;
