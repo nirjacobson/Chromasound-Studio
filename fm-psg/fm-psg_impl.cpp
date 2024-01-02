@@ -2,6 +2,7 @@
 
 FM_PSG_Impl::FM_PSG_Impl(const Project& project)
     : _project(project)
+    , _timeOffset(0)
 {
     if (gpioInitialise() < 0) {
         throw "Error initializing pigpio.";
