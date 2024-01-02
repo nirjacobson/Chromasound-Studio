@@ -4,6 +4,59 @@ FM_PSG_Impl::FM_PSG_Impl(const Project& project)
     : _project(project)
     , _timeOffset(0)
 {
+    _timer.setSingleShot(true);
+
+    _timer.callOnTimeout([&]() {
+        QByteArray data;
+
+        _mutex.lock();
+
+        _vgmStream.encode(project, _items, data);
+
+        bool havePCM = false;
+        for (VGMStream::StreamItem* item : _items) {
+            VGMStream::StreamNoteItem* sni;
+            if ((sni = dynamic_cast<VGMStream::StreamNoteItem*>(item))) {
+                if (sni->on()) {
+                    if (sni->type() == Channel::Type::PCM) {
+                        havePCM = true;
+                    }
+                    continue;
+                } else {
+                    delete _keys[sni->note().key()];
+                    _keys.remove(sni->note().key());
+                    delete item;
+                    continue;
+                }
+            }
+            delete item;
+        }
+
+        _items.clear();
+
+        _mutex.unlock();
+
+        QByteArray dataBlock = project.pcm();
+        quint32 dataBlockSize = dataBlock.size();
+
+        if (havePCM && dataBlockSize > 0) {
+            QByteArray pcmBlock;
+            pcmBlock.append(0x67);
+            pcmBlock.append(0x66);
+            pcmBlock.append((quint8)0x00);
+            pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
+            pcmBlock.append(dataBlock);
+            pcmBlock.append(0x52);
+            pcmBlock.append(0x2B);
+            pcmBlock.append(0x80);
+
+            data.prepend(pcmBlock);
+
+            _vgmPlayer->fillWithPCM(true);
+        }
+
+        _vgmPlayer->setVGM(data, 0);
+    });
     if (gpioInitialise() < 0) {
         throw "Error initializing pigpio.";
     }
@@ -112,38 +165,30 @@ bool FM_PSG_Impl::isPlaying() const
 
 void FM_PSG_Impl::keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity)
 {
-    VGMStream::StreamLFOItem* sli = new VGMStream::StreamLFOItem(0, project.lfoMode());
     VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(0, channelType, nullptr, Note(key, 0, velocity), &settings);
-    QList<VGMStream::StreamItem*> items;
-    QByteArray data;
-    items.append(sli);
-    items.append(sni);
-    _vgmStream.assignChannel(project, sni, items);
-    _vgmStream.encode(project, items, data);
-
-    if (sni->type() == Channel::Type::PCM) {
-        data.append(0x52);
-        data.append(0x2B);
-        data.append(0x80);
-        _vgmPlayer->fillWithPCM(true);
-    }
-
     _keys[key] = sni;
-    _vgmPlayer->setVGM(data, 0);
 
-    delete sli;
+    _mutex.lock();
+
+    VGMStream::StreamLFOItem* sli = new VGMStream::StreamLFOItem(0, project.lfoMode());
+    _items.append(sli);
+
+    _items.append(sni);
+    _vgmStream.assignChannel(project, sni, _items);
+
+    _mutex.unlock();
+
+    _timer.start(20);
 }
 
 void FM_PSG_Impl::keyOff(int key)
 {
-    VGMStream::StreamNoteItem* sni = _keys[key];
+    if (!_keys.contains(key)) return;
+
+    VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(*_keys[key]);
     _vgmStream.releaseChannel(sni->type(), sni->channel());
     sni->setOn(false);
-    QList<VGMStream::StreamItem*> items;
-    QByteArray data;
-    items.append(sni);
-    _vgmStream.encode(Project(), items, data);
-
+    _items.append(sni);
 
     bool havePCM = false;
     for (auto it = _keys.begin(); it != _keys.end(); ++it) {
@@ -157,10 +202,7 @@ void FM_PSG_Impl::keyOff(int key)
         _vgmPlayer->fillWithPCM(false);
     }
 
-    _keys.remove(key);
-    _vgmPlayer->setVGM(data, 0);
-
-    delete sni;
+    _timer.start(20);
 }
 
 void FM_PSG_Impl::reset()

@@ -2,8 +2,8 @@
 #define FM_PSG_IMPL_H
 
 #include <QMap>
-#include <QElapsedTimer>
 
+#include <QTimer>
 #include "fm-psg.h"
 #include "project/project.h"
 #include "project/vgmstream.h"
@@ -32,6 +32,11 @@ class FM_PSG_Impl : public FM_PSG
 
         VGMStream _vgmStream;
         QMap<int, VGMStream::StreamNoteItem*> _keys;
+
+        QTimer _timer;
+        QList<VGMStream::StreamItem*> _items;
+
+        QMutex _mutex;
 
         VGMPlayer* _vgmPlayer;
 
