@@ -175,8 +175,8 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
         gd3Data = GD3::generateGd3(project);
     }
 
-    _loopOffsetData += 64;
-    _currentOffsetData += 64;
+    _loopOffsetData += 128;
+    _currentOffsetData += 128;
     QByteArray headerData = generateHeader(project, data, totalSamples, _loopOffsetData, gd3Data.size(), !(loopStart < 0 || loopEnd < 0));
     data.prepend(headerData);
 
@@ -297,8 +297,8 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
         gd3Data = GD3::generateGd3(project);
     }
 
-    _loopOffsetData += 64;
-    _currentOffsetData += 64;
+    _loopOffsetData += 128;
+    _currentOffsetData += 128;
     QByteArray headerData;
     if (project.playlist().doesLoop() || !(loopStart < 0 || loopEnd < 0)) {
         headerData = generateHeader(project, data, totalSamples, _loopOffsetData, gd3Data.size(), !(loopStart < 0 || loopEnd < 0));
@@ -1351,7 +1351,7 @@ bool VGMStream::requiresLongPCMChannel(const Project& project, const QString& pa
 
 QByteArray VGMStream::generateHeader(const Project& project, const QByteArray& data, const int totalSamples, const int loopOffsetData, const int gd3size, const bool selectionLoop)
 {
-    QByteArray headerData(64, 0);
+    QByteArray headerData(128, 0);
 
     // VGM header
     headerData[0] = 'V';
@@ -1360,14 +1360,16 @@ QByteArray VGMStream::generateHeader(const Project& project, const QByteArray& d
     headerData[3] = ' ';
 
     // EOF
-    *(uint32_t*)&headerData[0x4] = data.size() + gd3size + 64 - 0x4;
+    *(uint32_t*)&headerData[0x4] = data.size() + gd3size + 128 - 0x4;
     // Version
     headerData[0x8] = 0x50;
     headerData[0x9] = 0x01;
     // SN76489 clock
     *(uint32_t*)&headerData[0xC] = 3579545;
+    // YM2413 clock
+    *(uint32_t*)&headerData[0x10] = 3579545;
     // GD3 offset
-    *(uint32_t*)&headerData[0x14] = data.size() + 64 - 0x14;
+    *(uint32_t*)&headerData[0x14] = data.size() + 128 - 0x14;
     // Total samples
     *(uint32_t*)&headerData[0x18] = totalSamples;
     // Loop offset
@@ -1391,6 +1393,8 @@ QByteArray VGMStream::generateHeader(const Project& project, const QByteArray& d
     *(uint32_t*)&headerData[0x2C] = 7680000;
     // Data offset
     *(uint32_t*)&headerData[0x34] = 0xC;
+    // AY8910 clock
+    *(uint32_t*)&headerData[0x74] = 1789773;
 
     return headerData;
 }

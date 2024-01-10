@@ -226,18 +226,20 @@ void Player::itemDoubleClicked(const QModelIndex& index)
 
 void Player::frame()
 {
-    quint32 totalLength = _playlist[_currentTrack].length() * 44100;
-    quint32 pos = _app->fmPSG().position();
-    float percentage = (float)pos / (float)totalLength;
+    if (!_playlist.isEmpty()) {
+        quint32 totalLength = _playlist[_currentTrack].length() * 44100;
+        quint32 pos = _app->fmPSG().position();
+        float percentage = (float)pos / (float)totalLength;
 
-    QString posString = QString("%1:%2/%3:%4")
-                        .arg((pos / 44100) / 60)
-                        .arg((pos / 44100) % 60, 2, 10, QLatin1Char('0'))
-                        .arg((totalLength / 44100) / 60)
-                        .arg((totalLength / 44100) % 60, 2, 10, QLatin1Char('0'));
+        QString posString = QString("%1:%2/%3:%4")
+                            .arg((pos / 44100) / 60)
+                            .arg((pos / 44100) % 60, 2, 10, QLatin1Char('0'))
+                            .arg((totalLength / 44100) / 60)
+                            .arg((totalLength / 44100) % 60, 2, 10, QLatin1Char('0'));
 
-    ui->seekSlider->setSliderPosition(percentage * ui->seekSlider->maximum());
-    ui->positionLabel->setText(posString);
+        ui->seekSlider->setSliderPosition(percentage * ui->seekSlider->maximum());
+        ui->positionLabel->setText(posString);
+    }
 }
 
 void Player::fmpsgStopped()

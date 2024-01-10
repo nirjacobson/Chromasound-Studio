@@ -35,6 +35,7 @@ enum {
     cmd_short_delay     = 0x70,
     cmd_pcm_delay       = 0x80,
     cmd_pcm_play        = 0x96,
+    cmd_ssg             = 0xA0,
     cmd_pcm_size        = 0xD0,
     cmd_pcm_seek        = 0xE0,
     cmd_pcm_attenuation = 0xF0,
@@ -192,6 +193,11 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
 
             case cmd_psg:
                 psg.write_data( to_blip_time( vgm_time ), *pos++ );
+                break;
+
+            case cmd_ssg:
+                ssg.write( to_blip_time( vgm_time ), pos[0], pos[1] );
+                pos += 2;
                 break;
 
             case cmd_delay:
@@ -353,6 +359,7 @@ int Vgm_Emu_Impl::play_frame( blip_time_t blip_time, int sample_count, sample_t*
                      ((long) pairs << fm_time_bits);
 
     psg.end_frame( blip_time );
+    ssg.end_frame( blip_time );
 
     return pairs * stereo;
 }

@@ -251,6 +251,7 @@ blargg_err_t Vgm_Emu::set_sample_rate_( long sample_rate )
 void Vgm_Emu::update_eq( blip_eq_t const& eq )
 {
     psg.treble_eq( eq );
+    ssg.treble_eq( eq );
     dac_synth.treble_eq( eq );
 }
 
@@ -258,6 +259,8 @@ void Vgm_Emu::set_voice( int i, Blip_Buffer* c, Blip_Buffer* l, Blip_Buffer* r )
 {
     if ( i < psg.osc_count )
         psg.osc_output( i, c, l, r );
+    if ( i < ssg.osc_count )
+        ssg.osc_output(i, c);
 }
 
 void Vgm_Emu::mute_voices_( int mask )
@@ -267,6 +270,7 @@ void Vgm_Emu::mute_voices_( int mask )
     if ( uses_fm )
     {
         psg.output( (mask & 0x80) ? 0 : &blip_buf );
+        ssg.output( (mask & 0x80) ? 0 : &blip_buf );
         if ( ym2612.enabled() )
         {
             dac_synth.volume( (mask & 0x40) ? 0.0 : 0.1115 / 256 * fm_gain * gain() );
@@ -354,6 +358,7 @@ blargg_err_t Vgm_Emu::setup_fm()
         Dual_Resampler::setup( fm_rate / blip_buf.sample_rate(), rolloff, fm_gain * gain() );
         RETURN_ERR( ym2612.set_rate( fm_rate, ym2612_rate ) );
         ym2612.enable( true );
+        ym2413.enable( false );
         set_voice_count( 8 );
     }
 
@@ -367,6 +372,7 @@ blargg_err_t Vgm_Emu::setup_fm()
         if ( result == 2 )
             return "YM2413 FM sound isn't supported";
         CHECK_ALLOC( !result );
+        ym2612.enable( false );
         ym2413.enable( true );
         set_voice_count( 8 );
     }
@@ -375,12 +381,14 @@ blargg_err_t Vgm_Emu::setup_fm()
     {
         RETURN_ERR( Dual_Resampler::reset( blip_buf.length() * blip_buf.sample_rate() / 1000 ) );
         psg.volume( 0.135 * fm_gain * gain() );
+        ssg.volume( 0.135 * fm_gain * gain() );
     }
     else
     {
         ym2612.enable( false );
         ym2413.enable( false );
         psg.volume( gain() );
+        ssg.volume( gain() );
     }
 
     return 0;
@@ -392,6 +400,7 @@ blargg_err_t Vgm_Emu::start_track_( int track )
 {
     RETURN_ERR( Classic_Emu::start_track_( track ) );
     psg.reset( GET_LE16( header().noise_feedback ), header().noise_width );
+    ssg.reset();
 
     dac_disabled = -1;
     pos          = data + header_size;
@@ -425,6 +434,7 @@ blargg_err_t Vgm_Emu::run_clocks( blip_time_t& time_io, int msec )
 {
     time_io = run_commands( msec * vgm_rate / 1000 );
     psg.end_frame( time_io );
+    ssg.end_frame( time_io );
     return 0;
 }
 

@@ -337,7 +337,10 @@ set(PROJECT_SOURCES
     player/playlisttablemodel.cpp
     player/playlistitem.h
     player/playlistitem.cpp
-    gd3.h gd3.cpp
+    gd3.h
+    gd3.cpp
+    fm-psg/soft/Ay_Apu.cc
+    fm-psg/soft/Ay_Apu.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
