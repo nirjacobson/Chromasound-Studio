@@ -11,6 +11,7 @@
 #include "Ym2413_Emu.h"
 #include "Ym2612_Emu.h"
 #include "Sms_Apu.h"
+#include "Ay_Apu.h"
 
 template<class Emu>
 class Ym_Emu : public Emu {
@@ -74,6 +75,7 @@ class Vgm_Emu_Impl : public Classic_Emu, private Dual_Resampler {
 
         Blip_Buffer blip_buf;
         Sms_Apu psg;
+        Ay_Apu ssg;
         Blip_Synth<blip_med_quality,1> dac_synth;
 
         int pcm_read();
