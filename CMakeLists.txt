@@ -341,6 +341,16 @@ set(PROJECT_SOURCES
     gd3.cpp
     fm-psg/soft/Ay_Apu.cc
     fm-psg/soft/Ay_Apu.h
+    ssg/ssgenvelopedisplaywidget.h
+    ssg/ssgenvelopedisplaywidget.cpp
+    ssg/ssgenvelopesettings.h
+    ssg/ssgenvelopesettings.cpp
+    ssg/ssgenvelopeshapewidget.h
+    ssg/ssgenvelopeshapewidget.cpp ssg/ssgenvelopeshapewidget.ui
+    ssg/ssgenvelopefreqwidget.h
+    ssg/ssgenvelopefreqwidget.cpp ssg/ssgenvelopefreqwidget.ui
+    ssg/ssgnoisefreqwidget.h
+    ssg/ssgnoisefreqwidget.cpp ssg/ssgnoisefreqwidget.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
