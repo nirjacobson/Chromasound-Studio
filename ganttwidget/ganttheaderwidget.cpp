@@ -20,7 +20,6 @@ GanttHeaderWidget::GanttHeaderWidget(QWidget *parent)
 , _inactiveForegroundColor(Qt::gray)
 , _cursorColor(QColor(64, 192, 64))
 , _loopColor(QColor(255, 192, 0))
-, _markerColor(QColor(255, 128, 128))
 {
 
 }
@@ -187,8 +186,8 @@ void GanttHeaderWidget::paintEvent(QPaintEvent*)
             if (marker->time() + (br.width() * beatsPerPixel) > leftPosition) {
                 int markerPixel = (marker->time() - leftPosition) / beatsPerPixel;
 
-                painter.setPen(_markerColor);
-                painter.setBrush(_markerColor);
+                painter.setPen(marker->color());
+                painter.setBrush(marker->color());
                 br = QRectF(QPoint(markerPixel, 24), QSize(br.width() + 8, 24));
                 painter.drawRect(br);
                 painter.setPen(Qt::black);
@@ -294,11 +293,6 @@ const QColor& GanttHeaderWidget::loopColor() const
     return _loopColor;
 }
 
-const QColor& GanttHeaderWidget::markerColor() const
-{
-    return _markerColor;
-}
-
 void GanttHeaderWidget::setActiveColor(const QColor& color)
 {
     _activeColor = color;
@@ -327,11 +321,6 @@ void GanttHeaderWidget::setCursorColor(const QColor& color)
 void GanttHeaderWidget::setLoopColor(const QColor& color)
 {
     _loopColor = color;
-}
-
-void GanttHeaderWidget::setMarkerColor(const QColor& color)
-{
-    _markerColor = color;
 }
 
 int GanttHeaderWidget::length() const

@@ -1,6 +1,11 @@
 #include "playlist.h"
 #include "project.h"
 
+QColor Playlist::LFOChange::COLOR(255, 255, 64);
+QColor Playlist::NoiseFrequencyChange::COLOR(192, 192, 192);
+QColor Playlist::EnvelopeFrequencyChange::COLOR(64, 255, 54);
+QColor Playlist::EnvelopeShapeChange::COLOR(128, 128, 255);
+
 Playlist::Item::Item(Project* const project, const float time, const int pattern)
     : _project(project)
     , _time(time)
@@ -364,7 +369,12 @@ QString Playlist::LFOChange::name() const
             return "LFO: 72.2 Hz";
     }
 
-    return "LFO change";
+        return "LFO change";
+}
+
+const QColor& Playlist::LFOChange::color() const
+{
+        return COLOR;
 }
 
 int Playlist::LFOChange::mode() const
@@ -401,6 +411,11 @@ QString Playlist::NoiseFrequencyChange::name() const
     return "SSG Noise";
 }
 
+const QColor& Playlist::NoiseFrequencyChange::color() const
+{
+    return COLOR;
+}
+
 int Playlist::NoiseFrequencyChange::frequency()
 {
     return _freq;
@@ -435,6 +450,11 @@ QString Playlist::EnvelopeFrequencyChange::name() const
     return "SSG Envelope (frequency)";
 }
 
+const QColor& Playlist::EnvelopeFrequencyChange::color() const
+{
+    return COLOR;
+}
+
 int Playlist::EnvelopeFrequencyChange::frequency()
 {
     return _freq;
@@ -467,6 +487,11 @@ float Playlist::EnvelopeShapeChange::time() const
 QString Playlist::EnvelopeShapeChange::name() const
 {
     return "SSG Envelope (shape)";
+}
+
+const QColor& Playlist::EnvelopeShapeChange::color() const
+{
+    return COLOR;
 }
 
 const SSGEnvelopeSettings& Playlist::EnvelopeShapeChange::shape() const

@@ -56,11 +56,13 @@ class Playlist
 
                 float time() const;
                 QString name() const;
+                const QColor& color() const;
 
                 int mode() const;
                 void setMode(const int mode);
 
             private:
+                static QColor COLOR;
                 LFOChange();
 
                 float _time;
@@ -75,11 +77,13 @@ class Playlist
 
                 float time() const;
                 QString name() const;
+                const QColor& color() const;
 
                 int frequency();
                 void setFrequency(const int freq);
 
             private:
+                static QColor COLOR;
                 NoiseFrequencyChange();
 
                 float _time;
@@ -94,11 +98,13 @@ class Playlist
 
                 float time() const;
                 QString name() const;
+                const QColor& color() const;
 
                 int frequency();
                 void setFrequency(const int freq);
 
             private:
+                static QColor COLOR;
                 EnvelopeFrequencyChange();
 
                 float _time;
@@ -113,11 +119,13 @@ class Playlist
 
                 float time() const;
                 QString name() const;
+                const QColor& color() const;
 
                 const SSGEnvelopeSettings& shape() const;
                 void setShape(const SSGEnvelopeSettings& shape);
 
             private:
+                static QColor COLOR;
                 EnvelopeShapeChange();
 
                 float _time;

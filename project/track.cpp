@@ -1,5 +1,7 @@
 #include "track.h"
 
+QColor Track::SettingsChange::COLOR(255, 128, 128);
+
 Track::Track()
     : _usePianoRoll(false)
 {
@@ -242,6 +244,11 @@ float Track::SettingsChange::time() const
 QString Track::SettingsChange::name() const
 {
     return "Settings change";
+}
+
+const QColor& Track::SettingsChange::color() const
+{
+    return COLOR;
 }
 
 ChannelSettings& Track::SettingsChange::settings()

@@ -27,7 +27,6 @@ GanttEditorWidget::GanttEditorWidget(QWidget *parent)
 , _cursorColor(QColor(64, 192, 64))
 , _selectionColor(QColor(192, 192, 255))
 , _loopColor(QColor(255, 192, 0))
-, _markerColor(QColor(255, 128, 128))
 , _selecting(false)
 , _cellMajors({ 4 })
 {
@@ -239,7 +238,7 @@ void GanttEditorWidget::paintEvent(QPaintEvent*)
         for (GanttMarker* marker : *_markers) {
             if (leftPosition <= marker->time() && marker->time() <= rightPosition) {
                 int markerPixel = (marker->time() - leftPosition) / beatsPerPixel;
-                painter.setPen(_markerColor);
+                painter.setPen(marker->color());
                 painter.drawLine(QLine(QPoint(markerPixel, 0), QPoint(markerPixel, height())));
             }
         }
@@ -549,11 +548,6 @@ const QColor& GanttEditorWidget::loopColor() const
     return _loopColor;
 }
 
-const QColor& GanttEditorWidget::markerColor() const
-{
-    return _markerColor;
-}
-
 void GanttEditorWidget::setBackgroundColor(const QColor& color)
 {
     _backgroundColor = color;
@@ -582,11 +576,6 @@ void GanttEditorWidget::setSelectionColor(const QColor& color)
 void GanttEditorWidget::setLoopColor(const QColor& color)
 {
     _loopColor = color;
-}
-
-void GanttEditorWidget::setMarkerColor(const QColor& color)
-{
-    _markerColor = color;
 }
 
 const QList<GanttItem*>& GanttEditorWidget::selectedItems() const
