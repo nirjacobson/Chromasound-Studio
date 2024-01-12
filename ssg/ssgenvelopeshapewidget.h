@@ -17,6 +17,11 @@ public:
     explicit SSGEnvelopeShapeWidget(QWidget *parent = nullptr);
     ~SSGEnvelopeShapeWidget();
 
+    const SSGEnvelopeSettings& settings() const;
+    void set(const SSGEnvelopeSettings& settings);
+signals:
+    void changed();
+
 private:
     Ui::SSGEnvelopeShapeWidget *ui;
     SSGEnvelopeSettings _settings;

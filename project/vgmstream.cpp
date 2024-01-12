@@ -62,6 +62,10 @@ void VGMStream::assignChannel(const Project& project, StreamNoteItem* noteItem, 
         const PCMChannelSettings* pcmcs = dynamic_cast<const PCMChannelSettings*>(noteItem->channelSettings());
         int channel = acquirePCMChannel(project, noteItem->time(), noteItem->note().duration(), pcmcs);
         noteItem->setChannel(channel);
+    } else if (noteItem->type() == Channel::Type::SSG) {
+        const SSGChannelSettings* scs = dynamic_cast<const SSGChannelSettings*>(noteItem->channelSettings());
+        int channel = acquireSSGChannel(noteItem->time(), noteItem->note().duration(), scs, items);
+        noteItem->setChannel(channel);
     }
 }
 
@@ -75,6 +79,8 @@ void VGMStream::releaseChannel(const Channel::Type type, const int channel)
         _fmChannels[channel].release();
     } else if (type == Channel::Type::PCM) {
         _pcmChannels[channel].release();
+    } else if (type == Channel::Type::SSG) {
+        _ssgChannels[channel].release();
     }
 }
 
@@ -84,12 +90,21 @@ void VGMStream::encode(const Project& project, QList<StreamItem*>& items, QByteA
         StreamSettingsItem* ssi;
         StreamNoteItem* sni;
         StreamLFOItem* sli;
+        StreamNoiseFrequencyItem* snfi;
+        StreamEnvelopeFrequencyItem* sefi;
+        StreamEnvelopeShapeItem* sesi;
         if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
             encodeSettingsItem(ssi, data);
         } else if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
             encodeNoteItem(project, sni, data);
         } else if ((sli = dynamic_cast<StreamLFOItem*>(items[i])) != nullptr) {
             encodeLFOItem(sli, data);
+        } else if ((snfi = dynamic_cast<StreamNoiseFrequencyItem*>(items[i])) != nullptr) {
+            encodeNoiseFrequencyItem(snfi, data);
+        } else if ((sefi = dynamic_cast<StreamEnvelopeFrequencyItem*>(items[i])) != nullptr) {
+            encodeEnvelopeFrequencyItem(sefi, data);
+        } else if ((sesi = dynamic_cast<StreamEnvelopeShapeItem*>(items[i])) != nullptr) {
+            encodeEnvelopeShapeItem(sesi, data);
         }
     }
 }
@@ -114,10 +129,16 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
     if (loopStart >= 0 && loopEnd >= 0) {
         pad(items, loopEnd);
         items.prepend(new StreamLFOItem(loopStart, project.lfoMode()));
+        items.prepend(new StreamNoiseFrequencyItem(loopStart, project.ssgNoiseFrequency()));
+        items.prepend(new StreamEnvelopeFrequencyItem(loopStart, project.ssgEnvelopeFrequency()));
+        items.prepend(new StreamEnvelopeShapeItem(loopStart, project.ssgEnvelopeShape()));
         totalSamples = encode(project, items, data, loopStart, nullptr, currentOffset, &_currentOffsetData, true);
     } else {
         pad(items, project.getPatternBarLength(pattern));
         items.prepend(new StreamLFOItem(0, project.lfoMode()));
+        items.prepend(new StreamNoiseFrequencyItem(0, project.ssgNoiseFrequency()));
+        items.prepend(new StreamEnvelopeFrequencyItem(0, project.ssgEnvelopeFrequency()));
+        items.prepend(new StreamEnvelopeShapeItem(0, project.ssgEnvelopeShape()));
         totalSamples = encode(project, items, data, 0, nullptr, currentOffset, &_currentOffsetData, true);
     }
 
@@ -214,21 +235,69 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
         pad(items, project.getLength());
     }
 
+    // LFO changes
     QList<Playlist::LFOChange*> lfoChanges = project.playlist().lfoChanges();
 
     std::sort(lfoChanges.begin(), lfoChanges.end(), [](Playlist::LFOChange* a, Playlist::LFOChange* b) {
         return a->time() < b->time();
     });
 
-    auto mostRecentLFOChangeIt = std::find_if(project.playlist().lfoChanges().rbegin(),
-                                 project.playlist().lfoChanges().rend(),
+    auto mostRecentLFOChangeIt = std::find_if(lfoChanges.rbegin(), lfoChanges.rend(),
     [&](Playlist::LFOChange* change) {
         return change->time() <= currentOffset;
     });
-    if (mostRecentLFOChangeIt == project.playlist().lfoChanges().rend()) {
+    if (mostRecentLFOChangeIt == lfoChanges.rend()) {
         items.prepend(new StreamLFOItem(currentOffset, project.lfoMode()));
     } else {
         items.prepend(new StreamLFOItem(currentOffset, (*mostRecentLFOChangeIt)->mode()));
+    }
+
+    // SSG noise frequency
+    QList<Playlist::NoiseFrequencyChange*> nfChanges = project.playlist().noiseFrequencyChanges();
+
+    std::sort(nfChanges.begin(), nfChanges.end(), [](Playlist::NoiseFrequencyChange* a, Playlist::NoiseFrequencyChange* b) {
+        return a->time() < b->time();
+    });
+
+    auto mostRecentNFChangeIt = std::find_if(nfChanges.rbegin(), nfChanges.rend(), [&](Playlist::NoiseFrequencyChange* change) {
+        return change->time() <= currentOffset;
+    });
+    if (mostRecentNFChangeIt == nfChanges.rend()) {
+        items.prepend(new StreamNoiseFrequencyItem(currentOffset, project.ssgNoiseFrequency()));
+    } else {
+        items.prepend(new StreamNoiseFrequencyItem(currentOffset, (*mostRecentNFChangeIt)->frequency()));
+    }
+
+    // SSG envelope frequency
+    QList<Playlist::EnvelopeFrequencyChange*> efChanges = project.playlist().envelopeFrequencyChanges();
+
+    std::sort(efChanges.begin(), efChanges.end(), [](Playlist::EnvelopeFrequencyChange* a, Playlist::EnvelopeFrequencyChange* b) {
+        return a->time() < b->time();
+    });
+
+    auto mostRecentEFChangeIt = std::find_if(efChanges.rbegin(), efChanges.rend(), [&](Playlist::EnvelopeFrequencyChange* change) {
+        return change->time() <= currentOffset;
+    });
+    if (mostRecentEFChangeIt == efChanges.rend()) {
+        items.prepend(new StreamEnvelopeFrequencyItem(currentOffset, project.ssgEnvelopeFrequency()));
+    } else {
+        items.prepend(new StreamEnvelopeFrequencyItem(currentOffset, (*mostRecentEFChangeIt)->frequency()));
+    }
+
+    // SSG envelope shape
+    QList<Playlist::EnvelopeShapeChange*> esChanges = project.playlist().envelopeShapeChanges();
+
+    std::sort(esChanges.begin(), esChanges.end(), [](Playlist::EnvelopeShapeChange* a, Playlist::EnvelopeShapeChange* b) {
+        return a->time() < b->time();
+    });
+
+    auto mostRecentESChangeIt = std::find_if(esChanges.rbegin(), esChanges.rend(), [&](Playlist::EnvelopeShapeChange* change) {
+          return change->time() <= currentOffset;
+    });
+    if (mostRecentESChangeIt == esChanges.rend()) {
+        items.prepend(new StreamEnvelopeShapeItem(currentOffset, project.ssgEnvelopeShape()));
+    } else {
+        items.prepend(new StreamEnvelopeShapeItem(currentOffset, (*mostRecentESChangeIt)->shape()));
     }
 
     sortItems(items);
@@ -644,6 +713,32 @@ int VGMStream::acquirePCMChannel(const Project& project, const float time, const
     return -1;
 }
 
+int VGMStream::acquireSSGChannel(const float time, const float duration, const SSGChannelSettings* settings, QList<StreamItem*>& items)
+{
+    for (int i = 0; i < SSG_CHANNELS; i++) {
+        if (_ssgChannels[i].settings() == *settings) {
+            bool first;
+            if (_ssgChannels[i].acquire(time, duration, first)) {
+                if (first) {
+                    items.append(new StreamSettingsItem(time, i, settings));
+                }
+                return i;
+            }
+        }
+    }
+
+    for (int i = 0; i < SSG_CHANNELS; i++) {
+        bool first;
+        if (_ssgChannels[i].acquire(time, duration, first)) {
+            _ssgChannels[i].settings() = *settings;
+            items.append(new StreamSettingsItem(time, i, settings));
+            return i;
+        }
+    }
+
+    return -1;
+}
+
 void VGMStream::processPattern(const float time, const Project& project, const Pattern& pattern, QList<StreamItem*>& items, const float loopStart, const float loopEnd)
 {
     for (auto it = pattern.tracks().cbegin(); it != pattern.tracks().cend(); ++it) {
@@ -704,6 +799,33 @@ void VGMStream::processProject(const Project& project, QList<StreamItem*>& items
             }
         }
         items.append(new StreamLFOItem(change->time(), change->mode()));
+    }
+
+    for (Playlist::NoiseFrequencyChange* change : project.playlist().noiseFrequencyChanges()) {
+        if (loopStart >= 0 && loopEnd >= 0) {
+            if (loopEnd < change->time() || loopStart > change->time()) {
+                continue;
+            }
+        }
+        items.append(new StreamNoiseFrequencyItem(change->time(), change->frequency()));
+    }
+
+    for (Playlist::EnvelopeFrequencyChange* change : project.playlist().envelopeFrequencyChanges()) {
+        if (loopStart >= 0 && loopEnd >= 0) {
+            if (loopEnd < change->time() || loopStart > change->time()) {
+                continue;
+            }
+        }
+        items.append(new StreamEnvelopeFrequencyItem(change->time(), change->frequency()));
+    }
+
+    for (Playlist::EnvelopeShapeChange* change : project.playlist().envelopeShapeChanges()) {
+        if (loopStart >= 0 && loopEnd >= 0) {
+            if (loopEnd < change->time() || loopStart > change->time()) {
+                continue;
+            }
+        }
+        items.append(new StreamEnvelopeShapeItem(change->time(), change->shape()));
     }
 }
 
@@ -943,6 +1065,33 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
             }
         }
     }
+
+    for (int i = 0; i < SSG_CHANNELS; i++) {
+        auto it = std::find_if(items.rbegin(), items.rend(), [&](StreamItem* si) {
+            StreamNoteItem* sni;
+            return (sni = dynamic_cast<StreamNoteItem*>(si)) &&
+                   sni->type() == Channel::Type::SSG &&
+                   sni->channel() == i && sni->time() <= currentTime;
+        });
+
+        if (it != items.rend()) {
+            StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(*it);
+            StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, sni->channelSettings(), sni->note().velocity());
+            items.append(ssi);
+        } else {
+            auto it2 = std::find_if(items.rbegin(), items.rend(), [&](StreamItem* si) {
+                StreamSettingsItem* ssi;
+                return (ssi = dynamic_cast<StreamSettingsItem*>(si)) &&
+                       dynamic_cast<const SSGChannelSettings*>(ssi->channelSettings()) &&
+                       ssi->channel() == i && ssi->time() <= currentTime;
+            });
+
+            if (it2 != items.rend()) {
+                StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamSettingsItem*>(*it2)->channelSettings());
+                items.append(ssi);
+            }
+        }
+    }
 }
 
 void VGMStream::sortItems(QList<StreamItem*>& items)
@@ -1032,6 +1181,9 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
         StreamSettingsItem* ssi;
         StreamNoteItem* sni;
         StreamLFOItem* sli;
+        StreamNoiseFrequencyItem* snfi;
+        StreamEnvelopeFrequencyItem* sefi;
+        StreamEnvelopeShapeItem* sesi;
         if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
             encodeSettingsItem(ssi, data);
         } else if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
@@ -1047,6 +1199,12 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
             }
         } else if ((sli = dynamic_cast<StreamLFOItem*>(items[i])) != nullptr) {
             encodeLFOItem(sli, data);
+        } else if ((snfi = dynamic_cast<StreamNoiseFrequencyItem*>(items[i])) != nullptr) {
+            encodeNoiseFrequencyItem(snfi, data);
+        } else if ((sefi = dynamic_cast<StreamEnvelopeFrequencyItem*>(items[i])) != nullptr) {
+            encodeEnvelopeFrequencyItem(sefi, data);
+        } else if ((sesi = dynamic_cast<StreamEnvelopeShapeItem*>(items[i])) != nullptr) {
+            encodeEnvelopeShapeItem(sesi, data);
         }
     }
     data.append(0x66);
@@ -1107,6 +1265,7 @@ void VGMStream::encodeSettingsItem(const StreamSettingsItem* item, QByteArray& d
     const NoiseChannelSettings* ncs;
     const FMChannelSettings* fmcs;
     const PCMChannelSettings* pcs;
+    const SSGChannelSettings* scs;
     if ((tcs = dynamic_cast<const ToneChannelSettings*>(item->channelSettings())) != nullptr) {
         int addr = (item->channel() * 2) + 1;
         int att;
@@ -1198,6 +1357,30 @@ void VGMStream::encodeSettingsItem(const StreamSettingsItem* item, QByteArray& d
             data.append(0xF0 | item->channel());
             data.append(att);
         }
+    } else if ((scs = dynamic_cast<const SSGChannelSettings*>(item->channelSettings())) != nullptr) {
+        uint8_t newMixer = _lastSSGMixer;
+
+        uint8_t mask = 0b1001 << item->channel();
+
+        newMixer &= ~mask;
+        newMixer |= ((!scs->noise() << 3) | (!scs->tone())) << item->channel();
+
+        data.append(0xA0);
+        data.append(0x7);
+        data.append(newMixer);
+
+        _lastSSGMixer = newMixer;
+
+        mask = 1 << 4;
+        uint8_t datum = _lastSSGLevel[item->channel()];
+        datum &= ~mask;
+        datum |= scs->envelope() << 4;
+
+        data.append(0xA0);
+        data.append(0x8 + item->channel());
+        data.append(datum);
+
+        _lastSSGLevel[item->channel()] = datum;
     }
 }
 
@@ -1325,6 +1508,40 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
                 }
             }
         }
+    } else if (item->type() == Channel::Type::SSG) {
+        const SSGChannelSettings* settings = dynamic_cast<const SSGChannelSettings*>(item->channelSettings());
+        if (item->on()) {
+            addr = item->channel() * 2;
+
+            int octave = item->note().key() / 12;
+            int key = (item->note().key() - 1) % 12;
+            if (key == 11) octave--;
+            float f = frequencies[key] * (float)qPow(2, octave);
+            int n = 3579545.0f / (32.0f * f);
+            uint8_t datum1 = n & 0xFF;
+            uint8_t datum2 = n >> 8;
+            data.append(0xA0);
+            data.append(addr);
+            data.append(datum1);
+            data.append(0xA0);
+            data.append(addr + 1);
+            data.append(datum2);
+        }
+
+        addr = 0x8 + item->channel();
+        uint8_t datum;
+        if (item->on()) {
+            int vol = 30.0f * (float)item->channelSettings()->volume()/100.0f
+                            * (float)item->note().velocity()/100.0f;
+            datum = vol >> 1;
+            datum |= (settings->envelope() << 4);
+        } else {
+            datum = 0;
+        }
+        data.append(0xA0);
+        data.append(addr);
+        data.append(datum);
+        _lastSSGLevel[item->channel()] = datum;
     }
 }
 
@@ -1337,6 +1554,34 @@ void VGMStream::encodeLFOItem(const StreamLFOItem* item, QByteArray& data)
     } else {
         data.append((quint8)0x00);
     }
+}
+
+void VGMStream::encodeNoiseFrequencyItem(const StreamNoiseFrequencyItem* item, QByteArray& data)
+{
+    data.append(0xA0);
+    data.append(0x6);
+    data.append(item->freq());
+}
+
+void VGMStream::encodeEnvelopeFrequencyItem(const StreamEnvelopeFrequencyItem* item, QByteArray& data)
+{
+    data.append(0xA0);
+    data.append(0xB);
+    data.append(item->freq() & 0xFF);
+
+    data.append(0xA0);
+    data.append(0xC);
+    data.append(item->freq() >> 8);
+}
+
+void VGMStream::encodeEnvelopeShapeItem(const StreamEnvelopeShapeItem* item, QByteArray& data)
+{
+    data.append(0xA0);
+    data.append(0xD);
+    data.append((item->settings().cont() << 3) |
+                (item->settings().att() << 2) |
+                (item->settings().alt() << 1) |
+                item->settings().hold());
 }
 
 bool VGMStream::requiresLongPCMChannel(const Project& project, const QString& path)
@@ -1600,4 +1845,51 @@ bool VGMStream::PCMChannel::isLong() const
 void VGMStream::PCMChannel::setIsLong(const bool isLong)
 {
     _isLong = isLong;
+}
+
+SSGChannelSettings& VGMStream::SSGChannel::settings()
+{
+    return _settings;
+}
+
+void VGMStream::SSGChannel::reset()
+{
+    PhysicalChannel::reset();
+    _settings = SSGChannelSettings();
+}
+
+VGMStream::StreamNoiseFrequencyItem::StreamNoiseFrequencyItem(const float time, const int freq)
+    : StreamItem(time)
+    , _freq(freq)
+{
+
+}
+
+int VGMStream::StreamNoiseFrequencyItem::freq() const
+{
+    return _freq;
+}
+
+VGMStream::StreamEnvelopeFrequencyItem::StreamEnvelopeFrequencyItem(const float time, const int freq)
+    : StreamItem(time)
+    , _freq(freq)
+{
+
+}
+
+int VGMStream::StreamEnvelopeFrequencyItem::freq() const
+{
+    return _freq;
+}
+
+VGMStream::StreamEnvelopeShapeItem::StreamEnvelopeShapeItem(const float time, const SSGEnvelopeSettings& shape)
+    : StreamItem(time)
+    , _settings(shape)
+{
+
+}
+
+const SSGEnvelopeSettings& VGMStream::StreamEnvelopeShapeItem::settings() const
+{
+    return _settings;
 }

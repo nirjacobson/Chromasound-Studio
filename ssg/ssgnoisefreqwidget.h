@@ -15,6 +15,11 @@ public:
     explicit SSGNoiseFreqWidget(QWidget *parent = nullptr);
     ~SSGNoiseFreqWidget();
 
+    int setting() const;
+    void set(const int freq);
+signals:
+    void changed();
+
 private:
     Ui::SSGNoiseFreqWidget *ui;
 

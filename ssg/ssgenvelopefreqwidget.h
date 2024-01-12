@@ -15,6 +15,12 @@ public:
     explicit SSGEnvelopeFreqWidget(QWidget *parent = nullptr);
     ~SSGEnvelopeFreqWidget();
 
+    int setting() const;
+    void set(const int freq);
+
+signals:
+    void changed();
+
 private:
     Ui::SSGEnvelopeFreqWidget *ui;
 

@@ -51,7 +51,7 @@
       <widget class="QGroupBox" name="groupBox_5">
        <layout class="QGridLayout" name="gridLayout_4">
         <item row="0" column="0">
-         <widget class="SSGNoiseFreqWidget" name="widget_3" native="true"/>
+         <widget class="SSGNoiseFreqWidget" name="ssgNoiseFreqWidget" native="true"/>
         </item>
        </layout>
       </widget>
@@ -60,7 +60,7 @@
       <widget class="QGroupBox" name="groupBox_4">
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
-         <widget class="SSGEnvelopeFreqWidget" name="widget_2" native="true"/>
+         <widget class="SSGEnvelopeFreqWidget" name="ssgEnvFreqWidget" native="true"/>
         </item>
        </layout>
       </widget>
@@ -69,7 +69,7 @@
       <widget class="QGroupBox" name="groupBox_3">
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="0">
-         <widget class="SSGEnvelopeShapeWidget" name="widget" native="true"/>
+         <widget class="SSGEnvelopeShapeWidget" name="ssgEnvShapeWidget" native="true"/>
         </item>
        </layout>
       </widget>

@@ -374,6 +374,7 @@ void MainWindow::channelSelected(const int index)
     NoiseWidget* noiseWidget;
     FMWidgetWindow* fmWidget;
     PCMWidget* pcmWidget;
+    SSGWidget* ssgWidget;
     QList<MdiSubWindow*>::Iterator it;
 
     for (MdiSubWindow* window : _channelWindows[index]) {
@@ -439,6 +440,27 @@ void MainWindow::channelSelected(const int index)
                 pcmWidget->setWindowTitle(QString("%1: PCM").arg(_app->project().getChannel(index).name()));
 
                 channelWindow->setWidget(pcmWidget);
+                if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
+                    channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
+                }
+                _channelWindows[index].append(channelWindow);
+                connect(channelWindow, &MdiSubWindow::closed, this, [=]() {
+                    windowClosed(channelWindow);
+                });
+            }
+            break;
+        case Channel::SSG:
+            it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window) {
+                return dynamic_cast<SSGWidget*>(window->widget());
+            });
+            if (it != _channelWindows[index].end()) {
+                ui->mdiArea->setActiveSubWindow(*it);
+            } else {
+                ssgWidget = new SSGWidget(this, _app);
+                ssgWidget->setSettings(dynamic_cast<SSGChannelSettings*>(&_app->project().getChannel(index).settings()));
+                ssgWidget->setWindowTitle(QString("%1: SSG").arg(_app->project().getChannel(index).name()));
+
+                channelWindow->setWidget(ssgWidget);
                 if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
                     channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
                 }
@@ -880,6 +902,7 @@ void MainWindow::channelSettingsUpdated()
             NoiseWidget* nw;
             FMWidgetWindow* fmw;
             PCMWidget* pw;
+            SSGWidget* sw;
             PianoRollWidget* prw;
 
             if ((nw = dynamic_cast<NoiseWidget*>(window->widget()))) {
@@ -888,6 +911,8 @@ void MainWindow::channelSettingsUpdated()
                 fmw->doUpdate();
             } else if ((pw = dynamic_cast<PCMWidget*>(window->widget()))) {
                 pw->doUpdate();
+            } else if ((sw = dynamic_cast<SSGWidget*>(window->widget()))) {
+                sw->doUpdate();
             } else if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
                 prw->doUpdate(0);
             }
