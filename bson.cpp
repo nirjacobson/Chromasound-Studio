@@ -418,12 +418,90 @@ Playlist::LFOChange BSON::toLFOChange(bson_iter_t& b)
     return lfoChange;
 }
 
+void BSON::fromNoiseFrequencyChange(bson_t* dst, const Playlist::NoiseFrequencyChange* const change)
+{
+    BSON_APPEND_DOUBLE(dst, "time", change->time());
+    BSON_APPEND_INT32(dst, "frequency", change->frequency());
+}
+
+Playlist::NoiseFrequencyChange BSON::toNoiseFrequencyChange(bson_iter_t& b)
+{
+    Playlist::NoiseFrequencyChange nfChange;
+
+    bson_iter_t time;
+    bson_iter_t freq;
+
+    if (bson_iter_find_descendant(&b, "time", &time) && BSON_ITER_HOLDS_DOUBLE(&time)) {
+        nfChange._time = bson_iter_double(&time);
+    }
+
+    if (bson_iter_find_descendant(&b, "frequency", &freq) && BSON_ITER_HOLDS_INT(&freq)) {
+        nfChange._freq = bson_iter_int32(&freq);
+    }
+
+    return nfChange;
+}
+
+void BSON::fromEnvelopeFrequencyChange(bson_t* dst, const Playlist::EnvelopeFrequencyChange* const change)
+{
+    BSON_APPEND_DOUBLE(dst, "time", change->time());
+    BSON_APPEND_INT32(dst, "frequency", change->frequency());
+}
+
+Playlist::EnvelopeFrequencyChange BSON::toEnvelopeFrequencyChange(bson_iter_t& b)
+{
+    Playlist::EnvelopeFrequencyChange efChange;
+
+    bson_iter_t time;
+    bson_iter_t freq;
+
+    if (bson_iter_find_descendant(&b, "time", &time) && BSON_ITER_HOLDS_DOUBLE(&time)) {
+        efChange._time = bson_iter_double(&time);
+    }
+
+    if (bson_iter_find_descendant(&b, "frequency", &freq) && BSON_ITER_HOLDS_INT(&freq)) {
+        efChange._freq = bson_iter_int32(&freq);
+    }
+
+    return efChange;
+}
+
+void BSON::fromEnvelopeShapeChange(bson_t* dst, const Playlist::EnvelopeShapeChange* const change)
+{
+    bson_t shape = change->shape().toBSON();
+
+    BSON_APPEND_DOUBLE(dst, "time", change->time());
+    BSON_APPEND_DOCUMENT(dst, "shape", &shape);
+}
+
+Playlist::EnvelopeShapeChange BSON::toEnvelopeShapeChange(bson_iter_t& b)
+{
+    Playlist::EnvelopeShapeChange esChange;
+
+    bson_iter_t time;
+    bson_iter_t shape;
+    bson_iter_t shapeInner;
+
+    if (bson_iter_find_descendant(&b, "time", &time) && BSON_ITER_HOLDS_DOUBLE(&time)) {
+        esChange._time = bson_iter_double(&time);
+    }
+
+    if (bson_iter_find_descendant(&b, "shape", &shape) && BSON_ITER_HOLDS_DOCUMENT(&shape) && bson_iter_recurse(&shape, &shapeInner)) {
+        esChange._shape.fromBSON(shapeInner);
+    }
+
+    return esChange;
+}
+
 void BSON::fromPlaylist(bson_t* dst, const Playlist& playlist)
 {
     BSON_APPEND_DOUBLE(dst, "loopOffset", playlist.loopOffset());
 
     bson_t items;
     bson_t lfoChanges;
+    bson_t noiseFrequencyChanges;
+    bson_t envelopeFrequencyChanges;
+    bson_t envelopeShapeChanges;
 
     uint32_t i = 0;
 
@@ -456,6 +534,54 @@ void BSON::fromPlaylist(bson_t* dst, const Playlist& playlist)
         BSON_APPEND_DOCUMENT(&lfoChanges, key, &b_change);
     }
     bson_append_array_end(dst, &lfoChanges);
+
+    i = 0;
+
+    BSON_APPEND_ARRAY_BEGIN(dst, "noiseFrequencyChanges", &noiseFrequencyChanges);
+    for (const Playlist::NoiseFrequencyChange* const nfChange : playlist._noiseFreqChanges) {
+        bson_t b_change;
+        bson_init(&b_change);
+        fromNoiseFrequencyChange(&b_change, nfChange);
+
+        char keybuff[8];
+        const char* key;
+        bson_uint32_to_string(i++, &key, keybuff, sizeof keybuff);
+
+        BSON_APPEND_DOCUMENT(&noiseFrequencyChanges, key, &b_change);
+    }
+    bson_append_array_end(dst, &noiseFrequencyChanges);
+
+    i = 0;
+
+    BSON_APPEND_ARRAY_BEGIN(dst, "envelopeFrequencyChanges", &envelopeFrequencyChanges);
+    for (const Playlist::EnvelopeFrequencyChange* const efChange : playlist._envFreqChanges) {
+        bson_t b_change;
+        bson_init(&b_change);
+        fromEnvelopeFrequencyChange(&b_change, efChange);
+
+        char keybuff[8];
+        const char* key;
+        bson_uint32_to_string(i++, &key, keybuff, sizeof keybuff);
+
+        BSON_APPEND_DOCUMENT(&envelopeFrequencyChanges, key, &b_change);
+    }
+    bson_append_array_end(dst, &envelopeFrequencyChanges);
+
+    i = 0;
+
+    BSON_APPEND_ARRAY_BEGIN(dst, "envelopeShapeChanges", &envelopeShapeChanges);
+    for (const Playlist::EnvelopeShapeChange* const esChange : playlist._envShapeChanges) {
+        bson_t b_change;
+        bson_init(&b_change);
+        fromEnvelopeShapeChange(&b_change, esChange);
+
+        char keybuff[8];
+        const char* key;
+        bson_uint32_to_string(i++, &key, keybuff, sizeof keybuff);
+
+        BSON_APPEND_DOCUMENT(&envelopeShapeChanges, key, &b_change);
+    }
+    bson_append_array_end(dst, &envelopeShapeChanges);
 }
 
 Playlist BSON::toPlaylist(bson_iter_t& b, Project* project)
@@ -469,6 +595,15 @@ Playlist BSON::toPlaylist(bson_iter_t& b, Project* project)
 
     bson_iter_t lfoChanges;
     bson_iter_t lfoChange;
+
+    bson_iter_t noiseFreqChanges;
+    bson_iter_t noiseFreqChange;
+
+    bson_iter_t envFreqChanges;
+    bson_iter_t envFreqChange;
+
+    bson_iter_t envShapeChanges;
+    bson_iter_t envShapeChange;
 
     if (bson_iter_find_descendant(&b, "loopOffset", &loopOffset) && BSON_ITER_HOLDS_DOUBLE(&loopOffset)) {
         p._loopOffset = bson_iter_double(&loopOffset);
@@ -485,6 +620,27 @@ Playlist BSON::toPlaylist(bson_iter_t& b, Project* project)
         while (bson_iter_next(&child)) {
             bson_iter_recurse(&child, &lfoChange);
             p._lfoChanges.append(new Playlist::LFOChange(toLFOChange(lfoChange)));
+        }
+    }
+
+    if (bson_iter_find_descendant(&b, "noiseFrequencyChanges", &noiseFreqChanges) && BSON_ITER_HOLDS_ARRAY(&noiseFreqChanges) && bson_iter_recurse(&noiseFreqChanges, &child)) {
+        while (bson_iter_next(&child)) {
+            bson_iter_recurse(&child, &noiseFreqChange);
+            p._noiseFreqChanges.append(new Playlist::NoiseFrequencyChange(toNoiseFrequencyChange(noiseFreqChange)));
+        }
+    }
+
+    if (bson_iter_find_descendant(&b, "envelopeFrequencyChanges", &envFreqChanges) && BSON_ITER_HOLDS_ARRAY(&envFreqChanges) && bson_iter_recurse(&envFreqChanges, &child)) {
+        while (bson_iter_next(&child)) {
+            bson_iter_recurse(&child, &envFreqChange);
+            p._envFreqChanges.append(new Playlist::EnvelopeFrequencyChange(toEnvelopeFrequencyChange(envFreqChange)));
+        }
+    }
+
+    if (bson_iter_find_descendant(&b, "envelopeShapeChanges", &envShapeChanges) && BSON_ITER_HOLDS_ARRAY(&envShapeChanges) && bson_iter_recurse(&envShapeChanges, &child)) {
+        while (bson_iter_next(&child)) {
+            bson_iter_recurse(&child, &envShapeChange);
+            p._envShapeChanges.append(new Playlist::EnvelopeShapeChange(toEnvelopeShapeChange(envShapeChange)));
         }
     }
 

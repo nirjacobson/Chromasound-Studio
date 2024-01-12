@@ -3,23 +3,23 @@
 GanttHeaderWidget::GanttHeaderWidget(QWidget *parent)
     : ScrollableWidget{parent}
     , _items(nullptr)
-    , _markers(nullptr)
     , _left(0)
     , _loopStart(-1)
     , _loopEnd(-1)
     , _cellWidth(16)
     , _cellBeats(1)
     , _snap(true)
+    , _markers(nullptr)
     , _positionFunction([]() {
-    return -1;
-})
-, _headerPaintFunction([](QPainter&,QRect,float,float,float) {})
-, _activeColor(QColor(64, 64, 64))
-, _inactiveColor(Qt::lightGray)
-, _activeForegroundColor(Qt::gray)
-, _inactiveForegroundColor(Qt::gray)
-, _cursorColor(QColor(64, 192, 64))
-, _loopColor(QColor(255, 192, 0))
+        return -1;
+    })
+    , _headerPaintFunction([](QPainter&,QRect,float,float,float) {})
+    , _activeColor(QColor(64, 64, 64))
+    , _inactiveColor(Qt::lightGray)
+    , _activeForegroundColor(Qt::gray)
+    , _inactiveForegroundColor(Qt::gray)
+    , _cursorColor(QColor(64, 192, 64))
+    , _loopColor(QColor(255, 192, 0))
 {
 
 }
@@ -46,7 +46,7 @@ void GanttHeaderWidget::setScrollPercentage(const float percent)
     update();
 }
 
-void GanttHeaderWidget::setMarkers(QList<GanttMarker*>* markers)
+void GanttHeaderWidget::setMarkers(QMap<float, QList<GanttMarker*> >* markers)
 {
     _markers = markers;
 }
@@ -120,7 +120,18 @@ float GanttHeaderWidget::playlength() const
 
 void GanttHeaderWidget::paintEvent(QPaintEvent*)
 {
-    setMinimumHeight((!_markers || _markers->isEmpty()) ? 24 : 48);
+    int minHeight = 24;
+    int max = 0;
+    if (_markers) {
+        for (auto it = _markers->begin(); it != _markers->end(); ++it) {
+            if (it->size() > max) {
+                max = it->size();
+            }
+        }
+    }
+    minHeight += max * 24;
+
+    setMinimumHeight(minHeight);
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -180,33 +191,37 @@ void GanttHeaderWidget::paintEvent(QPaintEvent*)
     }
 
     if (_markers) {
-        for (GanttMarker* marker : *_markers) {
-            QRectF br = painter.boundingRect(rect(), marker->name());
+        for (auto it = _markers->begin(); it != _markers->end(); ++it) {
+            for (int i = 0; i < it->size(); i++) {
+                GanttMarker* marker = (*it)[i];
 
-            if (marker->time() + (br.width() * beatsPerPixel) > leftPosition) {
-                int markerPixel = (marker->time() - leftPosition) / beatsPerPixel;
+                QRectF br = painter.boundingRect(rect(), marker->name());
 
-                painter.setPen(marker->color());
-                painter.setBrush(marker->color());
-                br = QRectF(QPoint(markerPixel, 24), QSize(br.width() + 8, 24));
-                painter.drawRect(br);
-                painter.setPen(Qt::black);
-                painter.drawText(br.adjusted(4, 0, 0, -4), Qt::AlignLeft | Qt::AlignBottom, marker->name());
+                if (marker->time() + (br.width() * beatsPerPixel) > leftPosition) {
+                    int markerPixel = (marker->time() - leftPosition) / beatsPerPixel;
+
+                    painter.setPen(marker->color());
+                    painter.setBrush(marker->color());
+                    br = QRectF(QPoint(markerPixel, height() - (24 * (i + 1))), QSize(br.width() + 8, 24));
+                    painter.drawRect(br);
+                    painter.setPen(Qt::black);
+                    painter.drawText(br.adjusted(4, 0, 0, -4), Qt::AlignLeft | Qt::AlignBottom, marker->name());
+                }
             }
         }
-    }
 
-    if (hasLoop()) {
-        if (leftPosition <= _loopEnd && _loopStart <= rightPosition) {
-            int loopFromPixel = (_loopStart - leftPosition) / beatsPerPixel;
-            int width = (_loopEnd - _loopStart) / beatsPerPixel;
+        if (hasLoop()) {
+            if (leftPosition <= _loopEnd && _loopStart <= rightPosition) {
+                int loopFromPixel = (_loopStart - leftPosition) / beatsPerPixel;
+                int width = (_loopEnd - _loopStart) / beatsPerPixel;
 
 
-            QColor loopColorWithAlpha = _loopColor;
-            loopColorWithAlpha.setAlpha(128);
-            painter.setPen(loopColorWithAlpha.darker());
-            painter.setBrush(loopColorWithAlpha);
-            painter.drawRect(QRect(QPoint(loopFromPixel, 0), QSize(width, height() - 1)));
+                QColor loopColorWithAlpha = _loopColor;
+                loopColorWithAlpha.setAlpha(128);
+                painter.setPen(loopColorWithAlpha.darker());
+                painter.setBrush(loopColorWithAlpha);
+                painter.drawRect(QRect(QPoint(loopFromPixel, 0), QSize(width, height() - 1)));
+            }
         }
     }
 }
@@ -226,16 +241,20 @@ void GanttHeaderWidget::mousePressEvent(QMouseEvent* event)
 
     if (Qt::ShiftModifier == QApplication::keyboardModifiers()) {
         if (_markers) {
-            for (GanttMarker* marker : *_markers) {
-                if (marker->time() <= mousePosition && mousePosition < marker->time() + (height() * beatsPerPixel)) {
-                    emit markerClicked(marker);
-                    return;
+            for (auto it = _markers->begin(); it != _markers->end(); ++it) {
+                for (int i = 0; i < it->size(); i++) {
+                    if (event->pos().y() <= (height() - (i * 24)) && event->pos().y() > (height() - ((i + 1) * 24))) {
+                        if ((*it)[i]->time() <= mousePosition && mousePosition < (*it)[i]->time() + (24 * beatsPerPixel)) {
+                            emit markerClicked((*it)[i]);
+                            return;
+                        }
+                    }
                 }
             }
         }
     }
 
-    emit clicked(event->button(), _snap ? mousePositionSnapped : mousePosition);
+    emit clicked(event->button(), _snap ? mousePositionSnapped : mousePosition, mapToGlobal(event->pos()));
 }
 
 void GanttHeaderWidget::mouseReleaseEvent(QMouseEvent* event)

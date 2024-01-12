@@ -36,6 +36,15 @@ class BSON
         static void fromLFOChange(bson_t* dst, const Playlist::LFOChange* const change);
         static Playlist::LFOChange toLFOChange(bson_iter_t& b);
 
+        static void fromNoiseFrequencyChange(bson_t* dst, const Playlist::NoiseFrequencyChange* const change);
+        static Playlist::NoiseFrequencyChange toNoiseFrequencyChange(bson_iter_t& b);
+
+        static void fromEnvelopeFrequencyChange(bson_t* dst, const Playlist::EnvelopeFrequencyChange* const change);
+        static Playlist::EnvelopeFrequencyChange toEnvelopeFrequencyChange(bson_iter_t& b);
+
+        static void fromEnvelopeShapeChange(bson_t* dst, const Playlist::EnvelopeShapeChange* const change);
+        static Playlist::EnvelopeShapeChange toEnvelopeShapeChange(bson_iter_t& b);
+
         static void fromChannel(bson_t* dst, const Channel& channel);
         static Channel toChannel(bson_iter_t& b);
 

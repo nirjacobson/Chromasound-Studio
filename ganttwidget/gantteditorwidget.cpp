@@ -13,11 +13,11 @@ GanttEditorWidget::GanttEditorWidget(QWidget *parent)
     , _snap(true)
     , _invertRows(false)
     , _items(nullptr)
-    , _markers(nullptr)
     , _itemUnderCursor(nullptr)
     , _itemsResizable(false)
     , _itemsMovableX(false)
     , _itemsMovableY(false)
+    , _markers(nullptr)
     , _positionFunction([]() {
     return -1;
 })
@@ -51,7 +51,7 @@ void GanttEditorWidget::setHorizontalScrollPercentage(const float percent)
     update();
 }
 
-void GanttEditorWidget::setMarkers(QList<GanttMarker*>* markers)
+void GanttEditorWidget::setMarkers(QMap<float, QList<GanttMarker*> >* markers)
 {
     _markers = markers;
 }
@@ -235,11 +235,15 @@ void GanttEditorWidget::paintEvent(QPaintEvent*)
     }
 
     if (_markers) {
-        for (GanttMarker* marker : *_markers) {
-            if (leftPosition <= marker->time() && marker->time() <= rightPosition) {
-                int markerPixel = (marker->time() - leftPosition) / beatsPerPixel;
-                painter.setPen(marker->color());
-                painter.drawLine(QLine(QPoint(markerPixel, 0), QPoint(markerPixel, height())));
+        for (auto it = _markers->begin(); it != _markers->end(); it++) {
+            for (int i = 0; i < it->size(); i++) {
+                GanttMarker* marker = (*it)[i];
+
+                if (leftPosition <= marker->time() && marker->time() <= rightPosition) {
+                    int markerPixel = ((marker->time() - leftPosition) / beatsPerPixel) + i;
+                    painter.setPen(marker->color());
+                    painter.drawLine(QLine(QPoint(markerPixel, 0), QPoint(markerPixel, height())));
+                }
             }
         }
     }

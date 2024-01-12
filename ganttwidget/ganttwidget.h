@@ -26,8 +26,8 @@ class GanttWidget : public QWidget
         void setLeftWidget(GanttLeftWidget* const widget);
         void setBottomWidget(GanttBottomWidget* const widget);
         void setParameters(int rows, int rowHeight, int cellWidth, float beatsPerCell);
-
-        void setMarkers(QList<GanttMarker*>* markers);
+        
+        void addMarkers(QList<GanttMarker*>* markers);
         void setItems(QList<GanttItem*>* items);
         void setApplication(Application* app);
         void invertRows(const bool invert);
@@ -62,6 +62,9 @@ class GanttWidget : public QWidget
         Ui::GanttWidget *ui;
         Application* _app;
 
+        QList<QList<GanttMarker*>*> _markers;
+        QMap<float, QList<GanttMarker*>> _markersMap;
+
         GanttLeftWidget* _leftWidget;
         GanttBottomWidget* _bottomWidget;
 
@@ -77,6 +80,8 @@ class GanttWidget : public QWidget
         void setCursorColor(const QColor& color);
         void setLoopColor(const QColor& color);
 
+        void rebuildMarkersMap();
+
     private slots:
         void verticalScroll(int amount);
         void horizontalScroll(int amount);
@@ -88,11 +93,15 @@ class GanttWidget : public QWidget
 
     signals:
         void markerClicked(GanttMarker* marker);
-        void headerClicked(Qt::MouseButton button, float time);
+        void headerClicked(Qt::MouseButton button, float time, const QPoint& location);
         void editorClicked(Qt::MouseButton button, int row, float time);
         void itemChanged(GanttItem* item, const float toTime, const int toRow, const float toDuration);
         void itemReleased(const GanttItem* item);
         void contextMenuRequested(GanttItem* item, const QPoint& location);
+
+        // QWidget interface
+    protected:
+        void paintEvent(QPaintEvent* event);
 };
 
 #endif // GANTTWIDGET_H

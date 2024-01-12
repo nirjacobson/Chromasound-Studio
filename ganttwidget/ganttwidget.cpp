@@ -23,6 +23,8 @@ GanttWidget::GanttWidget(QWidget *parent, Application* app) :
     ui->editorWidget->setCellBeats(_cellBeats);
     ui->editorWidget->setRows(_rows);
     ui->bottomWidget->setVisible(false);
+    ui->headerWidget->setMarkers(&_markersMap);
+    ui->editorWidget->setMarkers(&_markersMap);
 
     connect(ui->verticalScrollBar, &QScrollBar::valueChanged, this, &GanttWidget::verticalScroll);
     connect(ui->horizontalScrollBar, &QScrollBar::valueChanged, this, &GanttWidget::horizontalScroll);
@@ -81,10 +83,9 @@ void GanttWidget::setParameters(int rows, int rowHeight, int cellWidth, float be
     ui->editorWidget->setCellBeats(_cellBeats);
 }
 
-void GanttWidget::setMarkers(QList<GanttMarker*>* markers)
+void GanttWidget::addMarkers(QList<GanttMarker*>* markers)
 {
-    ui->headerWidget->setMarkers(markers);
-    ui->editorWidget->setMarkers(markers);
+    _markers.append(markers);
 }
 
 void GanttWidget::setItems(QList<GanttItem*>* items)
@@ -220,6 +221,16 @@ void GanttWidget::setLoopColor(const QColor& color)
     ui->editorWidget->setLoopColor(color);
 }
 
+void GanttWidget::rebuildMarkersMap()
+{
+    _markersMap.clear();
+    for (const QList<GanttMarker*>* markers : _markers) {
+        for (GanttMarker* marker : *markers) {
+            _markersMap[marker->time()].append(marker);
+        }
+    }
+}
+
 void GanttWidget::verticalScroll(int amount)
 {
     float vscroll = (float)amount / ui->verticalScrollBar->maximum();
@@ -270,4 +281,10 @@ void GanttWidget::loopChanged()
 void GanttWidget::scaleChanged(float scale)
 {
     setCellWidth(scale * _defaultCellWidth);
+}
+
+void GanttWidget::paintEvent(QPaintEvent* event)
+{
+    rebuildMarkersMap();
+    QWidget::paintEvent(event);
 }

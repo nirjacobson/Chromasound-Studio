@@ -32,8 +32,8 @@ TopWidget::TopWidget(QWidget *parent, Application* app)
     connect(ui->tempoSpinBox, SIGNAL(valueChanged(int)), this, SLOT(tempoDidChange(int)));
     connect(ui->beatsPerBarSpinBox, SIGNAL(valueChanged(int)), this, SIGNAL(beatsPerBarChanged(int)));
     connect(ui->beatsPerBarSpinBox, SIGNAL(valueChanged(int)), this, SLOT(beatsPerBarDidChange(int)));
-    connect(ui->lfoComboBox, &QComboBox::currentIndexChanged, this, &TopWidget::lfoModeChanged);
 
+    connect(ui->lfoWidget, &LFOWidget::changed, this, &TopWidget::lfoModeChanged);
     connect(ui->ssgEnvShapeWidget, &SSGEnvelopeShapeWidget::changed, this, &TopWidget::envelopeShapeChanged);
     connect(ui->ssgEnvFreqWidget, &SSGEnvelopeFreqWidget::changed, this, &TopWidget::envelopeFrequencyChanged);
     connect(ui->ssgNoiseFreqWidget, &SSGNoiseFreqWidget::changed, this, &TopWidget::noiseFrequencyChanged);
@@ -78,10 +78,7 @@ void TopWidget::updateFromProject(const Project& project)
         ui->songRadioButton->blockSignals(false);
     }
 
-    ui->lfoComboBox->blockSignals(true);
-    ui->lfoComboBox->setCurrentIndex(project.lfoMode());
-    ui->lfoComboBox->blockSignals(false);
-
+    ui->lfoWidget->set(project.lfoMode());
     ui->ssgEnvShapeWidget->set(project.ssgEnvelopeShape());
     ui->ssgEnvFreqWidget->set(project.ssgEnvelopeFrequency());
     ui->ssgNoiseFreqWidget->set(project.ssgNoiseFrequency());
@@ -139,9 +136,9 @@ void TopWidget::songModeSelected()
     _app->project().setPlayMode(Project::PlayMode::SONG);
 }
 
-void TopWidget::lfoModeChanged(int mode)
+void TopWidget::lfoModeChanged()
 {
-    _app->project().setLFOMode(mode);
+    _app->project().setLFOMode(ui->lfoWidget->setting());
 }
 
 void TopWidget::envelopeShapeChanged()

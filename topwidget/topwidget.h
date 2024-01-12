@@ -51,7 +51,7 @@ class TopWidget : public QWidget
         void beatsPerBarDidChange(int beats);
         void patModeSelected();
         void songModeSelected();
-        void lfoModeChanged(int mode);
+        void lfoModeChanged();
         void envelopeShapeChanged();
         void envelopeFrequencyChanged();
         void noiseFrequencyChanged();

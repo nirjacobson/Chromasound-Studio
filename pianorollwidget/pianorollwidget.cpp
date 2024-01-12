@@ -80,7 +80,7 @@ void PianoRollWidget::setTrack(const int pattern, const int track)
     _channel = track;
     _track = &_app->project().getPattern(pattern).getTrack(track);
     ui->ganttWidget->setItems(reinterpret_cast<QList<GanttItem*>*>(&_track->items()));
-    ui->ganttWidget->setMarkers(reinterpret_cast<QList<GanttMarker*>*>(&_track->settingsChanges()));
+    ui->ganttWidget->addMarkers(reinterpret_cast<QList<GanttMarker*>*>(&_track->settingsChanges()));
     ui->ganttWidget->setPositionFunction([&]() {
         if (_app->project().playMode() == Project::PlayMode::SONG) {
             QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(_appPosition);
