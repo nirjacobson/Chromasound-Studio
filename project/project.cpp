@@ -17,6 +17,8 @@ Project::Project()
     , _tempo(120)
     , _beatsPerBar(4)
     , _lfoMode(0)
+    , _ssgEnvelopeFreq(0)
+    , _ssgNoiseFreq(0)
 {
     addChannel();
     addChannel();
@@ -159,6 +161,36 @@ int Project::lfoMode() const
 void Project::setLFOMode(const int mode)
 {
     _lfoMode = mode;
+}
+
+const SSGEnvelopeSettings& Project::ssgEnvelopeShape() const
+{
+    return _ssgEnvelopeSettings;
+}
+
+void Project::setSSGEnvelopeSettings(const SSGEnvelopeSettings& settings)
+{
+    _ssgEnvelopeSettings = settings;
+}
+
+int Project::ssgEnvelopeFrequency() const
+{
+    return _ssgEnvelopeFreq;
+}
+
+void Project::setSSGEnvelopeFrequency(const int freq)
+{
+    _ssgEnvelopeFreq = freq;
+}
+
+int Project::ssgNoiseFrequency() const
+{
+    return _ssgNoiseFreq;
+}
+
+void Project::setSSGNoiseFrequency(const int freq)
+{
+    _ssgNoiseFreq = freq;
 }
 
 const QList<Pattern*>& Project::patterns() const

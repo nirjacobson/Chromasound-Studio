@@ -16,6 +16,7 @@
 #include "pianorollwidget/pianorollwidget.h"
 #include "fmwidget/fmwidgetwindow.h"
 #include "pcmwidget/pcmwidget.h"
+#include "ssg/ssgwidget.h"
 #include "project/vgmstream.h"
 #include "midi/midiinput.h"
 #include "midi/midipoller.h"

@@ -59,6 +59,36 @@ class VGMStream
                 int _mode;
         };
 
+        class StreamNoiseFrequencyItem : public StreamItem {
+            public:
+                StreamNoiseFrequencyItem(const float time, const int freq);
+
+                int freq() const;
+
+            private:
+                int _freq;
+        };
+
+        class StreamEnvelopeFrequencyItem : public StreamItem {
+            public:
+                StreamEnvelopeFrequencyItem(const float time, const int freq);
+
+                int freq() const;
+
+            private:
+                int _freq;
+        };
+
+        class StreamEnvelopeShapeItem : public StreamItem {
+            public:
+                StreamEnvelopeShapeItem(const float time, const SSGEnvelopeSettings& shape);
+
+                const SSGEnvelopeSettings& settings() const;
+
+            private:
+                SSGEnvelopeSettings _settings;
+        };
+
         VGMStream(const Format format = Format::FM_PSG);
         ~VGMStream();
 
@@ -141,11 +171,20 @@ class VGMStream
             private:
                 bool _isLong;
         };
+        class SSGChannel : public PhysicalChannel {
+            public:
+                SSGChannelSettings& settings();
+                void reset() override;
+
+            private:
+                SSGChannelSettings _settings;
+        };
 
         static constexpr int FM_CHANNELS = 6;
         static constexpr int TONE_CHANNELS = 3;
         static constexpr int NOISE_CHANNELS = 1;
         static constexpr int PCM_CHANNELS = 4;
+        static constexpr int SSG_CHANNELS = 3;
         static constexpr int MAX_PCM_ATTENUATION = 4;
 
         Format _format;
@@ -154,6 +193,10 @@ class VGMStream
         ToneChannel _toneChannels[TONE_CHANNELS];
         NoiseChannel _noiseChannels[NOISE_CHANNELS];
         PCMChannel _pcmChannels[PCM_CHANNELS];
+        SSGChannel _ssgChannels[SSG_CHANNELS];
+
+        uint8_t _lastSSGMixer;
+        uint8_t _lastSSGLevel[SSG_CHANNELS];
 
         QList<Track::SettingsChange*> _createdSCs;
 
@@ -161,6 +204,7 @@ class VGMStream
         int acquireNoiseChannel(const float time, const float duration, const NoiseChannelSettings* settings, QList<StreamItem*>& items);
         int acquireFMChannel(const float time, const float duration, const FMChannelSettings* settings, QList<StreamItem*>& items);
         int acquirePCMChannel(const Project& project, const float time, const float duration, const PCMChannelSettings* settings);
+        int acquireSSGChannel(const float time, const float duration, const SSGChannelSettings* settings, QList<StreamItem*>& items);
 
         void processProject(const Project& project, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
         void processPattern(const float time, const Project& project, const Pattern& pattern, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
@@ -184,6 +228,10 @@ class VGMStream
         void encodeSettingsItem(const StreamSettingsItem* item, QByteArray& data);
         void encodeNoteItem(const Project& project, const StreamNoteItem* item, QByteArray& data);
         void encodeLFOItem(const StreamLFOItem* item, QByteArray& data);
+        void encodeNoiseFrequencyItem(const StreamNoiseFrequencyItem* item, QByteArray& data);
+        void encodeEnvelopeFrequencyItem(const StreamEnvelopeFrequencyItem* item, QByteArray& data);
+        void encodeEnvelopeShapeItem(const StreamEnvelopeShapeItem* item, QByteArray& data);
+
 
         bool requiresLongPCMChannel(const Project& project, const QString& path);
 };

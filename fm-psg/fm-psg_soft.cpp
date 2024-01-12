@@ -265,6 +265,15 @@ void FM_PSG_Soft::keyOn(const Project& project, const Channel::Type channelType,
     VGMStream::StreamLFOItem* sli = new VGMStream::StreamLFOItem(0, project.lfoMode());
     _items.append(sli);
 
+    VGMStream::StreamNoiseFrequencyItem* nfi = new VGMStream::StreamNoiseFrequencyItem(0, project.ssgNoiseFrequency());
+    _items.append(nfi);
+
+    VGMStream::StreamEnvelopeFrequencyItem* efi = new VGMStream::StreamEnvelopeFrequencyItem(0, project.ssgEnvelopeFrequency());
+    _items.append(efi);
+
+    VGMStream::StreamEnvelopeShapeItem* esi = new VGMStream::StreamEnvelopeShapeItem(0, project.ssgEnvelopeShape());
+    _items.append(esi);
+
     _items.append(sni);
     _vgmStream.assignChannel(project, sni, _items);
 

@@ -225,6 +225,105 @@ void Playlist::removeLFOChange(const LFOChange* lc, const bool keep)
     }
 }
 
+const QList<Playlist::NoiseFrequencyChange*>& Playlist::noiseFrequencyChanges() const
+{
+    return _noiseFreqChanges;
+}
+
+QList<Playlist::NoiseFrequencyChange*>& Playlist::noiseFrequencyChanges()
+{
+    return _noiseFreqChanges;
+}
+
+Playlist::NoiseFrequencyChange* Playlist::addNoiseFrequencyChange(const float time, const int freq)
+{
+    NoiseFrequencyChange* ret = nullptr;
+
+    if (std::find_if(_noiseFreqChanges.begin(), _noiseFreqChanges.end(), [=](NoiseFrequencyChange* const nfc) {
+            return nfc->time() == time;
+        }) == _noiseFreqChanges.end()) {
+        ret = new NoiseFrequencyChange(time, freq);
+        _noiseFreqChanges.append(ret);
+    }
+
+    return ret;
+}
+
+void Playlist::removeNoiseFrequencyChange(const NoiseFrequencyChange* nfc, const bool keep)
+{
+    if (_noiseFreqChanges.removeAll(nfc) > 0) {
+        if (!keep) {
+            delete nfc;
+        }
+    }
+}
+
+const QList<Playlist::EnvelopeFrequencyChange*>& Playlist::envelopeFrequencyChanges() const
+{
+    return _envFreqChanges;
+}
+
+QList<Playlist::EnvelopeFrequencyChange*>& Playlist::envelopeFrequencyChanges()
+{
+    return _envFreqChanges;
+}
+
+Playlist::EnvelopeFrequencyChange* Playlist::addEnvelopeFrequencyChange(const float time, const int freq)
+{
+    EnvelopeFrequencyChange* ret = nullptr;
+
+    if (std::find_if(_envFreqChanges.begin(), _envFreqChanges.end(), [=](EnvelopeFrequencyChange* const efc) {
+            return efc->time() == time;
+        }) == _envFreqChanges.end()) {
+        ret = new EnvelopeFrequencyChange(time, freq);
+        _envFreqChanges.append(ret);
+    }
+
+    return ret;
+}
+
+void Playlist::removeEnvelopeFrequencyChange(const EnvelopeFrequencyChange* efc, const bool keep)
+{
+    if (_envFreqChanges.removeAll(efc) > 0) {
+        if (!keep) {
+            delete efc;
+        }
+    }
+}
+
+const QList<Playlist::EnvelopeShapeChange*>& Playlist::envelopeShapeChanges() const
+{
+    return _envShapeChanges;
+}
+
+QList<Playlist::EnvelopeShapeChange*>& Playlist::envelopeShapeChanges()
+{
+    return _envShapeChanges;
+}
+
+Playlist::EnvelopeShapeChange* Playlist::addEnvelopeShapeChange(const float time, const SSGEnvelopeSettings& shape)
+{
+    EnvelopeShapeChange* ret = nullptr;
+
+    if (std::find_if(_envShapeChanges.begin(), _envShapeChanges.end(), [=](EnvelopeShapeChange* const efc) {
+            return efc->time() == time;
+        }) == _envShapeChanges.end()) {
+        ret = new EnvelopeShapeChange(time, shape);
+        _envShapeChanges.append(ret);
+    }
+
+    return ret;
+}
+
+void Playlist::removeEnvelopeShapeChange(const EnvelopeShapeChange* esc, const bool keep)
+{
+    if (_envShapeChanges.removeAll(esc) > 0) {
+        if (!keep) {
+            delete esc;
+        }
+    }
+}
+
 Playlist::Playlist()
 {
 
@@ -281,6 +380,107 @@ void Playlist::LFOChange::setMode(const int mode)
 Playlist::LFOChange::LFOChange()
     : _time(0)
     , _mode(0)
+{
+
+}
+
+Playlist::NoiseFrequencyChange::NoiseFrequencyChange(const float time, const int freq)
+    : _time(time)
+    , _freq(freq)
+{
+
+}
+
+float Playlist::NoiseFrequencyChange::time() const
+{
+    return _time;
+}
+
+QString Playlist::NoiseFrequencyChange::name() const
+{
+    return "SSG Noise";
+}
+
+int Playlist::NoiseFrequencyChange::frequency()
+{
+    return _freq;
+}
+
+void Playlist::NoiseFrequencyChange::setFrequency(const int freq)
+{
+    _freq = freq;
+}
+
+Playlist::NoiseFrequencyChange::NoiseFrequencyChange()
+    : _time(0)
+    , _freq(0)
+{
+
+}
+
+Playlist::EnvelopeFrequencyChange::EnvelopeFrequencyChange(const float time, const int freq)
+    : _time(time)
+    , _freq(freq)
+{
+
+}
+
+float Playlist::EnvelopeFrequencyChange::time() const
+{
+    return _time;
+}
+
+QString Playlist::EnvelopeFrequencyChange::name() const
+{
+    return "SSG Envelope (frequency)";
+}
+
+int Playlist::EnvelopeFrequencyChange::frequency()
+{
+    return _freq;
+}
+
+void Playlist::EnvelopeFrequencyChange::setFrequency(const int freq)
+{
+    _freq = freq;
+}
+
+Playlist::EnvelopeFrequencyChange::EnvelopeFrequencyChange()
+    : _time(0)
+    , _freq(0)
+{
+
+}
+
+Playlist::EnvelopeShapeChange::EnvelopeShapeChange(const float time, const SSGEnvelopeSettings& shape)
+    : _time(time)
+    , _shape(shape)
+{
+
+}
+
+float Playlist::EnvelopeShapeChange::time() const
+{
+    return _time;
+}
+
+QString Playlist::EnvelopeShapeChange::name() const
+{
+    return "SSG Envelope (shape)";
+}
+
+const SSGEnvelopeSettings& Playlist::EnvelopeShapeChange::shape() const
+{
+    return _shape;
+}
+
+void Playlist::EnvelopeShapeChange::setShape(const SSGEnvelopeSettings& shape)
+{
+    _shape = shape;
+}
+
+Playlist::EnvelopeShapeChange::EnvelopeShapeChange()
+    : _time(0)
 {
 
 }

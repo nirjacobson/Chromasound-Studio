@@ -138,6 +138,10 @@ Channel BSON::toChannel(bson_iter_t& b)
             c._settings = new PCMChannelSettings;
             c._settings->fromBSON(settingsInner);
         }
+        if (c._type == Channel::Type::SSG) {
+            c._settings = new SSGChannelSettings;
+            c._settings->fromBSON(settingsInner);
+        }
     }
 
     return c;
@@ -378,7 +382,11 @@ Track::SettingsChange BSON::toTrackSettingsChange(bson_iter_t& b)
                         sc._settings = new PCMChannelSettings;
                         sc._settings->fromBSON(settingsInner);
                         break;
-                }
+                    case Channel::SSG:
+                        sc._settings = new SSGChannelSettings;
+                        sc._settings->fromBSON(settingsInner);
+                        break;
+                    }
             }
         }
     }

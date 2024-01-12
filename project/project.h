@@ -8,6 +8,7 @@
 #include "pattern.h"
 #include "channel/channel.h"
 #include "playlist.h"
+#include "ssg/ssgenvelopesettings.h"
 
 class Project
 {
@@ -76,6 +77,15 @@ class Project
 
         int lfoMode() const;
         void setLFOMode(const int mode);
+        
+        const SSGEnvelopeSettings& ssgEnvelopeShape() const;
+        void setSSGEnvelopeSettings(const SSGEnvelopeSettings& settings);
+
+        int ssgEnvelopeFrequency() const;
+        void setSSGEnvelopeFrequency(const int freq);
+
+        int ssgNoiseFrequency() const;
+        void setSSGNoiseFrequency(const int freq);
 
         const QList<Pattern*>& patterns() const;
         const QList<Channel>& channels() const;
@@ -107,6 +117,9 @@ class Project
         int _beatsPerBar;
 
         int _lfoMode;
+        SSGEnvelopeSettings _ssgEnvelopeSettings;
+        int _ssgEnvelopeFreq;
+        int _ssgNoiseFreq;
 
         void swapChannels(const int idxa, const int idxb);
 };

@@ -52,6 +52,9 @@ class TopWidget : public QWidget
         void patModeSelected();
         void songModeSelected();
         void lfoModeChanged(int mode);
+        void envelopeShapeChanged();
+        void envelopeFrequencyChanged();
+        void noiseFrequencyChanged();
         void fmpsgStopped();
 
         // QWidget interface

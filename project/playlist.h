@@ -6,6 +6,7 @@
 
 #include "ganttwidget/ganttitem.h"
 #include "ganttwidget/ganttmarker.h"
+#include "ssg/ssgenvelopesettings.h"
 
 class Project;
 
@@ -66,6 +67,63 @@ class Playlist
                 int _mode;
         };
 
+        class NoiseFrequencyChange : public GanttMarker {
+                friend class BSON;
+
+            public:
+                NoiseFrequencyChange(const float time, const int freq);
+
+                float time() const;
+                QString name() const;
+
+                int frequency();
+                void setFrequency(const int freq);
+
+            private:
+                NoiseFrequencyChange();
+
+                float _time;
+                int _freq;
+        };
+
+        class EnvelopeFrequencyChange : public GanttMarker {
+                friend class BSON;
+
+            public:
+                EnvelopeFrequencyChange(const float time, const int freq);
+
+                float time() const;
+                QString name() const;
+
+                int frequency();
+                void setFrequency(const int freq);
+
+            private:
+                EnvelopeFrequencyChange();
+
+                float _time;
+                int _freq;
+        };
+
+        class EnvelopeShapeChange : public GanttMarker {
+                friend class BSON;
+
+            public:
+                EnvelopeShapeChange(const float time, const SSGEnvelopeSettings& shape);
+
+                float time() const;
+                QString name() const;
+
+                const SSGEnvelopeSettings& shape() const;
+                void setShape(const SSGEnvelopeSettings& shape);
+
+            private:
+                EnvelopeShapeChange();
+
+                float _time;
+                SSGEnvelopeSettings _shape;
+        };
+
         Playlist(Project* const project);
         Playlist(Playlist&& o);
         ~Playlist();
@@ -91,11 +149,28 @@ class Playlist
         LFOChange* addLFOChange(const float time, const int mode);
         void removeLFOChange(const LFOChange* lc, const bool keep = false);
 
+        const QList<NoiseFrequencyChange*>& noiseFrequencyChanges() const;
+        QList<NoiseFrequencyChange*>& noiseFrequencyChanges();
+        NoiseFrequencyChange* addNoiseFrequencyChange(const float time, const int freq);
+        void removeNoiseFrequencyChange(const NoiseFrequencyChange* nfc, const bool keep = false);
+
+        const QList<EnvelopeFrequencyChange*>& envelopeFrequencyChanges() const;
+        QList<EnvelopeFrequencyChange*>& envelopeFrequencyChanges();
+        EnvelopeFrequencyChange* addEnvelopeFrequencyChange(const float time, const int freq);
+        void removeEnvelopeFrequencyChange(const EnvelopeFrequencyChange* efc, const bool keep = false);
+
+        const QList<EnvelopeShapeChange*>& envelopeShapeChanges() const;
+        QList<EnvelopeShapeChange*>& envelopeShapeChanges();
+        EnvelopeShapeChange* addEnvelopeShapeChange(const float time, const SSGEnvelopeSettings& shape);
+        void removeEnvelopeShapeChange(const EnvelopeShapeChange* esc, const bool keep = false);
     private:
         Playlist();
 
         QList<Item*> _items;
         QList<LFOChange*> _lfoChanges;
+        QList<NoiseFrequencyChange*> _noiseFreqChanges;
+        QList<EnvelopeFrequencyChange*> _envFreqChanges;
+        QList<EnvelopeShapeChange*> _envShapeChanges;
 
         Project* _project;
 

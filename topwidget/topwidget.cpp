@@ -33,6 +33,10 @@ TopWidget::TopWidget(QWidget *parent, Application* app)
     connect(ui->beatsPerBarSpinBox, SIGNAL(valueChanged(int)), this, SIGNAL(beatsPerBarChanged(int)));
     connect(ui->beatsPerBarSpinBox, SIGNAL(valueChanged(int)), this, SLOT(beatsPerBarDidChange(int)));
     connect(ui->lfoComboBox, &QComboBox::currentIndexChanged, this, &TopWidget::lfoModeChanged);
+
+    connect(ui->ssgEnvShapeWidget, &SSGEnvelopeShapeWidget::changed, this, &TopWidget::envelopeShapeChanged);
+    connect(ui->ssgEnvFreqWidget, &SSGEnvelopeFreqWidget::changed, this, &TopWidget::envelopeFrequencyChanged);
+    connect(ui->ssgNoiseFreqWidget, &SSGNoiseFreqWidget::changed, this, &TopWidget::noiseFrequencyChanged);
 }
 
 TopWidget::~TopWidget()
@@ -77,6 +81,10 @@ void TopWidget::updateFromProject(const Project& project)
     ui->lfoComboBox->blockSignals(true);
     ui->lfoComboBox->setCurrentIndex(project.lfoMode());
     ui->lfoComboBox->blockSignals(false);
+
+    ui->ssgEnvShapeWidget->set(project.ssgEnvelopeShape());
+    ui->ssgEnvFreqWidget->set(project.ssgEnvelopeFrequency());
+    ui->ssgNoiseFreqWidget->set(project.ssgNoiseFrequency());
 }
 
 void TopWidget::setStatusMessage(const QString& message)
@@ -134,6 +142,21 @@ void TopWidget::songModeSelected()
 void TopWidget::lfoModeChanged(int mode)
 {
     _app->project().setLFOMode(mode);
+}
+
+void TopWidget::envelopeShapeChanged()
+{
+    _app->project().setSSGEnvelopeSettings(ui->ssgEnvShapeWidget->settings());
+}
+
+void TopWidget::envelopeFrequencyChanged()
+{
+    _app->project().setSSGEnvelopeFrequency(ui->ssgEnvFreqWidget->setting());
+}
+
+void TopWidget::noiseFrequencyChanged()
+{
+    _app->project().setSSGNoiseFrequency(ui->ssgNoiseFreqWidget->setting());
 }
 
 void TopWidget::fmpsgStopped()

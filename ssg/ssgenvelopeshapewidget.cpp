@@ -19,26 +19,41 @@ SSGEnvelopeShapeWidget::~SSGEnvelopeShapeWidget()
     delete ui;
 }
 
+const SSGEnvelopeSettings& SSGEnvelopeShapeWidget::settings() const
+{
+    return _settings;
+}
+
+void SSGEnvelopeShapeWidget::set(const SSGEnvelopeSettings& settings)
+{
+    _settings = settings;
+    ui->displayWidget->update();
+}
+
 void SSGEnvelopeShapeWidget::contToggled(const bool enabled)
 {
     _settings.setCont(enabled);
     ui->displayWidget->update();
+    emit changed();
 }
 
 void SSGEnvelopeShapeWidget::attToggled(const bool enabled)
 {
     _settings.setAtt(enabled);
     ui->displayWidget->update();
+    emit changed();
 }
 
 void SSGEnvelopeShapeWidget::altToggled(const bool enabled)
 {
     _settings.setAlt(enabled);
     ui->displayWidget->update();
+    emit changed();
 }
 
 void SSGEnvelopeShapeWidget::holdToggled(const bool enabled)
 {
     _settings.setHold(enabled);
     ui->displayWidget->update();
+    emit changed();
 }
