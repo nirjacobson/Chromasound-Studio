@@ -79,7 +79,7 @@ class Playlist
                 QString name() const;
                 const QColor& color() const;
 
-                int frequency();
+                int frequency() const;
                 void setFrequency(const int freq);
 
             private:
@@ -100,7 +100,7 @@ class Playlist
                 QString name() const;
                 const QColor& color() const;
 
-                int frequency();
+                int frequency() const;
                 void setFrequency(const int freq);
 
             private:

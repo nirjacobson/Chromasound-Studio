@@ -17,12 +17,14 @@ class LFOWidget : public QWidget
         explicit LFOWidget(QWidget *parent = nullptr);
         ~LFOWidget();
 
-        void setLFOChange(Playlist::LFOChange* change);
+        int setting() const;
+        void set(const int mode);
+
+    signals:
+        void changed();
 
     private:
         Ui::LFOWidget *ui;
-
-        Playlist::LFOChange* _lfoChange;
 
     private slots:
         void modeComboBoxCurrentIndexChanged(const int index);

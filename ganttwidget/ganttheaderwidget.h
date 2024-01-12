@@ -26,7 +26,7 @@ class GanttHeaderWidget : public ScrollableWidget
         float getScrollPercentage();
         void setScrollPercentage(const float percent);
 
-        void setMarkers(QList<GanttMarker*>* markers);
+        void setMarkers(QMap<float, QList<GanttMarker*>>* markers);
         void setItems(QList<GanttItem*>* items);
 
         void setCellWidth(int width);
@@ -51,7 +51,7 @@ class GanttHeaderWidget : public ScrollableWidget
 
     signals:
         void markerClicked(GanttMarker* marker);
-        void clicked(Qt::MouseButton button, float time);
+        void clicked(Qt::MouseButton button, float time, const QPoint& location);
         void loopChanged();
 
     protected:
@@ -65,7 +65,7 @@ class GanttHeaderWidget : public ScrollableWidget
         Application* _app;
 
         QList<GanttItem*>* _items;
-        QList<GanttMarker*>* _markers;
+        QMap<float, QList<GanttMarker*>>* _markers;
 
         int _left;
 

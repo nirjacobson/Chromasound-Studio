@@ -27,6 +27,12 @@ const SSGEnvelopeSettings& SSGEnvelopeShapeWidget::settings() const
 void SSGEnvelopeShapeWidget::set(const SSGEnvelopeSettings& settings)
 {
     _settings = settings;
+
+    ui->contButton->setChecked(settings.cont());
+    ui->attButton->setChecked(settings.att());
+    ui->altButton->setChecked(settings.alt());
+    ui->holdButton->setChecked(settings.hold());
+
     ui->displayWidget->update();
 }
 

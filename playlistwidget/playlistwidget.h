@@ -5,6 +5,7 @@
 #include <QStyleOption>
 #include <QMimeData>
 #include <QClipboard>
+#include <QMenu>
 
 #include "application.h"
 #include "playlistpatternswidget.h"
@@ -14,7 +15,13 @@
 #include "commands/removeplaylistitemscommand.h"
 #include "commands/editplaylistcommand.h"
 #include "commands/addplaylistlfochangecommand.h"
+#include "commands/addplaylistnoisefrequencychangecommand.h"
+#include "commands/addplaylistenvelopefrequencychangecommand.h"
+#include "commands/addplaylistenvelopeshapechangecommand.h"
 #include "commands/removeplaylistlfochangecommand.h"
+#include "commands/removeplaylistnoisefrequencychangecommand.h"
+#include "commands/removeplaylistenvelopefrequencychangecommand.h"
+#include "commands/removeplaylistenvelopeshapechangecommand.h"
 #include "bson.h"
 #include "mdiarea/mdisubwindow.h"
 
@@ -57,10 +64,20 @@ class PlaylistWidget : public QMainWindow
         PlaylistPatternsWidget* _patternsWidget;
 
         Playlist::LFOChange* _editingLFOChange;
+        Playlist::NoiseFrequencyChange* _editingNoiseFrequencyChange;
+        Playlist::EnvelopeFrequencyChange* _editingEnvelopeFrequencyChange;
+        Playlist::EnvelopeShapeChange* _editingEnvelopeShapeChange;
+
+        QMenu _markerMenu;
+        QAction _lfoChangeAction;
+        QAction _noiseFreqChangeAction;
+        QAction _envFreqChangeAction;
+        QAction _envShapeChangeAction;
+        float _markerMenuTime;
 
     private slots:
         void ganttMarkerClicked(GanttMarker* marker);
-        void ganttHeaderClicked(Qt::MouseButton button, float time);
+        void ganttHeaderClicked(Qt::MouseButton button, float time, QPoint location);
         void ganttEditorClicked(Qt::MouseButton button, int row, float time);
         void ganttItemChanged(GanttItem* item, const float toTime, const int toRow, const float toDuration);
         void copy();
@@ -69,6 +86,11 @@ class PlaylistWidget : public QMainWindow
         void deleteTriggered();
         void doneButtonClicked();
         void removeButtonClicked();
+
+        void lfoChangeTriggered();
+        void noiseFreqChangeTriggered();
+        void envFreqChangeTriggered();
+        void envShapeChangeTriggered();
 
         // QWidget interface
     protected:

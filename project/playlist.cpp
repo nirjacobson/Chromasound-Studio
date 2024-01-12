@@ -2,7 +2,7 @@
 #include "project.h"
 
 QColor Playlist::LFOChange::COLOR(255, 255, 64);
-QColor Playlist::NoiseFrequencyChange::COLOR(192, 192, 192);
+QColor Playlist::NoiseFrequencyChange::COLOR(224, 224, 224);
 QColor Playlist::EnvelopeFrequencyChange::COLOR(64, 255, 54);
 QColor Playlist::EnvelopeShapeChange::COLOR(128, 128, 255);
 
@@ -80,12 +80,23 @@ Playlist::Playlist(Playlist&& o)
 {
     _loopOffset = o._loopOffset;
     _items = o._items;
-
     o._items.clear();
 
     for (Item* item : _items) {
         item->_project = _project;
     }
+
+    _lfoChanges = o._lfoChanges;
+    o._lfoChanges.clear();
+
+    _noiseFreqChanges = o._noiseFreqChanges;
+    o._noiseFreqChanges.clear();
+
+    _envFreqChanges = o._envFreqChanges;
+    o._envFreqChanges.clear();
+
+    _envShapeChanges = o._envShapeChanges;
+    o._envShapeChanges.clear();
 }
 
 Playlist::~Playlist()
@@ -94,6 +105,15 @@ Playlist::~Playlist()
         delete item;
 
     for (Playlist::LFOChange* change : _lfoChanges)
+        delete change;
+
+    for (Playlist::NoiseFrequencyChange* change : _noiseFreqChanges)
+        delete change;
+
+    for (Playlist::EnvelopeFrequencyChange* change : _envFreqChanges)
+        delete change;
+
+    for (Playlist::EnvelopeShapeChange* change : _envShapeChanges)
         delete change;
 }
 
@@ -166,9 +186,15 @@ Playlist& Playlist::operator=(Playlist&& o)
     _loopOffset = o._loopOffset;
     _items = o._items;
     _lfoChanges = o._lfoChanges;
+    _noiseFreqChanges = o._noiseFreqChanges;
+    _envFreqChanges = o._envFreqChanges;
+    _envShapeChanges = o._envShapeChanges;
 
     o._items.clear();
     o._lfoChanges.clear();
+    o._noiseFreqChanges.clear();
+    o._envFreqChanges.clear();
+    o._envShapeChanges.clear();
 
     for (Item* item : _items) {
         item->_project = _project;
@@ -416,7 +442,7 @@ const QColor& Playlist::NoiseFrequencyChange::color() const
     return COLOR;
 }
 
-int Playlist::NoiseFrequencyChange::frequency()
+int Playlist::NoiseFrequencyChange::frequency() const
 {
     return _freq;
 }
@@ -455,7 +481,7 @@ const QColor& Playlist::EnvelopeFrequencyChange::color() const
     return COLOR;
 }
 
-int Playlist::EnvelopeFrequencyChange::frequency()
+int Playlist::EnvelopeFrequencyChange::frequency() const
 {
     return _freq;
 }

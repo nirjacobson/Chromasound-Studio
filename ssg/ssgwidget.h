@@ -19,6 +19,8 @@ public:
     explicit SSGWidget(QWidget *parent = nullptr, Application* app = nullptr);
     ~SSGWidget();
 
+    void setApplication(Application* app);
+
     void setSettings(SSGChannelSettings* settings);
     void doUpdate();
 

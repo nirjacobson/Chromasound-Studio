@@ -19,16 +19,23 @@ SSGWidget::~SSGWidget()
     delete ui;
 }
 
+void SSGWidget::setApplication(Application* app)
+{
+    _app = app;
+}
+
 void SSGWidget::setSettings(SSGChannelSettings* settings)
 {
     _settings = settings;
 
+    ui->toneLed->setOn(_settings->tone());
+    ui->noiseLed->setOn(_settings->noise());
     ui->envLed->setOn(_settings->envelope());
 }
 
 void SSGWidget::doUpdate()
 {
-    setSettings(_settings);
+    if (_settings) setSettings(_settings);
 }
 
 void SSGWidget::toneLEDClicked(bool shift)

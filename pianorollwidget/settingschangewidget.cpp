@@ -23,6 +23,7 @@ void SettingsChangeWidget::setApplication(Application* app)
 {
     ui->fmWidget->setApplication(app);
     ui->noiseWidget->setApplication(app);
+    ui->ssgWidget->setApplication(app);
 }
 
 void SettingsChangeWidget::pressKey(const int key)
@@ -39,6 +40,7 @@ void SettingsChangeWidget::doUpdate()
 {
     ui->noiseWidget->doUpdate();
     ui->fmWidget->doUpdate();
+    ui->ssgWidget->doUpdate();
 }
 
 void SettingsChangeWidget::setSettings(ChannelSettings& settings)
@@ -53,7 +55,13 @@ void SettingsChangeWidget::setSettings(ChannelSettings& settings)
             ui->noiseWidget->setSettings(&ncs);
             ui->stackedWidget->setCurrentIndex(2);
         } catch (std::bad_cast) {
-            ui->stackedWidget->setCurrentIndex(0);
+            try {
+                SSGChannelSettings& scs = dynamic_cast<SSGChannelSettings&>(settings);
+                ui->ssgWidget->setSettings(&scs);
+                ui->stackedWidget->setCurrentIndex(3);
+            } catch (std::bad_cast) {
+                ui->stackedWidget->setCurrentIndex(0);
+            }
         }
     }
 

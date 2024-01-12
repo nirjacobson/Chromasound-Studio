@@ -31,6 +31,13 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="page_4">
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0">
+        <widget class="SSGWidget" name="ssgWidget" native="true"/>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item row="1" column="0">
@@ -68,6 +75,12 @@
    <class>SettingsChangeFooterWidget</class>
    <extends>QWidget</extends>
    <header>pianorollwidget/settingschangefooterwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SSGWidget</class>
+   <extends>QWidget</extends>
+   <header>ssg/ssgwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

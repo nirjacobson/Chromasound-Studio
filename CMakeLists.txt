@@ -346,20 +346,42 @@ set(PROJECT_SOURCES
     ssg/ssgenvelopesettings.h
     ssg/ssgenvelopesettings.cpp
     ssg/ssgenvelopeshapewidget.h
-    ssg/ssgenvelopeshapewidget.cpp ssg/ssgenvelopeshapewidget.ui
+    ssg/ssgenvelopeshapewidget.cpp
+    ssg/ssgenvelopeshapewidget.ui
     ssg/ssgenvelopefreqwidget.h
-    ssg/ssgenvelopefreqwidget.cpp ssg/ssgenvelopefreqwidget.ui
+    ssg/ssgenvelopefreqwidget.cpp
+    ssg/ssgenvelopefreqwidget.ui
     ssg/ssgnoisefreqwidget.h
-    ssg/ssgnoisefreqwidget.cpp ssg/ssgnoisefreqwidget.ui
+    ssg/ssgnoisefreqwidget.cpp
+    ssg/ssgnoisefreqwidget.ui
+    ssg/ssgwidget.h
+    ssg/ssgwidget.cpp
+    ssg/ssgwidget.ui
+    project/channel/ssgchannelsettings.h
+    project/channel/ssgchannelsettings.cpp
+    commands/editssgchannelsettingscommand.h
+    commands/editssgchannelsettingscommand.cpp
+    commands/addplaylistnoisefrequencychangecommand.h
+    commands/addplaylistnoisefrequencychangecommand.cpp
+    commands/addplaylistenvelopefrequencychangecommand.h
+    commands/addplaylistenvelopefrequencychangecommand.cpp
+    commands/addplaylistenvelopeshapechangecommand.h
+    commands/addplaylistenvelopeshapechangecommand.cpp
+    playlistwidget/playlistchangewidget.h
+    playlistwidget/playlistchangewidget.cpp
+    playlistwidget/playlistchangewidget.ui
+    commands/removeplaylistnoisefrequencychangecommand.h
+    commands/removeplaylistnoisefrequencychangecommand.cpp
+    commands/removeplaylistenvelopefrequencychangecommand.h
+    commands/removeplaylistenvelopefrequencychangecommand.cpp
+    commands/removeplaylistenvelopeshapechangecommand.h
+    commands/removeplaylistenvelopeshapechangecommand.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(FM-PSG-Studio
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        ssg/ssgwidget.h ssg/ssgwidget.cpp ssg/ssgwidget.ui
-        project/channel/ssgchannelsettings.h project/channel/ssgchannelsettings.cpp
-        commands/editssgchannelsettingscommand.h commands/editssgchannelsettingscommand.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET FM-PSG-Studio APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

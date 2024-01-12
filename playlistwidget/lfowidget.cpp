@@ -4,7 +4,6 @@
 LFOWidget::LFOWidget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::LFOWidget)
-    , _lfoChange(nullptr)
 {
     ui->setupUi(this);
 
@@ -16,14 +15,19 @@ LFOWidget::~LFOWidget()
     delete ui;
 }
 
-void LFOWidget::setLFOChange(Playlist::LFOChange* change)
+int LFOWidget::setting() const
 {
-    _lfoChange = change;
-    ui->modeComboBox->setCurrentIndex(change->mode());
+    return ui->modeComboBox->currentIndex();
 }
+
+void LFOWidget::set(const int mode)
+{
+    ui->modeComboBox->setCurrentIndex(mode);
+}
+
 
 void LFOWidget::modeComboBoxCurrentIndexChanged(const int index)
 {
-    _lfoChange->setMode(index);
+    emit changed();
 }
 
