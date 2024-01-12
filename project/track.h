@@ -61,10 +61,12 @@ class Track
                 // GanttMarker interface
                 float time() const;
                 QString name() const;
+                const QColor& color() const;
 
                 ChannelSettings& settings();
 
             private:
+                static QColor COLOR;
                 SettingsChange();
 
                 float _time;

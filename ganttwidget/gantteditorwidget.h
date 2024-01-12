@@ -55,11 +55,9 @@ class GanttEditorWidget : public QWidget
 
         const QColor& cursorColor() const;
         const QColor& loopColor() const;
-        const QColor& markerColor() const;
 
         void setCursorColor(const QColor& color);
         void setLoopColor(const QColor& color);
-        void setMarkerColor(const QColor& color);
 
     signals:
         void horizontalScroll(const int pixels);
@@ -83,7 +81,6 @@ class GanttEditorWidget : public QWidget
         QColor _cursorColor;
         QColor _selectionColor;
         QColor _loopColor;
-        QColor _markerColor;
 
         const QColor& backgroundColor() const;
         const QColor& borderColor() const;

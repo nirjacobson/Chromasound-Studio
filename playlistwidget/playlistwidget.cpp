@@ -11,10 +11,6 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
 {
     ui->setupUi(this);
 
-    _app->setStyleSheet("PlaylistWidget GanttWidget {"
-                        "   qproperty-markerColor: rgb(64, 255, 64);"
-                        "}");
-
     ui->actionCopy->setShortcuts(QKeySequence::Copy);
     ui->actionPaste->setShortcuts(QKeySequence::Paste);
     ui->actionSelectAll->setShortcuts(QKeySequence::SelectAll);
