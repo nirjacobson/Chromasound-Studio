@@ -5,6 +5,7 @@ QColor Playlist::LFOChange::COLOR(255, 255, 64);
 QColor Playlist::NoiseFrequencyChange::COLOR(224, 224, 224);
 QColor Playlist::EnvelopeFrequencyChange::COLOR(64, 255, 54);
 QColor Playlist::EnvelopeShapeChange::COLOR(128, 128, 255);
+QColor Playlist::UserToneChange::COLOR(255, 128, 0);
 
 Playlist::Item::Item(Project* const project, const float time, const int pattern)
     : _project(project)
@@ -97,6 +98,9 @@ Playlist::Playlist(Playlist&& o)
 
     _envShapeChanges = o._envShapeChanges;
     o._envShapeChanges.clear();
+
+    _userToneChanges = o._userToneChanges;
+    o._userToneChanges.clear();
 }
 
 Playlist::~Playlist()
@@ -189,12 +193,14 @@ Playlist& Playlist::operator=(Playlist&& o)
     _noiseFreqChanges = o._noiseFreqChanges;
     _envFreqChanges = o._envFreqChanges;
     _envShapeChanges = o._envShapeChanges;
+    _userToneChanges = o._userToneChanges;
 
     o._items.clear();
     o._lfoChanges.clear();
     o._noiseFreqChanges.clear();
     o._envFreqChanges.clear();
     o._envShapeChanges.clear();
+    o._userToneChanges.clear();
 
     for (Item* item : _items) {
         item->_project = _project;
@@ -351,6 +357,39 @@ void Playlist::removeEnvelopeShapeChange(const EnvelopeShapeChange* esc, const b
     if (_envShapeChanges.removeAll(esc) > 0) {
         if (!keep) {
             delete esc;
+        }
+    }
+}
+
+const QList<Playlist::UserToneChange*>& Playlist::userToneChanges() const
+{
+    return _userToneChanges;
+}
+
+QList<Playlist::UserToneChange*>& Playlist::userToneChanges()
+{
+    return _userToneChanges;
+}
+
+Playlist::UserToneChange* Playlist::addUserToneChange(const float time, const FM2Settings& tone)
+{
+    UserToneChange* ret = nullptr;
+
+    if (std::find_if(_userToneChanges.begin(), _userToneChanges.end(), [=](UserToneChange* const utc) {
+            return utc->time() == time;
+        }) == _userToneChanges.end()) {
+        ret = new UserToneChange(time, tone);
+        _userToneChanges.append(ret);
+    }
+
+    return ret;
+}
+
+void Playlist::removeUserToneChange(const UserToneChange* utc, const bool keep)
+{
+    if (_userToneChanges.removeAll(utc) > 0) {
+        if (!keep) {
+            delete utc;
         }
     }
 }
@@ -520,6 +559,11 @@ const QColor& Playlist::EnvelopeShapeChange::color() const
     return COLOR;
 }
 
+SSGEnvelopeSettings& Playlist::EnvelopeShapeChange::shape()
+{
+    return _shape;
+}
+
 const SSGEnvelopeSettings& Playlist::EnvelopeShapeChange::shape() const
 {
     return _shape;
@@ -531,6 +575,49 @@ void Playlist::EnvelopeShapeChange::setShape(const SSGEnvelopeSettings& shape)
 }
 
 Playlist::EnvelopeShapeChange::EnvelopeShapeChange()
+    : _time(0)
+{
+
+}
+
+Playlist::UserToneChange::UserToneChange(const float time, const FM2Settings& tone)
+    : _time(time)
+    , _userTone(tone)
+{
+
+}
+
+float Playlist::UserToneChange::time() const
+{
+    return _time;
+}
+
+QString Playlist::UserToneChange::name() const
+{
+    return "User Tone";
+}
+
+const QColor& Playlist::UserToneChange::color() const
+{
+    return COLOR;
+}
+
+FM2Settings& Playlist::UserToneChange::userTone()
+{
+    return _userTone;
+}
+
+const FM2Settings& Playlist::UserToneChange::userTone() const
+{
+    return _userTone;
+}
+
+void Playlist::UserToneChange::setUserTone(const FM2Settings& tone)
+{
+    _userTone = tone;
+}
+
+Playlist::UserToneChange::UserToneChange()
     : _time(0)
 {
 

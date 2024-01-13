@@ -18,10 +18,12 @@
 #include "commands/addplaylistnoisefrequencychangecommand.h"
 #include "commands/addplaylistenvelopefrequencychangecommand.h"
 #include "commands/addplaylistenvelopeshapechangecommand.h"
+#include "commands/addplaylistusertonechangecommand.h"
 #include "commands/removeplaylistlfochangecommand.h"
 #include "commands/removeplaylistnoisefrequencychangecommand.h"
 #include "commands/removeplaylistenvelopefrequencychangecommand.h"
 #include "commands/removeplaylistenvelopeshapechangecommand.h"
+#include "commands/removeplaylistusertonechangecommand.h"
 #include "bson.h"
 #include "mdiarea/mdisubwindow.h"
 
@@ -67,12 +69,14 @@ class PlaylistWidget : public QMainWindow
         Playlist::NoiseFrequencyChange* _editingNoiseFrequencyChange;
         Playlist::EnvelopeFrequencyChange* _editingEnvelopeFrequencyChange;
         Playlist::EnvelopeShapeChange* _editingEnvelopeShapeChange;
+        Playlist::UserToneChange* _editingUserToneChange;
 
         QMenu _markerMenu;
         QAction _lfoChangeAction;
         QAction _noiseFreqChangeAction;
         QAction _envFreqChangeAction;
         QAction _envShapeChangeAction;
+        QAction _userToneAction;
         float _markerMenuTime;
 
     private slots:
@@ -91,6 +95,7 @@ class PlaylistWidget : public QMainWindow
         void noiseFreqChangeTriggered();
         void envFreqChangeTriggered();
         void envShapeChangeTriggered();
+        void userToneChangeTriggered();
 
         // QWidget interface
     protected:

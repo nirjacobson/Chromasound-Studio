@@ -5,7 +5,6 @@
 
 #include "application.h"
 #include "usertone/fm2operatorsettings.h"
-#include "commands/editfm2operatorsettingscommand.h"
 
 namespace Ui {
 class FM2OperatorWidget;
@@ -19,15 +18,16 @@ public:
     explicit FM2OperatorWidget(QWidget *parent = nullptr);
     ~FM2OperatorWidget();
 
-    void setApplication(Application* app);
+    const FM2OperatorSettings& settings() const;
+    void set(const FM2OperatorSettings& settings);
 
-    void setSettings(FM2OperatorSettings* settings);
+signals:
+    void changed();
 
 private:
     Ui::FM2OperatorWidget *ui;
-    Application* _app;
 
-    FM2OperatorSettings* _settings;
+    FM2OperatorSettings _settings;
 
 private slots:
     void envTypeChanged(const int index);

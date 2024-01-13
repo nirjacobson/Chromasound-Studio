@@ -300,6 +300,10 @@ Project& Project::operator=(Project&& src)
     _beatsPerBar = src._beatsPerBar;
 
     _lfoMode = src._lfoMode;
+    _ssgEnvelopeSettings = src._ssgEnvelopeSettings;
+    _ssgEnvelopeFreq = src._ssgEnvelopeFreq;
+    _ssgNoiseFreq = src._ssgNoiseFreq;
+    _userTone = src._userTone;
 
     _info = src._info;
 
@@ -322,6 +326,10 @@ Project::Project(Project&& o)
     _beatsPerBar = o._beatsPerBar;
 
     _lfoMode = o._lfoMode;
+    _ssgEnvelopeSettings = o._ssgEnvelopeSettings;
+    _ssgEnvelopeFreq = o._ssgEnvelopeFreq;
+    _ssgNoiseFreq = o._ssgNoiseFreq;
+    _userTone = o._userTone;
 
     _info = o._info;
 }

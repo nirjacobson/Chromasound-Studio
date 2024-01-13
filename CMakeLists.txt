@@ -376,22 +376,43 @@ set(PROJECT_SOURCES
     commands/removeplaylistenvelopefrequencychangecommand.cpp
     commands/removeplaylistenvelopeshapechangecommand.h
     commands/removeplaylistenvelopeshapechangecommand.cpp
+    usertone/fm2envelopesettings.h
+    usertone/fm2envelopesettings.cpp
+    usertone/fm2operatorsettings.h
+    usertone/fm2operatorsettings.cpp
+    usertone/fm2envelopedisplaywidget.h
+    usertone/fm2envelopedisplaywidget.cpp
+    usertone/fm2operatorwidget.h
+    usertone/fm2operatorwidget.cpp
+    usertone/fm2operatorwidget.ui
+    usertone/fm2widget.h
+    usertone/fm2widget.cpp
+    usertone/fm2widget.ui
+    usertone/fm2widgetwindow.h
+    usertone/fm2widgetwindow.cpp
+    usertone/fm2widgetwindow.ui
+    usertone/fm2settings.h
+    usertone/fm2settings.cpp
+    commands/editfm2settingscommand.h
+    commands/editfm2settingscommand.cpp
+    commands/addplaylistusertonechangecommand.h
+    commands/addplaylistusertonechangecommand.cpp
+    commands/removeplaylistusertonechangecommand.h
+    commands/removeplaylistusertonechangecommand.cpp
+    commands/editplaylistlfochangecommand.h
+    commands/editplaylistlfochangecommand.cpp
+    commands/editplaylistnoisefrequencychangecommand.h
+    commands/editplaylistnoisefrequencychangecommand.cpp
+    commands/editplaylistenvelopefrequencychangecommand.h
+    commands/editplaylistenvelopefrequencychangecommand.cpp
+    commands/editssgenvelopesettingscommand.h
+    commands/editssgenvelopesettingscommand.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(FM-PSG-Studio
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        usertone/fm2envelopesettings.h usertone/fm2envelopesettings.cpp
-        usertone/fm2operatorsettings.h usertone/fm2operatorsettings.cpp
-        usertone/fm2envelopedisplaywidget.h usertone/fm2envelopedisplaywidget.cpp
-        usertone/fm2operatorwidget.h usertone/fm2operatorwidget.cpp usertone/fm2operatorwidget.ui
-        usertone/fm2widget.h usertone/fm2widget.cpp usertone/fm2widget.ui
-        usertone/fm2widgetwindow.h usertone/fm2widgetwindow.cpp usertone/fm2widgetwindow.ui
-        commands/editfm2operatorsettingscommand.h commands/editfm2operatorsettingscommand.cpp
-        usertone/fm2settings.h usertone/fm2settings.cpp
-        commands/editfm2settingscommand.h commands/editfm2settingscommand.cpp
-
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET FM-PSG-Studio APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

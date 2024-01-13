@@ -143,7 +143,7 @@ void FM2EnvelopeSettings::fromBSON(bson_iter_t& bson)
         _dr = bson_iter_int32(&dr);
     }
 
-    if (bson_iter_find_descendant(&bson, "sl", &ar) && BSON_ITER_HOLDS_INT(&sl)) {
+    if (bson_iter_find_descendant(&bson, "sl", &sl) && BSON_ITER_HOLDS_INT(&sl)) {
         _sl = bson_iter_int32(&sl);
     }
 

@@ -15,11 +15,18 @@ public:
 private:
     enum Type {
         NONE,
+        AR,
+        DR,
+        SL,
+        RR,
+        MULTI,
+        KSL,
         TL,
         FB,
     };
 
     Type _type;
+    int _operator;
 
     MainWindow* _mainWindow;
     FM2Settings& _settings;

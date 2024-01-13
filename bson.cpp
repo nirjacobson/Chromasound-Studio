@@ -493,6 +493,33 @@ Playlist::EnvelopeShapeChange BSON::toEnvelopeShapeChange(bson_iter_t& b)
     return esChange;
 }
 
+void BSON::fromUserToneChange(bson_t* dst, const Playlist::UserToneChange* const change)
+{
+    bson_t tone = change->_userTone.toBSON();
+
+    BSON_APPEND_DOUBLE(dst, "time", change->time());
+    BSON_APPEND_DOCUMENT(dst, "tone", &tone);
+}
+
+Playlist::UserToneChange BSON::toUserToneChange(bson_iter_t& b)
+{
+    Playlist::UserToneChange utChange;
+
+    bson_iter_t time;
+    bson_iter_t tone;
+    bson_iter_t toneInner;
+
+    if (bson_iter_find_descendant(&b, "time", &time) && BSON_ITER_HOLDS_DOUBLE(&time)) {
+        utChange._time = bson_iter_double(&time);
+    }
+
+    if (bson_iter_find_descendant(&b, "tone", &tone) && BSON_ITER_HOLDS_DOCUMENT(&tone) && bson_iter_recurse(&tone, &toneInner)) {
+        utChange._userTone.fromBSON(toneInner);
+    }
+
+    return utChange;
+}
+
 void BSON::fromPlaylist(bson_t* dst, const Playlist& playlist)
 {
     BSON_APPEND_DOUBLE(dst, "loopOffset", playlist.loopOffset());
@@ -502,6 +529,7 @@ void BSON::fromPlaylist(bson_t* dst, const Playlist& playlist)
     bson_t noiseFrequencyChanges;
     bson_t envelopeFrequencyChanges;
     bson_t envelopeShapeChanges;
+    bson_t userToneChanges;
 
     uint32_t i = 0;
 
@@ -582,6 +610,22 @@ void BSON::fromPlaylist(bson_t* dst, const Playlist& playlist)
         BSON_APPEND_DOCUMENT(&envelopeShapeChanges, key, &b_change);
     }
     bson_append_array_end(dst, &envelopeShapeChanges);
+
+    i = 0;
+
+    BSON_APPEND_ARRAY_BEGIN(dst, "userToneChanges", &userToneChanges);
+    for (const Playlist::UserToneChange* const utChange : playlist._userToneChanges) {
+        bson_t b_change;
+        bson_init(&b_change);
+        fromUserToneChange(&b_change, utChange);
+
+        char keybuff[8];
+        const char* key;
+        bson_uint32_to_string(i++, &key, keybuff, sizeof keybuff);
+
+        BSON_APPEND_DOCUMENT(&userToneChanges, key, &b_change);
+    }
+    bson_append_array_end(dst, &userToneChanges);
 }
 
 Playlist BSON::toPlaylist(bson_iter_t& b, Project* project)
@@ -604,6 +648,9 @@ Playlist BSON::toPlaylist(bson_iter_t& b, Project* project)
 
     bson_iter_t envShapeChanges;
     bson_iter_t envShapeChange;
+
+    bson_iter_t userToneChanges;
+    bson_iter_t userToneChange;
 
     if (bson_iter_find_descendant(&b, "loopOffset", &loopOffset) && BSON_ITER_HOLDS_DOUBLE(&loopOffset)) {
         p._loopOffset = bson_iter_double(&loopOffset);
@@ -641,6 +688,13 @@ Playlist BSON::toPlaylist(bson_iter_t& b, Project* project)
         while (bson_iter_next(&child)) {
             bson_iter_recurse(&child, &envShapeChange);
             p._envShapeChanges.append(new Playlist::EnvelopeShapeChange(toEnvelopeShapeChange(envShapeChange)));
+        }
+    }
+
+    if (bson_iter_find_descendant(&b, "userToneChanges", &userToneChanges) && BSON_ITER_HOLDS_ARRAY(&userToneChanges) && bson_iter_recurse(&userToneChanges, &child)) {
+        while (bson_iter_next(&child)) {
+            bson_iter_recurse(&child, &userToneChange);
+            p._userToneChanges.append(new Playlist::UserToneChange(toUserToneChange(userToneChange)));
         }
     }
 

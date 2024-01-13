@@ -25,160 +25,138 @@ FM2OperatorWidget::~FM2OperatorWidget()
     delete ui;
 }
 
-void FM2OperatorWidget::setApplication(Application* app)
+const FM2OperatorSettings& FM2OperatorWidget::settings() const
 {
-    _app = app;
+    return _settings;
 }
 
-void FM2OperatorWidget::setSettings(FM2OperatorSettings* settings)
+void FM2OperatorWidget::set(const FM2OperatorSettings& settings)
 {
     _settings = settings;
 
     ui->envTypeComboBox->blockSignals(true);
-    ui->envTypeComboBox->setCurrentIndex(_settings->envelopeSettings().type() == FM2EnvelopeSettings::EGType::Percussive ? 0 : 1);
+    ui->envTypeComboBox->setCurrentIndex(_settings.envelopeSettings().type() == FM2EnvelopeSettings::EGType::Percussive ? 0 : 1);
     ui->envTypeComboBox->blockSignals(false);
 
     ui->arDial->blockSignals(true);
-    ui->arDial->setValue(_settings->envelopeSettings().ar());
+    ui->arDial->setValue(_settings.envelopeSettings().ar());
     ui->arDial->blockSignals(false);
-    ui->arValueLabel->setText(QString::number(_settings->envelopeSettings().ar()));
+    ui->arValueLabel->setText(QString::number(_settings.envelopeSettings().ar()));
 
     ui->drDial->blockSignals(true);
-    ui->drDial->setValue(_settings->envelopeSettings().dr());
+    ui->drDial->setValue(_settings.envelopeSettings().dr());
     ui->drDial->blockSignals(false);
-    ui->drValueLabel->setText(QString::number(_settings->envelopeSettings().dr()));
+    ui->drValueLabel->setText(QString::number(_settings.envelopeSettings().dr()));
 
     ui->slDial->blockSignals(true);
-    ui->slDial->setValue(_settings->envelopeSettings().sl());
+    ui->slDial->setValue(_settings.envelopeSettings().sl());
     ui->slDial->blockSignals(false);
-    ui->slValueLabel->setText(QString::number(_settings->envelopeSettings().sl()));
+    ui->slValueLabel->setText(QString::number(_settings.envelopeSettings().sl()));
 
     ui->rrDial->blockSignals(true);
-    ui->rrDial->setValue(_settings->envelopeSettings().rr());
+    ui->rrDial->setValue(_settings.envelopeSettings().rr());
     ui->rrDial->blockSignals(false);
-    ui->rrValueLabel->setText(QString::number(_settings->envelopeSettings().rr()));
+    ui->rrValueLabel->setText(QString::number(_settings.envelopeSettings().rr()));
 
     ui->multiDial->blockSignals(true);
-    ui->multiDial->setValue(_settings->multi());
+    ui->multiDial->setValue(_settings.multi());
     ui->multiDial->blockSignals(false);
-    ui->multiValueLabel->setText(QString::number(_settings->multi()));
+    ui->multiValueLabel->setText(QString::number(_settings.multi()));
 
     ui->kslDial->blockSignals(true);
-    ui->kslDial->setValue(_settings->ksl());
+    ui->kslDial->setValue(_settings.ksl());
     ui->kslDial->blockSignals(false);
-    ui->kslValueLabel->setText(QString::number(_settings->ksl()));
+    ui->kslValueLabel->setText(QString::number(_settings.ksl()));
 
-    ui->amLed->setOn(_settings->am());
-    ui->vibLed->setOn(_settings->vib());
-    ui->ksrLed->setOn(_settings->ksr());
-    ui->dLed->setOn(_settings->d());
+    ui->amLed->setOn(_settings.am());
+    ui->vibLed->setOn(_settings.vib());
+    ui->ksrLed->setOn(_settings.ksr());
+    ui->dLed->setOn(_settings.d());
 
-    ui->envelopeDisplayWidget->setSettings(&_settings->envelopeSettings());
+    ui->envelopeDisplayWidget->setSettings(&_settings.envelopeSettings());
 }
 
 void FM2OperatorWidget::envTypeChanged(const int index)
 {
-    FM2OperatorSettings newSettings(*_settings);
+    _settings.envelopeSettings().setType((FM2EnvelopeSettings::EGType)index);
 
-    newSettings.envelopeSettings().setType((FM2EnvelopeSettings::EGType)index);
-
-    _app->undoStack().push(new EditFM2OperatorSettingsCommand(_app->window(), *_settings, newSettings));
+    emit changed();
 }
 
 void FM2OperatorWidget::arDialChanged(const int value)
 {
-    FM2OperatorSettings newSettings(*_settings);
+    _settings.envelopeSettings().setAr(value);
 
-    newSettings.envelopeSettings().setAr(value);
-
-    _app->undoStack().push(new EditFM2OperatorSettingsCommand(_app->window(), *_settings, newSettings));
+    emit changed();
 }
 
 void FM2OperatorWidget::drDialChanged(const int value)
 {
-    FM2OperatorSettings newSettings(*_settings);
+    _settings.envelopeSettings().setDr(value);
 
-    newSettings.envelopeSettings().setDr(value);
-
-    _app->undoStack().push(new EditFM2OperatorSettingsCommand(_app->window(), *_settings, newSettings));
+    emit changed();
 }
 
 void FM2OperatorWidget::slDialChanged(const int value)
 {
-    FM2OperatorSettings newSettings(*_settings);
+    _settings.envelopeSettings().setSl(value);
 
-    newSettings.envelopeSettings().setSl(value);
-
-    _app->undoStack().push(new EditFM2OperatorSettingsCommand(_app->window(), *_settings, newSettings));
+    emit changed();
 }
 
 void FM2OperatorWidget::rrDialChanged(const int value)
 {
-    FM2OperatorSettings newSettings(*_settings);
+    _settings.envelopeSettings().setRr(value);
 
-    newSettings.envelopeSettings().setRr(value);
-
-    _app->undoStack().push(new EditFM2OperatorSettingsCommand(_app->window(), *_settings, newSettings));
+    emit changed();
 }
 
 void FM2OperatorWidget::multiDialChanged(const int value)
 {
-    FM2OperatorSettings newSettings(*_settings);
+    _settings.setMulti(value);
 
-    newSettings.setMulti(value);
-
-    _app->undoStack().push(new EditFM2OperatorSettingsCommand(_app->window(), *_settings, newSettings));
+    emit changed();
 }
 
 void FM2OperatorWidget::kslDialChanged(const int value)
 {
-    FM2OperatorSettings newSettings(*_settings);
+    _settings.setKsl(value);
 
-    newSettings.setKsl(value);
-
-    _app->undoStack().push(new EditFM2OperatorSettingsCommand(_app->window(), *_settings, newSettings));
+    emit changed();
 }
 
 void FM2OperatorWidget::amChanged()
 {
     ui->amLed->setOn(!ui->amLed->on());
 
-    FM2OperatorSettings newSettings(*_settings);
+    _settings.setAm(ui->amLed->on());
 
-    newSettings.setAm(ui->amLed->on());
-
-    _app->undoStack().push(new EditFM2OperatorSettingsCommand(_app->window(), *_settings, newSettings));
+    emit changed();
 }
 
 void FM2OperatorWidget::vibChanged()
 {
     ui->vibLed->setOn(!ui->vibLed->on());
 
-    FM2OperatorSettings newSettings(*_settings);
+    _settings.setVib(ui->vibLed->on());
 
-    newSettings.setVib(ui->vibLed->on());
-
-    _app->undoStack().push(new EditFM2OperatorSettingsCommand(_app->window(), *_settings, newSettings));
+    emit changed();
 }
 
 void FM2OperatorWidget::ksrChanged()
 {
     ui->ksrLed->setOn(!ui->ksrLed->on());
 
-    FM2OperatorSettings newSettings(*_settings);
+    _settings.setKsr(ui->ksrLed->on());
 
-    newSettings.setKsr(ui->ksrLed->on());
-
-    _app->undoStack().push(new EditFM2OperatorSettingsCommand(_app->window(), *_settings, newSettings));
+    emit changed();
 }
 
 void FM2OperatorWidget::dChanged()
 {
     ui->dLed->setOn(!ui->dLed->on());
 
-    FM2OperatorSettings newSettings(*_settings);
+    _settings.setD(ui->dLed->on());
 
-    newSettings.setD(ui->dLed->on());
-
-    _app->undoStack().push(new EditFM2OperatorSettingsCommand(_app->window(), *_settings, newSettings));
+    emit changed();
 }

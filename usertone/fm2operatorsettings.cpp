@@ -141,7 +141,7 @@ void FM2OperatorSettings::fromBSON(bson_iter_t& bson)
     if (bson_iter_find_descendant(&bson, "multi", &multi) && BSON_ITER_HOLDS_INT(&multi)) {
         _multi = bson_iter_int32(&multi);
     }
-    if (bson_iter_find_descendant(&bson, "mulkslti", &ksl) && BSON_ITER_HOLDS_INT(&ksl)) {
+    if (bson_iter_find_descendant(&bson, "ksl", &ksl) && BSON_ITER_HOLDS_INT(&ksl)) {
         _ksl = bson_iter_int32(&ksl);
     }
     if (bson_iter_find_descendant(&bson, "d", &d) && BSON_ITER_HOLDS_BOOL(&d)) {

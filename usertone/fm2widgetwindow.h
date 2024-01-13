@@ -23,6 +23,11 @@ public:
     void doUpdate();
 private:
     Ui::FM2WidgetWindow *ui;
+    Application* _app;
+    FM2Settings* _settings;
+
+private slots:
+    void fmChanged();
 
     // QWidget interface
 protected:

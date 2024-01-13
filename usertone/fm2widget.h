@@ -16,21 +16,22 @@ class FM2Widget : public QWidget
     Q_OBJECT
 
 public:
-    explicit FM2Widget(QWidget *parent = nullptr, Application* app = nullptr);
+    explicit FM2Widget(QWidget *parent = nullptr);
     ~FM2Widget();
 
-    void setApplication(Application* app);
+    const FM2Settings& settings() const;
+    void set(const FM2Settings& settings);
 
-    void setSettings(FM2Settings* settings);
-
-    void doUpdate();
+signals:
+    void changed();
 
 private:
     Ui::FM2Widget *ui;
-    Application* _app;
-    FM2Settings* _settings;
+    FM2Settings _settings;
 
 private slots:
+    void operator1Changed();
+    void operator2Changed();
     void tlDialChanged(const int value);
     void fbDialChanged(const int value);
 };
