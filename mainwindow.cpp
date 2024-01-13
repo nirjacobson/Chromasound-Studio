@@ -377,6 +377,8 @@ void MainWindow::channelSelected(const int index)
     FMWidgetWindow* fmWidget;
     PCMWidget* pcmWidget;
     SSGWidget* ssgWidget;
+    MelodyWidget* melodyWidget;
+    RhythmWidget* rhythmWidget;
     QList<MdiSubWindow*>::Iterator it;
 
     for (MdiSubWindow* window : _channelWindows[index]) {
@@ -472,6 +474,48 @@ void MainWindow::channelSelected(const int index)
                 });
             }
             break;
+        case Channel::MELODY:
+            it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window) {
+                return dynamic_cast<MelodyWidget*>(window->widget());
+            });
+            if (it != _channelWindows[index].end()) {
+                ui->mdiArea->setActiveSubWindow(*it);
+            } else {
+                melodyWidget = new MelodyWidget(this, _app);
+                melodyWidget->setSettings(dynamic_cast<MelodyChannelSettings*>(&_app->project().getChannel(index).settings()));
+                melodyWidget->setWindowTitle(QString("%1: Melody").arg(_app->project().getChannel(index).name()));
+
+                channelWindow->setWidget(melodyWidget);
+                if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
+                    channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
+                }
+                _channelWindows[index].append(channelWindow);
+                connect(channelWindow, &MdiSubWindow::closed, this, [=]() {
+                    windowClosed(channelWindow);
+                });
+            }
+            break;
+        case Channel::RHYTHM:
+            it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window) {
+                return dynamic_cast<RhythmWidget*>(window->widget());
+            });
+            if (it != _channelWindows[index].end()) {
+                ui->mdiArea->setActiveSubWindow(*it);
+            } else {
+                rhythmWidget = new RhythmWidget(this, _app);
+                rhythmWidget->setSettings(dynamic_cast<RhythmChannelSettings*>(&_app->project().getChannel(index).settings()));
+                rhythmWidget->setWindowTitle(QString("%1: Rhythm").arg(_app->project().getChannel(index).name()));
+
+                channelWindow->setWidget(rhythmWidget);
+                if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
+                    channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
+                }
+                _channelWindows[index].append(channelWindow);
+                connect(channelWindow, &MdiSubWindow::closed, this, [=]() {
+                    windowClosed(channelWindow);
+                });
+            }
+            break;
     }
 
     if (_app->project().getChannel(index).type() != Channel::Type::TONE) {
@@ -490,6 +534,12 @@ void MainWindow::channelNameChanged(const int index)
             tail = "Noise";
         } else if (dynamic_cast<FMWidgetWindow*>(window->widget())) {
             tail = "FM";
+        } else if (dynamic_cast<SSGWidget*>(window->widget())) {
+            tail = "SSG";
+        } else if (dynamic_cast<MelodyWidget*>(window->widget())) {
+            tail = "Melody";
+        } else if (dynamic_cast<RhythmWidget*>(window->widget())) {
+            tail = "Rhythm";
         }
 
         window->setWindowTitle(QString("%1: %2").arg(_app->project().getChannel(index).name()).arg(tail));

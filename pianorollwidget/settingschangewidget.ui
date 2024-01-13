@@ -19,6 +19,18 @@
      <widget class="QWidget" name="page"/>
      <widget class="QWidget" name="page_2">
       <layout class="QGridLayout" name="gridLayout_2">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="FM4Widget" name="fmWidget" native="true"/>
        </item>
@@ -26,6 +38,18 @@
      </widget>
      <widget class="QWidget" name="page_3">
       <layout class="QGridLayout" name="gridLayout_3">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="NoiseWidget" name="noiseWidget" native="true"/>
        </item>
@@ -33,8 +57,58 @@
      </widget>
      <widget class="QWidget" name="page_4">
       <layout class="QGridLayout" name="gridLayout_4">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="SSGWidget" name="ssgWidget" native="true"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="page_5">
+      <layout class="QGridLayout" name="gridLayout_5">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="MelodyWidget" name="melodyWidget" native="true"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="page_6">
+      <layout class="QGridLayout" name="gridLayout_6">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="RhythmWidget" name="rhythmWidget" native="true"/>
        </item>
       </layout>
      </widget>
@@ -81,6 +155,18 @@
    <class>SSGWidget</class>
    <extends>QWidget</extends>
    <header>ssg/ssgwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MelodyWidget</class>
+   <extends>QWidget</extends>
+   <header>opl/melodywidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>RhythmWidget</class>
+   <extends>QWidget</extends>
+   <header>opl/rhythmwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

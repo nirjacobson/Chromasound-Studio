@@ -28,6 +28,8 @@
 #include "settings/settingsdialog.h"
 #include "player/player.h"
 #include "usertone/fm2widgetwindow.h"
+#include "opl/melodywidget.h"
+#include "opl/rhythmwidget.h"
 
 #include "commands/movechanneldowncommand.h"
 #include "commands/movechannelupcommand.h"

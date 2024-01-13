@@ -18,6 +18,8 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     , _fmAction("FM", this)
     , _pcmAction("PCM", this)
     , _ssgAction("SSG", this)
+    , _melodyAction("Melody", this)
+    , _rhythmAction("Rhythm", this)
     , _fillEvery2StepsAction("Every 2 steps")
     , _fillEvery4StepsAction("Every 4 steps")
     , _toneColor(Qt::cyan)
@@ -25,6 +27,8 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     , _fmColor(Qt::magenta)
     , _pcmColor(Qt::blue)
     , _ssgColor(Qt::green)
+    , _melodyColor(Qt::yellow)
+    , _rhythmColor(QColor(255, 128, 0))
     , _appPosition(0)
 {
     ui->setupUi(this);
@@ -47,7 +51,13 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
         case Channel::SSG:
             ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_ssgColor.name()));
             break;
-    }
+        case Channel::MELODY:
+            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_melodyColor.name()));
+            break;
+        case Channel::RHYTHM:
+            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_rhythmColor.name()));
+            break;
+        }
 
     ui->trackStackedWidget->setMinimumHeight(32);
     ui->stepsStackedWidget->setMinimumHeight(128);
@@ -88,6 +98,8 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     connect(&_fmAction, &QAction::triggered, this, &ChannelWidget::fmWasTriggered);
     connect(&_pcmAction, &QAction::triggered, this, &ChannelWidget::pcmWasTriggered);
     connect(&_ssgAction, &QAction::triggered, this, &ChannelWidget::ssgWasTriggered);
+    connect(&_melodyAction, &QAction::triggered, this, &ChannelWidget::melodyWasTriggered);
+    connect(&_rhythmAction, &QAction::triggered, this, &ChannelWidget::rhythmWasTriggered);
 
     connect(ui->stepKeys, &StepKeysWidget::clicked, this, &ChannelWidget::pianoKeyClicked);
     connect(ui->stepVelocities, &StepVelocitiesWidget::clicked, this, &ChannelWidget::velocityClicked);
@@ -115,11 +127,17 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     _pcmAction.setChecked(_app->project().getChannel(index).type() == Channel::Type::PCM);
     _ssgAction.setCheckable(true);
     _ssgAction.setChecked(_app->project().getChannel(index).type() == Channel::Type::SSG);
+    _melodyAction.setCheckable(true);
+    _melodyAction.setChecked(_app->project().getChannel(index).type() == Channel::Type::MELODY);
+    _rhythmAction.setCheckable(true);
+    _rhythmAction.setChecked(_app->project().getChannel(index).type() == Channel::Type::RHYTHM);
     _typeActionGroup.addAction(&_toneAction);
     _typeActionGroup.addAction(&_noiseAction);
     _typeActionGroup.addAction(&_fmAction);
     _typeActionGroup.addAction(&_pcmAction);
     _typeActionGroup.addAction(&_ssgAction);
+    _typeActionGroup.addAction(&_melodyAction);
+    _typeActionGroup.addAction(&_rhythmAction);
 
     _contextMenu.addSection("Type");
     _contextMenu.addAction(&_toneAction);
@@ -127,6 +145,8 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     _contextMenu.addAction(&_fmAction);
     _contextMenu.addAction(&_pcmAction);
     _contextMenu.addAction(&_ssgAction);
+    _contextMenu.addAction(&_melodyAction);
+    _contextMenu.addAction(&_rhythmAction);
 
     _contextMenu.addSeparator();
     _contextMenu.addAction(&_deleteAction);
@@ -190,7 +210,13 @@ void ChannelWidget::setIndex(const int idx)
         case Channel::SSG:
             ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_ssgColor.name()));
             break;
-    }
+        case Channel::MELODY:
+            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_melodyColor.name()));
+            break;
+        case Channel::RHYTHM:
+            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_rhythmColor.name()));
+            break;
+        }
 
     ui->pushButton->setText(_app->project().getChannel(_index).name());
     ui->stepSequencer->setIndex(_index);
@@ -242,6 +268,8 @@ void ChannelWidget::setIndex(const int idx)
     _fmAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::FM);
     _pcmAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::PCM);
     _ssgAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::SSG);
+    _melodyAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::MELODY);
+    _rhythmAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::RHYTHM);
 
     update();
 }
@@ -356,6 +384,16 @@ const QColor& ChannelWidget::ssgColor() const
     return _ssgColor;
 }
 
+const QColor& ChannelWidget::melodyColor() const
+{
+    return _melodyColor;
+}
+
+const QColor& ChannelWidget::rhythmColor() const
+{
+    return _rhythmColor;
+}
+
 void ChannelWidget::setFMColor(const QColor& color)
 {
     _fmColor = color;
@@ -401,6 +439,24 @@ void ChannelWidget::setSSGColor(const QColor& color)
     }
 }
 
+void ChannelWidget::setMelodyColor(const QColor& color)
+{
+    _melodyColor = color;
+
+    if (_app->project().getChannel(_index).type() == Channel::MELODY) {
+        ui->pushButton->setStyleSheet(QString("background-color: %1; color: %2;").arg(_melodyColor.name()).arg(_melodyColor.lightness() <= 96 ? "white" : "default"));
+    }
+}
+
+void ChannelWidget::setRhythmColor(const QColor& color)
+{
+    _rhythmColor = color;
+
+    if (_app->project().getChannel(_index).type() == Channel::RHYTHM) {
+        ui->pushButton->setStyleSheet(QString("background-color: %1; color: %2;").arg(_rhythmColor.name()).arg(_rhythmColor.lightness() <= 96 ? "white" : "default"));
+    }
+}
+
 void ChannelWidget::ledClicked(bool shift)
 {
     Channel& channel = _app->project().getChannel(_index);
@@ -438,6 +494,8 @@ void ChannelWidget::buttonContextMenuRequested(const QPoint& p)
     _fmAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::FM);
     _pcmAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::PCM);
     _ssgAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::SSG);
+    _melodyAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::MELODY);
+    _rhythmAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::RHYTHM);
 
     _contextMenu.exec(mapToGlobal(p));
 }
@@ -486,6 +544,20 @@ void ChannelWidget::pcmWasTriggered()
 void ChannelWidget::ssgWasTriggered()
 {
     _app->undoStack().push(new SetChannelTypeCommand(_app->window(), _app->project().getChannel(_index), Channel::Type::SSG));
+
+    emit selected();
+}
+
+void ChannelWidget::melodyWasTriggered()
+{
+    _app->undoStack().push(new SetChannelTypeCommand(_app->window(), _app->project().getChannel(_index), Channel::Type::MELODY));
+
+    emit selected();
+}
+
+void ChannelWidget::rhythmWasTriggered()
+{
+    _app->undoStack().push(new SetChannelTypeCommand(_app->window(), _app->project().getChannel(_index), Channel::Type::RHYTHM));
 
     emit selected();
 }
@@ -565,7 +637,13 @@ void ChannelWidget::paintEvent(QPaintEvent* event)
             case Channel::SSG:
                 ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_ssgColor.name()));
                 break;
-        }
+            case Channel::MELODY:
+                ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_melodyColor.name()));
+                break;
+            case Channel::RHYTHM:
+                ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_rhythmColor.name()));
+                break;
+            }
     }
     QWidget::paintEvent(event);
 }

@@ -407,6 +407,18 @@ set(PROJECT_SOURCES
     commands/editplaylistenvelopefrequencychangecommand.cpp
     commands/editssgenvelopesettingscommand.h
     commands/editssgenvelopesettingscommand.cpp
+    project/channel/melodychannelsettings.h
+    project/channel/melodychannelsettings.cpp
+    project/channel/rhythmchannelsettings.h
+    project/channel/rhythmchannelsettings.cpp
+    opl/melodywidget.h opl/melodywidget.cpp
+    opl/melodywidget.ui
+    opl/rhythmwidget.h opl/rhythmwidget.cpp
+    opl/rhythmwidget.ui
+    commands/editmelodychannelsettingscommand.h
+    commands/editmelodychannelsettingscommand.cpp
+    commands/editrhythmchannelsettingscommand.h
+    commands/editrhythmchannelsettingscommand.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
