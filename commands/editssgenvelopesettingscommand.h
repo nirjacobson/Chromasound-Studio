@@ -9,19 +9,19 @@ class MainWindow;
 
 class EditSSGEnvelopeSettingsCommand : public QUndoCommand
 {
-public:
-    EditSSGEnvelopeSettingsCommand(MainWindow* window, SSGEnvelopeSettings& settings, const SSGEnvelopeSettings& update);
+    public:
+        EditSSGEnvelopeSettingsCommand(MainWindow* window, SSGEnvelopeSettings& settings, const SSGEnvelopeSettings& update);
 
-private:
-    MainWindow* _mainWindow;
-    SSGEnvelopeSettings& _settings;
-    SSGEnvelopeSettings _settingsBefore;
-    SSGEnvelopeSettings _settingsAfter;
+    private:
+        MainWindow* _mainWindow;
+        SSGEnvelopeSettings& _settings;
+        SSGEnvelopeSettings _settingsBefore;
+        SSGEnvelopeSettings _settingsAfter;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 };
 
 #endif // EDITSSGENVELOPESETTINGSCOMMAND_H

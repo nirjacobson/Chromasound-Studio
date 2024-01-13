@@ -12,7 +12,7 @@ class FMChannelSettings : public ChannelSettings
 {
     public:
         FMChannelSettings();
-        
+
         typedef FM4OperatorSettings FourOperatorSettings[4];
 
         FourOperatorSettings& operators();

@@ -5,35 +5,35 @@
 
 class RhythmChannelSettings : public ChannelSettings
 {
-public:
-    enum Instrument {
-        BassDrum,
-        SnareDrum,
-        TomTom,
-        TopCymbal,
-        HighHat
-    };
+    public:
+        enum Instrument {
+            BassDrum,
+            SnareDrum,
+            TomTom,
+            TopCymbal,
+            HighHat
+        };
 
-    RhythmChannelSettings();
+        RhythmChannelSettings();
 
-    Instrument instrument() const;
-    void setInstrument(const Instrument instr);
+        Instrument instrument() const;
+        void setInstrument(const Instrument instr);
 
-private:
-    Instrument _instrument;
+    private:
+        Instrument _instrument;
 
-    static QString instrumentToString(const Instrument instr);
-    static Instrument instrumentFromString(const QString& str);
+        static QString instrumentToString(const Instrument instr);
+        static Instrument instrumentFromString(const QString& str);
 
-    // Settings interface
-public:
-    bson_t toBSON() const;
-    void fromBSON(bson_iter_t& bson);
+        // Settings interface
+    public:
+        bson_t toBSON() const;
+        void fromBSON(bson_iter_t& bson);
 
-    // ChannelSettings interface
-public:
-    QString type() const;
-    ChannelSettings* copy() const;
+        // ChannelSettings interface
+    public:
+        QString type() const;
+        ChannelSettings* copy() const;
 };
 
 #endif // RHYTHMCHANNELSETTINGS_H

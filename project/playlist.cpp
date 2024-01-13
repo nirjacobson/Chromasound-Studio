@@ -277,8 +277,8 @@ Playlist::NoiseFrequencyChange* Playlist::addNoiseFrequencyChange(const float ti
     NoiseFrequencyChange* ret = nullptr;
 
     if (std::find_if(_noiseFreqChanges.begin(), _noiseFreqChanges.end(), [=](NoiseFrequencyChange* const nfc) {
-            return nfc->time() == time;
-        }) == _noiseFreqChanges.end()) {
+    return nfc->time() == time;
+    }) == _noiseFreqChanges.end()) {
         ret = new NoiseFrequencyChange(time, freq);
         _noiseFreqChanges.append(ret);
     }
@@ -310,8 +310,8 @@ Playlist::EnvelopeFrequencyChange* Playlist::addEnvelopeFrequencyChange(const fl
     EnvelopeFrequencyChange* ret = nullptr;
 
     if (std::find_if(_envFreqChanges.begin(), _envFreqChanges.end(), [=](EnvelopeFrequencyChange* const efc) {
-            return efc->time() == time;
-        }) == _envFreqChanges.end()) {
+    return efc->time() == time;
+    }) == _envFreqChanges.end()) {
         ret = new EnvelopeFrequencyChange(time, freq);
         _envFreqChanges.append(ret);
     }
@@ -343,8 +343,8 @@ Playlist::EnvelopeShapeChange* Playlist::addEnvelopeShapeChange(const float time
     EnvelopeShapeChange* ret = nullptr;
 
     if (std::find_if(_envShapeChanges.begin(), _envShapeChanges.end(), [=](EnvelopeShapeChange* const efc) {
-            return efc->time() == time;
-        }) == _envShapeChanges.end()) {
+    return efc->time() == time;
+    }) == _envShapeChanges.end()) {
         ret = new EnvelopeShapeChange(time, shape);
         _envShapeChanges.append(ret);
     }
@@ -376,8 +376,8 @@ Playlist::UserToneChange* Playlist::addUserToneChange(const float time, const FM
     UserToneChange* ret = nullptr;
 
     if (std::find_if(_userToneChanges.begin(), _userToneChanges.end(), [=](UserToneChange* const utc) {
-            return utc->time() == time;
-        }) == _userToneChanges.end()) {
+    return utc->time() == time;
+    }) == _userToneChanges.end()) {
         ret = new UserToneChange(time, tone);
         _userToneChanges.append(ret);
     }
@@ -434,12 +434,12 @@ QString Playlist::LFOChange::name() const
             return "LFO: 72.2 Hz";
     }
 
-        return "LFO change";
+    return "LFO change";
 }
 
 const QColor& Playlist::LFOChange::color() const
 {
-        return COLOR;
+    return COLOR;
 }
 
 int Playlist::LFOChange::mode() const

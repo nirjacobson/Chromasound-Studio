@@ -14,10 +14,10 @@
 #include "mdiarea/mdisubwindow.h"
 
 namespace Ui {
-class FM4Widget;
+    class FM4Widget;
 }
-    
-    class FM4Widget : public QWidget
+
+class FM4Widget : public QWidget
 {
         Q_OBJECT
 

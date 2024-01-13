@@ -9,21 +9,21 @@ class MainWindow;
 
 class RemovePlaylistNoiseFrequencyChangeCommand : public QUndoCommand
 {
-public:
-    RemovePlaylistNoiseFrequencyChangeCommand(MainWindow* window, Playlist& playlist, Playlist::NoiseFrequencyChange* change);
-    ~RemovePlaylistNoiseFrequencyChangeCommand();
+    public:
+        RemovePlaylistNoiseFrequencyChangeCommand(MainWindow* window, Playlist& playlist, Playlist::NoiseFrequencyChange* change);
+        ~RemovePlaylistNoiseFrequencyChangeCommand();
 
-private:
-    MainWindow* _mainWindow;
-    Playlist& _playlist;
-    Playlist::NoiseFrequencyChange* _change;
+    private:
+        MainWindow* _mainWindow;
+        Playlist& _playlist;
+        Playlist::NoiseFrequencyChange* _change;
 
-    bool _performed;
+        bool _performed;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 };
 
 #endif // REMOVEPLAYLISTNOISEFREQUENCYCHANGECOMMAND_H

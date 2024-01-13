@@ -6,7 +6,7 @@
 class FM4EnvelopeSettings : public Settings
 {
     public:
-    FM4EnvelopeSettings();
+        FM4EnvelopeSettings();
 
         int ar() const;
         int t1l() const;

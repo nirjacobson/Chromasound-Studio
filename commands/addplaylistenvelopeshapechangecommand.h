@@ -9,20 +9,20 @@ class MainWindow;
 
 class AddPlaylistEnvelopeShapeChangeCommand : public QUndoCommand
 {
-public:
-    AddPlaylistEnvelopeShapeChangeCommand(MainWindow* window, Playlist& playlist, const float time);
+    public:
+        AddPlaylistEnvelopeShapeChangeCommand(MainWindow* window, Playlist& playlist, const float time);
 
-private:
-    MainWindow* _mainWindow;
-    Playlist& _playlist;
-    float _time;
+    private:
+        MainWindow* _mainWindow;
+        Playlist& _playlist;
+        float _time;
 
-    Playlist::EnvelopeShapeChange* _change;
+        Playlist::EnvelopeShapeChange* _change;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 };
 
 #endif // ADDPLAYLISTENVELOPESHAPECHANGECOMMAND_H

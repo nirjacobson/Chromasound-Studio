@@ -59,7 +59,7 @@ void Channel::setType(const Type type)
         case RHYTHM:
             _settings = new RhythmChannelSettings;
             break;
-        }
+    }
 }
 
 QString Channel::name() const
@@ -99,7 +99,7 @@ QString Channel::channelTypeToString(const Type type)
             return "MELODY";
         case RHYTHM:
             return "RHYTHM";
-        }
+    }
 
     return "TONE";
 }

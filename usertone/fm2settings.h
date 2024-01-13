@@ -6,32 +6,32 @@
 
 class FM2Settings : public Settings
 {
-public:
-    FM2Settings();
+    public:
+        FM2Settings();
 
-    typedef FM2OperatorSettings TwoOperatorSettings[2];
+        typedef FM2OperatorSettings TwoOperatorSettings[2];
 
-    TwoOperatorSettings& operators();
-    const TwoOperatorSettings& operators() const;
+        TwoOperatorSettings& operators();
+        const TwoOperatorSettings& operators() const;
 
-    int tl() const;
-    void setTl(const int tl);
+        int tl() const;
+        void setTl(const int tl);
 
-    int fb() const;
-    void setFb(const int fb);
+        int fb() const;
+        void setFb(const int fb);
 
-    bool operator==(const FM2Settings& other) const;
+        bool operator==(const FM2Settings& other) const;
 
-private:
-    FM2OperatorSettings _operators[2];
-    int _tl;
-    int _fb;
+    private:
+        FM2OperatorSettings _operators[2];
+        int _tl;
+        int _fb;
 
 
-    // Settings interface
-public:
-    bson_t toBSON() const;
-    void fromBSON(bson_iter_t& bson);
+        // Settings interface
+    public:
+        bson_t toBSON() const;
+        void fromBSON(bson_iter_t& bson);
 };
 
 #endif // FM2SETTINGS_H

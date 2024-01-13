@@ -10,7 +10,7 @@ class MainWindow;
 class EditFM4OperatorSettingsCommand : public QUndoCommand
 {
     public:
-    EditFM4OperatorSettingsCommand(MainWindow* window, FM4OperatorSettings& settings, const FM4OperatorSettings& update);
+        EditFM4OperatorSettingsCommand(MainWindow* window, FM4OperatorSettings& settings, const FM4OperatorSettings& update);
     private:
         enum Type {
             NONE,

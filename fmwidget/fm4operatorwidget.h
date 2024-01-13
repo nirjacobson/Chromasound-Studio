@@ -11,7 +11,7 @@ namespace Ui {
     class FM4OperatorWidget;
 }
 
-    class FM4OperatorWidget : public QWidget
+class FM4OperatorWidget : public QWidget
 {
         Q_OBJECT
 
@@ -20,13 +20,13 @@ namespace Ui {
         ~FM4OperatorWidget();
 
         void setApplication(Application* app);
-        
+
         void setSettings(FM4OperatorSettings* settings);
 
     private:
         Ui::FM4OperatorWidget *ui;
         Application* _app;
-        
+
         FM4OperatorSettings* _settings;
 
         int dtToIndex(const int dt) const;

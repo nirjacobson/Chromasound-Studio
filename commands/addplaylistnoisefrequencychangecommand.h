@@ -9,21 +9,21 @@ class MainWindow;
 
 class AddPlaylistNoiseFrequencyChangeCommand : public QUndoCommand
 {
-public:
-    AddPlaylistNoiseFrequencyChangeCommand(MainWindow* window, Playlist& playlist, const float time, const int freq);
+    public:
+        AddPlaylistNoiseFrequencyChangeCommand(MainWindow* window, Playlist& playlist, const float time, const int freq);
 
-private:
-    MainWindow* _mainWindow;
-    Playlist& _playlist;
-    float _time;
-    int _freq;
+    private:
+        MainWindow* _mainWindow;
+        Playlist& _playlist;
+        float _time;
+        int _freq;
 
-    Playlist::NoiseFrequencyChange* _change;
+        Playlist::NoiseFrequencyChange* _change;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 };
 
 #endif // ADDPLAYLISTNOISEFREQUENCYCHANGECOMMAND_H

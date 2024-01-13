@@ -6,31 +6,31 @@
 #include "ssg/ssgenvelopesettings.h"
 
 namespace Ui {
-class SSGEnvelopeShapeWidget;
+    class SSGEnvelopeShapeWidget;
 }
 
 class SSGEnvelopeShapeWidget : public QWidget
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    explicit SSGEnvelopeShapeWidget(QWidget *parent = nullptr);
-    ~SSGEnvelopeShapeWidget();
+    public:
+        explicit SSGEnvelopeShapeWidget(QWidget *parent = nullptr);
+        ~SSGEnvelopeShapeWidget();
 
-    const SSGEnvelopeSettings& settings() const;
-    void set(const SSGEnvelopeSettings& settings);
-signals:
-    void changed();
+        const SSGEnvelopeSettings& settings() const;
+        void set(const SSGEnvelopeSettings& settings);
+    signals:
+        void changed();
 
-private:
-    Ui::SSGEnvelopeShapeWidget *ui;
-    SSGEnvelopeSettings _settings;
+    private:
+        Ui::SSGEnvelopeShapeWidget *ui;
+        SSGEnvelopeSettings _settings;
 
-private slots:
-    void contToggled(const bool enabled);
-    void attToggled(const bool enabled);
-    void altToggled(const bool enabled);
-    void holdToggled(const bool enabled);
+    private slots:
+        void contToggled(const bool enabled);
+        void attToggled(const bool enabled);
+        void altToggled(const bool enabled);
+        void holdToggled(const bool enabled);
 };
 
 #endif // SSGENVELOPESHAPEWIDGET_H

@@ -8,31 +8,31 @@
 #include "commands/editssgchannelsettingscommand.h"
 
 namespace Ui {
-class SSGWidget;
+    class SSGWidget;
 }
 
 class SSGWidget : public QWidget
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    explicit SSGWidget(QWidget *parent = nullptr, Application* app = nullptr);
-    ~SSGWidget();
+    public:
+        explicit SSGWidget(QWidget *parent = nullptr, Application* app = nullptr);
+        ~SSGWidget();
 
-    void setApplication(Application* app);
+        void setApplication(Application* app);
 
-    void setSettings(SSGChannelSettings* settings);
-    void doUpdate();
+        void setSettings(SSGChannelSettings* settings);
+        void doUpdate();
 
-private:
-    Ui::SSGWidget *ui;
-    Application* _app;
-    SSGChannelSettings* _settings;
+    private:
+        Ui::SSGWidget *ui;
+        Application* _app;
+        SSGChannelSettings* _settings;
 
-private slots:
-    void toneLEDClicked(bool shift);
-    void noiseLEDClicked(bool shift);
-    void envLEDClicked(bool shift);
+    private slots:
+        void toneLEDClicked(bool shift);
+        void noiseLEDClicked(bool shift);
+        void envLEDClicked(bool shift);
 };
 
 #endif // SSGWIDGET_H

@@ -292,7 +292,7 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
     });
 
     auto mostRecentESChangeIt = std::find_if(esChanges.rbegin(), esChanges.rend(), [&](Playlist::EnvelopeShapeChange* change) {
-          return change->time() <= currentOffset;
+        return change->time() <= currentOffset;
     });
     if (mostRecentESChangeIt == esChanges.rend()) {
         items.prepend(new StreamEnvelopeShapeItem(currentOffset, project.ssgEnvelopeShape()));
@@ -1532,7 +1532,7 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
         uint8_t datum;
         if (item->on()) {
             int vol = 30.0f * (float)item->channelSettings()->volume()/100.0f
-                            * (float)item->note().velocity()/100.0f;
+                      * (float)item->note().velocity()/100.0f;
             datum = vol >> 1;
             datum |= (settings->envelope() << 4);
         } else {
