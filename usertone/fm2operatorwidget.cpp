@@ -65,7 +65,7 @@ void FM2OperatorWidget::setSettings(FM2OperatorSettings* settings)
 
     ui->kslDial->blockSignals(true);
     ui->kslDial->setValue(_settings->ksl());
-    ui->kslDial->blockSignals(true);
+    ui->kslDial->blockSignals(false);
     ui->kslValueLabel->setText(QString::number(_settings->ksl()));
 
     ui->amLed->setOn(_settings->am());
