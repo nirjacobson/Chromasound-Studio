@@ -7,31 +7,31 @@
 #include "mdiarea/mdisubwindow.h"
 
 namespace Ui {
-class FM2WidgetWindow;
+    class FM2WidgetWindow;
 }
 
 class FM2WidgetWindow : public QMainWindow
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    explicit FM2WidgetWindow(QWidget *parent = nullptr, Application* app = nullptr);
-    ~FM2WidgetWindow();
+    public:
+        explicit FM2WidgetWindow(QWidget *parent = nullptr, Application* app = nullptr);
+        ~FM2WidgetWindow();
 
-    void setSettings(FM2Settings* settings);
+        void setSettings(FM2Settings* settings);
 
-    void doUpdate();
-private:
-    Ui::FM2WidgetWindow *ui;
-    Application* _app;
-    FM2Settings* _settings;
+        void doUpdate();
+    private:
+        Ui::FM2WidgetWindow *ui;
+        Application* _app;
+        FM2Settings* _settings;
 
-private slots:
-    void fmChanged();
+    private slots:
+        void fmChanged();
 
-    // QWidget interface
-protected:
-    void closeEvent(QCloseEvent* event);
+        // QWidget interface
+    protected:
+        void closeEvent(QCloseEvent* event);
 };
 
 #endif // FM2WIDGETWINDOW_H

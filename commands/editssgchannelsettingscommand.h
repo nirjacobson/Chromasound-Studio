@@ -9,18 +9,18 @@ class MainWindow;
 
 class EditSSGChannelSettingsCommand : public QUndoCommand
 {
-public:
-    EditSSGChannelSettingsCommand(MainWindow* window, SSGChannelSettings& settings, const SSGChannelSettings& update);
-private:
-    MainWindow* _mainWindow;
-    SSGChannelSettings& _settings;
-    SSGChannelSettings _settingsBefore;
-    SSGChannelSettings _settingsAfter;
+    public:
+        EditSSGChannelSettingsCommand(MainWindow* window, SSGChannelSettings& settings, const SSGChannelSettings& update);
+    private:
+        MainWindow* _mainWindow;
+        SSGChannelSettings& _settings;
+        SSGChannelSettings _settingsBefore;
+        SSGChannelSettings _settingsAfter;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 };
 
 #endif // EDITSSGCHANNELSETTINGSCOMMAND_H

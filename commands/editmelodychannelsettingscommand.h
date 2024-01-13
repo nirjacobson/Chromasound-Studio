@@ -9,18 +9,18 @@ class MainWindow;
 
 class EditMelodyChannelSettingsCommand : public QUndoCommand
 {
-public:
-    EditMelodyChannelSettingsCommand(MainWindow* window, MelodyChannelSettings& settings, const MelodyChannelSettings& update);
-private:
-    MainWindow* _mainWindow;
-    MelodyChannelSettings& _settings;
-    MelodyChannelSettings _settingsBefore;
-    MelodyChannelSettings _settingsAfter;
+    public:
+        EditMelodyChannelSettingsCommand(MainWindow* window, MelodyChannelSettings& settings, const MelodyChannelSettings& update);
+    private:
+        MainWindow* _mainWindow;
+        MelodyChannelSettings& _settings;
+        MelodyChannelSettings _settingsBefore;
+        MelodyChannelSettings _settingsAfter;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 };
 
 #endif // EDITMELODYCHANNELSETTINGSCOMMAND_H

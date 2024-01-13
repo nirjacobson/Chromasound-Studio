@@ -402,7 +402,7 @@ Track::SettingsChange BSON::toTrackSettingsChange(bson_iter_t& b)
                         sc._settings = new RhythmChannelSettings;
                         sc._settings->fromBSON(settingsInner);
                         break;
-                    }
+                }
             }
         }
     }

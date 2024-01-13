@@ -20,16 +20,16 @@ QString RhythmChannelSettings::instrumentToString(const Instrument instr)
 {
     switch (instr) {
 
-    case BassDrum:
-        return "BassDrum";
-    case SnareDrum:
-        return "SnareDrum";
-    case TomTom:
-        return "TomTom";
-    case TopCymbal:
-        return "TopCymbal";
-    case HighHat:
-        return "HighHat";
+        case BassDrum:
+            return "BassDrum";
+        case SnareDrum:
+            return "SnareDrum";
+        case TomTom:
+            return "TomTom";
+        case TopCymbal:
+            return "TopCymbal";
+        case HighHat:
+            return "HighHat";
     }
 
     return "BassDrum";

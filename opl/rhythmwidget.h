@@ -8,29 +8,29 @@
 #include "commands/editrhythmchannelsettingscommand.h"
 
 namespace Ui {
-class RhythmWidget;
+    class RhythmWidget;
 }
 
 class RhythmWidget : public QWidget
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    explicit RhythmWidget(QWidget *parent = nullptr, Application* app = nullptr);
-    ~RhythmWidget();
+    public:
+        explicit RhythmWidget(QWidget *parent = nullptr, Application* app = nullptr);
+        ~RhythmWidget();
 
-    void setApplication(Application* app);
+        void setApplication(Application* app);
 
-    void setSettings(RhythmChannelSettings* settings);
-    void doUpdate();
+        void setSettings(RhythmChannelSettings* settings);
+        void doUpdate();
 
-private:
-    Ui::RhythmWidget *ui;
-    Application* _app;
-    RhythmChannelSettings* _settings;
+    private:
+        Ui::RhythmWidget *ui;
+        Application* _app;
+        RhythmChannelSettings* _settings;
 
-private slots:
-    void selectionChanged(int index);
+    private slots:
+        void selectionChanged(int index);
 };
 
 #endif // RHYTHMWIDGET_H

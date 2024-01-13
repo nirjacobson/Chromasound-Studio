@@ -8,29 +8,29 @@
 #include "commands/editmelodychannelsettingscommand.h"
 
 namespace Ui {
-class MelodyWidget;
+    class MelodyWidget;
 }
 
 class MelodyWidget : public QWidget
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    explicit MelodyWidget(QWidget *parent = nullptr, Application* app = nullptr);
-    ~MelodyWidget();
+    public:
+        explicit MelodyWidget(QWidget *parent = nullptr, Application* app = nullptr);
+        ~MelodyWidget();
 
-    void setApplication(Application* app);
+        void setApplication(Application* app);
 
-    void setSettings(MelodyChannelSettings* settings);
-    void doUpdate();
+        void setSettings(MelodyChannelSettings* settings);
+        void doUpdate();
 
-private:
-    Ui::MelodyWidget *ui;
-    Application* _app;
-    MelodyChannelSettings* _settings;
+    private:
+        Ui::MelodyWidget *ui;
+        Application* _app;
+        MelodyChannelSettings* _settings;
 
-private slots:
-    void selectionChanged(int index);
+    private slots:
+        void selectionChanged(int index);
 
 };
 

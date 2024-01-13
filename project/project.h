@@ -78,7 +78,7 @@ class Project
 
         int lfoMode() const;
         void setLFOMode(const int mode);
-        
+
         const SSGEnvelopeSettings& ssgEnvelopeShape() const;
         void setSSGEnvelopeSettings(const SSGEnvelopeSettings& settings);
 

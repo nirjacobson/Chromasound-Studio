@@ -57,7 +57,7 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
         case Channel::RHYTHM:
             ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_rhythmColor.name()));
             break;
-        }
+    }
 
     ui->trackStackedWidget->setMinimumHeight(32);
     ui->stepsStackedWidget->setMinimumHeight(128);
@@ -216,7 +216,7 @@ void ChannelWidget::setIndex(const int idx)
         case Channel::RHYTHM:
             ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_rhythmColor.name()));
             break;
-        }
+    }
 
     ui->pushButton->setText(_app->project().getChannel(_index).name());
     ui->stepSequencer->setIndex(_index);
@@ -643,7 +643,7 @@ void ChannelWidget::paintEvent(QPaintEvent* event)
             case Channel::RHYTHM:
                 ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_rhythmColor.name()));
                 break;
-            }
+        }
     }
     QWidget::paintEvent(event);
 }

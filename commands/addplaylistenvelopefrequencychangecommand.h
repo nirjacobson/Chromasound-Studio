@@ -9,21 +9,21 @@ class MainWindow;
 
 class AddPlaylistEnvelopeFrequencyChangeCommand : public QUndoCommand
 {
-public:
-    AddPlaylistEnvelopeFrequencyChangeCommand(MainWindow* window, Playlist& playlist, const float time, const int freq);
+    public:
+        AddPlaylistEnvelopeFrequencyChangeCommand(MainWindow* window, Playlist& playlist, const float time, const int freq);
 
-private:
-    MainWindow* _mainWindow;
-    Playlist& _playlist;
-    float _time;
-    int _freq;
+    private:
+        MainWindow* _mainWindow;
+        Playlist& _playlist;
+        float _time;
+        int _freq;
 
-    Playlist::EnvelopeFrequencyChange* _change;
+        Playlist::EnvelopeFrequencyChange* _change;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 };
 
 #endif // ADDPLAYLISTENVELOPEFREQUENCYCHANGECOMMAND_H

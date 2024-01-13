@@ -9,21 +9,21 @@ class MainWindow;
 
 class RemovePlaylistUserToneChangeCommand : public QUndoCommand
 {
-public:
-    RemovePlaylistUserToneChangeCommand(MainWindow* window, Playlist& playlist, Playlist::UserToneChange* change);
-    ~RemovePlaylistUserToneChangeCommand();
+    public:
+        RemovePlaylistUserToneChangeCommand(MainWindow* window, Playlist& playlist, Playlist::UserToneChange* change);
+        ~RemovePlaylistUserToneChangeCommand();
 
-private:
-    MainWindow* _mainWindow;
-    Playlist& _playlist;
-    Playlist::UserToneChange* _change;
+    private:
+        MainWindow* _mainWindow;
+        Playlist& _playlist;
+        Playlist::UserToneChange* _change;
 
-    bool _performed;
+        bool _performed;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 };
 
 #endif // REMOVEPLAYLISTUSERTONECHANGECOMMAND_H

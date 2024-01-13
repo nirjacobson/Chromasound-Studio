@@ -26,7 +26,7 @@ class GanttWidget : public QWidget
         void setLeftWidget(GanttLeftWidget* const widget);
         void setBottomWidget(GanttBottomWidget* const widget);
         void setParameters(int rows, int rowHeight, int cellWidth, float beatsPerCell);
-        
+
         void addMarkers(QList<GanttMarker*>* markers);
         void setItems(QList<GanttItem*>* items);
         void setApplication(Application* app);

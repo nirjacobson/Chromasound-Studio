@@ -7,21 +7,21 @@
 class FM4OperatorSettings : public Settings
 {
     public:
-    FM4OperatorSettings();
-        
+        FM4OperatorSettings();
+
         FM4EnvelopeSettings& envelopeSettings();
         const FM4EnvelopeSettings& envelopeSettings() const;
         int mul() const;
         int dt() const;
         int rs() const;
         bool am() const;
-        
+
         void setEnvelopeSettings(const FM4EnvelopeSettings& settings);
         void setMul(const int mul);
         void setDt(const int dt);
         void setRs(const int rs);
         void setAm(const bool am);
-        
+
         bool operator==(const FM4OperatorSettings& other) const;
 
     private:

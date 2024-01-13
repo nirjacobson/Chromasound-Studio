@@ -9,28 +9,28 @@
 
 class SSGEnvelopeDisplayWidget : public QWidget
 {
-    Q_OBJECT
-public:
-    explicit SSGEnvelopeDisplayWidget(QWidget *parent = nullptr);
+        Q_OBJECT
+    public:
+        explicit SSGEnvelopeDisplayWidget(QWidget *parent = nullptr);
 
-    void setSettings(const SSGEnvelopeSettings* settings);
+        void setSettings(const SSGEnvelopeSettings* settings);
 
-signals:
+    signals:
 
-protected:
-    void paintEvent(QPaintEvent* event);
+    protected:
+        void paintEvent(QPaintEvent* event);
 
-private:
-    static QPointF NULL_POINTF;
-    static int PERIOD_WIDTH;
+    private:
+        static QPointF NULL_POINTF;
+        static int PERIOD_WIDTH;
 
-    const SSGEnvelopeSettings* _settings;
+        const SSGEnvelopeSettings* _settings;
 
-    QColor _backgroundColor;
-    QColor _borderColor;
-    QColor _envelopeColor;
+        QColor _backgroundColor;
+        QColor _borderColor;
+        QColor _envelopeColor;
 
-    QList<QPointF> getPoints() const;
+        QList<QPointF> getPoints() const;
 };
 
 #endif // SSGENVELOPEDISPLAYWIDGET_H

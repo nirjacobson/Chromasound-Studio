@@ -9,21 +9,21 @@ class MainWindow;
 
 class RemovePlaylistEnvelopeShapeChangeCommand : public QUndoCommand
 {
-public:
-    RemovePlaylistEnvelopeShapeChangeCommand(MainWindow* window, Playlist& playlist, Playlist::EnvelopeShapeChange* change);
-    ~RemovePlaylistEnvelopeShapeChangeCommand();
+    public:
+        RemovePlaylistEnvelopeShapeChangeCommand(MainWindow* window, Playlist& playlist, Playlist::EnvelopeShapeChange* change);
+        ~RemovePlaylistEnvelopeShapeChangeCommand();
 
-private:
-    MainWindow* _mainWindow;
-    Playlist& _playlist;
-    Playlist::EnvelopeShapeChange* _change;
+    private:
+        MainWindow* _mainWindow;
+        Playlist& _playlist;
+        Playlist::EnvelopeShapeChange* _change;
 
-    bool _performed;
+        bool _performed;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 };
 
 #endif // REMOVEPLAYLISTENVELOPESHAPECHANGECOMMAND_H

@@ -51,78 +51,78 @@ QString MelodyChannelSettings::instrumentToString(const Instrument instr)
             return "AcousticBass";
         case ElectricGuitar:
             return "ElectricGuitar";
-        }
+    }
 
     return "User";
 }
 
 MelodyChannelSettings::Instrument MelodyChannelSettings::instrumentFromString(const QString& str)
 {
-        if (str == "User") {
-            return Instrument::User;
-        }
-
-        if (str == "Violin") {
-            return Instrument::Violin;
-        }
-
-        if (str == "Guitar") {
-            return Instrument::Guitar;
-        }
-
-        if (str == "Piano") {
-            return Instrument::Piano;
-        }
-
-        if (str == "Flute") {
-            return Instrument::Flute;
-        }
-
-        if (str == "Clarinet") {
-            return Instrument::Clarinet;
-        }
-
-        if (str == "Oboe") {
-            return Instrument::Oboe;
-        }
-
-        if (str == "Trumpet") {
-            return Instrument::Trumpet;
-        }
-
-        if (str == "Organ") {
-            return Instrument::Organ;
-        }
-
-        if (str == "Horn") {
-            return Instrument::Horn;
-        }
-
-        if (str == "Synthesizer") {
-            return Instrument::Synthesizer;
-        }
-
-        if (str == "Harpsichord") {
-            return Instrument::Harpsichord;
-        }
-
-        if (str == "Vibraphone") {
-            return Instrument::Vibraphone;
-        }
-
-        if (str == "SynthesizerBass") {
-            return Instrument::SynthesizerBass;
-        }
-
-        if (str == "AcousticBass") {
-            return Instrument::AcousticBass;
-        }
-
-        if (str == "ElectricGuitar") {
-            return Instrument::ElectricGuitar;
-        }
-
+    if (str == "User") {
         return Instrument::User;
+    }
+
+    if (str == "Violin") {
+        return Instrument::Violin;
+    }
+
+    if (str == "Guitar") {
+        return Instrument::Guitar;
+    }
+
+    if (str == "Piano") {
+        return Instrument::Piano;
+    }
+
+    if (str == "Flute") {
+        return Instrument::Flute;
+    }
+
+    if (str == "Clarinet") {
+        return Instrument::Clarinet;
+    }
+
+    if (str == "Oboe") {
+        return Instrument::Oboe;
+    }
+
+    if (str == "Trumpet") {
+        return Instrument::Trumpet;
+    }
+
+    if (str == "Organ") {
+        return Instrument::Organ;
+    }
+
+    if (str == "Horn") {
+        return Instrument::Horn;
+    }
+
+    if (str == "Synthesizer") {
+        return Instrument::Synthesizer;
+    }
+
+    if (str == "Harpsichord") {
+        return Instrument::Harpsichord;
+    }
+
+    if (str == "Vibraphone") {
+        return Instrument::Vibraphone;
+    }
+
+    if (str == "SynthesizerBass") {
+        return Instrument::SynthesizerBass;
+    }
+
+    if (str == "AcousticBass") {
+        return Instrument::AcousticBass;
+    }
+
+    if (str == "ElectricGuitar") {
+        return Instrument::ElectricGuitar;
+    }
+
+    return Instrument::User;
 }
 
 bson_t MelodyChannelSettings::toBSON() const
