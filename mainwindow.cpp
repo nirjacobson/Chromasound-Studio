@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _pcmUsageDialogWindow(nullptr)
     , _infoDialogWindow(nullptr)
     , _playerDialogWindow(nullptr)
+    , _userToneDialogWindow(nullptr)
 {
     _midiInput->init();
 
@@ -71,6 +72,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(ui->topWidget, &TopWidget::patternChanged, this, &MainWindow::patternChanged);
     connect(ui->topWidget, &TopWidget::beatsPerBarChanged, this, &MainWindow::beatsPerBarChanged);
     connect(ui->topWidget, &TopWidget::midiDeviceSet, this, &MainWindow::setMIDIDevice);
+    connect(ui->topWidget, &TopWidget::userToneTriggered, this, &MainWindow::userToneTriggered);
 
     connect(ui->mdiArea, &MdiArea::viewModeChanged, this, &MainWindow::mdiViewModeChanged);
 
@@ -781,6 +783,26 @@ void MainWindow::playerTriggered()
     }
 }
 
+void MainWindow::userToneTriggered()
+{
+    if (_userToneDialogWindow == nullptr) {
+        _userToneDialog = new FM2WidgetWindow(this, _app);
+        _userToneDialog->setSettings(&_app->project().userTone());
+
+        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        connect(window, &MdiSubWindow::closed, this, [&]() {
+            _userToneDialogWindow = nullptr;
+        });
+        window->setAttribute(Qt::WA_DeleteOnClose);
+        window->setWidget(_userToneDialog);
+        _userToneDialogWindow = window;
+        ui->mdiArea->addSubWindow(window);
+        window->show();
+    } else {
+        ui->mdiArea->setActiveSubWindow(_userToneDialogWindow);
+    }
+}
+
 void MainWindow::showChannelsWindow()
 {
     if (_channelsWindow == nullptr) {
@@ -884,7 +906,7 @@ void MainWindow::doUpdate()
     ui->topWidget->doUpdate(position);
     if (_channelsWindow) _channelsWidget->doUpdate(position);
     if (_playlistWindow) _playlistWidget->doUpdate(position);
-
+    if (_userToneDialogWindow) _userToneDialog->doUpdate();
     for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
         for (MdiSubWindow* window : (*it)) {
             PianoRollWidget* prw;

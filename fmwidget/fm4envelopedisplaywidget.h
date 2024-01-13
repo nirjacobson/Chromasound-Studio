@@ -1,5 +1,5 @@
-#ifndef ENVELOPEDISPLAYWIDGET_H
-#define ENVELOPEDISPLAYWIDGET_H
+#ifndef FM4ENVELOPEDISPLAYWIDGET_H
+#define FM4ENVELOPEDISPLAYWIDGET_H
 
 #include <QWidget>
 #include <QPainter>
@@ -7,9 +7,9 @@
 #include <QtMath>
 #include <math.h>
 
-#include "project/channel/envelopesettings.h"
+#include "project/channel/fm4envelopesettings.h"
 
-class EnvelopeDisplayWidget : public QWidget
+class FM4EnvelopeDisplayWidget : public QWidget
 {
         Q_OBJECT
         Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
@@ -19,9 +19,9 @@ class EnvelopeDisplayWidget : public QWidget
         Q_PROPERTY(QColor releaseColor READ releaseColor WRITE setReleaseColor)
 
     public:
-        explicit EnvelopeDisplayWidget(QWidget *parent = nullptr);
+        explicit FM4EnvelopeDisplayWidget(QWidget *parent = nullptr);
 
-        void setSettings(const EnvelopeSettings* settings);
+        void setSettings(const FM4EnvelopeSettings* settings);
 
     protected:
         virtual void paintEvent(QPaintEvent* event);
@@ -31,7 +31,7 @@ class EnvelopeDisplayWidget : public QWidget
     private:
         static QPointF NULL_POINTF;
 
-        const EnvelopeSettings* _settings;
+        const FM4EnvelopeSettings* _settings;
 
         QList<QPointF> getPoints() const;
 
@@ -55,4 +55,4 @@ class EnvelopeDisplayWidget : public QWidget
 
 };
 
-#endif // ENVELOPEDISPLAYWIDGET_H
+#endif // FM4ENVELOPEDISPLAYWIDGET_H

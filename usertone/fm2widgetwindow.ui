@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>FMWidgetWindow</class>
- <widget class="QMainWindow" name="FMWidgetWindow">
+ <class>FM2WidgetWindow</class>
+ <widget class="QMainWindow" name="FM2WidgetWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,12 +11,12 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>User Tone</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="FM4Widget" name="fmWidget" native="true"/>
+     <widget class="FM2Widget" name="fmWidget" native="true"/>
     </item>
    </layout>
   </widget>
@@ -29,7 +29,7 @@
      <height>20</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu_File">
+   <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>&amp;File</string>
     </property>
@@ -40,7 +40,7 @@
     <addaction name="separator"/>
     <addaction name="actionClose"/>
    </widget>
-   <addaction name="menu_File"/>
+   <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionNew">
@@ -66,9 +66,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>FM4Widget</class>
+   <class>FM2Widget</class>
    <extends>QWidget</extends>
-   <header>fmwidget/fm4widget.h</header>
+   <header>usertone/fm2widget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

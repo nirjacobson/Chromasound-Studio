@@ -33,6 +33,7 @@ class TopWidget : public QWidget
         void tempoChanged(int);
         void beatsPerBarChanged(int);
         void midiDeviceSet(int);
+        void userToneTriggered();
 
     private:
         Ui::TopWidget *ui;

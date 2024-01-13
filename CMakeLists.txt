@@ -49,11 +49,11 @@ set(PROJECT_SOURCES
     fmwidget/algorithmwidget.cpp
     fmwidget/algorithmwidget.h
     fmwidget/algorithmwidget.ui
-    fmwidget/envelopedisplaywidget.cpp
-    fmwidget/envelopedisplaywidget.h
-    fmwidget/operatorwidget.cpp
-    fmwidget/operatorwidget.h
-    fmwidget/operatorwidget.ui
+    fmwidget/fm4envelopedisplaywidget.cpp
+    fmwidget/fm4envelopedisplaywidget.h
+    fmwidget/fm4operatorwidget.cpp
+    fmwidget/fm4operatorwidget.h
+    fmwidget/fm4operatorwidget.ui
     fmwidget/pianowidget.cpp
     fmwidget/pianowidget.h
     ganttwidget/ganttbottomwidget.cpp
@@ -87,14 +87,14 @@ set(PROJECT_SOURCES
     project/channel/channel.h
     project/channel/channelsettings.cpp
     project/channel/channelsettings.h
-    project/channel/envelopesettings.cpp
-    project/channel/envelopesettings.h
+    project/channel/fm4envelopesettings.cpp
+    project/channel/fm4envelopesettings.h
     project/channel/fmchannelsettings.cpp
     project/channel/fmchannelsettings.h
     project/channel/noisechannelsettings.cpp
     project/channel/noisechannelsettings.h
-    project/channel/operatorsettings.cpp
-    project/channel/operatorsettings.h
+    project/channel/fm4operatorsettings.cpp
+    project/channel/fm4operatorsettings.h
     project/channel/settings.cpp
     project/channel/settings.h
     project/channel/tonechannelsettings.cpp
@@ -153,8 +153,8 @@ set(PROJECT_SOURCES
     commands/removeplaylistitemcommand.cpp
     commands/editnoisechannelsettingscommand.h
     commands/editnoisechannelsettingscommand.cpp
-    commands/editoperatorsettingscommand.h
-    commands/editoperatorsettingscommand.cpp
+    commands/editfm4operatorsettingscommand.h
+    commands/editfm4operatorsettingscommand.cpp
     commands/editalgorithmsettingscommand.h
     commands/editalgorithmsettingscommand.cpp
     style/styledialog.h
@@ -235,9 +235,9 @@ set(PROJECT_SOURCES
     commands/composite/addtrackcommand.cpp
     ganttwidget/ganttmarker.h
     ganttwidget/ganttmarker.cpp
-    fmwidget/fmwidget.h
-    fmwidget/fmwidget.cpp
-    fmwidget/fmwidget.ui
+    fmwidget/fm4widget.h
+    fmwidget/fm4widget.cpp
+    fmwidget/fm4widget.ui
     fmwidget/fmwidgetwindow.h
     fmwidget/fmwidgetwindow.cpp
     fmwidget/fmwidgetwindow.ui
@@ -382,6 +382,16 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(FM-PSG-Studio
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        usertone/fm2envelopesettings.h usertone/fm2envelopesettings.cpp
+        usertone/fm2operatorsettings.h usertone/fm2operatorsettings.cpp
+        usertone/fm2envelopedisplaywidget.h usertone/fm2envelopedisplaywidget.cpp
+        usertone/fm2operatorwidget.h usertone/fm2operatorwidget.cpp usertone/fm2operatorwidget.ui
+        usertone/fm2widget.h usertone/fm2widget.cpp usertone/fm2widget.ui
+        usertone/fm2widgetwindow.h usertone/fm2widgetwindow.cpp usertone/fm2widgetwindow.ui
+        commands/editfm2operatorsettingscommand.h commands/editfm2operatorsettingscommand.cpp
+        usertone/fm2settings.h usertone/fm2settings.cpp
+        commands/editfm2settingscommand.h commands/editfm2settingscommand.cpp
+
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET FM-PSG-Studio APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

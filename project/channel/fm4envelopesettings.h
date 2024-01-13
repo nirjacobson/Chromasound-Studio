@@ -1,12 +1,12 @@
-#ifndef ENVELOPESETTINGS_H
-#define ENVELOPESETTINGS_H
+#ifndef FM4ENVELOPESETTINGS_H
+#define FM4ENVELOPESETTINGS_H
 
 #include "settings.h"
 
-class EnvelopeSettings : public Settings
+class FM4EnvelopeSettings : public Settings
 {
     public:
-        EnvelopeSettings();
+    FM4EnvelopeSettings();
 
         int ar() const;
         int t1l() const;
@@ -29,7 +29,7 @@ class EnvelopeSettings : public Settings
         void setD2r(const int d2r);
         void setRr(const int rr);
 
-        bool operator==(const EnvelopeSettings& other) const;
+        bool operator==(const FM4EnvelopeSettings& other) const;
 
     private:
         int _ar;
@@ -45,4 +45,4 @@ class EnvelopeSettings : public Settings
         void fromBSON(bson_iter_t& bson);
 };
 
-#endif // ENVELOPESETTINGS_H
+#endif // FM4ENVELOPESETTINGS_H

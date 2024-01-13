@@ -1,6 +1,6 @@
-#include "operatorsettings.h"
+#include "fm4operatorsettings.h"
 
-OperatorSettings::OperatorSettings()
+FM4OperatorSettings::FM4OperatorSettings()
     : _mul(1)
     , _dt(0)
     , _rs(0)
@@ -9,62 +9,62 @@ OperatorSettings::OperatorSettings()
 
 }
 
-EnvelopeSettings& OperatorSettings::envelopeSettings()
+FM4EnvelopeSettings& FM4OperatorSettings::envelopeSettings()
 {
     return _envelopeSettings;
 }
 
-const EnvelopeSettings& OperatorSettings::envelopeSettings() const
+const FM4EnvelopeSettings& FM4OperatorSettings::envelopeSettings() const
 {
     return _envelopeSettings;
 }
 
-int OperatorSettings::mul() const
+int FM4OperatorSettings::mul() const
 {
     return _mul;
 }
 
-int OperatorSettings::dt() const
+int FM4OperatorSettings::dt() const
 {
     return _dt;
 }
 
-int OperatorSettings::rs() const
+int FM4OperatorSettings::rs() const
 {
     return _rs;
 }
 
-bool OperatorSettings::am() const
+bool FM4OperatorSettings::am() const
 {
     return _am;
 }
 
-void OperatorSettings::setEnvelopeSettings(const EnvelopeSettings& settings)
+void FM4OperatorSettings::setEnvelopeSettings(const FM4EnvelopeSettings& settings)
 {
     _envelopeSettings = settings;
 }
 
-void OperatorSettings::setMul(const int mul)
+void FM4OperatorSettings::setMul(const int mul)
 {
     _mul = mul;
 }
 
-void OperatorSettings::setDt(const int dt)
+void FM4OperatorSettings::setDt(const int dt)
 {
     _dt = dt;
 }
 
-void OperatorSettings::setRs(const int rs)
+void FM4OperatorSettings::setRs(const int rs)
 {
     _rs = rs;
 }
 
-void OperatorSettings::setAm(const bool am)
+void FM4OperatorSettings::setAm(const bool am)
 {
     _am = am;
 }
 
-bool OperatorSettings::operator==(const OperatorSettings& other) const
+bool FM4OperatorSettings::operator==(const FM4OperatorSettings& other) const
 {
     return _envelopeSettings == other._envelopeSettings &&
            _rs == other._rs &&
@@ -73,7 +73,7 @@ bool OperatorSettings::operator==(const OperatorSettings& other) const
            _am == other._am;
 }
 
-bson_t OperatorSettings::toBSON() const
+bson_t FM4OperatorSettings::toBSON() const
 {
     bson_t bson;
 
@@ -89,7 +89,7 @@ bson_t OperatorSettings::toBSON() const
     return bson;
 }
 
-void OperatorSettings::fromBSON(bson_iter_t& bson)
+void FM4OperatorSettings::fromBSON(bson_iter_t& bson)
 {
     bson_iter_t envelope;
     bson_iter_t envelopeInner;

@@ -1,8 +1,8 @@
-#include "envelopedisplaywidget.h"
+#include "fm4envelopedisplaywidget.h"
 
-QPointF EnvelopeDisplayWidget::NULL_POINTF = QPointF(-1, -1);
+QPointF FM4EnvelopeDisplayWidget::NULL_POINTF = QPointF(-1, -1);
 
-EnvelopeDisplayWidget::EnvelopeDisplayWidget(QWidget *parent)
+FM4EnvelopeDisplayWidget::FM4EnvelopeDisplayWidget(QWidget *parent)
     : QWidget(parent)
     , _settings(nullptr)
     , _backgroundColor(Qt::white)
@@ -14,13 +14,13 @@ EnvelopeDisplayWidget::EnvelopeDisplayWidget(QWidget *parent)
 
 }
 
-void EnvelopeDisplayWidget::setSettings(const EnvelopeSettings* settings)
+void FM4EnvelopeDisplayWidget::setSettings(const FM4EnvelopeSettings* settings)
 {
     _settings = settings;
     update();
 }
 
-void EnvelopeDisplayWidget::paintEvent(QPaintEvent* event)
+void FM4EnvelopeDisplayWidget::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -80,11 +80,11 @@ void EnvelopeDisplayWidget::paintEvent(QPaintEvent* event)
         }
     }
 
-    painter.setPen(Qt::gray);
+    painter.setPen(_borderColor);
     painter.drawRect(event->rect());
 }
 
-QList<QPointF> EnvelopeDisplayWidget::getPoints() const
+QList<QPointF> FM4EnvelopeDisplayWidget::getPoints() const
 {
     QPointF p1(NULL_POINTF);
     QPointF p2(NULL_POINTF);
@@ -136,52 +136,52 @@ QList<QPointF> EnvelopeDisplayWidget::getPoints() const
     return QList<QPointF>({p1, p2, p3, p4});
 }
 
-const QColor& EnvelopeDisplayWidget::backgroundColor() const
+const QColor& FM4EnvelopeDisplayWidget::backgroundColor() const
 {
     return _backgroundColor;
 }
 
-const QColor& EnvelopeDisplayWidget::borderColor() const
+const QColor& FM4EnvelopeDisplayWidget::borderColor() const
 {
     return _borderColor;
 }
 
-const QColor& EnvelopeDisplayWidget::envelopeColor() const
+const QColor& FM4EnvelopeDisplayWidget::envelopeColor() const
 {
     return _envelopeColor;
 }
 
-const QColor& EnvelopeDisplayWidget::levelColor() const
+const QColor& FM4EnvelopeDisplayWidget::levelColor() const
 {
     return _levelColor;
 }
 
-const QColor& EnvelopeDisplayWidget::releaseColor() const
+const QColor& FM4EnvelopeDisplayWidget::releaseColor() const
 {
     return _releaseColor;
 }
 
-void EnvelopeDisplayWidget::setBackgroundColor(const QColor& color)
+void FM4EnvelopeDisplayWidget::setBackgroundColor(const QColor& color)
 {
     _backgroundColor = color;
 }
 
-void EnvelopeDisplayWidget::setBorderColor(const QColor& color)
+void FM4EnvelopeDisplayWidget::setBorderColor(const QColor& color)
 {
     _borderColor = color;
 }
 
-void EnvelopeDisplayWidget::setEnvelopeColor(const QColor& color)
+void FM4EnvelopeDisplayWidget::setEnvelopeColor(const QColor& color)
 {
     _envelopeColor = color;
 }
 
-void EnvelopeDisplayWidget::setLevelColor(const QColor& color)
+void FM4EnvelopeDisplayWidget::setLevelColor(const QColor& color)
 {
     _levelColor = color;
 }
 
-void EnvelopeDisplayWidget::setReleaseColor(const QColor& color)
+void FM4EnvelopeDisplayWidget::setReleaseColor(const QColor& color)
 {
     _releaseColor = color;
 }
