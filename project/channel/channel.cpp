@@ -53,7 +53,13 @@ void Channel::setType(const Type type)
         case SSG:
             _settings = new SSGChannelSettings;
             break;
-    }
+        case MELODY:
+            _settings = new MelodyChannelSettings;
+            break;
+        case RHYTHM:
+            _settings = new RhythmChannelSettings;
+            break;
+        }
 }
 
 QString Channel::name() const
@@ -89,7 +95,11 @@ QString Channel::channelTypeToString(const Type type)
             return "PCM";
         case SSG:
             return "SSG";
-    }
+        case MELODY:
+            return "MELODY";
+        case RHYTHM:
+            return "RHYTHM";
+        }
 
     return "TONE";
 }
@@ -114,6 +124,14 @@ Channel::Type Channel::channelTypeFromString(const QString& str)
 
     if (str == "SSG") {
         return Channel::Type::SSG;
+    }
+
+    if (str == "MELODY") {
+        return Channel::Type::MELODY;
+    }
+
+    if (str == "RHYTHM") {
+        return Channel::Type::RHYTHM;
     }
 
     return Channel::Type::TONE;

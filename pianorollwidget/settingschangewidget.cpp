@@ -24,6 +24,8 @@ void SettingsChangeWidget::setApplication(Application* app)
     ui->fmWidget->setApplication(app);
     ui->noiseWidget->setApplication(app);
     ui->ssgWidget->setApplication(app);
+    ui->melodyWidget->setApplication(app);
+    ui->rhythmWidget->setApplication(app);
 }
 
 void SettingsChangeWidget::pressKey(const int key)
@@ -60,7 +62,19 @@ void SettingsChangeWidget::setSettings(ChannelSettings& settings)
                 ui->ssgWidget->setSettings(&scs);
                 ui->stackedWidget->setCurrentIndex(3);
             } catch (std::bad_cast) {
-                ui->stackedWidget->setCurrentIndex(0);
+                try {
+                    MelodyChannelSettings& mcs = dynamic_cast<MelodyChannelSettings&>(settings);
+                    ui->melodyWidget->setSettings(&mcs);
+                    ui->stackedWidget->setCurrentIndex(4);
+                } catch (std::bad_cast) {
+                    try {
+                        RhythmChannelSettings& rcs = dynamic_cast<RhythmChannelSettings&>(settings);
+                        ui->rhythmWidget->setSettings(&rcs);
+                        ui->stackedWidget->setCurrentIndex(5);
+                    } catch (std::bad_cast) {
+                        ui->stackedWidget->setCurrentIndex(0);
+                    }
+                }
             }
         }
     }

@@ -142,6 +142,14 @@ Channel BSON::toChannel(bson_iter_t& b)
             c._settings = new SSGChannelSettings;
             c._settings->fromBSON(settingsInner);
         }
+        if (c._type == Channel::Type::MELODY) {
+            c._settings = new MelodyChannelSettings;
+            c._settings->fromBSON(settingsInner);
+        }
+        if (c._type == Channel::Type::RHYTHM) {
+            c._settings = new RhythmChannelSettings;
+            c._settings->fromBSON(settingsInner);
+        }
     }
 
     return c;
@@ -384,6 +392,14 @@ Track::SettingsChange BSON::toTrackSettingsChange(bson_iter_t& b)
                         break;
                     case Channel::SSG:
                         sc._settings = new SSGChannelSettings;
+                        sc._settings->fromBSON(settingsInner);
+                        break;
+                    case Channel::MELODY:
+                        sc._settings = new MelodyChannelSettings;
+                        sc._settings->fromBSON(settingsInner);
+                        break;
+                    case Channel::RHYTHM:
+                        sc._settings = new RhythmChannelSettings;
                         sc._settings->fromBSON(settingsInner);
                         break;
                     }

@@ -9,6 +9,8 @@
 #include "tonechannelsettings.h"
 #include "pcmchannelsettings.h"
 #include "ssgchannelsettings.h"
+#include "melodychannelsettings.h"
+#include "rhythmchannelsettings.h"
 
 class Channel
 {
@@ -20,7 +22,9 @@ class Channel
             NOISE,
             FM,
             PCM,
-            SSG
+            SSG,
+            MELODY,
+            RHYTHM
         };
 
         Channel();
