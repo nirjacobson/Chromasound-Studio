@@ -712,6 +712,23 @@ void BSON::fromProject(bson_t* dst,const Project& project)
 
     BSON_APPEND_INT32(dst, "lfo", project._lfoMode);
 
+    // SSG Noise Frequency
+
+    BSON_APPEND_INT32(dst, "ssgNoiseFrequency", project._ssgNoiseFreq);
+
+    // SSG Envelope frequency
+
+    BSON_APPEND_INT32(dst, "ssgEnvelopeFrequency", project._ssgEnvelopeFreq);
+
+    // SSG Envelope shape
+
+    bson_t shape = project._ssgEnvelopeSettings.toBSON();
+    BSON_APPEND_DOCUMENT(dst, "ssgEnvelopeShape", &shape);
+
+    // User tone
+    bson_t userTone = project._userTone.toBSON();
+    BSON_APPEND_DOCUMENT(dst, "userTone", &userTone);
+
     // Info
     bson_t b_info;
     bson_init(&b_info);
@@ -789,6 +806,40 @@ Project BSON::toProject(bson_iter_t& b)
 
     if (bson_iter_find_descendant(&b, "lfo", &lfo) && BSON_ITER_HOLDS_INT(&lfo)) {
         p._lfoMode = bson_iter_int32(&lfo);
+    }
+
+    // SSG noise frequency
+
+    bson_iter_t nfreq;
+
+    if (bson_iter_find_descendant(&b, "ssgNoiseFrequency", &nfreq) && BSON_ITER_HOLDS_INT(&nfreq)) {
+        p._ssgNoiseFreq = bson_iter_int32(&nfreq);
+    }
+
+    // SSG envelope frequency
+
+    bson_iter_t efreq;
+
+    if (bson_iter_find_descendant(&b, "ssgEnvelopeFrequency", &efreq) && BSON_ITER_HOLDS_INT(&efreq)) {
+        p._ssgEnvelopeFreq = bson_iter_int32(&efreq);
+    }
+
+    // SSG envelope shape
+
+    bson_iter_t eshape;
+    bson_iter_t eshapeInner;
+
+    if (bson_iter_find_descendant(&b, "ssgEnvelopeShape", &eshape) && BSON_ITER_HOLDS_DOCUMENT(&eshape) && bson_iter_recurse(&eshape, &eshapeInner)) {
+        p._ssgEnvelopeSettings.fromBSON(eshapeInner);
+    }
+
+    // User tone
+
+    bson_iter_t userTone;
+    bson_iter_t userToneInner;
+
+    if (bson_iter_find_descendant(&b, "userTone", &userTone) && BSON_ITER_HOLDS_DOCUMENT(&userTone) && bson_iter_recurse(&userTone, &userToneInner)) {
+        p._userTone.fromBSON(userToneInner);
     }
 
     // Info

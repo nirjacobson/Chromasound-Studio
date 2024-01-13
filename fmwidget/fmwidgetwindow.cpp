@@ -8,13 +8,13 @@ FMWidgetWindow::FMWidgetWindow(QWidget *parent, Application* app) :
     ui->setupUi(this);
 
     ui->fmWidget->setApplication(app);
-
-    connect(ui->fmWidget, &FMWidget::keyPressed, this, &FMWidgetWindow::keyPressed);
-    connect(ui->fmWidget, &FMWidget::keyReleased, this, &FMWidgetWindow::keyReleased);
-
-    connect(ui->actionNew, &QAction::triggered, ui->fmWidget, &FMWidget::newTriggered);
-    connect(ui->actionOpen, &QAction::triggered, ui->fmWidget, &FMWidget::openTriggered);
-    connect(ui->actionSave, &QAction::triggered, ui->fmWidget, &FMWidget::saveTriggered);
+    
+    connect(ui->fmWidget, &FM4Widget::keyPressed, this, &FMWidgetWindow::keyPressed);
+    connect(ui->fmWidget, &FM4Widget::keyReleased, this, &FMWidgetWindow::keyReleased);
+    
+    connect(ui->actionNew, &QAction::triggered, ui->fmWidget, &FM4Widget::newTriggered);
+    connect(ui->actionOpen, &QAction::triggered, ui->fmWidget, &FM4Widget::openTriggered);
+    connect(ui->actionSave, &QAction::triggered, ui->fmWidget, &FM4Widget::saveTriggered);
     connect(ui->actionClose, &QAction::triggered, this, &QMainWindow::close);
 }
 

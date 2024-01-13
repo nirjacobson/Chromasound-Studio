@@ -20,7 +20,7 @@
      <widget class="QWidget" name="page_2">
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
-        <widget class="FMWidget" name="fmWidget" native="true"/>
+        <widget class="FM4Widget" name="fmWidget" native="true"/>
        </item>
       </layout>
      </widget>
@@ -60,9 +60,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>FMWidget</class>
+   <class>FM4Widget</class>
    <extends>QWidget</extends>
-   <header>fmwidget/fmwidget.h</header>
+   <header>fmwidget/fm4widget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

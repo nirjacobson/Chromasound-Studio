@@ -37,6 +37,7 @@ TopWidget::TopWidget(QWidget *parent, Application* app)
     connect(ui->ssgEnvShapeWidget, &SSGEnvelopeShapeWidget::changed, this, &TopWidget::envelopeShapeChanged);
     connect(ui->ssgEnvFreqWidget, &SSGEnvelopeFreqWidget::changed, this, &TopWidget::envelopeFrequencyChanged);
     connect(ui->ssgNoiseFreqWidget, &SSGNoiseFreqWidget::changed, this, &TopWidget::noiseFrequencyChanged);
+    connect(ui->userToneButton, &QPushButton::pressed, this, &TopWidget::userToneTriggered);
 }
 
 TopWidget::~TopWidget()

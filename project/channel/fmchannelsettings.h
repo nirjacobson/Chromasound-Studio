@@ -3,7 +3,7 @@
 
 #include <iterator>
 
-#include "operatorsettings.h"
+#include "fm4operatorsettings.h"
 #include "channelsettings.h"
 #include "algorithmsettings.h"
 #include "lfosettings.h"
@@ -12,8 +12,8 @@ class FMChannelSettings : public ChannelSettings
 {
     public:
         FMChannelSettings();
-
-        typedef OperatorSettings FourOperatorSettings[4];
+        
+        typedef FM4OperatorSettings FourOperatorSettings[4];
 
         FourOperatorSettings& operators();
         const FourOperatorSettings& operators() const;
@@ -30,7 +30,7 @@ class FMChannelSettings : public ChannelSettings
         bool operator==(const FMChannelSettings& other) const;
 
     private:
-        OperatorSettings _operators[4];
+        FM4OperatorSettings _operators[4];
         AlgorithmSettings _algorithm;
         LFOSettings _lfo;
 

@@ -6,9 +6,9 @@ SettingsChangeWidget::SettingsChangeWidget(QWidget *parent) :
     ui(new Ui::SettingsChangeWidget)
 {
     ui->setupUi(this);
-
-    connect(ui->fmWidget, &FMWidget::keyPressed, this, &SettingsChangeWidget::keyOn);
-    connect(ui->fmWidget, &FMWidget::keyReleased, this, &SettingsChangeWidget::keyOff);
+    
+    connect(ui->fmWidget, &FM4Widget::keyPressed, this, &SettingsChangeWidget::keyOn);
+    connect(ui->fmWidget, &FM4Widget::keyReleased, this, &SettingsChangeWidget::keyOff);
 
     connect(ui->footerWidget, &SettingsChangeFooterWidget::removeClicked, this, &SettingsChangeWidget::removeClicked);
     connect(ui->footerWidget, &SettingsChangeFooterWidget::doneClicked, this, &SettingsChangeWidget::doneClicked);

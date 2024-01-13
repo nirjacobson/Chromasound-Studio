@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>FMWidget</class>
- <widget class="QWidget" name="FMWidget">
+ <class>FM4Widget</class>
+ <widget class="QWidget" name="FM4Widget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -15,7 +15,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="OperatorWidget" name="operatorWidget1" native="true"/>
+    <widget class="FM4OperatorWidget" name="operatorWidget1" native="true"/>
    </item>
    <item row="0" column="1" rowspan="4">
     <widget class="Line" name="line">
@@ -38,13 +38,13 @@
     <widget class="AlgorithmWidget" name="algorithmWidget" native="true"/>
    </item>
    <item row="1" column="0">
-    <widget class="OperatorWidget" name="operatorWidget2" native="true"/>
+    <widget class="FM4OperatorWidget" name="operatorWidget2" native="true"/>
    </item>
    <item row="2" column="0">
-    <widget class="OperatorWidget" name="operatorWidget3" native="true"/>
+    <widget class="FM4OperatorWidget" name="operatorWidget3" native="true"/>
    </item>
    <item row="3" column="0">
-    <widget class="OperatorWidget" name="operatorWidget4" native="true"/>
+    <widget class="FM4OperatorWidget" name="operatorWidget4" native="true"/>
    </item>
    <item row="4" column="0" colspan="5">
     <widget class="PianoWidget" name="pianoWidget" native="true">
@@ -60,9 +60,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>OperatorWidget</class>
+   <class>FM4OperatorWidget</class>
    <extends>QWidget</extends>
-   <header>fmwidget/operatorwidget.h</header>
+   <header>fmwidget/fm4operatorwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

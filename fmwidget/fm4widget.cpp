@@ -1,9 +1,9 @@
-#include "fmwidget.h"
-#include "ui_fmwidget.h"
+#include "fm4widget.h"
+#include "ui_fm4widget.h"
 
-FMWidget::FMWidget(QWidget *parent, Application* app)
+FM4Widget::FM4Widget(QWidget *parent, Application* app)
     : QWidget(parent)
-    , ui(new Ui::FMWidget)
+    , ui(new Ui::FM4Widget)
     , _app(app)
     , _settings(nullptr)
 {
@@ -19,16 +19,16 @@ FMWidget::FMWidget(QWidget *parent, Application* app)
 
     setAcceptDrops(true);
 
-    connect(ui->pianoWidget, &PianoWidget::keyPressed, this, &FMWidget::keyPressed);
-    connect(ui->pianoWidget, &PianoWidget::keyReleased, this, &FMWidget::keyReleased);
+    connect(ui->pianoWidget, &PianoWidget::keyPressed, this, &FM4Widget::keyPressed);
+    connect(ui->pianoWidget, &PianoWidget::keyReleased, this, &FM4Widget::keyReleased);
 }
 
-FMWidget::~FMWidget()
+FM4Widget::~FM4Widget()
 {
     delete ui;
 }
 
-void FMWidget::setApplication(Application* app)
+void FM4Widget::setApplication(Application* app)
 {
     _app = app;
 
@@ -41,7 +41,7 @@ void FMWidget::setApplication(Application* app)
     ui->algorithmWidget->setApplication(app);
 }
 
-void FMWidget::setSettings(FMChannelSettings* settings)
+void FM4Widget::setSettings(FMChannelSettings* settings)
 {
     _settings = settings;
 
@@ -70,27 +70,27 @@ void FMWidget::setSettings(FMChannelSettings* settings)
     ui->algorithmWidget->blockSignals(false);
 }
 
-void FMWidget::pressKey(const int key)
+void FM4Widget::pressKey(const int key)
 {
     ui->pianoWidget->pressKey(key);
 }
 
-void FMWidget::releaseKey(const int key)
+void FM4Widget::releaseKey(const int key)
 {
     ui->pianoWidget->releaseKey(key);
 }
 
-void FMWidget::doUpdate()
+void FM4Widget::doUpdate()
 {
     if (_settings) setSettings(_settings);
 }
 
-void FMWidget::newTriggered()
+void FM4Widget::newTriggered()
 {
     _app->undoStack().push(new SetFMChannelSettingsCommand(_app->window(), *_settings, FMChannelSettings()));
 }
 
-void FMWidget::openTriggered()
+void FM4Widget::openTriggered()
 {
     const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "YM2612 Patch (*.fm)", nullptr, QFileDialog::DontUseNativeDialog);
 
@@ -103,7 +103,7 @@ void FMWidget::openTriggered()
     }
 }
 
-void FMWidget::saveTriggered()
+void FM4Widget::saveTriggered()
 {
     const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "YM2612 Patch (*.fm)", nullptr, QFileDialog::DontUseNativeDialog);
 
@@ -115,7 +115,7 @@ void FMWidget::saveTriggered()
     }
 }
 
-void FMWidget::paintEvent(QPaintEvent* event)
+void FM4Widget::paintEvent(QPaintEvent* event)
 {
     QStyleOption opt;
     opt.initFrom(this);
@@ -123,14 +123,14 @@ void FMWidget::paintEvent(QPaintEvent* event)
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
-void FMWidget::dragEnterEvent(QDragEnterEvent* event)
+void FM4Widget::dragEnterEvent(QDragEnterEvent* event)
 {
     if (event->mimeData()->hasFormat("text/uri-list")) {
         event->acceptProposedAction();
     }
 }
 
-void FMWidget::dropEvent(QDropEvent* event)
+void FM4Widget::dropEvent(QDropEvent* event)
 {
     QByteArray data = event->mimeData()->data("text/uri-list");
     QString path(data);

@@ -1,33 +1,33 @@
-#ifndef OPERATORWIDGET_H
-#define OPERATORWIDGET_H
+#ifndef FM4OPERATORWIDGET_H
+#define FM4OPERATORWIDGET_H
 
 #include <QWidget>
 
 #include "application.h"
-#include "project/channel/operatorsettings.h"
-#include "commands/editoperatorsettingscommand.h"
+#include "project/channel/fm4operatorsettings.h"
+#include "commands/editfm4operatorsettingscommand.h"
 
 namespace Ui {
-    class OperatorWidget;
+    class FM4OperatorWidget;
 }
 
-class OperatorWidget : public QWidget
+    class FM4OperatorWidget : public QWidget
 {
         Q_OBJECT
 
     public:
-        explicit OperatorWidget(QWidget *parent = nullptr);
-        ~OperatorWidget();
+        explicit FM4OperatorWidget(QWidget *parent = nullptr);
+        ~FM4OperatorWidget();
 
         void setApplication(Application* app);
-
-        void setSettings(OperatorSettings* settings);
+        
+        void setSettings(FM4OperatorSettings* settings);
 
     private:
-        Ui::OperatorWidget *ui;
+        Ui::FM4OperatorWidget *ui;
         Application* _app;
-
-        OperatorSettings* _settings;
+        
+        FM4OperatorSettings* _settings;
 
         int dtToIndex(const int dt) const;
 
@@ -45,4 +45,4 @@ class OperatorWidget : public QWidget
         void resetEnvelopeSettings();
 };
 
-#endif // OPERATORWIDGET_H
+#endif // FM4OPERATORWIDGET_H

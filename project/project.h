@@ -9,6 +9,7 @@
 #include "channel/channel.h"
 #include "playlist.h"
 #include "ssg/ssgenvelopesettings.h"
+#include "usertone/fm2settings.h"
 
 class Project
 {
@@ -104,6 +105,9 @@ class Project
         Info& info();
         const Info& info() const;
 
+        FM2Settings& userTone();
+        const FM2Settings& userTone() const;
+
     private:
         QList<Channel> _channels;
         QList<Pattern*> _patterns;
@@ -120,6 +124,7 @@ class Project
         SSGEnvelopeSettings _ssgEnvelopeSettings;
         int _ssgEnvelopeFreq;
         int _ssgNoiseFreq;
+        FM2Settings _userTone;
 
         void swapChannels(const int idxa, const int idxb);
 };

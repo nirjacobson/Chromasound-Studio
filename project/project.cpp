@@ -336,6 +336,16 @@ const Project::Info& Project::info() const
     return _info;
 }
 
+FM2Settings& Project::userTone()
+{
+    return _userTone;
+}
+
+const FM2Settings& Project::userTone() const
+{
+    return _userTone;
+}
+
 void Project::swapChannels(const int idxa, const int idxb)
 {
     for (Pattern* pat : _patterns) {

@@ -1,5 +1,5 @@
-#ifndef FMWIDGET_H
-#define FMWIDGET_H
+#ifndef FM4WIDGET_H
+#define FM4WIDGET_H
 
 #include <QWidget>
 
@@ -14,16 +14,16 @@
 #include "mdiarea/mdisubwindow.h"
 
 namespace Ui {
-    class FMWidget;
+class FM4Widget;
 }
-
-class FMWidget : public QWidget
+    
+    class FM4Widget : public QWidget
 {
         Q_OBJECT
 
     public:
-        explicit FMWidget(QWidget *parent = nullptr, Application* app = nullptr);
-        ~FMWidget();
+        explicit FM4Widget(QWidget *parent = nullptr, Application* app = nullptr);
+        ~FM4Widget();
 
         void setApplication(Application* app);
 
@@ -39,7 +39,7 @@ class FMWidget : public QWidget
         void keyReleased(const char key);
 
     private:
-        Ui::FMWidget *ui;
+        Ui::FM4Widget *ui;
         Application* _app;
         FMChannelSettings* _settings;
 
@@ -55,4 +55,4 @@ class FMWidget : public QWidget
         void dropEvent(QDropEvent* event);
 };
 
-#endif // FMWIDGET_H
+#endif // FM4WIDGET_H

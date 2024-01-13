@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>OperatorWidget</class>
- <widget class="QWidget" name="OperatorWidget">
+ <class>FM4OperatorWidget</class>
+ <widget class="QWidget" name="FM4OperatorWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -40,7 +40,7 @@
     </widget>
    </item>
    <item>
-    <widget class="EnvelopeDisplayWidget" name="envelopeDisplayWidget" native="true">
+    <widget class="FM4EnvelopeDisplayWidget" name="envelopeDisplayWidget" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -642,9 +642,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>EnvelopeDisplayWidget</class>
+   <class>FM4EnvelopeDisplayWidget</class>
    <extends>QWidget</extends>
-   <header>fmwidget/envelopedisplaywidget.h</header>
+   <header>fmwidget/fm4envelopedisplaywidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

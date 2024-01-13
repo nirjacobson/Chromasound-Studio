@@ -1,7 +1,7 @@
-#include "editoperatorsettingscommand.h"
+#include "editfm4operatorsettingscommand.h"
 #include "mainwindow.h"
 
-EditOperatorSettingsCommand::EditOperatorSettingsCommand(MainWindow* window, OperatorSettings& settings, const OperatorSettings& update)
+EditFM4OperatorSettingsCommand::EditFM4OperatorSettingsCommand(MainWindow* window, FM4OperatorSettings& settings, const FM4OperatorSettings& update)
     : _mainWindow(window)
     , _settings(settings)
     , _settingsBefore(settings)
@@ -11,30 +11,30 @@ EditOperatorSettingsCommand::EditOperatorSettingsCommand(MainWindow* window, Ope
     setText("edit channel settings");
 }
 
-void EditOperatorSettingsCommand::undo()
+void EditFM4OperatorSettingsCommand::undo()
 {
     _settings = _settingsBefore;
 
     _mainWindow->channelSettingsUpdated();
 }
 
-void EditOperatorSettingsCommand::redo()
+void EditFM4OperatorSettingsCommand::redo()
 {
     _settings = _settingsAfter;
 
     _mainWindow->channelSettingsUpdated();
 }
 
-int EditOperatorSettingsCommand::id() const
+int EditFM4OperatorSettingsCommand::id() const
 {
     return 'O';
 }
 
-bool EditOperatorSettingsCommand::mergeWith(const QUndoCommand* other)
+bool EditFM4OperatorSettingsCommand::mergeWith(const QUndoCommand* other)
 {
-    const EditOperatorSettingsCommand* eosc;
-    if ((eosc = dynamic_cast<const EditOperatorSettingsCommand*>(other))) {
-        OperatorSettings settings = _settingsAfter;
+    const EditFM4OperatorSettingsCommand* eosc;
+    if ((eosc = dynamic_cast<const EditFM4OperatorSettingsCommand*>(other))) {
+        FM4OperatorSettings settings = _settingsAfter;
         settings.envelopeSettings().setAr(eosc->_settingsAfter.envelopeSettings().ar());
         if (eosc->_settingsAfter == settings) {
             if (_type == NONE || _type == AR) {
