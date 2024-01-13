@@ -7,6 +7,7 @@
 #include "ganttwidget/ganttitem.h"
 #include "ganttwidget/ganttmarker.h"
 #include "ssg/ssgenvelopesettings.h"
+#include "usertone/fm2settings.h"
 
 class Project;
 
@@ -121,6 +122,7 @@ class Playlist
                 QString name() const;
                 const QColor& color() const;
 
+                SSGEnvelopeSettings& shape();
                 const SSGEnvelopeSettings& shape() const;
                 void setShape(const SSGEnvelopeSettings& shape);
 
@@ -130,6 +132,28 @@ class Playlist
 
                 float _time;
                 SSGEnvelopeSettings _shape;
+        };
+
+        class UserToneChange : public GanttMarker {
+                friend class BSON;
+
+            public:
+                UserToneChange(const float time, const FM2Settings& tone);
+
+                float time() const;
+                QString name() const;
+                const QColor& color() const;
+
+                FM2Settings& userTone();
+                const FM2Settings& userTone() const;
+                void setUserTone(const FM2Settings& tone);
+
+            private:
+                static QColor COLOR;
+                UserToneChange();
+
+                float _time;
+                FM2Settings _userTone;
         };
 
         Playlist(Project* const project);
@@ -171,6 +195,12 @@ class Playlist
         QList<EnvelopeShapeChange*>& envelopeShapeChanges();
         EnvelopeShapeChange* addEnvelopeShapeChange(const float time, const SSGEnvelopeSettings& shape);
         void removeEnvelopeShapeChange(const EnvelopeShapeChange* esc, const bool keep = false);
+
+        const QList<UserToneChange*>& userToneChanges() const;
+        QList<UserToneChange*>& userToneChanges();
+        UserToneChange* addUserToneChange(const float time, const FM2Settings& tone);
+        void removeUserToneChange(const UserToneChange* utc, const bool keep = false);
+
     private:
         Playlist();
 
@@ -179,6 +209,7 @@ class Playlist
         QList<NoiseFrequencyChange*> _noiseFreqChanges;
         QList<EnvelopeFrequencyChange*> _envFreqChanges;
         QList<EnvelopeShapeChange*> _envShapeChanges;
+        QList<UserToneChange*> _userToneChanges;
 
         Project* _project;
 

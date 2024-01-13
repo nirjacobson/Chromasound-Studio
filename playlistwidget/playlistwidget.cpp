@@ -13,12 +13,15 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
     _noiseFreqChangeAction("Noise frequency", this),
     _envFreqChangeAction("Envelope frequency", this),
     _envShapeChangeAction("Envelope shape", this),
+    _userToneAction("User tone"),
     _editingLFOChange(nullptr),
     _editingNoiseFrequencyChange(nullptr),
     _editingEnvelopeFrequencyChange(nullptr),
     _editingEnvelopeShapeChange(nullptr)
 {
     ui->setupUi(this);
+
+    ui->changeWidget->setApplication(_app);
 
     ui->actionCopy->setShortcuts(QKeySequence::Copy);
     ui->actionPaste->setShortcuts(QKeySequence::Paste);
@@ -33,6 +36,7 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
     ui->ganttWidget->addMarkers(reinterpret_cast<QList<GanttMarker*>*>(&app->project().playlist().noiseFrequencyChanges()));
     ui->ganttWidget->addMarkers(reinterpret_cast<QList<GanttMarker*>*>(&app->project().playlist().envelopeFrequencyChanges()));
     ui->ganttWidget->addMarkers(reinterpret_cast<QList<GanttMarker*>*>(&app->project().playlist().envelopeShapeChanges()));
+    ui->ganttWidget->addMarkers(reinterpret_cast<QList<GanttMarker*>*>(&app->project().playlist().userToneChanges()));
     ui->ganttWidget->setParameters(Rows, RowHeight, CellWidth, 1);
     ui->ganttWidget->setItemsMovableX(true);
     ui->ganttWidget->setPositionFunction([&]() {
@@ -61,6 +65,7 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
     _markerMenu.addAction(&_noiseFreqChangeAction);
     _markerMenu.addAction(&_envFreqChangeAction);
     _markerMenu.addAction(&_envShapeChangeAction);
+    _markerMenu.addAction(&_userToneAction);
 
     connect(ui->ganttWidget, &GanttWidget::markerClicked, this, &PlaylistWidget::ganttMarkerClicked);
     connect(ui->ganttWidget, &GanttWidget::headerClicked, this, &PlaylistWidget::ganttHeaderClicked);
@@ -82,6 +87,7 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
     connect(&_noiseFreqChangeAction, &QAction::triggered, this, &PlaylistWidget::noiseFreqChangeTriggered);
     connect(&_envFreqChangeAction, &QAction::triggered, this, &PlaylistWidget::envFreqChangeTriggered);
     connect(&_envShapeChangeAction, &QAction::triggered, this, &PlaylistWidget::envShapeChangeTriggered);
+    connect(&_userToneAction, &QAction::triggered, this, &PlaylistWidget::userToneChangeTriggered);
 }
 
 PlaylistWidget::~PlaylistWidget()
@@ -111,6 +117,7 @@ void PlaylistWidget::doUpdate(const float position)
 
     _appPosition = position;
     ui->ganttWidget->update();
+    ui->changeWidget->doUpdate();
 }
 
 void PlaylistWidget::setCellMajors(const QList<int>& majors)
@@ -134,6 +141,7 @@ void PlaylistWidget::ganttMarkerClicked(GanttMarker* marker)
     Playlist::NoiseFrequencyChange* nfChange;
     Playlist::EnvelopeFrequencyChange* efChange;
     Playlist::EnvelopeShapeChange* esChange;
+    Playlist::UserToneChange* utChange;
 
     if ((lfoChange = dynamic_cast<Playlist::LFOChange*>(marker))) {
         ui->changeWidget->setLFOChange(lfoChange);
@@ -147,6 +155,9 @@ void PlaylistWidget::ganttMarkerClicked(GanttMarker* marker)
     } else if ((esChange = dynamic_cast<Playlist::EnvelopeShapeChange*>(marker))) {
         ui->changeWidget->setEnvelopeShapeChange(esChange);
         _editingEnvelopeShapeChange = esChange;
+    } else if ((utChange = dynamic_cast<Playlist::UserToneChange*>(marker))) {
+        ui->changeWidget->setUserToneChange(utChange);
+        _editingUserToneChange = utChange;
     }
 
     ui->stackedWidget->setCurrentIndex(1);
@@ -314,6 +325,11 @@ void PlaylistWidget::removeButtonClicked()
         _editingEnvelopeShapeChange = nullptr;
     }
 
+    if (_editingUserToneChange) {
+        _app->undoStack().push(new RemovePlaylistUserToneChangeCommand(_app->window(), _app->project().playlist(), _editingUserToneChange));
+        _editingUserToneChange = nullptr;
+    }
+
     ui->stackedWidget->setCurrentIndex(0);
 }
 
@@ -335,6 +351,11 @@ void PlaylistWidget::envFreqChangeTriggered()
 void PlaylistWidget::envShapeChangeTriggered()
 {
     _app->undoStack().push(new AddPlaylistEnvelopeShapeChangeCommand(_app->window(), _app->project().playlist(), _markerMenuTime));
+}
+
+void PlaylistWidget::userToneChangeTriggered()
+{
+    _app->undoStack().push(new AddPlaylistUserToneChangeCommand(_app->window(), _app->project().playlist(), _markerMenuTime));
 }
 
 void PlaylistWidget::paintEvent(QPaintEvent* event)

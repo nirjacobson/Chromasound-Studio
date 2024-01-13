@@ -57,7 +57,7 @@ QList<QPointF> FM2EnvelopeDisplayWidget::getPoints() const
             }
         } else {
             p3.setY(p2.y());
-            p3.setX(((float)width() / height()) - (64.0f / height()));
+            p3.setX(p2.x() + 64.0f / height());
 
             if (_settings->rrf() > 0) {
                 p4.setY(1);

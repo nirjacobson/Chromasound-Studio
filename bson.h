@@ -45,6 +45,9 @@ class BSON
         static void fromEnvelopeShapeChange(bson_t* dst, const Playlist::EnvelopeShapeChange* const change);
         static Playlist::EnvelopeShapeChange toEnvelopeShapeChange(bson_iter_t& b);
 
+        static void fromUserToneChange(bson_t* dst, const Playlist::UserToneChange* const change);
+        static Playlist::UserToneChange toUserToneChange(bson_iter_t& b);
+
         static void fromChannel(bson_t* dst, const Channel& channel);
         static Channel toChannel(bson_iter_t& b);
 

@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1123</width>
+    <width>905</width>
     <height>120</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout">
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,0,0,0,0,0,0,0,0,0,0,0,0,0">
    <item>
     <widget class="QPushButton" name="resetButton">
      <property name="sizePolicy">
@@ -41,16 +41,10 @@
    </item>
    <item>
     <widget class="FM2EnvelopeDisplayWidget" name="envelopeDisplayWidget" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="minimumSize">
       <size>
-       <width>256</width>
-       <height>1</height>
+       <width>192</width>
+       <height>0</height>
       </size>
      </property>
      <property name="maximumSize">
