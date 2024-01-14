@@ -143,6 +143,11 @@ void PianoRollWidget::doUpdate(const float position)
     ui->settingsChangeWidget->doUpdate();
 }
 
+void PianoRollWidget::setCellMajors(const QList<int>& majors)
+{
+    ui->ganttWidget->setCellMajors(majors);
+}
+
 ChannelSettings& PianoRollWidget::currentSettings()
 {
     if (_editingSettingsChange) {

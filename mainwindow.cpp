@@ -298,9 +298,24 @@ void MainWindow::patternChanged(int num)
 
 void MainWindow::beatsPerBarChanged(int beatsPerBar)
 {
-    _channelsWidget->update();
-    _playlistWidget->setCellMajors({ beatsPerBar });
-    _playlistWidget->update();
+    if (_channelsWindow) {
+        _channelsWidget->update();
+    }
+
+    for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
+        for (MdiSubWindow* window : (*it)) {
+            PianoRollWidget* prw;
+            if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
+                prw->setCellMajors({ beatsPerBar });
+                prw->update();
+            }
+        }
+    }
+
+    if (_playlistWindow) {
+        _playlistWidget->setCellMajors({ beatsPerBar });
+        _playlistWidget->update();
+    }
 }
 
 void MainWindow::frame()

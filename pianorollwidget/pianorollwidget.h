@@ -53,6 +53,7 @@ class PianoRollWidget : public QMainWindow
         float loopEnd() const;
 
         void doUpdate(const float position);
+        void setCellMajors(const QList<int>& majors);
 
         ChannelSettings& currentSettings();
 
