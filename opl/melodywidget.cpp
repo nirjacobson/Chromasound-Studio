@@ -25,7 +25,9 @@ void MelodyWidget::setSettings(MelodyChannelSettings* settings)
 {
     _settings = settings;
 
+    ui->instrumentComboBox->blockSignals(true);
     ui->instrumentComboBox->setCurrentIndex(settings->instrument());
+    ui->instrumentComboBox->blockSignals(false);
 }
 
 void MelodyWidget::doUpdate()
