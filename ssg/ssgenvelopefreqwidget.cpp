@@ -22,7 +22,12 @@ int SSGEnvelopeFreqWidget::setting() const
 
 void SSGEnvelopeFreqWidget::set(const int freq)
 {
+    ui->freqSpinBox->blockSignals(true);
     ui->freqSpinBox->setValue(freq);
+    ui->freqSpinBox->blockSignals(false);
+
+    float envFreq = freq == 0 ? 0 : (3579545.0f / (512 * freq));
+    ui->freqLabel->setText(QString("%1 Hz").arg(envFreq));
 }
 
 void SSGEnvelopeFreqWidget::freqChanged(int value)

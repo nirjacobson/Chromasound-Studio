@@ -168,6 +168,11 @@ const SSGEnvelopeSettings& Project::ssgEnvelopeShape() const
     return _ssgEnvelopeSettings;
 }
 
+SSGEnvelopeSettings& Project::ssgEnvelopeShape()
+{
+    return _ssgEnvelopeSettings;
+}
+
 void Project::setSSGEnvelopeSettings(const SSGEnvelopeSettings& settings)
 {
     _ssgEnvelopeSettings = settings;

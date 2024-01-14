@@ -22,7 +22,9 @@ int LFOWidget::setting() const
 
 void LFOWidget::set(const int mode)
 {
+    ui->modeComboBox->blockSignals(true);
     ui->modeComboBox->setCurrentIndex(mode);
+    ui->modeComboBox->blockSignals(false);
 }
 
 

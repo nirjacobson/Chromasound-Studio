@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>FM2WidgetWindow</class>
- <widget class="QMainWindow" name="FM2WidgetWindow">
+ <class>MelodyGlobalsWidget</class>
+ <widget class="QMainWindow" name="MelodyGlobalsWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -14,9 +14,30 @@
    <string>User Tone</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
+   <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
-     <widget class="FM2Widget" name="fmWidget" native="true"/>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="title">
+       <string>User Tone</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="FM2Widget" name="fmWidget" native="true"/>
+       </item>
+      </layout>
+     </widget>
     </item>
    </layout>
   </widget>

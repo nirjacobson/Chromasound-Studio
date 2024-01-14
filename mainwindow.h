@@ -28,9 +28,12 @@
 #include "info/projectinfodialog.h"
 #include "settings/settingsdialog.h"
 #include "player/player.h"
-#include "usertone/fm2widgetwindow.h"
+#include "globals/melodyglobalswidget.h"
+#include "globals/ssgglobalswidget.h"
+#include "globals/fmglobalswidget.h"
 #include "opl/melodywidget.h"
 #include "opl/rhythmwidget.h"
+#include "playlistwidget/lfowidget.h"
 
 #include "commands/movechanneldowncommand.h"
 #include "commands/movechannelupcommand.h"
@@ -104,7 +107,9 @@ class MainWindow : public QMainWindow
         void opnImportTriggered();
         void oplImportTriggered();
         void playerTriggered();
-        void userToneTriggered();
+        void fmGlobalsTriggered();
+        void ssgGlobalsTriggered();
+        void melodyGlobalsTriggered();
 
         void showChannelsWindow();
         void showPlaylistWindow();
@@ -139,7 +144,9 @@ class MainWindow : public QMainWindow
         OPLImportDialog* _oplImportDialog;
         PCMUsageDialog* _pcmUsageDialog;
         Player* _player;
-        FM2WidgetWindow* _userToneDialog;
+        FMGlobalsWidget* _fmGlobalsWidget;
+        SSGGlobalsWidget* _ssgGlobalsWidget;
+        MelodyGlobalsWidget* _melodyGlobalsWidget;
 
         MdiSubWindow* _settingsDialogWindow;
         MdiSubWindow* _infoDialogWindow;
@@ -148,7 +155,9 @@ class MainWindow : public QMainWindow
         MdiSubWindow* _oplImportDialogWindow;
         MdiSubWindow* _pcmUsageDialogWindow;
         MdiSubWindow* _playerDialogWindow;
-        MdiSubWindow* _userToneDialogWindow;
+        MdiSubWindow* _fmGlobalsWindow;
+        MdiSubWindow* _ssgGlobalsWindow;
+        MdiSubWindow* _melodyGlobalsWindow;
 
         FilesystemModel _filesystemModel;
         SortFilterProxyModel _proxyModel;

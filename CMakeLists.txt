@@ -388,9 +388,9 @@ set(PROJECT_SOURCES
     usertone/fm2widget.h
     usertone/fm2widget.cpp
     usertone/fm2widget.ui
-    usertone/fm2widgetwindow.h
-    usertone/fm2widgetwindow.cpp
-    usertone/fm2widgetwindow.ui
+
+
+
     usertone/fm2settings.h
     usertone/fm2settings.cpp
     commands/editfm2settingscommand.h
@@ -422,6 +422,24 @@ set(PROJECT_SOURCES
     fmimport/oplimportdialog.h
     fmimport/oplimportdialog.cpp
     fmimport/oplimportdialog.ui
+    globals/fmglobalswidget.h
+    globals/fmglobalswidget.cpp
+    globals/fmglobalswidget.ui
+    globals/melodyglobalswidget.cpp
+    globals/melodyglobalswidget.h
+    globals/melodyglobalswidget.ui
+    globals/fmglobalswidget.cpp
+    globals/fmglobalswidget.h
+    globals/fmglobalswidget.ui
+    globals/ssgglobalswidget.cpp
+    globals/ssgglobalswidget.h
+    globals/ssgglobalswidget.ui
+    commands/editprojectlfomodecommand.h
+    commands/editprojectlfomodecommand.cpp
+    commands/editprojectnoisefrequencycommand.h
+    commands/editprojectnoisefrequencycommand.cpp
+    commands/editprojectenvelopefrequencycommand.h
+    commands/editprojectenvelopefrequencycommand.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

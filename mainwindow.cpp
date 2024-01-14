@@ -15,7 +15,9 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _pcmUsageDialogWindow(nullptr)
     , _infoDialogWindow(nullptr)
     , _playerDialogWindow(nullptr)
-    , _userToneDialogWindow(nullptr)
+    , _fmGlobalsWindow(nullptr)
+    , _ssgGlobalsWindow(nullptr)
+    , _melodyGlobalsWindow(nullptr)
 {
     _midiInput->init();
 
@@ -74,7 +76,6 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(ui->topWidget, &TopWidget::patternChanged, this, &MainWindow::patternChanged);
     connect(ui->topWidget, &TopWidget::beatsPerBarChanged, this, &MainWindow::beatsPerBarChanged);
     connect(ui->topWidget, &TopWidget::midiDeviceSet, this, &MainWindow::setMIDIDevice);
-    connect(ui->topWidget, &TopWidget::userToneTriggered, this, &MainWindow::userToneTriggered);
 
     connect(ui->mdiArea, &MdiArea::viewModeChanged, this, &MainWindow::mdiViewModeChanged);
 
@@ -98,6 +99,10 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(_app, &Application::pcmUploadFinished, this, &MainWindow::pcmUploadFinished);
     connect(_app, &Application::compileStarted, this, &MainWindow::compileStarted);
     connect(_app, &Application::compileFinished, this, &MainWindow::compileFinished);
+
+    connect(ui->actionFM, &QAction::triggered, this, &MainWindow::fmGlobalsTriggered);
+    connect(ui->actionSSG, &QAction::triggered, this, &MainWindow::ssgGlobalsTriggered);
+    connect(ui->actionMelody, &QAction::triggered, this, &MainWindow::melodyGlobalsTriggered);
 
     showChannelsWindow();
     showPlaylistWindow();
@@ -126,6 +131,56 @@ MainWindow::~MainWindow()
     if (_playlistWindow) {
         _playlistWindow->close();
         delete _playlistWindow;
+    }
+
+    if (_settingsDialogWindow) {
+        _settingsDialogWindow->close();
+        delete _settingsDialogWindow;
+    }
+
+    if (_infoDialogWindow) {
+        _infoDialogWindow->close();
+        delete _infoDialogWindow;
+    }
+
+    if (_styleDialogWindow) {
+        _styleDialogWindow->close();
+        delete _styleDialogWindow;
+    }
+
+    if (_opnImportDialogWindow) {
+        _opnImportDialogWindow->close();
+        delete _opnImportDialogWindow;
+    }
+
+    if (_oplImportDialogWindow) {
+        _oplImportDialogWindow->close();
+        delete _oplImportDialogWindow;
+    }
+
+    if (_pcmUsageDialogWindow) {
+        _pcmUsageDialogWindow->close();
+        delete _pcmUsageDialogWindow;
+    }
+
+    if (_playerDialogWindow) {
+        _playerDialogWindow->close();
+        delete _playerDialogWindow;
+    }
+
+    if (_fmGlobalsWindow) {
+        _fmGlobalsWindow->close();
+        delete _fmGlobalsWindow;
+    }
+
+    if (_ssgGlobalsWindow) {
+        _ssgGlobalsWindow->close();
+        delete _ssgGlobalsWindow;
+    }
+
+    if (_melodyGlobalsWindow) {
+        _melodyGlobalsWindow->close();
+        delete _melodyGlobalsWindow;
     }
 
     delete ui;
@@ -873,24 +928,67 @@ void MainWindow::playerTriggered()
     }
 }
 
-void MainWindow::userToneTriggered()
+void MainWindow::fmGlobalsTriggered()
 {
-    if (_userToneDialogWindow == nullptr) {
-        _userToneDialog = new FM2WidgetWindow(this, _app);
-        _userToneDialog->setSettings(&_app->project().userTone());
+    if (_fmGlobalsWindow == nullptr) {
+        _fmGlobalsWidget = new FMGlobalsWidget(this, _app);
 
         MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
         connect(window, &MdiSubWindow::closed, this, [&]() {
-            _userToneDialogWindow = nullptr;
+            _fmGlobalsWindow = nullptr;
         });
         window->setAttribute(Qt::WA_DeleteOnClose);
-        window->setWidget(_userToneDialog);
+        window->setWidget(_fmGlobalsWidget);
         window->resize(window->minimumSizeHint());
-        _userToneDialogWindow = window;
+        window->setWindowTitle("FM Globals");
+        _fmGlobalsWindow = window;
         ui->mdiArea->addSubWindow(window);
         window->show();
     } else {
-        ui->mdiArea->setActiveSubWindow(_userToneDialogWindow);
+        ui->mdiArea->setActiveSubWindow(_fmGlobalsWindow);
+    }
+}
+
+void MainWindow::ssgGlobalsTriggered()
+{
+    if (_ssgGlobalsWindow == nullptr) {
+        _ssgGlobalsWidget = new SSGGlobalsWidget(this, _app);
+
+        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        connect(window, &MdiSubWindow::closed, this, [&]() {
+            _ssgGlobalsWindow = nullptr;
+        });
+        window->setAttribute(Qt::WA_DeleteOnClose);
+        window->setWidget(_ssgGlobalsWidget);
+        window->resize(window->minimumSizeHint());
+        window->setWindowTitle("SSG Globals");
+        _ssgGlobalsWindow = window;
+        ui->mdiArea->addSubWindow(window);
+        window->show();
+    } else {
+        ui->mdiArea->setActiveSubWindow(_ssgGlobalsWindow);
+    }
+}
+
+void MainWindow::melodyGlobalsTriggered()
+{
+    if (_melodyGlobalsWindow == nullptr) {
+        _melodyGlobalsWidget = new MelodyGlobalsWidget(this, _app);
+        _melodyGlobalsWidget->setSettings(&_app->project().userTone());
+
+        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        connect(window, &MdiSubWindow::closed, this, [&]() {
+            _melodyGlobalsWindow = nullptr;
+        });
+        window->setAttribute(Qt::WA_DeleteOnClose);
+        window->setWidget(_melodyGlobalsWidget);
+        window->resize(window->minimumSizeHint());
+        window->setWindowTitle("Melody Globals");
+        _melodyGlobalsWindow = window;
+        ui->mdiArea->addSubWindow(window);
+        window->show();
+    } else {
+        ui->mdiArea->setActiveSubWindow(_melodyGlobalsWindow);
     }
 }
 
@@ -997,7 +1095,9 @@ void MainWindow::doUpdate()
     ui->topWidget->doUpdate(position);
     if (_channelsWindow) _channelsWidget->doUpdate(position);
     if (_playlistWindow) _playlistWidget->doUpdate(position);
-    if (_userToneDialogWindow) _userToneDialog->doUpdate();
+    if (_fmGlobalsWindow) _fmGlobalsWidget->doUpdate();
+    if (_ssgGlobalsWindow) _ssgGlobalsWidget->doUpdate();
+    if (_melodyGlobalsWindow) _melodyGlobalsWidget->doUpdate();
     for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
         for (MdiSubWindow* window : (*it)) {
             PianoRollWidget* prw;
