@@ -20,10 +20,10 @@
 #include "commands/composite/setfmchannelcommand.h"
 
 namespace Ui {
-class OPNImportDialog;
+    class OPNImportDialog;
 }
 
-    class OPNImportDialog : public QMainWindow
+class OPNImportDialog : public QMainWindow
 {
         Q_OBJECT
 

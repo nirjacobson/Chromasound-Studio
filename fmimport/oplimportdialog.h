@@ -16,45 +16,45 @@
 #include "commands/editfm2settingscommand.h"
 
 namespace Ui {
-class OPLImportDialog;
+    class OPLImportDialog;
 }
 
 class OPLImportDialog : public QMainWindow
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    explicit OPLImportDialog(QWidget *parent = nullptr);
-    ~OPLImportDialog();
+    public:
+        explicit OPLImportDialog(QWidget *parent = nullptr);
+        ~OPLImportDialog();
 
-    void setApplication(Application* app);
+        void setApplication(Application* app);
 
-private:
-    static constexpr quint8 VGM_HEADER_DATA_OFFSET = 0x34;
+    private:
+        static constexpr quint8 VGM_HEADER_DATA_OFFSET = 0x34;
 
-    Ui::OPLImportDialog *ui;
-    Application* _app;
+        Ui::OPLImportDialog *ui;
+        Application* _app;
 
-    PatchTableModel _tableModel;
-    QList<FM2Settings> _patchSettings;
-    QList<QString> _patchNames;
-    QList<QList<int>> _patchOctaves;
+        PatchTableModel _tableModel;
+        QList<FM2Settings> _patchSettings;
+        QList<QString> _patchNames;
+        QList<QList<int>> _patchOctaves;
 
-    void load(const QString& path);
-    void clear();
-    int ensurePatch(const FM2Settings& settings);
+        void load(const QString& path);
+        void clear();
+        int ensurePatch(const FM2Settings& settings);
 
-private slots:
-    void openTriggered();
-    void saveTriggered();
-    void saveAllTriggered();
-    void keyPressedOnTable(int key);
-    void sendTriggered();
+    private slots:
+        void openTriggered();
+        void saveTriggered();
+        void saveAllTriggered();
+        void keyPressedOnTable(int key);
+        void sendTriggered();
 
-    // QWidget interface
-protected:
-    void dragEnterEvent(QDragEnterEvent* event);
-    void dropEvent(QDropEvent* event);
+        // QWidget interface
+    protected:
+        void dragEnterEvent(QDragEnterEvent* event);
+        void dropEvent(QDropEvent* event);
 };
 
 #endif // OPLIMPORTDIALOG_H

@@ -313,7 +313,7 @@ void ChannelWidget::fromPath(const QString& path)
     QFileInfo fileInfo(file);
 
     if (fileInfo.suffix() == "opn") {
-            FMChannelSettings* settings = BSON::decodeFM4Patch(path);
+        FMChannelSettings* settings = BSON::decodeFM4Patch(path);
         _app->undoStack().push(new SetFMChannelCommand(_app->window(), _app->project().getChannel(_index), *settings));
 
         delete settings;

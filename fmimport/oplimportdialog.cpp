@@ -63,24 +63,24 @@ void OPLImportDialog::load(const QString& path)
         in >> command;
 
         switch (command) {
-        case 0x50:
-            in >> dd;
-            break;
-        case 0xA0:
-            in >> aa;
-            in >> dd;
-            break;
-        case 0x51:
-            in >> aa;
-            in >> dd;
-            ym2413[aa] = dd;
-            break;
-        case 0x61:
-            in >> dd;
-            in >> dd;
-            break;
-        default:
-            break;
+            case 0x50:
+                in >> dd;
+                break;
+            case 0xA0:
+                in >> aa;
+                in >> dd;
+                break;
+            case 0x51:
+                in >> aa;
+                in >> dd;
+                ym2413[aa] = dd;
+                break;
+            case 0x61:
+                in >> dd;
+                in >> dd;
+                break;
+            default:
+                break;
         }
 
         if (command == 0x51 && aa >= 0x20 && aa <= 0x28 && (dd & 0x10) > 0) {
