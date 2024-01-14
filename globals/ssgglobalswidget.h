@@ -10,31 +10,31 @@
 #include "commands/editssgenvelopesettingscommand.h"
 
 namespace Ui {
-class SSGGlobalsWidget;
+    class SSGGlobalsWidget;
 }
 
 class SSGGlobalsWidget : public QWidget
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    explicit SSGGlobalsWidget(QWidget *parent = nullptr, Application* app = nullptr);
-    ~SSGGlobalsWidget();
+    public:
+        explicit SSGGlobalsWidget(QWidget *parent = nullptr, Application* app = nullptr);
+        ~SSGGlobalsWidget();
 
-    void doUpdate();
+        void doUpdate();
 
-private:
-    Ui::SSGGlobalsWidget *ui;
-    Application* _app;
+    private:
+        Ui::SSGGlobalsWidget *ui;
+        Application* _app;
 
-private slots:
-    void envelopeShapeChanged();
-    void envelopeFrequencyChanged();
-    void noiseFrequencyChanged();
+    private slots:
+        void envelopeShapeChanged();
+        void envelopeFrequencyChanged();
+        void noiseFrequencyChanged();
 
-    // QWidget interface
-protected:
-    void closeEvent(QCloseEvent* event);
+        // QWidget interface
+    protected:
+        void closeEvent(QCloseEvent* event);
 };
 
 #endif // SSGGLOBALSWIDGET_H
