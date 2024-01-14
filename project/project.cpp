@@ -354,6 +354,28 @@ const FM2Settings& Project::userTone() const
     return _userTone;
 }
 
+bool Project::usesOPL() const
+{
+    for (int i = 0; i < _channels.size(); i++) {
+        if (_channels[i].type() == Channel::Type::MELODY || _channels[i].type() == Channel::Type::RHYTHM) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool Project::usesRhythm() const
+{
+    for (int i = 0; i < _channels.size(); i++) {
+        if (_channels[i].type() == Channel::Type::RHYTHM) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void Project::swapChannels(const int idxa, const int idxb)
 {
     for (Pattern* pat : _patterns) {

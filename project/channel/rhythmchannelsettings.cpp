@@ -2,6 +2,7 @@
 #include "project/channel/channel.h"
 
 RhythmChannelSettings::RhythmChannelSettings()
+    : _instrument(Instrument::BassDrum)
 {
 
 }
@@ -14,6 +15,11 @@ RhythmChannelSettings::Instrument RhythmChannelSettings::instrument() const
 void RhythmChannelSettings::setInstrument(const Instrument instr)
 {
     _instrument = instr;
+}
+
+bool RhythmChannelSettings::operator==(const RhythmChannelSettings& o) const
+{
+    return _instrument == o._instrument;
 }
 
 QString RhythmChannelSettings::instrumentToString(const Instrument instr)
