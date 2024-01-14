@@ -27,7 +27,7 @@ QList<QList<int>> VGMStream::slotsByAlg = {
 };
 
 QList<int> VGMStream::ym2612_frequencies = {
-    617, 653, 692, 733, 777, 823, 872, 924, 979, 1037, 1099, 1164
+    653, 692, 733, 777, 823, 872, 924, 979, 1037, 1099, 1164, 1235
 };
 
 QList<int> VGMStream::ym2413_frequencies = {
@@ -384,6 +384,39 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
 
     for (StreamItem* item : items) {
         delete item;
+    }
+
+    if (project.usesRhythm()) {
+        QByteArray enableRhythm;
+
+        enableRhythm.append(0x51);
+        enableRhythm.append(0x16);
+        enableRhythm.append(0x20);
+
+        enableRhythm.append(0x51);
+        enableRhythm.append(0x17);
+        enableRhythm.append(0x50);
+
+        enableRhythm.append(0x51);
+        enableRhythm.append(0x18);
+        enableRhythm.append(0xC0);
+
+        enableRhythm.append(0x51);
+        enableRhythm.append(0x26);
+        enableRhythm.append(0x05);
+
+        enableRhythm.append(0x51);
+        enableRhythm.append(0x27);
+        enableRhythm.append(0x05);
+
+        enableRhythm.append(0x51);
+        enableRhythm.append(0x28);
+        enableRhythm.append(0x01);
+
+        _loopOffsetData += enableRhythm.size();
+        _currentOffsetData += enableRhythm.size();
+
+        data.prepend(enableRhythm);
     }
 
     if (project.hasPCM()) {
@@ -1612,8 +1645,7 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
         if (item->on()) {
             addr = (item->channel() * 2);
             int octave = item->note().key() / 12;
-            int key = (item->note().key() - 1) % 12;
-            if (key == 11) octave--;
+            int key = item->note().key() % 12;
             float f = frequencies[key] * (float)qPow(2, octave);
             int n = 3579545.0f / (32.0f * f);
             uint8_t datum1 = n & 0xF;
@@ -1731,8 +1763,7 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
             addr = item->channel() * 2;
 
             int octave = item->note().key() / 12;
-            int key = (item->note().key() - 1) % 12;
-            if (key == 11) octave--;
+            int key = item->note().key() % 12;
             float f = frequencies[key] * (float)qPow(2, octave);
             int n = 3579545.0f / (32.0f * f);
             uint8_t datum1 = n & 0xFF;
