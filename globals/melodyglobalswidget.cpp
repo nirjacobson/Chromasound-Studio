@@ -1,16 +1,16 @@
-#include "fm2widgetwindow.h"
-#include "ui_fm2widgetwindow.h"
+#include "melodyglobalswidget.h"
+#include "ui_melodyglobalswidget.h"
 
-FM2WidgetWindow::FM2WidgetWindow(QWidget* parent, Application* app) :
+MelodyGlobalsWidget::MelodyGlobalsWidget(QWidget* parent, Application* app) :
     QMainWindow(parent),
-    ui(new Ui::FM2WidgetWindow),
+    ui(new Ui::MelodyGlobalsWidget),
     _app(app)
 {
     ui->setupUi(this);
 
     ui->fmWidget->setApplication(app);
-
-    connect(ui->fmWidget, &FM2Widget::changed, this, &FM2WidgetWindow::fmChanged);
+    
+    connect(ui->fmWidget, &FM2Widget::changed, this, &MelodyGlobalsWidget::fmChanged);
 
     connect(ui->actionNew, &QAction::triggered, ui->fmWidget, &FM2Widget::newTriggered);
     connect(ui->actionOpen, &QAction::triggered, ui->fmWidget, &FM2Widget::openTriggered);
@@ -18,28 +18,28 @@ FM2WidgetWindow::FM2WidgetWindow(QWidget* parent, Application* app) :
     connect(ui->actionClose, &QAction::triggered, this, &QMainWindow::close);
 }
 
-FM2WidgetWindow::~FM2WidgetWindow()
+MelodyGlobalsWidget::~MelodyGlobalsWidget()
 {
     delete ui;
 }
 
-void FM2WidgetWindow::setSettings(FM2Settings* settings)
+void MelodyGlobalsWidget::setSettings(FM2Settings* settings)
 {
     _settings = settings;
     ui->fmWidget->setSettings(_settings);
 }
 
-void FM2WidgetWindow::doUpdate()
+void MelodyGlobalsWidget::doUpdate()
 {
     ui->fmWidget->setSettings(_settings);
 }
 
-void FM2WidgetWindow::fmChanged()
+void MelodyGlobalsWidget::fmChanged()
 {
     _app->undoStack().push(new EditFM2SettingsCommand(_app->window(), *_settings, ui->fmWidget->settings()));
 }
 
-void FM2WidgetWindow::closeEvent(QCloseEvent* event)
+void MelodyGlobalsWidget::closeEvent(QCloseEvent* event)
 {
     MdiSubWindow* subwindow = dynamic_cast<MdiSubWindow*>(parent());
     subwindow->close();

@@ -1,5 +1,5 @@
-#ifndef FM2WIDGETWINDOW_H
-#define FM2WIDGETWINDOW_H
+#ifndef MELODYGLOBALSWIDGET_H
+#define MELODYGLOBALSWIDGET_H
 
 #include <QMainWindow>
 
@@ -7,22 +7,22 @@
 #include "mdiarea/mdisubwindow.h"
 
 namespace Ui {
-    class FM2WidgetWindow;
+class MelodyGlobalsWidget;
 }
 
-class FM2WidgetWindow : public QMainWindow
+    class MelodyGlobalsWidget : public QMainWindow
 {
         Q_OBJECT
 
     public:
-        explicit FM2WidgetWindow(QWidget *parent = nullptr, Application* app = nullptr);
-        ~FM2WidgetWindow();
+        explicit MelodyGlobalsWidget(QWidget *parent = nullptr, Application* app = nullptr);
+        ~MelodyGlobalsWidget();
 
         void setSettings(FM2Settings* settings);
 
         void doUpdate();
     private:
-        Ui::FM2WidgetWindow *ui;
+        Ui::MelodyGlobalsWidget *ui;
         Application* _app;
         FM2Settings* _settings;
 
@@ -34,4 +34,4 @@ class FM2WidgetWindow : public QMainWindow
         void closeEvent(QCloseEvent* event);
 };
 
-#endif // FM2WIDGETWINDOW_H
+#endif // MELODYGLOBALSWIDGET_H

@@ -22,7 +22,12 @@ int SSGNoiseFreqWidget::setting() const
 
 void SSGNoiseFreqWidget::set(const int freq)
 {
+    ui->freqSpinBox->blockSignals(true);
     ui->freqSpinBox->setValue(freq);
+    ui->freqSpinBox->blockSignals(false);
+
+    float envFreq = freq == 0 ? 0 : (3579545.0f / (32 * freq));
+    ui->freqLabel->setText(QString("%1 Hz").arg(envFreq));
 }
 
 void SSGNoiseFreqWidget::freqChanged(int value)

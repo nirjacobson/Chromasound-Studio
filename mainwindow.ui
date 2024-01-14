@@ -75,7 +75,16 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
+    <widget class="QMenu" name="menuGlobals">
+     <property name="title">
+      <string>&amp;Globals</string>
+     </property>
+     <addaction name="actionFM"/>
+     <addaction name="actionSSG"/>
+     <addaction name="actionMelody"/>
+    </widget>
     <addaction name="separator"/>
+    <addaction name="menuGlobals"/>
     <addaction name="actionSettings"/>
     <addaction name="separator"/>
     <addaction name="actionStyles"/>
@@ -158,16 +167,6 @@
     <string>E&amp;xit</string>
    </property>
   </action>
-  <action name="actionSettings">
-   <property name="text">
-    <string>&amp;Settings</string>
-   </property>
-  </action>
-  <action name="actionStyles">
-   <property name="text">
-    <string>Styles...</string>
-   </property>
-  </action>
   <action name="actionMediaPlayer">
    <property name="text">
     <string>&amp;Media Player</string>
@@ -181,6 +180,31 @@
   <action name="actionOPL">
    <property name="text">
     <string>OPL (FM-PSG Lite)</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>&amp;Settings</string>
+   </property>
+  </action>
+  <action name="actionStyles">
+   <property name="text">
+    <string>S&amp;tyles</string>
+   </property>
+  </action>
+  <action name="actionFM">
+   <property name="text">
+    <string>&amp;FM</string>
+   </property>
+  </action>
+  <action name="actionSSG">
+   <property name="text">
+    <string>&amp;SSG</string>
+   </property>
+  </action>
+  <action name="actionMelody">
+   <property name="text">
+    <string>&amp;Melody</string>
    </property>
   </action>
  </widget>

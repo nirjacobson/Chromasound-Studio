@@ -80,6 +80,7 @@ class Project
         void setLFOMode(const int mode);
 
         const SSGEnvelopeSettings& ssgEnvelopeShape() const;
+        SSGEnvelopeSettings& ssgEnvelopeShape();
         void setSSGEnvelopeSettings(const SSGEnvelopeSettings& settings);
 
         int ssgEnvelopeFrequency() const;
