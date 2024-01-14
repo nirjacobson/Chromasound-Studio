@@ -419,13 +419,15 @@ set(PROJECT_SOURCES
     commands/editmelodychannelsettingscommand.cpp
     commands/editrhythmchannelsettingscommand.h
     commands/editrhythmchannelsettingscommand.cpp
+    fmimport/oplimportdialog.h
+    fmimport/oplimportdialog.cpp
+    fmimport/oplimportdialog.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(FM-PSG-Studio
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        fmimport/oplimportdialog.h fmimport/oplimportdialog.cpp fmimport/oplimportdialog.ui
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET FM-PSG-Studio APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
