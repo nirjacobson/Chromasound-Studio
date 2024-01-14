@@ -2,6 +2,7 @@
 #include "project/channel/channel.h"
 
 MelodyChannelSettings::MelodyChannelSettings()
+    : _instrument(Instrument::User)
 {
 
 }
@@ -14,6 +15,11 @@ MelodyChannelSettings::Instrument MelodyChannelSettings::instrument() const
 void MelodyChannelSettings::setInstrument(const Instrument instr)
 {
     _instrument = instr;
+}
+
+bool MelodyChannelSettings::operator==(const MelodyChannelSettings& o) const
+{
+    return _instrument == o._instrument;
 }
 
 QString MelodyChannelSettings::instrumentToString(const Instrument instr)

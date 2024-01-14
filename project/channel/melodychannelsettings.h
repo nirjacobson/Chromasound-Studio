@@ -30,6 +30,8 @@ class MelodyChannelSettings : public ChannelSettings
         Instrument instrument() const;
         void setInstrument(const Instrument instr);
 
+        bool operator==(const MelodyChannelSettings& o) const;
+
     private:
         Instrument _instrument;
 

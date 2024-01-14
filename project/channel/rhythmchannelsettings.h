@@ -19,6 +19,8 @@ class RhythmChannelSettings : public ChannelSettings
         Instrument instrument() const;
         void setInstrument(const Instrument instr);
 
+        bool operator==(const RhythmChannelSettings& o) const;
+
     private:
         Instrument _instrument;
 

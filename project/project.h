@@ -108,6 +108,9 @@ class Project
         FM2Settings& userTone();
         const FM2Settings& userTone() const;
 
+        bool usesOPL() const;
+        bool usesRhythm() const;
+
     private:
         QList<Channel> _channels;
         QList<Pattern*> _patterns;

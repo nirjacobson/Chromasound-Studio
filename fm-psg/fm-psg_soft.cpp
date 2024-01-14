@@ -52,6 +52,36 @@ FM_PSG_Soft::FM_PSG_Soft(const Project& project)
 
         _mutex.unlock();
 
+        if (project.usesRhythm()) {
+            QByteArray enableRhythm;
+
+            enableRhythm.append(0x51);
+            enableRhythm.append(0x16);
+            enableRhythm.append(0x20);
+
+            enableRhythm.append(0x51);
+            enableRhythm.append(0x17);
+            enableRhythm.append(0x50);
+
+            enableRhythm.append(0x51);
+            enableRhythm.append(0x18);
+            enableRhythm.append(0xC0);
+
+            enableRhythm.append(0x51);
+            enableRhythm.append(0x26);
+            enableRhythm.append(0x05);
+
+            enableRhythm.append(0x51);
+            enableRhythm.append(0x27);
+            enableRhythm.append(0x05);
+
+            enableRhythm.append(0x51);
+            enableRhythm.append(0x28);
+            enableRhythm.append(0x01);
+
+            data.prepend(enableRhythm);
+        }
+
         QByteArray dataBlock = project.pcm();
         quint32 dataBlockSize = dataBlock.size();
 
@@ -273,6 +303,9 @@ void FM_PSG_Soft::keyOn(const Project& project, const Channel::Type channelType,
 
     VGMStream::StreamEnvelopeShapeItem* esi = new VGMStream::StreamEnvelopeShapeItem(0, project.ssgEnvelopeShape());
     _items.append(esi);
+
+    VGMStream::StreamUserToneItem* uti = new VGMStream::StreamUserToneItem(0, project.userTone());
+    _items.append(uti);
 
     _items.append(sni);
     _vgmStream.assignChannel(project, sni, _items);
