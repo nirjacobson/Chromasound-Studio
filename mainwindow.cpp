@@ -976,6 +976,8 @@ void MainWindow::channelSettingsUpdated()
             PCMWidget* pw;
             SSGWidget* sw;
             PianoRollWidget* prw;
+            MelodyWidget* mw;
+            RhythmWidget* rw;
 
             if ((nw = dynamic_cast<NoiseWidget*>(window->widget()))) {
                 nw->doUpdate();
@@ -985,6 +987,10 @@ void MainWindow::channelSettingsUpdated()
                 pw->doUpdate();
             } else if ((sw = dynamic_cast<SSGWidget*>(window->widget()))) {
                 sw->doUpdate();
+            } else if ((mw = dynamic_cast<MelodyWidget*>(window->widget()))) {
+                mw->doUpdate();
+            } else if ((rw = dynamic_cast<RhythmWidget*>(window->widget()))) {
+                rw->doUpdate();
             } else if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
                 prw->doUpdate(0);
             }
