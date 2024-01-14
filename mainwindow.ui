@@ -91,7 +91,14 @@
     <property name="title">
      <string>&amp;Tools</string>
     </property>
-    <addaction name="actionImportFMPatches"/>
+    <widget class="QMenu" name="menuImportFMPatches">
+     <property name="title">
+      <string>&amp;Import FM Patches</string>
+     </property>
+     <addaction name="actionOPN"/>
+     <addaction name="actionOPL"/>
+    </widget>
+    <addaction name="menuImportFMPatches"/>
     <addaction name="actionPCMUsage"/>
     <addaction name="actionMediaPlayer"/>
    </widget>
@@ -124,11 +131,6 @@
   <action name="actionPlaylist">
    <property name="text">
     <string>&amp;Playlist</string>
-   </property>
-  </action>
-  <action name="actionImportFMPatches">
-   <property name="text">
-    <string>&amp;Import FM Patches</string>
    </property>
   </action>
   <action name="actionForFMPSG">
@@ -169,6 +171,16 @@
   <action name="actionMediaPlayer">
    <property name="text">
     <string>&amp;Media Player</string>
+   </property>
+  </action>
+  <action name="actionOPN">
+   <property name="text">
+    <string>OPN (FM-PSG)</string>
+   </property>
+  </action>
+  <action name="actionOPL">
+   <property name="text">
+    <string>OPL (FM-PSG Lite)</string>
    </property>
   </action>
  </widget>

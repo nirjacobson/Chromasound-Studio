@@ -10,7 +10,8 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _playlistWindow(nullptr)
     , _settingsDialogWindow(nullptr)
     , _styleDialogWindow(nullptr)
-    , _fmImportDialogWindow(nullptr)
+    , _opnImportDialogWindow(nullptr)
+    , _oplImportDialogWindow(nullptr)
     , _pcmUsageDialogWindow(nullptr)
     , _infoDialogWindow(nullptr)
     , _playerDialogWindow(nullptr)
@@ -47,7 +48,8 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
 
     QStringList filters;
     filters << "*.fsp";
-    filters << "*.fm";
+    filters << "*.opn";
+    filters << "*.opl";
     filters << "*.mid";
     filters << "*.pcm";
     filters << "*.vgm";
@@ -87,7 +89,8 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(ui->actionStyles, &QAction::triggered, this, &MainWindow::stylesTriggered);
     connect(ui->actionChannels, &QAction::triggered, this, &MainWindow::showChannelsWindow);
     connect(ui->actionPlaylist, &QAction::triggered, this, &MainWindow::showPlaylistWindow);
-    connect(ui->actionImportFMPatches, &QAction::triggered, this, &MainWindow::fmImportTriggered);
+    connect(ui->actionOPN, &QAction::triggered, this, &MainWindow::opnImportTriggered);
+    connect(ui->actionOPL, &QAction::triggered, this, &MainWindow::oplImportTriggered);
     connect(ui->actionPCMUsage, &QAction::triggered, this, &MainWindow::pcmUsageTriggered);
     connect(ui->actionMediaPlayer, &QAction::triggered, this, &MainWindow::playerTriggered);
 
@@ -367,11 +370,12 @@ void MainWindow::channelSelected(const int index)
 
     MdiSubWindow* channelWindow;
 
-    if (_app->project().getChannel(index).type() != Channel::Type::TONE) {
-        channelWindow = new MdiSubWindow(ui->mdiArea);
-        channelWindow->setAttribute(Qt::WA_DeleteOnClose);
-        ui->mdiArea->addSubWindow(channelWindow);
+    if (_app->project().getChannel(index).type() == Channel::Type::TONE) {
+        return;
     }
+
+    channelWindow = new MdiSubWindow(ui->mdiArea);
+    channelWindow->setAttribute(Qt::WA_DeleteOnClose);
 
     NoiseWidget* noiseWidget;
     FMWidgetWindow* fmWidget;
@@ -486,6 +490,7 @@ void MainWindow::channelSelected(const int index)
                 melodyWidget->setWindowTitle(QString("%1: Melody").arg(_app->project().getChannel(index).name()));
 
                 channelWindow->setWidget(melodyWidget);
+                channelWindow->resize(channelWindow->minimumSizeHint());
                 if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
                     channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
                 }
@@ -507,6 +512,7 @@ void MainWindow::channelSelected(const int index)
                 rhythmWidget->setWindowTitle(QString("%1: Rhythm").arg(_app->project().getChannel(index).name()));
 
                 channelWindow->setWidget(rhythmWidget);
+                channelWindow->resize(channelWindow->minimumSizeHint());
                 if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
                     channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
                 }
@@ -518,10 +524,9 @@ void MainWindow::channelSelected(const int index)
             break;
     }
 
-    if (_app->project().getChannel(index).type() != Channel::Type::TONE) {
-        channelWindow->show();
-        ui->mdiArea->setActiveSubWindow(channelWindow);
-    }
+    ui->mdiArea->addSubWindow(channelWindow);
+    channelWindow->show();
+    ui->mdiArea->setActiveSubWindow(channelWindow);
 }
 
 void MainWindow::channelNameChanged(const int index)
@@ -782,7 +787,7 @@ void MainWindow::pcmUsageTriggered()
 
         MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
         connect(window, &MdiSubWindow::closed, this, [&]() {
-            _fmImportDialogWindow = nullptr;
+            _pcmUsageDialogWindow = nullptr;
         });
         window->setAttribute(Qt::WA_DeleteOnClose);
         window->setWidget(_pcmUsageDialog);
@@ -794,23 +799,43 @@ void MainWindow::pcmUsageTriggered()
     }
 }
 
-void MainWindow::fmImportTriggered()
+void MainWindow::opnImportTriggered()
 {
-    if (_fmImportDialogWindow == nullptr) {
-        _fmImportDialog = new FMImportDialog(this);
-        _fmImportDialog->setApplication(_app);
+    if (_opnImportDialogWindow == nullptr) {
+        _opnImportDialog = new OPNImportDialog(this);
+        _opnImportDialog->setApplication(_app);
 
         MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
         connect(window, &MdiSubWindow::closed, this, [&]() {
-            _fmImportDialogWindow = nullptr;
+            _opnImportDialogWindow = nullptr;
         });
         window->setAttribute(Qt::WA_DeleteOnClose);
-        window->setWidget(_fmImportDialog);
-        _fmImportDialogWindow = window;
+        window->setWidget(_opnImportDialog);
+        _opnImportDialogWindow = window;
         ui->mdiArea->addSubWindow(window);
         window->show();
     } else {
-        ui->mdiArea->setActiveSubWindow(_fmImportDialogWindow);
+        ui->mdiArea->setActiveSubWindow(_opnImportDialogWindow);
+    }
+}
+
+void MainWindow::oplImportTriggered()
+{
+    if (_oplImportDialogWindow == nullptr) {
+        _oplImportDialog = new OPLImportDialog(this);
+        _oplImportDialog->setApplication(_app);
+
+        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        connect(window, &MdiSubWindow::closed, this, [&]() {
+            _oplImportDialogWindow = nullptr;
+        });
+        window->setAttribute(Qt::WA_DeleteOnClose);
+        window->setWidget(_oplImportDialog);
+        _oplImportDialogWindow = window;
+        ui->mdiArea->addSubWindow(window);
+        window->show();
+    } else {
+        ui->mdiArea->setActiveSubWindow(_oplImportDialogWindow);
     }
 }
 
@@ -845,6 +870,7 @@ void MainWindow::userToneTriggered()
         });
         window->setAttribute(Qt::WA_DeleteOnClose);
         window->setWidget(_userToneDialog);
+        window->resize(window->minimumSizeHint());
         _userToneDialogWindow = window;
         ui->mdiArea->addSubWindow(window);
         window->show();

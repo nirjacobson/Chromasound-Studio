@@ -1,5 +1,5 @@
-#ifndef FMIMPORTDIALOG_H
-#define FMIMPORTDIALOG_H
+#ifndef OPNIMPORTDIALOG_H
+#define OPNIMPORTDIALOG_H
 
 #include <QMainWindow>
 #include <QFileDialog>
@@ -20,23 +20,23 @@
 #include "commands/composite/setfmchannelcommand.h"
 
 namespace Ui {
-    class FMImportDialog;
+class OPNImportDialog;
 }
 
-class FMImportDialog : public QMainWindow
+    class OPNImportDialog : public QMainWindow
 {
         Q_OBJECT
 
     public:
-        explicit FMImportDialog(QWidget *parent = nullptr);
-        ~FMImportDialog();
+        explicit OPNImportDialog(QWidget *parent = nullptr);
+        ~OPNImportDialog();
 
         void setApplication(Application* app);
 
     private:
         static constexpr quint8 VGM_HEADER_DATA_OFFSET = 0x34;
 
-        Ui::FMImportDialog *ui;
+        Ui::OPNImportDialog *ui;
         Application* _app;
 
         PatchTableModel _tableModel;
@@ -61,4 +61,4 @@ class FMImportDialog : public QMainWindow
         void dropEvent(QDropEvent* event);
 };
 
-#endif // FMIMPORTDIALOG_H
+#endif // OPNIMPORTDIALOG_H
