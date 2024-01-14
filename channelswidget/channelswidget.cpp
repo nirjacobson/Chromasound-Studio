@@ -359,8 +359,8 @@ void ChannelsWidget::dropEvent(QDropEvent* event)
 
         int index = _app->project().channelCount();
 
-        if (fileInfo.suffix() == "fm") {
-            FMChannelSettings* settings = BSON::decodePatch(path);
+        if (fileInfo.suffix() == "opn") {
+            FMChannelSettings* settings = BSON::decodeFM4Patch(path);
             _app->undoStack().push(new AddFMChannelCommand(_app->window(), *settings, QFileInfo(QFile(path)).baseName()));
 
             delete settings;

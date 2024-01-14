@@ -92,10 +92,10 @@ void FM4Widget::newTriggered()
 
 void FM4Widget::openTriggered()
 {
-    const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "YM2612 Patch (*.fm)", nullptr, QFileDialog::DontUseNativeDialog);
+    const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "YM2612 Patch (*.opn)", nullptr, QFileDialog::DontUseNativeDialog);
 
     if (!path.isNull()) {
-        FMChannelSettings* settings = BSON::decodePatch(path);
+        FMChannelSettings* settings = BSON::decodeFM4Patch(path);
         _app->undoStack().push(new SetFMChannelSettingsCommand(_app->window(), *_settings, *settings));
         delete settings;
 
@@ -105,7 +105,7 @@ void FM4Widget::openTriggered()
 
 void FM4Widget::saveTriggered()
 {
-    const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "YM2612 Patch (*.fm)", nullptr, QFileDialog::DontUseNativeDialog);
+    const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "YM2612 Patch (*.opn)", nullptr, QFileDialog::DontUseNativeDialog);
 
     if (!path.isNull()) {
         QFile file(path);
@@ -141,8 +141,8 @@ void FM4Widget::dropEvent(QDropEvent* event)
     QFile file(path);
     QFileInfo fileInfo(file);
 
-    if (fileInfo.suffix() == "fm") {
-        FMChannelSettings* settings = BSON::decodePatch(path);
+    if (fileInfo.suffix() == "opn") {
+        FMChannelSettings* settings = BSON::decodeFM4Patch(path);
         _app->undoStack().push(new SetFMChannelSettingsCommand(_app->window(), *_settings, *settings));
         delete settings;
 

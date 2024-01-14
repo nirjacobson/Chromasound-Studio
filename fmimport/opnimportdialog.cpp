@@ -1,9 +1,9 @@
-#include "fmimportdialog.h"
-#include "ui_fmimportdialog.h"
+#include "opnimportdialog.h"
+#include "ui_opnimportdialog.h"
 
-FMImportDialog::FMImportDialog(QWidget *parent)
+OPNImportDialog::OPNImportDialog(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::FMImportDialog)
+    , ui(new Ui::OPNImportDialog)
     , _tableModel(this, _patchNames, _patchOctaves)
 {
     ui->setupUi(this);
@@ -15,27 +15,27 @@ FMImportDialog::FMImportDialog(QWidget *parent)
     ui->patchTableView->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
     ui->channelRadioButton->setChecked(true);
 
-    connect(ui->actionOpen, &QAction::triggered, this, &FMImportDialog::openTriggered);
-    connect(ui->actionSave, &QAction::triggered, this, &FMImportDialog::saveTriggered);
-    connect(ui->actionSaveAll, &QAction::triggered, this, &FMImportDialog::saveAllTriggered);
-    connect(ui->actionClose, &QAction::triggered, this, &FMImportDialog::close);
+    connect(ui->actionOpen, &QAction::triggered, this, &OPNImportDialog::openTriggered);
+    connect(ui->actionSave, &QAction::triggered, this, &OPNImportDialog::saveTriggered);
+    connect(ui->actionSaveAll, &QAction::triggered, this, &OPNImportDialog::saveAllTriggered);
+    connect(ui->actionClose, &QAction::triggered, this, &OPNImportDialog::close);
 
-    connect(ui->patchTableView, &TableView::keyPressed, this, &FMImportDialog::keyPressedOnTable);
+    connect(ui->patchTableView, &TableView::keyPressed, this, &OPNImportDialog::keyPressedOnTable);
 
-    connect(ui->sendButton, &QPushButton::pressed, this, &FMImportDialog::sendTriggered);
+    connect(ui->sendButton, &QPushButton::pressed, this, &OPNImportDialog::sendTriggered);
 }
 
-FMImportDialog::~FMImportDialog()
+OPNImportDialog::~OPNImportDialog()
 {
     delete ui;
 }
 
-void FMImportDialog::setApplication(Application* app)
+void OPNImportDialog::setApplication(Application* app)
 {
     _app = app;
 }
 
-void FMImportDialog::load(const QString& path)
+void OPNImportDialog::load(const QString& path)
 {
     clear();
 
@@ -80,8 +80,6 @@ void FMImportDialog::load(const QString& path)
                 in >> dd;
                 ym2612_2[aa] = dd;
                 break;
-            case 0x58:
-            case 0x59:
             case 0x61:
                 in >> dd;
                 in >> dd;
@@ -189,13 +187,13 @@ void FMImportDialog::load(const QString& path)
 
 }
 
-void FMImportDialog::clear()
+void OPNImportDialog::clear()
 {
     _patchSettings.clear();
     _tableModel.clear();
 }
 
-int FMImportDialog::ensurePatch(const FMChannelSettings& settings)
+int OPNImportDialog::ensurePatch(const FMChannelSettings& settings)
 {
     for (int i = 0; i < _patchSettings.size(); i++) {
         if (_patchSettings[i] == settings) {
@@ -209,7 +207,7 @@ int FMImportDialog::ensurePatch(const FMChannelSettings& settings)
     return _patchSettings.size() - 1;
 }
 
-void FMImportDialog::openTriggered()
+void OPNImportDialog::openTriggered()
 {
     QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "VGM file (*.vgm)", nullptr, QFileDialog::DontUseNativeDialog);
 
@@ -218,7 +216,7 @@ void FMImportDialog::openTriggered()
     }
 }
 
-void FMImportDialog::saveTriggered() {
+void OPNImportDialog::saveTriggered() {
     if (ui->patchTableView->selectionModel()->selectedIndexes().isEmpty()) {
         QMessageBox messageBox;
         messageBox.setText("Please select a patch.");
@@ -228,7 +226,7 @@ void FMImportDialog::saveTriggered() {
 
     int index = ui->patchTableView->selectionModel()->selectedIndexes().first().row();
 
-    QString path = QFileDialog::getSaveFileName(this, tr("Save patch"), QString("%1.fm").arg(_patchNames[index]), "YM2612 Patch (*.fm)", nullptr, QFileDialog::DontUseNativeDialog);
+    QString path = QFileDialog::getSaveFileName(this, tr("Save patch"), QString("%1.opn").arg(_patchNames[index]), "YM2612 Patch (*.opn)", nullptr, QFileDialog::DontUseNativeDialog);
 
     if (!path.isNull()) {
         QFile patchFile(path);
@@ -238,7 +236,7 @@ void FMImportDialog::saveTriggered() {
     }
 }
 
-void FMImportDialog::saveAllTriggered()
+void OPNImportDialog::saveAllTriggered()
 {
     QString path = QFileDialog::getExistingDirectory(this, tr("Save all patches"), "", QFileDialog::DontUseNativeDialog);
 
@@ -248,7 +246,7 @@ void FMImportDialog::saveAllTriggered()
         QTextStream manifestStream(&manifestFile);
 
         for (int i = 0; i < _patchSettings.size(); i++) {
-            QString patchFilename = QString("%1.fm").arg(_patchNames[i]);
+            QString patchFilename = QString("%1.opn").arg(_patchNames[i]);
             QFile patchFile(path + QDir::separator() + patchFilename);
             patchFile.open(QIODevice::WriteOnly);
             patchFile.write(BSON::encodePatch(&_patchSettings[i]));
@@ -267,7 +265,7 @@ void FMImportDialog::saveAllTriggered()
     }
 }
 
-void FMImportDialog::keyPressedOnTable(int key)
+void OPNImportDialog::keyPressedOnTable(int key)
 {
     if (key == Qt::Key::Key_Delete) {
         if (ui->patchTableView->selectionModel()->selectedIndexes().isEmpty()) {
@@ -281,7 +279,7 @@ void FMImportDialog::keyPressedOnTable(int key)
     }
 }
 
-void FMImportDialog::sendTriggered()
+void OPNImportDialog::sendTriggered()
 {
     if (ui->patchTableView->selectionModel()->selectedIndexes().isEmpty()) {
         QMessageBox messageBox;
@@ -306,14 +304,14 @@ void FMImportDialog::sendTriggered()
     }
 }
 
-void FMImportDialog::dragEnterEvent(QDragEnterEvent* event)
+void OPNImportDialog::dragEnterEvent(QDragEnterEvent* event)
 {
     if (event->mimeData()->hasFormat("text/uri-list")) {
         event->acceptProposedAction();
     }
 }
 
-void FMImportDialog::dropEvent(QDropEvent* event)
+void OPNImportDialog::dropEvent(QDropEvent* event)
 {
     QByteArray data = event->mimeData()->data("text/uri-list");
     QString pathsString(data);

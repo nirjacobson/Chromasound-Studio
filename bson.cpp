@@ -45,7 +45,7 @@ Project BSON::decode(const QString& file)
     return toProject(iter);
 }
 
-QByteArray BSON::encodePatch(const FMChannelSettings* settings)
+QByteArray BSON::encodePatch(const Settings* settings)
 {
     bson_writer_t* writer;
     uint8_t* buf = NULL;
@@ -69,7 +69,7 @@ QByteArray BSON::encodePatch(const FMChannelSettings* settings)
 
 }
 
-FMChannelSettings* BSON::decodePatch(const QString& file)
+FMChannelSettings* BSON::decodeFM4Patch(const QString& file)
 {
     bson_reader_t* reader;
     const bson_t* b;
@@ -85,6 +85,27 @@ FMChannelSettings* BSON::decodePatch(const QString& file)
     bson_iter_init(&iter, b);
 
     FMChannelSettings* settings = new FMChannelSettings;
+    settings->fromBSON(iter);
+
+    return settings;
+}
+
+FM2Settings* BSON::decodeFM2Patch(const QString& file)
+{
+    bson_reader_t* reader;
+    const bson_t* b;
+    bson_error_t error;
+
+    if (!(reader = bson_reader_new_from_file(file.toStdString().c_str(), &error))) {
+        throw  "error decoding file";
+    }
+
+    b = bson_reader_read(reader, NULL);
+
+    bson_iter_t iter;
+    bson_iter_init(&iter, b);
+
+    FM2Settings* settings = new FM2Settings;
     settings->fromBSON(iter);
 
     return settings;

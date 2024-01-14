@@ -22,7 +22,8 @@
 #include "midi/midipoller.h"
 #include "style/styledialog.h"
 #include "mdiarea/mdisubwindow.h"
-#include "fmimport/fmimportdialog.h"
+#include "fmimport/opnimportdialog.h"
+#include "fmimport/oplimportdialog.h"
 #include "pcmusage/pcmusagedialog.h"
 #include "info/projectinfodialog.h"
 #include "settings/settingsdialog.h"
@@ -100,7 +101,8 @@ class MainWindow : public QMainWindow
         void settingsTriggered();
         void stylesTriggered();
         void pcmUsageTriggered();
-        void fmImportTriggered();
+        void opnImportTriggered();
+        void oplImportTriggered();
         void playerTriggered();
         void userToneTriggered();
 
@@ -133,7 +135,8 @@ class MainWindow : public QMainWindow
         SettingsDialog* _settingsDialog;
         ProjectInfoDialog* _infoDialog;
         StyleDialog* _styleDialog;
-        FMImportDialog* _fmImportDialog;
+        OPNImportDialog* _opnImportDialog;
+        OPLImportDialog* _oplImportDialog;
         PCMUsageDialog* _pcmUsageDialog;
         Player* _player;
         FM2WidgetWindow* _userToneDialog;
@@ -141,7 +144,8 @@ class MainWindow : public QMainWindow
         MdiSubWindow* _settingsDialogWindow;
         MdiSubWindow* _infoDialogWindow;
         MdiSubWindow* _styleDialogWindow;
-        MdiSubWindow* _fmImportDialogWindow;
+        MdiSubWindow* _opnImportDialogWindow;
+        MdiSubWindow* _oplImportDialogWindow;
         MdiSubWindow* _pcmUsageDialogWindow;
         MdiSubWindow* _playerDialogWindow;
         MdiSubWindow* _userToneDialogWindow;
