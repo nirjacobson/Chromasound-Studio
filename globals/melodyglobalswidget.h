@@ -7,10 +7,10 @@
 #include "mdiarea/mdisubwindow.h"
 
 namespace Ui {
-class MelodyGlobalsWidget;
+    class MelodyGlobalsWidget;
 }
 
-    class MelodyGlobalsWidget : public QMainWindow
+class MelodyGlobalsWidget : public QMainWindow
 {
         Q_OBJECT
 

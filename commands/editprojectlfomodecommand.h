@@ -9,19 +9,19 @@ class MainWindow;
 
 class EditProjectLFOModeCommand : public QUndoCommand
 {
-public:
-    EditProjectLFOModeCommand(MainWindow* window, Project& project, const int newMode);
+    public:
+        EditProjectLFOModeCommand(MainWindow* window, Project& project, const int newMode);
 
-private:
-    MainWindow* _mainWindow;
-    Project& _project;
-    int _oldMode;
-    int _newMode;
+    private:
+        MainWindow* _mainWindow;
+        Project& _project;
+        int _oldMode;
+        int _newMode;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 };
 
 #endif // EDITPROJECTLFOMODECOMMAND_H

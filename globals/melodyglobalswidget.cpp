@@ -9,7 +9,7 @@ MelodyGlobalsWidget::MelodyGlobalsWidget(QWidget* parent, Application* app) :
     ui->setupUi(this);
 
     ui->fmWidget->setApplication(app);
-    
+
     connect(ui->fmWidget, &FM2Widget::changed, this, &MelodyGlobalsWidget::fmChanged);
 
     connect(ui->actionNew, &QAction::triggered, ui->fmWidget, &FM2Widget::newTriggered);
