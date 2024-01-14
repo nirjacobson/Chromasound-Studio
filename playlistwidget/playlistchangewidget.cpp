@@ -13,6 +13,8 @@ PlaylistChangeWidget::PlaylistChangeWidget(QWidget *parent, Application* app)
 {
     ui->setupUi(this);
 
+    ui->userToneWidget->setApplication(app);
+
     connect(ui->doneButton, &QPushButton::pressed, this, &PlaylistChangeWidget::doneButtonClicked);
     connect(ui->removeButton, &QPushButton::pressed, this, &PlaylistChangeWidget::removeButtonClicked);
 
@@ -31,6 +33,8 @@ PlaylistChangeWidget::~PlaylistChangeWidget()
 void PlaylistChangeWidget::setApplication(Application* app)
 {
     _app = app;
+
+    ui->userToneWidget->setApplication(app);
 }
 
 void PlaylistChangeWidget::setLFOChange(Playlist::LFOChange* change)
@@ -90,7 +94,7 @@ void PlaylistChangeWidget::setUserToneChange(Playlist::UserToneChange* change)
     _envelopeShapeChange = nullptr;
     _userToneChange = change;
 
-    ui->userToneWidget->set(change->userTone());
+    ui->userToneWidget->setSettings(&change->userTone());
     ui->stackedWidget->setCurrentIndex(4);
 }
 
@@ -113,7 +117,7 @@ void PlaylistChangeWidget::doUpdate()
     }
 
     if (_userToneChange) {
-        ui->userToneWidget->set(_userToneChange->userTone());
+        ui->userToneWidget->setSettings(&_userToneChange->userTone());
     }
 }
 
