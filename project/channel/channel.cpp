@@ -35,7 +35,7 @@ void Channel::setType(const Type type)
 {
     _type = type;
 
-    if (_settings) delete _settings;
+    ChannelSettings* oldSettings = _settings;
 
     switch (type) {
         case TONE:
@@ -59,6 +59,11 @@ void Channel::setType(const Type type)
         case RHYTHM:
             _settings = new RhythmChannelSettings;
             break;
+    }
+
+    if (oldSettings) {
+        _settings->setVolume(oldSettings->volume());
+        delete oldSettings;
     }
 }
 
