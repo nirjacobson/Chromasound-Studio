@@ -1844,25 +1844,25 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
             int offset = 0;
             bool high = false;
             switch (settings->instrument()) {
-            case RhythmChannelSettings::BassDrum:
-                high = false;
-                break;
-            case RhythmChannelSettings::SnareDrum:
-                high = false;
-                offset++;
-                break;
-            case RhythmChannelSettings::HighHat:
-                high = true;
-                offset++;
-                break;
-            case RhythmChannelSettings::TopCymbal:
-                high = false;
-                offset += 2;
-                break;
-            case RhythmChannelSettings::TomTom:
-                high = true;
-                offset += 2;
-                break;
+                case RhythmChannelSettings::BassDrum:
+                    high = false;
+                    break;
+                case RhythmChannelSettings::SnareDrum:
+                    high = false;
+                    offset++;
+                    break;
+                case RhythmChannelSettings::HighHat:
+                    high = true;
+                    offset++;
+                    break;
+                case RhythmChannelSettings::TopCymbal:
+                    high = false;
+                    offset += 2;
+                    break;
+                case RhythmChannelSettings::TomTom:
+                    high = true;
+                    offset += 2;
+                    break;
             }
 
             data.append(0x51);
