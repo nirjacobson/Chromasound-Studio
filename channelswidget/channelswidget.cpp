@@ -79,6 +79,8 @@ void ChannelsWidget::rebuild()
         widget->layout()->addWidget(_stepCursorWidget);
         ui->verticalLayout->addWidget(widget);
     }
+
+    _activeChannelWidget = nullptr;
 }
 
 void ChannelsWidget::remove(const int index)
