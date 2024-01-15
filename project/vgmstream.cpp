@@ -1837,9 +1837,48 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
         if (item->on()) {
             newRhythm |= mask;
 
+            int volume = settings->volume() * item->note().velocity() / 100;
+            int att = 30 * (100 - volume)/100.0f;
+            att >>= 1;
+
+            int offset = 0;
+            bool high = false;
+            switch (settings->instrument()) {
+            case RhythmChannelSettings::BassDrum:
+                high = false;
+                break;
+            case RhythmChannelSettings::SnareDrum:
+                high = false;
+                offset++;
+                break;
+            case RhythmChannelSettings::HighHat:
+                high = true;
+                offset++;
+                break;
+            case RhythmChannelSettings::TopCymbal:
+                high = false;
+                offset += 2;
+                break;
+            case RhythmChannelSettings::TomTom:
+                high = true;
+                offset += 2;
+                break;
+            }
+
             data.append(0x51);
             data.append(0x0E);
             data.append((1 << 5) | newRhythm);
+
+            uint8_t newChanVal = _lastChanVal[6 + offset];
+            uint8_t mask = 0x0F << (4 * high);
+            newChanVal &= ~mask;
+            newChanVal |= att << (4 * high);
+
+            data.append(0x51);
+            data.append(0x36 + offset);
+            data.append(newChanVal);
+
+            _lastChanVal[6 + offset] = newChanVal;
         } else {
             newRhythm &= ~mask;
 
