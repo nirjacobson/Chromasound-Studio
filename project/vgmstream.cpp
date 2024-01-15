@@ -514,10 +514,16 @@ void VGMStream::reset()
 
     for (int i = 0; i < SSG_CHANNELS; i++) {
         _lastSSGLevel[i] = 0;
+        _ssgChannels[i].reset();
     }
 
     for (int i = 0; i < MELODY_CHANNELS; i++) {
         _lastChanVal[i] = 0;
+        _melodyChannels[i].reset();
+    }
+
+    for (int i = 0; i < RHYTHM_CHANNELS; i++) {
+        _rhythmChannels[i].reset();
     }
 
     _lastRhythm = 0;
@@ -2100,6 +2106,7 @@ void VGMStream::PhysicalChannel::reset()
     _time = 0;
     _duration = 0;
     _acquiredIndefinitely = false;
+    _acquiredEver = false;
 }
 
 VGMStream::StreamSettingsItem::StreamSettingsItem(const float time, const int channel, const ChannelSettings* channelSettings, const int velocity)
