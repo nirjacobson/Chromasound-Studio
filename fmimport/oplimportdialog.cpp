@@ -83,7 +83,7 @@ void OPLImportDialog::load(const QString& path)
                 break;
         }
 
-        if (command == 0x51 && aa >= 0x20 && aa <= 0x28 && (dd & 0x10) > 0) {
+            if (command == 0x51 && aa >= 0x20 && aa <= 0x28 && (dd & 0x10) > 0 && (ym2413[aa + 0x10] >> 4) == 0) {
             int channel = aa - 0x20;
 
             // create FM2Settings from memory
