@@ -440,12 +440,16 @@ set(PROJECT_SOURCES
     commands/editprojectnoisefrequencycommand.cpp
     commands/editprojectenvelopefrequencycommand.h
     commands/editprojectenvelopefrequencycommand.cpp
+    fm-psg/soft/2413tone.h
+    fm-psg/soft/2423tone.h
+    fm-psg/soft/281btone.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(FM-PSG-Studio
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET FM-PSG-Studio APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
