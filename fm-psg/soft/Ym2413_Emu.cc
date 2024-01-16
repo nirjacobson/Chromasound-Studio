@@ -207,7 +207,7 @@ EMU2413_API e_uint32 OPLL_toggleMask(OPLL *, e_uint32 mask) ;
 #include <string.h>
 #include <math.h>
 
-#define EMU2413_COMPACTION
+//#define EMU2413_COMPACTION
 #define INLINE inline
 
 #ifdef EMU2413_COMPACTION
@@ -243,7 +243,7 @@ static unsigned char default_inst[OPLL_TONE_NUM][(16 + 3) * 16] = {
 #include "2413tone.h"
     },
     {
-#include "vrc7tone.h"
+#include "2423tone.h"
     },
     {
 #include "281btone.h"
