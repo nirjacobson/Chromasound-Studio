@@ -121,6 +121,11 @@ bool Vgm_Emu_Impl::is_pcm_long(int channel)
     return channel == 0;
 }
 
+void Vgm_Emu_Impl::set_opll_patchset(int patchset)
+{
+    ym2413.reset_patch( patchset );
+}
+
 int Vgm_Emu_Impl::pcm_read()
 {
     int result = 0x00;

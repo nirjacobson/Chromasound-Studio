@@ -354,3 +354,8 @@ QList<VGMStream::Format> FM_PSG_Soft::supportedFormats()
 {
     return QList<VGMStream::Format>({VGMStream::Format::FM_PSG, VGMStream::Format::STANDARD});
 }
+
+void FM_PSG_Soft::setOPLLPatchset(OPLL::Type type)
+{
+    dynamic_cast<Vgm_Emu*>(_emu)->set_opll_patchset(static_cast<int>(type));
+}

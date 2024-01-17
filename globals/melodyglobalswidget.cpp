@@ -9,8 +9,10 @@ MelodyGlobalsWidget::MelodyGlobalsWidget(QWidget* parent, Application* app) :
     ui->setupUi(this);
 
     ui->fmWidget->setApplication(app);
+    ui->patchsetWidget->setApplication(app);
 
     connect(ui->fmWidget, &FM2Widget::changed, this, &MelodyGlobalsWidget::fmChanged);
+    connect(ui->patchsetWidget, &MelodyPatchsetWidget::changed, this, &MelodyGlobalsWidget::patchsetChanged);
 
     connect(ui->actionNew, &QAction::triggered, ui->fmWidget, &FM2Widget::newTriggered);
     connect(ui->actionOpen, &QAction::triggered, ui->fmWidget, &FM2Widget::openTriggered);
@@ -32,6 +34,12 @@ void MelodyGlobalsWidget::setSettings(FM2Settings* settings)
 void MelodyGlobalsWidget::doUpdate()
 {
     ui->fmWidget->setSettings(_settings);
+    ui->patchsetWidget->setPatchset(_app->project().opllType());
+}
+
+void MelodyGlobalsWidget::patchsetChanged()
+{
+    _app->undoStack().push(new EditProjectOPLLTypeCommand(_app->window(), _app->project(), ui->patchsetWidget->selectedPatchset()));
 }
 
 void MelodyGlobalsWidget::fmChanged()

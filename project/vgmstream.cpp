@@ -1628,7 +1628,7 @@ void VGMStream::encodeSettingsItem(const StreamSettingsItem* item, QByteArray& d
         uint8_t mask = 0xF0;
 
         newChanVal &= ~mask;
-        newChanVal |= (mcs->instrument() << 4);
+        newChanVal |= (mcs->patch() << 4);
 
         data.append(0x51);
         data.append(0x30 + item->channel());

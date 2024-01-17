@@ -1101,8 +1101,12 @@ void MainWindow::doUpdate()
     for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
         for (MdiSubWindow* window : (*it)) {
             PianoRollWidget* prw;
+            MelodyWidget* mw;
             if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
                 prw->doUpdate(position);
+            }
+            if ((mw = dynamic_cast<MelodyWidget*>(window->widget()))) {
+                mw->doUpdate();
             }
         }
     }

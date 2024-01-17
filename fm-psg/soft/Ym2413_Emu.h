@@ -6,6 +6,8 @@
 
 class Ym2413_Emu  {
         struct OPLL* opll;
+
+        int _patchset;
     public:
         Ym2413_Emu();
         ~Ym2413_Emu();
@@ -28,6 +30,8 @@ class Ym2413_Emu  {
         typedef short sample_t;
         enum { out_chan_count = 2 }; // stereo
         void run( int pair_count, sample_t* out );
+
+        void reset_patch( int patchset );
 };
 
 #endif

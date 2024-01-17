@@ -6,37 +6,15 @@
 class MelodyChannelSettings : public ChannelSettings
 {
     public:
-        enum Instrument {
-            User = 0,
-            Violin,
-            Guitar,
-            Piano,
-            Flute,
-            Clarinet,
-            Oboe,
-            Trumpet,
-            Organ,
-            Horn,
-            Synthesizer,
-            Harpsichord,
-            Vibraphone,
-            SynthesizerBass,
-            AcousticBass,
-            ElectricGuitar
-        };
-
         MelodyChannelSettings();
 
-        Instrument instrument() const;
-        void setInstrument(const Instrument instr);
+        int patch() const;
+        void setPatch(const int patch);
 
         bool operator==(const MelodyChannelSettings& o) const;
 
     private:
-        Instrument _instrument;
-
-        static QString instrumentToString(const Instrument instr);
-        static Instrument instrumentFromString(const QString& str);
+        int _patch;
 
         // Settings interface
     public:

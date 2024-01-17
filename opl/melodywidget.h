@@ -6,6 +6,7 @@
 #include "application.h"
 #include "project/channel/melodychannelsettings.h"
 #include "commands/editmelodychannelsettingscommand.h"
+#include "globals/opll.h"
 
 namespace Ui {
     class MelodyWidget;
