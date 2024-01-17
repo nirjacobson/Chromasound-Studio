@@ -10,6 +10,7 @@
 #include "playlist.h"
 #include "ssg/ssgenvelopesettings.h"
 #include "usertone/fm2settings.h"
+#include "globals/opll.h"
 
 class Project
 {
@@ -109,6 +110,9 @@ class Project
         FM2Settings& userTone();
         const FM2Settings& userTone() const;
 
+        OPLL::Type opllType() const;
+        void setOpllType(const OPLL::Type type);
+
         bool usesOPL() const;
         bool usesRhythm() const;
 
@@ -129,6 +133,7 @@ class Project
         int _ssgEnvelopeFreq;
         int _ssgNoiseFreq;
         FM2Settings _userTone;
+        OPLL::Type _opllType;
 
         void swapChannels(const int idxa, const int idxb);
 };

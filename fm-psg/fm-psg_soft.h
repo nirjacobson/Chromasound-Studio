@@ -8,10 +8,12 @@
 #include "project/vgmstream.h"
 #include "soft/gme.h"
 #include "soft/Music_Emu.h"
+#include "soft/Vgm_Emu.h"
 #include "soft/Data_Reader.h"
 #include "soft/producer.h"
 #include "soft/audio_output.h"
 #include "FM_PSG_Studio.h"
+#include "globals/opll.h"
 
 
 class FM_PSG_Soft : public FM_PSG, public Producer<int16_t>
@@ -59,6 +61,9 @@ class FM_PSG_Soft : public FM_PSG, public Producer<int16_t>
         void keyOff(int key);
 
         QList<VGMStream::Format> supportedFormats();
+
+    public:
+        void setOPLLPatchset(OPLL::Type type);
 
         // Producer interface
     public:

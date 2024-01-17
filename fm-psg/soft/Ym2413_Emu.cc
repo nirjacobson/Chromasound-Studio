@@ -2162,6 +2162,7 @@ Ym2413_Emu::~Ym2413_Emu()
 Ym2413_Emu::Ym2413_Emu()
 {
     opll = 0;
+    _patchset = 0;
 }
 
 int Ym2413_Emu::set_rate( double sample_rate, double clock_rate )
@@ -2180,6 +2181,8 @@ int Ym2413_Emu::set_rate( double sample_rate, double clock_rate )
     opll = OPLL_new ((int) clock_rate, (int) sample_rate);
     if ( !opll )
         return 1;
+
+    OPLL_reset_patch( opll, _patchset );
 
     reset();
     return 0;
@@ -2211,6 +2214,15 @@ void Ym2413_Emu::run( int pair_count, sample_t* out )
         out [0] = s;
         out [1] = s;
         out += 2;
+    }
+}
+
+void Ym2413_Emu::reset_patch(int patchset)
+{
+    _patchset = patchset;
+
+    if (opll) {
+        OPLL_reset_patch( opll, _patchset );
     }
 }
 

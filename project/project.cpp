@@ -19,6 +19,7 @@ Project::Project()
     , _lfoMode(0)
     , _ssgEnvelopeFreq(0)
     , _ssgNoiseFreq(0)
+    , _opllType(OPLL::Type::STANDARD)
 {
     addChannel();
     addChannel();
@@ -357,6 +358,16 @@ FM2Settings& Project::userTone()
 const FM2Settings& Project::userTone() const
 {
     return _userTone;
+}
+
+OPLL::Type Project::opllType() const
+{
+    return _opllType;
+}
+
+void Project::setOpllType(const OPLL::Type type)
+{
+    _opllType = type;
 }
 
 bool Project::usesOPL() const

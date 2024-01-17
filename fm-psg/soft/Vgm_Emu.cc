@@ -50,6 +50,11 @@ Vgm_Emu::Vgm_Emu()
 
 Vgm_Emu::~Vgm_Emu() { }
 
+void Vgm_Emu::set_opll_patchset( int patchset )
+{
+    Vgm_Emu_Impl::set_opll_patchset( patchset );
+}
+
 // Track info
 
 static byte const* skip_gd3_str( byte const* in, byte const* end )

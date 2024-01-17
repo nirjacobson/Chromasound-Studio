@@ -5,6 +5,8 @@
 
 #include "application.h"
 #include "mdiarea/mdisubwindow.h"
+#include "commands/editfm2settingscommand.h"
+#include "commands/editprojectoplltypecommand.h"
 
 namespace Ui {
     class MelodyGlobalsWidget;
@@ -27,6 +29,7 @@ class MelodyGlobalsWidget : public QMainWindow
         FM2Settings* _settings;
 
     private slots:
+        void patchsetChanged();
         void fmChanged();
 
         // QWidget interface

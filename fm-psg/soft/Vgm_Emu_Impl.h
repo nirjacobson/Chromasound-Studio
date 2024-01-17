@@ -70,6 +70,8 @@ class Vgm_Emu_Impl : public Classic_Emu, private Dual_Resampler {
 
         bool is_pcm_long(int channel);
 
+        void set_opll_patchset( int patchset );
+
         Ym_Emu<Ym2612_Emu> ym2612;
         Ym_Emu<Ym2413_Emu> ym2413;
 

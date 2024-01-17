@@ -69,6 +69,8 @@ class Vgm_Emu : public Vgm_Emu_Impl {
     public:
         Vgm_Emu();
         ~Vgm_Emu();
+
+        void set_opll_patchset( int patchset );
     protected:
         blargg_err_t track_info_( track_info_t*, int track ) const;
         blargg_err_t load_mem_( byte const*, long );
