@@ -4,7 +4,7 @@
 #include <QWidget>
 
 #include "application.h"
-#include "mdiarea/mdisubwindow.h"
+#include "common/mdiarea/mdisubwindow.h"
 #include "commands/editprojectlfomodecommand.h"
 
 namespace Ui {

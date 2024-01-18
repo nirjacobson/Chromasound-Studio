@@ -1,5 +1,5 @@
 #include "addplaylistusertonechangecommand.h"
-#include "usertone/fm2settings.h"
+#include "opl/usertone/oplsettings.h"
 #include "mainwindow.h"
 
 AddPlaylistUserToneChangeCommand::AddPlaylistUserToneChangeCommand(MainWindow* window, Playlist& playlist, const float time)
@@ -19,7 +19,7 @@ void AddPlaylistUserToneChangeCommand::undo()
 
 void AddPlaylistUserToneChangeCommand::redo()
 {
-    _change = _playlist.addUserToneChange(_time, FM2Settings());
+    _change = _playlist.addUserToneChange(_time, OPLSettings());
 
     _mainWindow->doUpdate();
 }

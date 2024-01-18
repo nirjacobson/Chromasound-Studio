@@ -371,7 +371,7 @@ QList<Playlist::UserToneChange*>& Playlist::userToneChanges()
     return _userToneChanges;
 }
 
-Playlist::UserToneChange* Playlist::addUserToneChange(const float time, const FM2Settings& tone)
+Playlist::UserToneChange* Playlist::addUserToneChange(const float time, const OPLSettings& tone)
 {
     UserToneChange* ret = nullptr;
 
@@ -580,7 +580,7 @@ Playlist::EnvelopeShapeChange::EnvelopeShapeChange()
 
 }
 
-Playlist::UserToneChange::UserToneChange(const float time, const FM2Settings& tone)
+Playlist::UserToneChange::UserToneChange(const float time, const OPLSettings& tone)
     : _time(time)
     , _userTone(tone)
 {
@@ -602,17 +602,17 @@ const QColor& Playlist::UserToneChange::color() const
     return COLOR;
 }
 
-FM2Settings& Playlist::UserToneChange::userTone()
+OPLSettings& Playlist::UserToneChange::userTone()
 {
     return _userTone;
 }
 
-const FM2Settings& Playlist::UserToneChange::userTone() const
+const OPLSettings& Playlist::UserToneChange::userTone() const
 {
     return _userTone;
 }
 
-void Playlist::UserToneChange::setUserTone(const FM2Settings& tone)
+void Playlist::UserToneChange::setUserTone(const OPLSettings& tone)
 {
     _userTone = tone;
 }

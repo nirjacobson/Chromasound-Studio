@@ -4,8 +4,8 @@
 #include <QMainWindow>
 
 #include "application.h"
-#include "mdiarea/mdisubwindow.h"
-#include "commands/editfm2settingscommand.h"
+#include "common/mdiarea/mdisubwindow.h"
+#include "commands/editoplsettingscommand.h"
 #include "commands/editprojectoplltypecommand.h"
 
 namespace Ui {
@@ -20,13 +20,13 @@ class MelodyGlobalsWidget : public QMainWindow
         explicit MelodyGlobalsWidget(QWidget *parent = nullptr, Application* app = nullptr);
         ~MelodyGlobalsWidget();
 
-        void setSettings(FM2Settings* settings);
+        void setSettings(OPLSettings* settings);
 
         void doUpdate();
     private:
         Ui::MelodyGlobalsWidget *ui;
         Application* _app;
-        FM2Settings* _settings;
+        OPLSettings* _settings;
 
     private slots:
         void patchsetChanged();

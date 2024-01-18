@@ -6,8 +6,8 @@
 
 #include "project/channel/channelsettings.h"
 #include "note.h"
-#include "ganttwidget/ganttitem.h"
-#include "ganttwidget/ganttmarker.h"
+#include "common/ganttwidget/ganttitem.h"
+#include "common/ganttwidget/ganttmarker.h"
 
 class Track
 {

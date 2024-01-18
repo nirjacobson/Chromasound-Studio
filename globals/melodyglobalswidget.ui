@@ -58,7 +58,7 @@
         <number>0</number>
        </property>
        <item row="0" column="0">
-        <widget class="FM2Widget" name="fmWidget" native="true"/>
+        <widget class="OPLWidget" name="fmWidget" native="true"/>
        </item>
       </layout>
      </widget>
@@ -124,15 +124,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>FM2Widget</class>
-   <extends>QWidget</extends>
-   <header>usertone/fm2widget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>MelodyPatchsetWidget</class>
    <extends>QWidget</extends>
    <header>globals/melodypatchsetwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>OPLWidget</class>
+   <extends>QWidget</extends>
+   <header>opl/usertone/oplwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

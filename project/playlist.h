@@ -4,10 +4,10 @@
 #include <QMap>
 #include <QList>
 
-#include "ganttwidget/ganttitem.h"
-#include "ganttwidget/ganttmarker.h"
+#include "common/ganttwidget/ganttitem.h"
+#include "common/ganttwidget/ganttmarker.h"
 #include "ssg/ssgenvelopesettings.h"
-#include "usertone/fm2settings.h"
+#include "opl/usertone/oplsettings.h"
 
 class Project;
 
@@ -138,22 +138,22 @@ class Playlist
                 friend class BSON;
 
             public:
-                UserToneChange(const float time, const FM2Settings& tone);
+                UserToneChange(const float time, const OPLSettings& tone);
 
                 float time() const;
                 QString name() const;
                 const QColor& color() const;
 
-                FM2Settings& userTone();
-                const FM2Settings& userTone() const;
-                void setUserTone(const FM2Settings& tone);
+                OPLSettings& userTone();
+                const OPLSettings& userTone() const;
+                void setUserTone(const OPLSettings& tone);
 
             private:
                 static QColor COLOR;
                 UserToneChange();
 
                 float _time;
-                FM2Settings _userTone;
+                OPLSettings _userTone;
         };
 
         Playlist(Project* const project);
@@ -198,7 +198,7 @@ class Playlist
 
         const QList<UserToneChange*>& userToneChanges() const;
         QList<UserToneChange*>& userToneChanges();
-        UserToneChange* addUserToneChange(const float time, const FM2Settings& tone);
+        UserToneChange* addUserToneChange(const float time, const OPLSettings& tone);
         void removeUserToneChange(const UserToneChange* utc, const bool keep = false);
 
     private:

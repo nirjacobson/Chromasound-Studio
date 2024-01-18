@@ -4,7 +4,7 @@
 #include <QWidget>
 
 #include "application.h"
-#include "globals/opll.h"
+#include "opl/opll.h"
 #include "unselectablestringlistmodel.h"
 
 namespace Ui {

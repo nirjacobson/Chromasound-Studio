@@ -2297,14 +2297,14 @@ void VGMStream::RhythmChannel::reset()
     _settings = RhythmChannelSettings();
 }
 
-VGMStream::StreamUserToneItem::StreamUserToneItem(const float time, const FM2Settings& tone)
+VGMStream::StreamUserToneItem::StreamUserToneItem(const float time, const OPLSettings& tone)
     : StreamItem(time)
     , _settings(tone)
 {
 
 }
 
-const FM2Settings& VGMStream::StreamUserToneItem::settings() const
+const OPLSettings& VGMStream::StreamUserToneItem::settings() const
 {
     return _settings;
 }

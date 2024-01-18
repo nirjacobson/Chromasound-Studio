@@ -13,7 +13,7 @@
 #include "soft/producer.h"
 #include "soft/audio_output.h"
 #include "FM_PSG_Studio.h"
-#include "globals/opll.h"
+#include "opl/opll.h"
 
 
 class FM_PSG_Soft : public FM_PSG, public Producer<int16_t>

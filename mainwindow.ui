@@ -212,13 +212,13 @@
   <customwidget>
    <class>TopWidget</class>
    <extends>QWidget</extends>
-   <header>topwidget/topwidget.h</header>
+   <header>toplevel/topwidget/topwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>MdiArea</class>
    <extends>QWidget</extends>
-   <header>mdiarea/mdiarea.h</header>
+   <header>common/mdiarea/mdiarea.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

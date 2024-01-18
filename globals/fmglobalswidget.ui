@@ -23,7 +23,7 @@
   <customwidget>
    <class>LFOWidget</class>
    <extends>QWidget</extends>
-   <header>playlistwidget/lfowidget.h</header>
+   <header>opn/lfowidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

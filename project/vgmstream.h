@@ -7,7 +7,7 @@
 #include "channel/noisechannelsettings.h"
 #include "project.h"
 #include "note.h"
-#include "gd3.h"
+#include "formats/gd3.h"
 
 class VGMStream
 {
@@ -91,12 +91,12 @@ class VGMStream
 
         class StreamUserToneItem : public StreamItem {
             public:
-                StreamUserToneItem(const float time, const FM2Settings& tone);
+                StreamUserToneItem(const float time, const OPLSettings& tone);
 
-                const FM2Settings& settings() const;
+                const OPLSettings& settings() const;
 
             private:
-                FM2Settings _settings;
+                OPLSettings _settings;
         };
 
         VGMStream(const Format format = Format::FM_PSG);
