@@ -15,26 +15,26 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 set(PROJECT_SOURCES
-    channelswidget/channelswidget.cpp
-    channelswidget/channelswidget.h
-    channelswidget/channelswidget.ui
-    channelswidget/channelwidget/channelwidget.cpp
-    channelswidget/channelwidget/channelwidget.h
-    channelswidget/channelwidget/channelwidget.ui
-    channelswidget/channelwidget/led.cpp
-    channelswidget/channelwidget/led.h
-    channelswidget/channelwidget/prdisplaywidget.cpp
-    channelswidget/channelwidget/prdisplaywidget.h
-    channelswidget/channelwidget/rectled.cpp
-    channelswidget/channelwidget/rectled.h
-    channelswidget/stepcursorwidget.cpp
-    channelswidget/stepcursorwidget.h
-    channelswidget/channelwidget/stepkeyswidget.cpp
-    channelswidget/channelwidget/stepkeyswidget.h
-    channelswidget/channelwidget/stepsequencerwidget.cpp
-    channelswidget/channelwidget/stepsequencerwidget.h
-    channelswidget/channelwidget/stepvelocitieswidget.cpp
-    channelswidget/channelwidget/stepvelocitieswidget.h
+    toplevel/channelswidget/channelswidget.cpp
+    toplevel/channelswidget/channelswidget.h
+    toplevel/channelswidget/channelswidget.ui
+    toplevel/channelswidget/channelwidget/channelwidget.cpp
+    toplevel/channelswidget/channelwidget/channelwidget.h
+    toplevel/channelswidget/channelwidget/channelwidget.ui
+    common/led/led.cpp
+    common/led/led.h
+    toplevel/channelswidget/channelwidget/prdisplaywidget.cpp
+    toplevel/channelswidget/channelwidget/prdisplaywidget.h
+    common/led/rectled.cpp
+    common/led/rectled.h
+    toplevel/channelswidget/stepcursorwidget.cpp
+    toplevel/channelswidget/stepcursorwidget.h
+    toplevel/channelswidget/channelwidget/stepkeyswidget.cpp
+    toplevel/channelswidget/channelwidget/stepkeyswidget.h
+    toplevel/channelswidget/channelwidget/stepsequencerwidget.cpp
+    toplevel/channelswidget/channelwidget/stepsequencerwidget.h
+    toplevel/channelswidget/channelwidget/stepvelocitieswidget.cpp
+    toplevel/channelswidget/channelwidget/stepvelocitieswidget.h
     fm-psg/fm-psg.h
     fm-psg/fm-psg_dummy.cpp
     fm-psg/fm-psg_dummy.h
@@ -42,59 +42,59 @@ set(PROJECT_SOURCES
     fm-psg/fm-psg_impl.h
     fm-psg/vgmplayer.cpp
     fm-psg/vgmplayer.h
-    fmwidget/algorithmdisplaywidget.cpp
-    fmwidget/algorithmdisplaywidget.h
-    fmwidget/algorithmgraph.cpp
-    fmwidget/algorithmgraph.h
-    fmwidget/algorithmwidget.cpp
-    fmwidget/algorithmwidget.h
-    fmwidget/algorithmwidget.ui
-    fmwidget/fm4envelopedisplaywidget.cpp
-    fmwidget/fm4envelopedisplaywidget.h
-    fmwidget/fm4operatorwidget.cpp
-    fmwidget/fm4operatorwidget.h
-    fmwidget/fm4operatorwidget.ui
-    fmwidget/pianowidget.cpp
-    fmwidget/pianowidget.h
-    ganttwidget/ganttbottomwidget.cpp
-    ganttwidget/ganttbottomwidget.h
-    ganttwidget/gantteditorwidget.cpp
-    ganttwidget/gantteditorwidget.h
-    ganttwidget/ganttheaderwidget.cpp
-    ganttwidget/ganttheaderwidget.h
-    ganttwidget/ganttitem.cpp
-    ganttwidget/ganttitem.h
-    ganttwidget/ganttleftwidget.cpp
-    ganttwidget/ganttleftwidget.h
-    ganttwidget/ganttwidget.cpp
-    ganttwidget/ganttwidget.h
-    ganttwidget/ganttwidget.ui
-    ganttwidget/scrollablewidget.cpp
-    ganttwidget/scrollablewidget.h
-    noisewidget/noisewidget.cpp
-    noisewidget/noisewidget.h
-    noisewidget/noisewidget.ui
-    pianorollwidget/pianorollkeyswidget.cpp
-    pianorollwidget/pianorollkeyswidget.h
-    pianorollwidget/pianorollvelocitieswidget.cpp
-    pianorollwidget/pianorollvelocitieswidget.h
-    playlistwidget/playlistpatternswidget.cpp
-    playlistwidget/playlistpatternswidget.h
-    playlistwidget/playlistwidget.cpp
-    playlistwidget/playlistwidget.h
-    playlistwidget/playlistwidget.ui
+    opn/algorithmdisplaywidget.cpp
+    opn/algorithmdisplaywidget.h
+    opn/algorithmgraph.cpp
+    opn/algorithmgraph.h
+    opn/algorithmwidget.cpp
+    opn/algorithmwidget.h
+    opn/algorithmwidget.ui
+    opn/opnenvelopedisplaywidget.cpp
+    opn/opnenvelopedisplaywidget.h
+    opn/opnoperatorwidget.cpp
+    opn/opnoperatorwidget.h
+    opn/opnoperatorwidget.ui
+    common/pianowidget.cpp
+    common/pianowidget.h
+    common/ganttwidget/ganttbottomwidget.cpp
+    common/ganttwidget/ganttbottomwidget.h
+    common/ganttwidget/gantteditorwidget.cpp
+    common/ganttwidget/gantteditorwidget.h
+    common/ganttwidget/ganttheaderwidget.cpp
+    common/ganttwidget/ganttheaderwidget.h
+    common/ganttwidget/ganttitem.cpp
+    common/ganttwidget/ganttitem.h
+    common/ganttwidget/ganttleftwidget.cpp
+    common/ganttwidget/ganttleftwidget.h
+    common/ganttwidget/ganttwidget.cpp
+    common/ganttwidget/ganttwidget.h
+    common/ganttwidget/ganttwidget.ui
+    common/ganttwidget/scrollablewidget.cpp
+    common/ganttwidget/scrollablewidget.h
+    psg/noisewidget.cpp
+    psg/noisewidget.h
+    psg/noisewidget.ui
+    dialogs/pianorollwidget/pianorollkeyswidget.cpp
+    dialogs/pianorollwidget/pianorollkeyswidget.h
+    dialogs/pianorollwidget/pianorollvelocitieswidget.cpp
+    dialogs/pianorollwidget/pianorollvelocitieswidget.h
+    toplevel/playlistwidget/playlistpatternswidget.cpp
+    toplevel/playlistwidget/playlistpatternswidget.h
+    toplevel/playlistwidget/playlistwidget.cpp
+    toplevel/playlistwidget/playlistwidget.h
+    toplevel/playlistwidget/playlistwidget.ui
     project/channel/channel.cpp
     project/channel/channel.h
     project/channel/channelsettings.cpp
     project/channel/channelsettings.h
-    project/channel/fm4envelopesettings.cpp
-    project/channel/fm4envelopesettings.h
+    project/channel/opnenvelopesettings.cpp
+    project/channel/opnenvelopesettings.h
     project/channel/fmchannelsettings.cpp
     project/channel/fmchannelsettings.h
     project/channel/noisechannelsettings.cpp
     project/channel/noisechannelsettings.h
-    project/channel/fm4operatorsettings.cpp
-    project/channel/fm4operatorsettings.h
+    project/channel/opnoperatorsettings.cpp
+    project/channel/opnoperatorsettings.h
     project/channel/settings.cpp
     project/channel/settings.h
     project/channel/tonechannelsettings.cpp
@@ -113,21 +113,21 @@ set(PROJECT_SOURCES
     project/track.h
     project/vgmstream.cpp
     project/vgmstream.h
-    topwidget/seekwidget.cpp
-    topwidget/seekwidget.h
-    topwidget/timedisplaywidget.cpp
-    topwidget/timedisplaywidget.h
-    topwidget/topwidget.cpp
-    topwidget/topwidget.h
-    topwidget/topwidget.ui
+    toplevel/topwidget/seekwidget.cpp
+    toplevel/topwidget/seekwidget.h
+    toplevel/topwidget/timedisplaywidget.cpp
+    toplevel/topwidget/timedisplaywidget.h
+    toplevel/topwidget/topwidget.cpp
+    toplevel/topwidget/topwidget.h
+    toplevel/topwidget/topwidget.ui
     commands/addnotecommand.h
     commands/addnotecommand.cpp
     commands/removenotecommand.h
     commands/removenotecommand.cpp
     application.cpp
     application.h
-    bson.cpp
-    bson.h
+    formats/bson.cpp
+    formats/bson.h
     CMakeLists.txt
     main.cpp
     mainwindow.cpp
@@ -153,22 +153,22 @@ set(PROJECT_SOURCES
     commands/removeplaylistitemcommand.cpp
     commands/editnoisechannelsettingscommand.h
     commands/editnoisechannelsettingscommand.cpp
-    commands/editfm4operatorsettingscommand.h
-    commands/editfm4operatorsettingscommand.cpp
+    commands/editopnoperatorsettingscommand.h
+    commands/editopnoperatorsettingscommand.cpp
     commands/editalgorithmsettingscommand.h
     commands/editalgorithmsettingscommand.cpp
-    style/styledialog.h
-    style/styledialog.cpp
-    style/styledialog.ui
-    mdiarea/mdiarea.h
-    mdiarea/mdiarea.cpp
-    mdiarea/mdisubwindow.h
-    mdiarea/mdisubwindow.cpp
+    dialogs/style/styledialog.h
+    dialogs/style/styledialog.cpp
+    dialogs/style/styledialog.ui
+    common/mdiarea/mdiarea.h
+    common/mdiarea/mdiarea.cpp
+    common/mdiarea/mdisubwindow.h
+    common/mdiarea/mdisubwindow.cpp
     commands/setfmchannelsettingscommand.h
     commands/setfmchannelsettingscommand.cpp
-    pianorollwidget/pianorollwidget.h
-    pianorollwidget/pianorollwidget.cpp
-    pianorollwidget/pianorollwidget.ui
+    dialogs/pianorollwidget/pianorollwidget.h
+    dialogs/pianorollwidget/pianorollwidget.cpp
+    dialogs/pianorollwidget/pianorollwidget.ui
     commands/addtrackitemscommand.h
     commands/addtrackitemscommand.cpp
     commands/removetrackitemscommand.h
@@ -177,48 +177,48 @@ set(PROJECT_SOURCES
     commands/addplaylistitemscommand.cpp
     commands/removeplaylistitemscommand.h
     commands/removeplaylistitemscommand.cpp
-    midi/chunk/midichunk.cpp
-    midi/chunk/midichunk.h
-    midi/chunk/midiheader.cpp
-    midi/chunk/midiheader.h
-    midi/chunk/miditrack.cpp
-    midi/chunk/miditrack.h
-    midi/chunk/miditrackevent.cpp
-    midi/chunk/miditrackevent.h
-    midi/event/event.cpp
-    midi/event/event.h
-    midi/event/metaevent.cpp
-    midi/event/metaevent.h
-    midi/event/midievent.cpp
-    midi/event/midievent.h
-    midi/event/sysexevent.cpp
-    midi/event/sysexevent.h
-    midi/midifile.cpp
-    midi/midifile.h
-    midi/midiinput.cpp
-    midi/midiinput.h
-    midi/midipoller.cpp
-    midi/midipoller.h
-    midi/util.cpp
-    midi/util.h
-    midi/midi.h
-    midi/midi.cpp
+    formats/midi/chunk/midichunk.cpp
+    formats/midi/chunk/midichunk.h
+    formats/midi/chunk/midiheader.cpp
+    formats/midi/chunk/midiheader.h
+    formats/midi/chunk/miditrack.cpp
+    formats/midi/chunk/miditrack.h
+    formats/midi/chunk/miditrackevent.cpp
+    formats/midi/chunk/miditrackevent.h
+    formats/midi/event/event.cpp
+    formats/midi/event/event.h
+    formats/midi/event/metaevent.cpp
+    formats/midi/event/metaevent.h
+    formats/midi/event/midievent.cpp
+    formats/midi/event/midievent.h
+    formats/midi/event/sysexevent.cpp
+    formats/midi/event/sysexevent.h
+    formats/midi/midifile.cpp
+    formats/midi/midifile.h
+    formats/midi/midiinput.cpp
+    formats/midi/midiinput.h
+    formats/midi/midipoller.cpp
+    formats/midi/midipoller.h
+    formats/midi/util.cpp
+    formats/midi/util.h
+    formats/midi/midi.h
+    formats/midi/midi.cpp
     project/channel/pcmchannelsettings.h
     project/channel/pcmchannelsettings.cpp
-    pcmwidget/pcmwidget.h
-    pcmwidget/pcmwidget.cpp
-    pcmwidget/pcmwidget.ui
+    opn/pcmwidget.h
+    opn/pcmwidget.cpp
+    opn/pcmwidget.ui
     commands/setchanneltypecommand.h
     commands/setchanneltypecommand.cpp
     commands/setpcmchannelsettingscommand.h
     commands/setpcmchannelsettingscommand.cpp
-    fmimport/opnimportdialog.h
-    fmimport/opnimportdialog.cpp
-    fmimport/opnimportdialog.ui
-    fmimport/patchtablemodel.h
-    fmimport/patchtablemodel.cpp
-    fmimport/tableview.h
-    fmimport/tableview.cpp
+    tools/fmimport/opnimportdialog.h
+    tools/fmimport/opnimportdialog.cpp
+    tools/fmimport/opnimportdialog.ui
+    tools/fmimport/patchtablemodel.h
+    tools/fmimport/patchtablemodel.cpp
+    tools/fmimport/tableview.h
+    tools/fmimport/tableview.cpp
     commands/setchannelnamecommand.h
     commands/setchannelnamecommand.cpp
     commands/composite/setfmchannelcommand.h
@@ -233,49 +233,49 @@ set(PROJECT_SOURCES
     commands/composite/addpcmchannelcommand.cpp
     commands/composite/addtrackcommand.h
     commands/composite/addtrackcommand.cpp
-    ganttwidget/ganttmarker.h
-    ganttwidget/ganttmarker.cpp
-    fmwidget/fm4widget.h
-    fmwidget/fm4widget.cpp
-    fmwidget/fm4widget.ui
-    fmwidget/fmwidgetwindow.h
-    fmwidget/fmwidgetwindow.cpp
-    fmwidget/fmwidgetwindow.ui
+    common/ganttwidget/ganttmarker.h
+    common/ganttwidget/ganttmarker.cpp
+    opn/opnwidget.h
+    opn/opnwidget.cpp
+    opn/opnwidget.ui
+    opn/opnwidgetwindow.h
+    opn/opnwidgetwindow.cpp
+    opn/opnwidgetwindow.ui
     commands/addtracksettingschangecommand.h
     commands/addtracksettingschangecommand.cpp
     commands/addplaylistlfochangecommand.h
     commands/addplaylistlfochangecommand.cpp
-    playlistwidget/lfowidget.h
-    playlistwidget/lfowidget.cpp
-    playlistwidget/lfowidget.ui
+    opn/lfowidget.h
+    opn/lfowidget.cpp
+    opn/lfowidget.ui
     commands/removetracksettingschangecommand.h
     commands/removetracksettingschangecommand.cpp
     commands/removeplaylistlfochangecommand.h
     commands/removeplaylistlfochangecommand.cpp
     project/channel/lfosettings.h
     project/channel/lfosettings.cpp
-    fmwidget/fmlfowidget.h
-    fmwidget/fmlfowidget.cpp
-    fmwidget/fmlfowidget.ui
+    opn/fmlfowidget.h
+    opn/fmlfowidget.cpp
+    opn/fmlfowidget.ui
     commands/editlfosettingscommand.h
     commands/editlfosettingscommand.cpp
-    ganttwidget/ganttscalewidget.h
-    ganttwidget/ganttscalewidget.cpp
-    pianorollwidget/settingschangefooterwidget.h
-    pianorollwidget/settingschangefooterwidget.cpp
-    pianorollwidget/settingschangefooterwidget.ui
-    pianorollwidget/settingschangewidget.h
-    pianorollwidget/settingschangewidget.cpp
-    pianorollwidget/settingschangewidget.ui
-    pcmusage/pcmusagedialog.h
-    pcmusage/pcmusagedialog.cpp
-    pcmusage/pcmusagedialog.ui
-    pcmusage/pcmusagedisplaywidget.h
-    pcmusage/pcmusagedisplaywidget.cpp
-    pcmusage/pcmusagedisplayitem.h
-    pcmusage/pcmusagedisplayitem.cpp
-    pcmusage/pcmusagelegendwidget.h
-    pcmusage/pcmusagelegendwidget.cpp
+    common/ganttwidget/ganttscalewidget.h
+    common/ganttwidget/ganttscalewidget.cpp
+    dialogs/pianorollwidget/settingschangefooterwidget.h
+    dialogs/pianorollwidget/settingschangefooterwidget.cpp
+    dialogs/pianorollwidget/settingschangefooterwidget.ui
+    dialogs/pianorollwidget/settingschangewidget.h
+    dialogs/pianorollwidget/settingschangewidget.cpp
+    dialogs/pianorollwidget/settingschangewidget.ui
+    tools/pcmusage/pcmusagedialog.h
+    tools/pcmusage/pcmusagedialog.cpp
+    tools/pcmusage/pcmusagedialog.ui
+    tools/pcmusage/pcmusagedisplaywidget.h
+    tools/pcmusage/pcmusagedisplaywidget.cpp
+    tools/pcmusage/pcmusagedisplayitem.h
+    tools/pcmusage/pcmusagedisplayitem.cpp
+    tools/pcmusage/pcmusagelegendwidget.h
+    tools/pcmusage/pcmusagelegendwidget.cpp
     fm-psg/soft/audio_output.h
     fm-psg/soft/blargg_common.h
     fm-psg/soft/blargg_endian.h
@@ -317,28 +317,28 @@ set(PROJECT_SOURCES
     fm-psg/soft/Ym2612_Emu.h
     fm-psg/fm-psg_soft.cpp
     fm-psg/fm-psg_soft.h
-    info/projectinfodialog.h
-    info/projectinfodialog.cpp
-    info/projectinfodialog.ui
+    dialogs/info/projectinfodialog.h
+    dialogs/info/projectinfodialog.cpp
+    dialogs/info/projectinfodialog.ui
     fm-psg/soft/audio.h
-    browser/filesystemmodel.h
-    browser/filesystemmodel.cpp
-    browser/sortfilterproxymodel.h
-    browser/sortfilterproxymodel.cpp
-    settings/settingsdialog.h
-    settings/settingsdialog.cpp
-    settings/settingsdialog.ui
+    toplevel/browser/filesystemmodel.h
+    toplevel/browser/filesystemmodel.cpp
+    toplevel/browser/sortfilterproxymodel.h
+    toplevel/browser/sortfilterproxymodel.cpp
+    dialogs/settings/settingsdialog.h
+    dialogs/settings/settingsdialog.cpp
+    dialogs/settings/settingsdialog.ui
     FM_PSG_Studio.h
     FM_PSG_Studio.cpp
-    player/player.h
-    player/player.cpp
-    player/player.ui
-    player/playlisttablemodel.h
-    player/playlisttablemodel.cpp
-    player/playlistitem.h
-    player/playlistitem.cpp
-    gd3.h
-    gd3.cpp
+    tools/player/player.h
+    tools/player/player.cpp
+    tools/player/player.ui
+    tools/player/playlisttablemodel.h
+    tools/player/playlisttablemodel.cpp
+    tools/player/playlistitem.h
+    tools/player/playlistitem.cpp
+    formats/gd3.h
+    formats/gd3.cpp
     fm-psg/soft/Ay_Apu.cc
     fm-psg/soft/Ay_Apu.h
     ssg/ssgenvelopedisplaywidget.h
@@ -367,34 +367,31 @@ set(PROJECT_SOURCES
     commands/addplaylistenvelopefrequencychangecommand.cpp
     commands/addplaylistenvelopeshapechangecommand.h
     commands/addplaylistenvelopeshapechangecommand.cpp
-    playlistwidget/playlistchangewidget.h
-    playlistwidget/playlistchangewidget.cpp
-    playlistwidget/playlistchangewidget.ui
+    toplevel/playlistwidget/playlistchangewidget.h
+    toplevel/playlistwidget/playlistchangewidget.cpp
+    toplevel/playlistwidget/playlistchangewidget.ui
     commands/removeplaylistnoisefrequencychangecommand.h
     commands/removeplaylistnoisefrequencychangecommand.cpp
     commands/removeplaylistenvelopefrequencychangecommand.h
     commands/removeplaylistenvelopefrequencychangecommand.cpp
     commands/removeplaylistenvelopeshapechangecommand.h
     commands/removeplaylistenvelopeshapechangecommand.cpp
-    usertone/fm2envelopesettings.h
-    usertone/fm2envelopesettings.cpp
-    usertone/fm2operatorsettings.h
-    usertone/fm2operatorsettings.cpp
-    usertone/fm2envelopedisplaywidget.h
-    usertone/fm2envelopedisplaywidget.cpp
-    usertone/fm2operatorwidget.h
-    usertone/fm2operatorwidget.cpp
-    usertone/fm2operatorwidget.ui
-    usertone/fm2widget.h
-    usertone/fm2widget.cpp
-    usertone/fm2widget.ui
-
-
-
-    usertone/fm2settings.h
-    usertone/fm2settings.cpp
-    commands/editfm2settingscommand.h
-    commands/editfm2settingscommand.cpp
+    opl/usertone/oplenvelopesettings.h
+    opl/usertone/oplenvelopesettings.cpp
+    opl/usertone/oploperatorsettings.h
+    opl/usertone/oploperatorsettings.cpp
+    opl/usertone/oplenvelopedisplaywidget.h
+    opl/usertone/oplenvelopedisplaywidget.cpp
+    opl/usertone/oploperatorwidget.h
+    opl/usertone/oploperatorwidget.cpp
+    opl/usertone/oploperatorwidget.ui
+    opl/usertone/oplwidget.h
+    opl/usertone/oplwidget.cpp
+    opl/usertone/oplwidget.ui
+    opl/usertone/oplsettings.h
+    opl/usertone/oplsettings.cpp
+    commands/editoplsettingscommand.h
+    commands/editoplsettingscommand.cpp
     commands/addplaylistusertonechangecommand.h
     commands/addplaylistusertonechangecommand.cpp
     commands/removeplaylistusertonechangecommand.h
@@ -419,9 +416,9 @@ set(PROJECT_SOURCES
     commands/editmelodychannelsettingscommand.cpp
     commands/editrhythmchannelsettingscommand.h
     commands/editrhythmchannelsettingscommand.cpp
-    fmimport/oplimportdialog.h
-    fmimport/oplimportdialog.cpp
-    fmimport/oplimportdialog.ui
+    tools/fmimport/oplimportdialog.h
+    tools/fmimport/oplimportdialog.cpp
+    tools/fmimport/oplimportdialog.ui
     globals/fmglobalswidget.h
     globals/fmglobalswidget.cpp
     globals/fmglobalswidget.ui
@@ -446,8 +443,8 @@ set(PROJECT_SOURCES
     globals/melodypatchsetwidget.h
     globals/melodypatchsetwidget.cpp
     globals/melodypatchsetwidget.ui
-    globals/opll.h
-    globals/opll.cpp
+    opl/opll.h
+    opl/opll.cpp
     commands/editprojectoplltypecommand.h
     commands/editprojectoplltypecommand.cpp
     globals/unselectablestringlistmodel.h

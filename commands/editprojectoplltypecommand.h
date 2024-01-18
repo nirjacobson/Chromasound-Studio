@@ -4,7 +4,7 @@
 #include <QUndoCommand>
 
 #include "project/project.h"
-#include "globals/opll.h"
+#include "opl/opll.h"
 
 class MainWindow;
 

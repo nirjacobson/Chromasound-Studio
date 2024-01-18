@@ -350,12 +350,12 @@ const Project::Info& Project::info() const
     return _info;
 }
 
-FM2Settings& Project::userTone()
+OPLSettings& Project::userTone()
 {
     return _userTone;
 }
 
-const FM2Settings& Project::userTone() const
+const OPLSettings& Project::userTone() const
 {
     return _userTone;
 }
