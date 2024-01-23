@@ -27,7 +27,7 @@
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
-       <string>FM-PSG</string>
+       <string>Chromasound</string>
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>

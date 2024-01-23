@@ -1,26 +1,25 @@
-#ifndef FM_PSG_SOFT_H
-#define FM_PSG_SOFT_H
+#ifndef CHROMASOUND_EMU_H
+#define CHROMASOUND_EMU_H
 
 #include <QTimer>
 #include <QSettings>
 
-#include "fm-psg.h"
+#include "chromasound.h"
 #include "project/vgmstream.h"
-#include "soft/gme.h"
-#include "soft/Music_Emu.h"
-#include "soft/Vgm_Emu.h"
-#include "soft/Data_Reader.h"
-#include "soft/producer.h"
-#include "soft/audio_output.h"
-#include "FM_PSG_Studio.h"
+#include "emu/gme.h"
+#include "emu/Music_Emu.h"
+#include "emu/Vgm_Emu.h"
+#include "emu/Data_Reader.h"
+#include "emu/producer.h"
+#include "emu/audio_output.h"
+#include "Chromasound_Studio.h"
 #include "opl/opll.h"
 
-
-class FM_PSG_Soft : public FM_PSG, public Producer<int16_t>
+class Chromasound_Emu : public Chromasound, public Producer<int16_t>
 {
     public:
-        FM_PSG_Soft(const Project& project);
-        ~FM_PSG_Soft();
+    Chromasound_Emu(const Project& project);
+        ~Chromasound_Emu();
 
     private:
         const Project& _project;
@@ -48,7 +47,7 @@ class FM_PSG_Soft : public FM_PSG, public Producer<int16_t>
 
         void setEqualizer();
 
-        // FM_PSG interface
+        // Chromasound interface
     public:
         quint32 position();
         void setPosition(const float pos);
@@ -70,4 +69,4 @@ class FM_PSG_Soft : public FM_PSG, public Producer<int16_t>
         int16_t* next(int size);
 };
 
-#endif // FM_PSG_SOFT_H
+#endif // CHROMASOUND_EMU_H

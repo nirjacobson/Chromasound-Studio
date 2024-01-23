@@ -8,11 +8,11 @@
 
 #include "project/project.h"
 #include "project/vgmstream.h"
-#include "fm-psg/fm-psg.h"
-#include "fm-psg/fm-psg_dummy.h"
-#include "fm-psg/fm-psg_impl.h"
-#include "fm-psg/fm-psg_soft.h"
-#include "FM_PSG_Studio.h"
+#include "chromasound/chromasound.h"
+#include "chromasound/chromasound_standin.h"
+#include "chromasound/chromasound_direct.h"
+#include "chromasound/chromasound_emu.h"
+#include "Chromasound_Studio.h"
 
 class MainWindow;
 
@@ -45,10 +45,10 @@ class Application : public QApplication
         void keyOff(int key);
 
         QUndoStack& undoStack();
+        
+        Chromasound& chromasound();
 
-        FM_PSG& fmPSG();
-
-        void ignoreFMPSGTime(const bool ignore);
+        void ignoreCSTime(const bool ignore);
 
     signals:
         void pcmUploadStarted();
@@ -59,13 +59,13 @@ class Application : public QApplication
     private:
         MainWindow* _mainWindow;
         QUndoStack _undoStack;
-
-        FM_PSG* _fmPSG;
+        
+        Chromasound* _chromasound;
 
         Project _project;
 
         bool _paused;
-        bool _ignoreFMPSGTime;
+        bool _ignoreCSTime;
 };
 
 #endif // APPLICATION_H

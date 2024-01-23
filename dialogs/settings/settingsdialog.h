@@ -4,7 +4,7 @@
 #include <QDialog>
 #include <QSettings>
 
-#include "FM_PSG_Studio.h"
+#include "Chromasound_Studio.h"
 
 namespace Ui {
     class SettingsDialog;

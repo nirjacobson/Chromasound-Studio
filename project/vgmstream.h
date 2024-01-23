@@ -13,7 +13,7 @@ class VGMStream
 {
     public:
         enum Format {
-            FM_PSG,
+            CHROMASOUND,
             STANDARD
         };
 
@@ -98,8 +98,8 @@ class VGMStream
             private:
                 OPLSettings _settings;
         };
-
-        VGMStream(const Format format = Format::FM_PSG);
+        
+        VGMStream(const Format format = Format::CHROMASOUND);
         ~VGMStream();
 
         void assignChannel(const Project& project, StreamNoteItem* noteItem, QList<StreamItem*>& items);

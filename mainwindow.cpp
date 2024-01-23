@@ -49,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(&_timer, &QTimer::timeout, this, &MainWindow::frame);
 
     QStringList filters;
-    filters << "*.fsp";
+    filters << "*.csp";
     filters << "*.opn";
     filters << "*.opl";
     filters << "*.mid";
@@ -82,7 +82,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(ui->actionNew, &QAction::triggered, this, &MainWindow::newTriggered);
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openTriggered);
     connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveTriggered);
-    connect(ui->actionForFMPSG, &QAction::triggered, this, &MainWindow::renderForFMPSGTriggered);
+    connect(ui->actionForChromasound, &QAction::triggered, this, &MainWindow::renderForChromasoundTriggered);
     connect(ui->actionFor3rdPartyPlayers, &QAction::triggered, this, &MainWindow::renderFor3rdPartyTriggered);
     connect(ui->actionInfo, &QAction::triggered, this, &MainWindow::projectInfoTriggered);
     connect(ui->actionExit, &QAction::triggered, this, &MainWindow::close);
@@ -641,7 +641,7 @@ void MainWindow::newTriggered()
 
 void MainWindow::openTriggered()
 {
-    const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "FM-PSG Studio Projects (*.fsp)", nullptr, QFileDialog::DontUseNativeDialog);
+    const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "Chromasound Studio Projects (*.csp)", nullptr, QFileDialog::DontUseNativeDialog);
 
     if (!path.isNull()) {
         _app->project() = BSON::decode(path);
@@ -658,7 +658,7 @@ void MainWindow::openTriggered()
 
 void MainWindow::saveTriggered()
 {
-    const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "FM-PSG Studio Projects (*.fsp)", nullptr, QFileDialog::DontUseNativeDialog);
+    const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "Chromasound Studio Projects (*.csp)", nullptr, QFileDialog::DontUseNativeDialog);
 
     if (!path.isNull()) {
         QFile file(path);
@@ -670,7 +670,7 @@ void MainWindow::saveTriggered()
     }
 }
 
-void MainWindow::renderForFMPSGTriggered()
+void MainWindow::renderForChromasoundTriggered()
 {
     const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "VGM files (*.vgm)", nullptr, QFileDialog::DontUseNativeDialog);
 
@@ -1221,7 +1221,7 @@ void MainWindow::dropEvent(QDropEvent* event)
     QFile file(path);
     QFileInfo fileInfo(file);
 
-    if (fileInfo.suffix() == "fsp") {
+    if (fileInfo.suffix() == "csp") {
         _app->project() = BSON::decode(path);
 
         ui->topWidget->updateFromProject(_app->project());

@@ -1,4 +1,4 @@
-#include "fm-psg_soft.h"
+#include "chromasound_emu.h"
 
 static bool log_err(blargg_err_t err)
 {
@@ -14,7 +14,7 @@ static void log_warning(Music_Emu * emu)
         fprintf(stderr, "%s\n", str);
 }
 
-FM_PSG_Soft::FM_PSG_Soft(const Project& project)
+Chromasound_Emu::Chromasound_Emu(const Project& project)
     : _position(0)
     , _positionOffset(0)
     , _project(project)
@@ -147,7 +147,7 @@ FM_PSG_Soft::FM_PSG_Soft(const Project& project)
     _output->start();
 }
 
-FM_PSG_Soft::~FM_PSG_Soft()
+Chromasound_Emu::~Chromasound_Emu()
 {
     _output->stop();
     _output->destroy();
@@ -155,12 +155,12 @@ FM_PSG_Soft::~FM_PSG_Soft()
     gme_delete(_emu);
 }
 
-void FM_PSG_Soft::setEqualizer()
+void Chromasound_Emu::setEqualizer()
 {
-    QSettings settings(FM_PSG_Studio::Organization, FM_PSG_Studio::Application);
-
-    int _bass = settings.value(FM_PSG_Studio::EqualizerBass, 0).toInt();
-    int _treble = settings.value(FM_PSG_Studio::EqualizerTreble, 0).toInt();
+    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+    
+    int _bass = settings.value(Chromasound_Studio::EqualizerBass, 0).toInt();
+    int _treble = settings.value(Chromasound_Studio::EqualizerTreble, 0).toInt();
 
     Music_Emu::equalizer_t eq;
 
@@ -175,7 +175,7 @@ void FM_PSG_Soft::setEqualizer()
     _emu->set_equalizer(eq);
 }
 
-quint32 FM_PSG_Soft::position()
+quint32 Chromasound_Emu::position()
 {
     if (_info.loop_length <= 0) {
         if ((_position + _positionOffset) >= _info.length) {
@@ -195,13 +195,13 @@ quint32 FM_PSG_Soft::position()
     }
 }
 
-void FM_PSG_Soft::setPosition(const float pos)
+void Chromasound_Emu::setPosition(const float pos)
 {
     _positionOffset = pos / _project.tempo() * 60 * 1000;
     _position = 0;
 }
 
-void FM_PSG_Soft::play(const QByteArray& vgm, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection)
+void Chromasound_Emu::play(const QByteArray& vgm, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection)
 {
     _output->stop();
 
@@ -236,20 +236,20 @@ void FM_PSG_Soft::play(const QByteArray& vgm, const int currentOffsetSamples, co
     _output->start();
 }
 
-void FM_PSG_Soft::play()
+void Chromasound_Emu::play()
 {
     setEqualizer();
     _output->start();
     _stopped = false;
 }
 
-void FM_PSG_Soft::pause()
+void Chromasound_Emu::pause()
 {
     _output->stop();
     _stopped = true;
 }
 
-void FM_PSG_Soft::stop()
+void Chromasound_Emu::stop()
 {
     _stopped = true;
     _position = 0;
@@ -279,12 +279,12 @@ void FM_PSG_Soft::stop()
     emit stopped();
 }
 
-bool FM_PSG_Soft::isPlaying() const
+bool Chromasound_Emu::isPlaying() const
 {
     return !_stopped;
 }
 
-void FM_PSG_Soft::keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity)
+void Chromasound_Emu::keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity)
 {
     VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(0, channelType, nullptr, Note(key, 0, velocity), &settings);
 
@@ -315,7 +315,7 @@ void FM_PSG_Soft::keyOn(const Project& project, const Channel::Type channelType,
     _timer.start(20);
 }
 
-void FM_PSG_Soft::keyOff(int key)
+void Chromasound_Emu::keyOff(int key)
 {
     if (!_keys.contains(key)) return;
 
@@ -339,7 +339,7 @@ void FM_PSG_Soft::keyOff(int key)
     _timer.start(20);
 }
 
-int16_t* FM_PSG_Soft::next(int size)
+int16_t* Chromasound_Emu::next(int size)
 {
     if (!_stopped) {
         _position = _emu->tell();
@@ -350,12 +350,12 @@ int16_t* FM_PSG_Soft::next(int size)
     return _buffer;
 }
 
-QList<VGMStream::Format> FM_PSG_Soft::supportedFormats()
+QList<VGMStream::Format> Chromasound_Emu::supportedFormats()
 {
-    return QList<VGMStream::Format>({VGMStream::Format::FM_PSG, VGMStream::Format::STANDARD});
+    return QList<VGMStream::Format>({VGMStream::Format::CHROMASOUND, VGMStream::Format::STANDARD});
 }
 
-void FM_PSG_Soft::setOPLLPatchset(OPLL::Type type)
+void Chromasound_Emu::setOPLLPatchset(OPLL::Type type)
 {
     dynamic_cast<Vgm_Emu*>(_emu)->set_opll_patchset(static_cast<int>(type));
 }

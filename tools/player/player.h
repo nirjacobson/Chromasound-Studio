@@ -61,7 +61,7 @@ class Player : public QMainWindow
         void itemDoubleClicked(const QModelIndex& index);
         void frame();
 
-        void fmpsgStopped();
+        void chromasoundStopped();
 
         // QWidget interface
     protected:

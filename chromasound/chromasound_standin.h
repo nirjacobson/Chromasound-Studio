@@ -1,15 +1,15 @@
-#ifndef DUMMY_FM_PSG_H
-#define DUMMY_FM_PSG_H
+#ifndef CHROMASOUND_STANDIN_H
+#define CHROMASOUND_STANDIN_H
 
 #include <QTimer>
 
-#include "fm-psg.h"
+#include "chromasound.h"
 #include "project/project.h"
 
-class FM_PSG_Dummy : public FM_PSG
+class Chromasound_Standin : public Chromasound
 {
     public:
-        FM_PSG_Dummy(const Project& project);
+    Chromasound_Standin(const Project& project);
 
         void play(const QByteArray&vgm, const int, const int, const bool = -1);
         void play();
@@ -34,4 +34,4 @@ class FM_PSG_Dummy : public FM_PSG
         qint64 nanosecondsPerBeat() const;
 };
 
-#endif // DUMMY_FM_PSG_H
+#endif // CHROMASOUND_STANDIN_H

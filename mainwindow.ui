@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>FM-PSG Studio</string>
+   <string>Chromasound Studio</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -57,7 +57,7 @@
      <property name="title">
       <string>&amp;Render</string>
      </property>
-     <addaction name="actionForFMPSG"/>
+     <addaction name="actionForChromasound"/>
      <addaction name="actionFor3rdPartyPlayers"/>
     </widget>
     <addaction name="actionNew"/>
@@ -142,9 +142,9 @@
     <string>&amp;Playlist</string>
    </property>
   </action>
-  <action name="actionForFMPSG">
+  <action name="actionForChromasound">
    <property name="text">
-    <string>For FM-PSG</string>
+    <string>For Chromasound</string>
    </property>
   </action>
   <action name="actionFor3rdPartyPlayers">
@@ -174,12 +174,12 @@
   </action>
   <action name="actionOPN">
    <property name="text">
-    <string>OPN (FM-PSG)</string>
+    <string>OPN (Chromasound Pro, Prodigy)</string>
    </property>
   </action>
   <action name="actionOPL">
    <property name="text">
-    <string>OPL (FM-PSG Lite)</string>
+    <string>OPL (Chromasound Nova)</string>
    </property>
   </action>
   <action name="actionSettings">

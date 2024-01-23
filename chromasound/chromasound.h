@@ -1,5 +1,5 @@
-#ifndef FM_PSG_H
-#define FM_PSG_H
+#ifndef CHROMASOUND_H
+#define CHROMASOUND_H
 
 #include <stdio.h>
 #include <cstdlib>
@@ -11,12 +11,12 @@
 #include "project/vgmstream.h"
 #include "project/channel/channel.h"
 
-class FM_PSG : public QObject
+class Chromasound : public QObject
 {
         Q_OBJECT
 
     public:
-        virtual ~FM_PSG() {};
+        virtual ~Chromasound() {};
 
         virtual quint32 position() = 0;
         virtual void setPosition(const float pos) = 0;
@@ -39,4 +39,4 @@ class FM_PSG : public QObject
         void stopped();
 };
 
-#endif // FM_PSG_H
+#endif // CHROMASOUND_H

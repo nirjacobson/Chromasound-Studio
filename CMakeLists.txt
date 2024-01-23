@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(FM-PSG-Studio VERSION 0.1 LANGUAGES CXX)
+project(Chromasound-Studio VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -35,13 +35,13 @@ set(PROJECT_SOURCES
     toplevel/channelswidget/channelwidget/stepsequencerwidget.h
     toplevel/channelswidget/channelwidget/stepvelocitieswidget.cpp
     toplevel/channelswidget/channelwidget/stepvelocitieswidget.h
-    fm-psg/fm-psg.h
-    fm-psg/fm-psg_dummy.cpp
-    fm-psg/fm-psg_dummy.h
-    fm-psg/fm-psg_impl.cpp
-    fm-psg/fm-psg_impl.h
-    fm-psg/vgmplayer.cpp
-    fm-psg/vgmplayer.h
+    chromasound/chromasound.h
+    chromasound/chromasound_standin.cpp
+    chromasound/chromasound_standin.h
+    chromasound/chromasound_direct.cpp
+    chromasound/chromasound_direct.h
+    chromasound/vgmplayer.cpp
+    chromasound/vgmplayer.h
     opn/algorithmdisplaywidget.cpp
     opn/algorithmdisplaywidget.h
     opn/algorithmgraph.cpp
@@ -276,51 +276,51 @@ set(PROJECT_SOURCES
     tools/pcmusage/pcmusagedisplayitem.cpp
     tools/pcmusage/pcmusagelegendwidget.h
     tools/pcmusage/pcmusagelegendwidget.cpp
-    fm-psg/soft/audio_output.h
-    fm-psg/soft/blargg_common.h
-    fm-psg/soft/blargg_endian.h
-    fm-psg/soft/blargg_source.h
-    fm-psg/soft/Blip_Buffer.cc
-    fm-psg/soft/Blip_Buffer.h
-    fm-psg/soft/Classic_Emu.cc
-    fm-psg/soft/Classic_Emu.h
-    fm-psg/soft/consumer.h
-    fm-psg/soft/Data_Reader.cc
-    fm-psg/soft/Data_Reader.h
-    fm-psg/soft/Dual_Resampler.cc
-    fm-psg/soft/Dual_Resampler.h
-    fm-psg/soft/Effects_Buffer.cc
-    fm-psg/soft/Effects_Buffer.h
-    fm-psg/soft/Fir_Resampler.cc
-    fm-psg/soft/Fir_Resampler.h
-    fm-psg/soft/gme.cc fm-psg/soft/gme.h
-    fm-psg/soft/Gme_File.cc
-    fm-psg/soft/Gme_File.h
-    fm-psg/soft/gme_types.h
-    fm-psg/soft/M3u_Playlist.cc
-    fm-psg/soft/M3u_Playlist.h
-    fm-psg/soft/Multi_Buffer.cc
-    fm-psg/soft/Multi_Buffer.h
-    fm-psg/soft/Music_Emu.cc
-    fm-psg/soft/Music_Emu.h
-    fm-psg/soft/producer.h
-    fm-psg/soft/Sms_Apu.cc
-    fm-psg/soft/Sms_Apu.h
-    fm-psg/soft/Sms_Oscs.h
-    fm-psg/soft/Vgm_Emu.cc
-    fm-psg/soft/Vgm_Emu.h
-    fm-psg/soft/Vgm_Emu_Impl.cc
-    fm-psg/soft/Vgm_Emu_Impl.h
-    fm-psg/soft/Ym2413_Emu.cc
-    fm-psg/soft/Ym2413_Emu.h
-    fm-psg/soft/Ym2612_Emu.cc
-    fm-psg/soft/Ym2612_Emu.h
-    fm-psg/fm-psg_soft.cpp
-    fm-psg/fm-psg_soft.h
+    chromasound/emu/audio_output.h
+    chromasound/emu/blargg_common.h
+    chromasound/emu/blargg_endian.h
+    chromasound/emu/blargg_source.h
+    chromasound/emu/Blip_Buffer.cc
+    chromasound/emu/Blip_Buffer.h
+    chromasound/emu/Classic_Emu.cc
+    chromasound/emu/Classic_Emu.h
+    chromasound/emu/consumer.h
+    chromasound/emu/Data_Reader.cc
+    chromasound/emu/Data_Reader.h
+    chromasound/emu/Dual_Resampler.cc
+    chromasound/emu/Dual_Resampler.h
+    chromasound/emu/Effects_Buffer.cc
+    chromasound/emu/Effects_Buffer.h
+    chromasound/emu/Fir_Resampler.cc
+    chromasound/emu/Fir_Resampler.h
+    chromasound/emu/gme.cc chromasound/emu/gme.h
+    chromasound/emu/Gme_File.cc
+    chromasound/emu/Gme_File.h
+    chromasound/emu/gme_types.h
+    chromasound/emu/M3u_Playlist.cc
+    chromasound/emu/M3u_Playlist.h
+    chromasound/emu/Multi_Buffer.cc
+    chromasound/emu/Multi_Buffer.h
+    chromasound/emu/Music_Emu.cc
+    chromasound/emu/Music_Emu.h
+    chromasound/emu/producer.h
+    chromasound/emu/Sms_Apu.cc
+    chromasound/emu/Sms_Apu.h
+    chromasound/emu/Sms_Oscs.h
+    chromasound/emu/Vgm_Emu.cc
+    chromasound/emu/Vgm_Emu.h
+    chromasound/emu/Vgm_Emu_Impl.cc
+    chromasound/emu/Vgm_Emu_Impl.h
+    chromasound/emu/Ym2413_Emu.cc
+    chromasound/emu/Ym2413_Emu.h
+    chromasound/emu/Ym2612_Emu.cc
+    chromasound/emu/Ym2612_Emu.h
+    chromasound/chromasound_emu.cpp
+    chromasound/chromasound_emu.h
     dialogs/info/projectinfodialog.h
     dialogs/info/projectinfodialog.cpp
     dialogs/info/projectinfodialog.ui
-    fm-psg/soft/audio.h
+    chromasound/emu/audio.h
     toplevel/browser/filesystemmodel.h
     toplevel/browser/filesystemmodel.cpp
     toplevel/browser/sortfilterproxymodel.h
@@ -328,8 +328,8 @@ set(PROJECT_SOURCES
     dialogs/settings/settingsdialog.h
     dialogs/settings/settingsdialog.cpp
     dialogs/settings/settingsdialog.ui
-    FM_PSG_Studio.h
-    FM_PSG_Studio.cpp
+    Chromasound_Studio.h
+    Chromasound_Studio.cpp
     tools/player/player.h
     tools/player/player.cpp
     tools/player/player.ui
@@ -339,8 +339,8 @@ set(PROJECT_SOURCES
     tools/player/playlistitem.cpp
     formats/gd3.h
     formats/gd3.cpp
-    fm-psg/soft/Ay_Apu.cc
-    fm-psg/soft/Ay_Apu.h
+    chromasound/emu/Ay_Apu.cc
+    chromasound/emu/Ay_Apu.h
     ssg/ssgenvelopedisplaywidget.h
     ssg/ssgenvelopedisplaywidget.cpp
     ssg/ssgenvelopesettings.h
@@ -437,9 +437,9 @@ set(PROJECT_SOURCES
     commands/editprojectnoisefrequencycommand.cpp
     commands/editprojectenvelopefrequencycommand.h
     commands/editprojectenvelopefrequencycommand.cpp
-    fm-psg/soft/2413tone.h
-    fm-psg/soft/2423tone.h
-    fm-psg/soft/281btone.h
+    chromasound/emu/2413tone.h
+    chromasound/emu/2423tone.h
+    chromasound/emu/281btone.h
     globals/melodypatchsetwidget.h
     globals/melodypatchsetwidget.cpp
     globals/melodypatchsetwidget.ui
@@ -452,29 +452,29 @@ set(PROJECT_SOURCES
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(FM-PSG-Studio
+    qt_add_executable(Chromasound-Studio
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
 # Define target properties for Android with Qt 6 as:
-#    set_property(TARGET FM-PSG-Studio APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
+#    set_property(TARGET Chromasound-Studio APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
 #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
 # For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
 else()
     if(ANDROID)
-        add_library(FM-PSG-Studio SHARED
+        add_library(Chromasound-Studio SHARED
             ${PROJECT_SOURCES}
         )
 # Define properties for Android with Qt 5 after find_package() calls as:
 #    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
     else()
-        add_executable(FM-PSG-Studio
+        add_executable(Chromasound-Studio
             ${PROJECT_SOURCES}
         )
     endif()
 endif()
 
-target_link_libraries(FM-PSG-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
+target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
                                             /usr/lib64/libpigpio.so
                                             /usr/lib64/libportmidi.so
                                             /usr/lib64/libbson-1.0.so
@@ -485,9 +485,9 @@ target_link_libraries(FM-PSG-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
 if(${QT_VERSION} VERSION_LESS 6.1.0)
-  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.FM-PSG-Studio)
+  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.Chromasound-Studio)
 endif()
-set_target_properties(FM-PSG-Studio PROPERTIES
+set_target_properties(Chromasound-Studio PROPERTIES
     ${BUNDLE_ID_OPTION}
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
@@ -496,12 +496,12 @@ set_target_properties(FM-PSG-Studio PROPERTIES
 )
 
 include(GNUInstallDirs)
-install(TARGETS FM-PSG-Studio
+install(TARGETS Chromasound-Studio
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
 if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(FM-PSG-Studio)
+    qt_finalize_executable(Chromasound-Studio)
 endif()
