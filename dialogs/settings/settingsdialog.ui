@@ -115,14 +115,14 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QRadioButton" name="fmPSGRadioButton">
+         <widget class="QRadioButton" name="chromasoundRadioButton">
           <property name="text">
-           <string>FM-PSG</string>
+           <string>Chromasound</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="fmPSGLabel">
+         <widget class="QLabel" name="chromasoundLabel">
           <property name="styleSheet">
            <string notr="true">color: gray;</string>
           </property>

@@ -1,6 +1,6 @@
-#include "fm-psg_dummy.h"
+#include "chromasound_standin.h"
 
-quint32 FM_PSG_Dummy::position()
+quint32 Chromasound_Standin::position()
 {
     float sampleNS = 1e9 / 44100;
 
@@ -33,37 +33,37 @@ quint32 FM_PSG_Dummy::position()
     return pos;
 }
 
-void FM_PSG_Dummy::setPosition(const float pos)
+void Chromasound_Standin::setPosition(const float pos)
 {
     _ref = pos * nanosecondsPerBeat();
 }
 
-bool FM_PSG_Dummy::isPlaying() const
+bool Chromasound_Standin::isPlaying() const
 {
     return _playing;
 }
 
-void FM_PSG_Dummy::keyOn(const Project&, const Channel::Type, const ChannelSettings&, const int, const int)
+void Chromasound_Standin::keyOn(const Project&, const Channel::Type, const ChannelSettings&, const int, const int)
 {
 
 }
 
-void FM_PSG_Dummy::keyOff(int)
+void Chromasound_Standin::keyOff(int)
 {
 
 }
 
-QList<VGMStream::Format> FM_PSG_Dummy::supportedFormats()
+QList<VGMStream::Format> Chromasound_Standin::supportedFormats()
 {
-    return QList<VGMStream::Format>({VGMStream::Format::FM_PSG, VGMStream::Format::STANDARD});
+    return QList<VGMStream::Format>({VGMStream::Format::CHROMASOUND, VGMStream::Format::STANDARD});
 }
 
-qint64 FM_PSG_Dummy::nanosecondsPerBeat() const
+qint64 Chromasound_Standin::nanosecondsPerBeat() const
 {
     return 1e9 * 60 / _project.tempo();
 }
 
-FM_PSG_Dummy::FM_PSG_Dummy(const Project& project)
+Chromasound_Standin::Chromasound_Standin(const Project& project)
     : _project(project)
     , _ref(0)
     , _playing(false)
@@ -73,7 +73,7 @@ FM_PSG_Dummy::FM_PSG_Dummy(const Project& project)
 
 }
 
-void FM_PSG_Dummy::play(const QByteArray& vgm, const int, const int, const bool)
+void Chromasound_Standin::play(const QByteArray& vgm, const int, const int, const bool)
 {
     QTimer::singleShot(3000, [&]() {
         emit pcmUploadFinished();
@@ -90,7 +90,7 @@ void FM_PSG_Dummy::play(const QByteArray& vgm, const int, const int, const bool)
     _timer.restart();
 }
 
-void FM_PSG_Dummy::play()
+void Chromasound_Standin::play()
 {
     QTimer::singleShot(3000, [&]() {
         emit pcmUploadFinished();
@@ -101,13 +101,13 @@ void FM_PSG_Dummy::play()
     _timer.restart();
 }
 
-void FM_PSG_Dummy::pause()
+void Chromasound_Standin::pause()
 {
     _ref += _timer.nsecsElapsed();
     _playing = false;
 }
 
-void FM_PSG_Dummy::stop()
+void Chromasound_Standin::stop()
 {
     _playing = false;
     _ref = 0;

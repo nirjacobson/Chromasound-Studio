@@ -41,8 +41,8 @@ Player::Player(QWidget *parent, Application* app)
     connect(ui->nextButton, &QToolButton::clicked, this, &Player::next);
 
     connect(ui->playlistTableView, &QTableView::doubleClicked, this, &Player::itemDoubleClicked);
-
-    connect(&_app->fmPSG(), &FM_PSG::stopped, this, &Player::fmpsgStopped);
+    
+    connect(&_app->chromasound(), &Chromasound::stopped, this, &Player::chromasoundStopped);
 
     _timer.setInterval(1000 / 30);
     connect(&_timer, &QTimer::timeout, this, &Player::frame);
@@ -109,16 +109,16 @@ void Player::play(const int index)
         _isPlaying = true;
         _currentTrack = index;
         ui->playlistTableView->selectionModel()->setCurrentIndex(_playlistTableModel.index(index, 0), QItemSelectionModel::ClearAndSelect);
-        _app->ignoreFMPSGTime(true);
-        _app->fmPSG().play(vgm, 0, 0);
+        _app->ignoreCSTime(true);
+        _app->chromasound().play(vgm, 0, 0);
     } else if (fileInfo.suffix().toLower() == "pcm") {
         QByteArray vgm = pcmToVgm(path);
 
         _isPlaying = true;
         _currentTrack = index;
         ui->playlistTableView->selectionModel()->setCurrentIndex(_playlistTableModel.index(index, 0), QItemSelectionModel::ClearAndSelect);
-        _app->ignoreFMPSGTime(true);
-        _app->fmPSG().play(vgm, 0, 0);
+        _app->ignoreCSTime(true);
+        _app->chromasound().play(vgm, 0, 0);
     }
     ui->playButton->setIcon(ui->playButton->style()->standardIcon(QStyle::SP_MediaPause));
     _timer.start();
@@ -130,13 +130,13 @@ void Player::playPause()
     if (_isPlaying) {
         _isPaused = true;
         _isPlaying = false;
-        _app->fmPSG().pause();
+        _app->chromasound().pause();
         _timer.stop();
     } else {
         if (_isPaused) {
             _isPaused = false;
             _isPlaying = true;
-            _app->fmPSG().play();
+            _app->chromasound().play();
             _timer.start();
         } else {
             _isPlaying = true;
@@ -152,7 +152,7 @@ void Player::stop()
     _isPlaying = false;
     _isPaused = false;
     _currentTrack = 0;
-    _app->fmPSG().stop();
+    _app->chromasound().stop();
     ui->playButton->setIcon(ui->playButton->style()->standardIcon(QStyle::SP_MediaPlay));
     _timer.stop();
     frame();
@@ -228,7 +228,7 @@ void Player::frame()
 {
     if (!_playlist.isEmpty()) {
         quint32 totalLength = _playlist[_currentTrack].length() * 44100;
-        quint32 pos = _app->fmPSG().position();
+        quint32 pos = _app->chromasound().position();
         float percentage = (float)pos / (float)totalLength;
 
         QString posString = QString("%1:%2/%3:%4")
@@ -242,7 +242,7 @@ void Player::frame()
     }
 }
 
-void Player::fmpsgStopped()
+void Player::chromasoundStopped()
 {
     _isPlaying = false;
     ui->playButton->setIcon(ui->playButton->style()->standardIcon(QStyle::SP_MediaPlay));

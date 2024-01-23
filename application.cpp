@@ -5,34 +5,34 @@ Application::Application(int &argc, char **argv, int flags)
     : QApplication(argc, argv, flags)
     , _undoStack(this)
     , _paused(false)
-    , _ignoreFMPSGTime(false)
+    , _ignoreCSTime(false)
     , _mainWindow(nullptr)
 {
-    const char* fm_psg = std::getenv("FM_PSG");
+    const char* chromasound = std::getenv("CHROMASOUND");
 
-    if (!fm_psg) {
-        _fmPSG = new FM_PSG_Impl(_project);
-    } else if (QString(fm_psg).toLower() == "dummy") {
-        _fmPSG = new FM_PSG_Dummy(_project);
-    } else if (QString(fm_psg).toLower() == "soft") {
-        _fmPSG = new FM_PSG_Soft(_project);
+    if (!chromasound) {
+        _chromasound = new Chromasound_Direct(_project);
+    } else if (QString(chromasound).toLower() == "standin") {
+        _chromasound = new Chromasound_Standin(_project);
+    } else if (QString(chromasound).toLower() == "emu") {
+        _chromasound = new Chromasound_Emu(_project);
     } else {
-        _fmPSG = new FM_PSG_Impl(_project);
+        _chromasound = new Chromasound_Direct(_project);
     }
-
-    connect(_fmPSG, &FM_PSG::pcmUploadStarted, this, &Application::pcmUploadStarted);
-    connect(_fmPSG, &FM_PSG::pcmUploadFinished, this, &Application::pcmUploadFinished);
+    
+    connect(_chromasound, &Chromasound::pcmUploadStarted, this, &Application::pcmUploadStarted);
+    connect(_chromasound, &Chromasound::pcmUploadFinished, this, &Application::pcmUploadFinished);
 }
 
 Application::~Application()
 {
-    delete _fmPSG;
+    delete _chromasound;
 }
 
 
 void Application::pause()
 {
-    _fmPSG->pause();
+    _chromasound->pause();
     _paused = true;
 }
 
@@ -43,19 +43,19 @@ bool Application::paused() const
 
 void Application::play()
 {
-    _ignoreFMPSGTime = false;
+    _ignoreCSTime = false;
 
     if (_paused) {
-        _fmPSG->play();
+        _chromasound->play();
     } else {
-        QSettings settings(FM_PSG_Studio::Organization, FM_PSG_Studio::Application);
-        QString format = settings.value(FM_PSG_Studio::Format, FM_PSG_Studio::FM_PSG).toString();
+        QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+        QString format = settings.value(Chromasound_Studio::Format, Chromasound_Studio::Chromasound).toString();
         VGMStream::Format vgmFormat =
-            _fmPSG->supportedFormats().contains(VGMStream::Format::FM_PSG) && format == FM_PSG_Studio::FM_PSG
-            ? VGMStream::Format::FM_PSG
+            _chromasound->supportedFormats().contains(VGMStream::Format::CHROMASOUND) && format == Chromasound_Studio::Chromasound
+                                          ? VGMStream::Format::CHROMASOUND
             : VGMStream::Format::STANDARD;
 
-        if (vgmFormat == VGMStream::Format::FM_PSG) {
+        if (vgmFormat == VGMStream::Format::CHROMASOUND) {
             if (_project.playMode() == Project::PlayMode::PATTERN) {
                 QThread* thread = QThread::create([&]() {
                     int loopOffsetData;
@@ -66,8 +66,8 @@ void Application::play()
                     emit compileStarted();
                     QByteArray vgm = vgmStream.compile(_project, _project.getFrontPattern(), false, nullptr, -1, -1, position(), &currentOffsetData);
                     emit compileFinished();
-
-                    _fmPSG->play(vgm, currentOffsetSamples, currentOffsetData);
+                    
+                    _chromasound->play(vgm, currentOffsetSamples, currentOffsetData);
                 });
 
                 connect(thread, &QThread::finished, this, [=]() {
@@ -86,8 +86,8 @@ void Application::play()
                     emit compileStarted();
                     QByteArray vgm = vgmStream.compile(_project, false, &loopOffsetData, -1, -1, position(), &currentOffsetData);
                     emit compileFinished();
-
-                    _fmPSG->play(vgm, currentOffsetSamples, currentOffsetData);
+                    
+                    _chromasound->play(vgm, currentOffsetSamples, currentOffsetData);
                 });
 
                 connect(thread, &QThread::finished, this, [=]() {
@@ -107,8 +107,8 @@ void Application::play()
                     emit compileStarted();
                     QByteArray vgm = vgmStream.compile(_project, _project.getFrontPattern(), false, nullptr, -1, -1, position(), &currentOffsetData);
                     emit compileFinished();
-
-                    _fmPSG->play(vgm, currentOffsetSamples, currentOffsetData);
+                    
+                    _chromasound->play(vgm, currentOffsetSamples, currentOffsetData);
                 });
 
                 connect(thread, &QThread::finished, this, [=]() {
@@ -126,8 +126,8 @@ void Application::play()
                     emit compileStarted();
                     QByteArray vgm = vgmStream.compile(_project, false, &loopOffsetData, -1, -1, position(), &currentOffsetData);
                     emit compileFinished();
-
-                    _fmPSG->play(vgm, currentOffsetSamples, currentOffsetData);
+                    
+                    _chromasound->play(vgm, currentOffsetSamples, currentOffsetData);
                 });
 
                 connect(thread, &QThread::finished, this, [=]() {
@@ -144,16 +144,16 @@ void Application::play()
 
 void Application::play(const Pattern& pattern, const float loopStart, const float loopEnd)
 {
-    _ignoreFMPSGTime = false;
-
-    QSettings settings(FM_PSG_Studio::Organization, FM_PSG_Studio::Application);
-    QString format = settings.value(FM_PSG_Studio::Format, FM_PSG_Studio::FM_PSG).toString();
+    _ignoreCSTime = false;
+    
+    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+    QString format = settings.value(Chromasound_Studio::Format, Chromasound_Studio::Chromasound).toString();
     VGMStream::Format vgmFormat =
-        _fmPSG->supportedFormats().contains(VGMStream::Format::FM_PSG) && format == FM_PSG_Studio::FM_PSG
-        ? VGMStream::Format::FM_PSG
+        _chromasound->supportedFormats().contains(VGMStream::Format::CHROMASOUND) && format == Chromasound_Studio::Chromasound
+                                      ? VGMStream::Format::CHROMASOUND
         : VGMStream::Format::STANDARD;
 
-    if (vgmFormat == VGMStream::Format::FM_PSG) {
+    if (vgmFormat == VGMStream::Format::CHROMASOUND) {
         QThread* thread = QThread::create([&](const float loopStart, const float loopEnd) {
             int loopOffsetData;
             int currentOffsetData;
@@ -163,9 +163,9 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
             emit compileStarted();
             QByteArray vgm = VGMStream().compile(_project, pattern, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
             emit compileFinished();
-
-            _fmPSG->setPosition(loopStart);
-            _fmPSG->play(vgm, currentOffsetSamples, currentOffsetData, true);
+            
+            _chromasound->setPosition(loopStart);
+            _chromasound->play(vgm, currentOffsetSamples, currentOffsetData, true);
         }, loopStart, loopEnd);
 
         connect(thread, &QThread::finished, this, [=]() {
@@ -183,9 +183,9 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
             emit compileStarted();
             QByteArray vgm = VGMStream(VGMStream::Format::STANDARD).compile(_project, pattern, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
             emit compileFinished();
-
-            _fmPSG->setPosition(loopStart);
-            _fmPSG->play(vgm, currentOffsetSamples, currentOffsetData, true);
+            
+            _chromasound->setPosition(loopStart);
+            _chromasound->play(vgm, currentOffsetSamples, currentOffsetData, true);
         }, loopStart, loopEnd);
 
         connect(thread, &QThread::finished, this, [=]() {
@@ -198,16 +198,16 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
 
 void Application::play(const float loopStart, const float loopEnd)
 {
-    _ignoreFMPSGTime = false;
-
-    QSettings settings(FM_PSG_Studio::Organization, FM_PSG_Studio::Application);
-    QString format = settings.value(FM_PSG_Studio::Format, FM_PSG_Studio::FM_PSG).toString();
+    _ignoreCSTime = false;
+    
+    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+    QString format = settings.value(Chromasound_Studio::Format, Chromasound_Studio::Chromasound).toString();
     VGMStream::Format vgmFormat =
-        _fmPSG->supportedFormats().contains(VGMStream::Format::FM_PSG) && format == FM_PSG_Studio::FM_PSG
-        ? VGMStream::Format::FM_PSG
+        _chromasound->supportedFormats().contains(VGMStream::Format::CHROMASOUND) && format == Chromasound_Studio::Chromasound
+                                      ? VGMStream::Format::CHROMASOUND
         : VGMStream::Format::STANDARD;
 
-    if (vgmFormat == VGMStream::Format::FM_PSG) {
+    if (vgmFormat == VGMStream::Format::CHROMASOUND) {
         QThread* thread = QThread::create([&](const float loopStart, const float loopEnd) {
             int loopOffsetData;
             int currentOffsetData;
@@ -217,9 +217,9 @@ void Application::play(const float loopStart, const float loopEnd)
             emit compileStarted();
             QByteArray vgm = VGMStream().compile(_project, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
             emit compileFinished();
-
-            _fmPSG->setPosition(loopStart);
-            _fmPSG->play(vgm, currentOffsetSamples, currentOffsetData, true);
+            
+            _chromasound->setPosition(loopStart);
+            _chromasound->play(vgm, currentOffsetSamples, currentOffsetData, true);
         }, loopStart, loopEnd);
 
         connect(thread, &QThread::finished, this, [=]() {
@@ -237,9 +237,9 @@ void Application::play(const float loopStart, const float loopEnd)
             emit compileStarted();
             QByteArray vgm = VGMStream(VGMStream::Format::STANDARD).compile(_project, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
             emit compileFinished();
-
-            _fmPSG->setPosition(loopStart);
-            _fmPSG->play(vgm, currentOffsetSamples, currentOffsetData, true);
+            
+            _chromasound->setPosition(loopStart);
+            _chromasound->play(vgm, currentOffsetSamples, currentOffsetData, true);
         }, loopStart, loopEnd);
 
         connect(thread, &QThread::finished, this, [=]() {
@@ -251,28 +251,28 @@ void Application::play(const float loopStart, const float loopEnd)
 }
 void Application::stop()
 {
-    _fmPSG->stop();
+    _chromasound->stop();
     _paused = false;
 }
 
 float Application::position() const
 {
-    if (_ignoreFMPSGTime) {
+    if (_ignoreCSTime) {
         return 0;
     }
-
-    return _fmPSG->position() / 44100.0f / 60 * _project.tempo();
+    
+    return _chromasound->position() / 44100.0f / 60 * _project.tempo();
 }
 
 void Application::setPosition(const float pos)
 {
-    _fmPSG->setPosition(pos);
+    _chromasound->setPosition(pos);
     _mainWindow->doUpdate();
 }
 
 bool Application::isPlaying() const
 {
-    return _fmPSG->isPlaying();
+    return _chromasound->isPlaying();
 }
 
 void Application::setWindow(MainWindow* window)
@@ -297,12 +297,12 @@ Project& Application::project()
 
 void Application::keyOn(const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity)
 {
-    _fmPSG->keyOn(_project, channelType, settings, key, velocity);
+    _chromasound->keyOn(_project, channelType, settings, key, velocity);
 }
 
 void Application::keyOff(int key)
 {
-    _fmPSG->keyOff(key);
+    _chromasound->keyOff(key);
 }
 
 QUndoStack& Application::undoStack()
@@ -310,13 +310,13 @@ QUndoStack& Application::undoStack()
     return _undoStack;
 }
 
-FM_PSG& Application::fmPSG()
+Chromasound& Application::chromasound()
 {
-    return *_fmPSG;
+    return *_chromasound;
 }
 
-void Application::ignoreFMPSGTime(const bool ignore)
+void Application::ignoreCSTime(const bool ignore)
 {
-    _ignoreFMPSGTime = ignore;
+    _ignoreCSTime = ignore;
 }
 

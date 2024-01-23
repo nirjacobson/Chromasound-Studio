@@ -46,7 +46,7 @@ void TopWidget::setApplication(Application* app)
     ui->positionDisplay->setApplication(app);
     ui->tempoSpinBox->setValue(app->project().tempo());
     ui->beatsPerBarSpinBox->setValue(app->project().beatsPerBar());
-    connect(&app->fmPSG(), &FM_PSG::stopped, this, &TopWidget::fmpsgStopped);
+    connect(&app->chromasound(), &Chromasound::stopped, this, &TopWidget::chromasoundStopped);
 }
 
 void TopWidget::updateFromProject(const Project& project)
@@ -126,7 +126,7 @@ void TopWidget::songModeSelected()
     _app->project().setPlayMode(Project::PlayMode::SONG);
 }
 
-void TopWidget::fmpsgStopped()
+void TopWidget::chromasoundStopped()
 {
     _isPlaying = false;
     ui->playButton->setIcon(ui->playButton->style()->standardIcon(QStyle::SP_MediaPlay));

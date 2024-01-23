@@ -1,18 +1,18 @@
-#ifndef FM_PSG_IMPL_H
-#define FM_PSG_IMPL_H
+#ifndef CHROMASOUND_DIRECT_H
+#define CHROMASOUND_DIRECT_H
 
 #include <QMap>
 
 #include <QTimer>
-#include "fm-psg.h"
+#include "chromasound.h"
 #include "project/project.h"
 #include "project/vgmstream.h"
 
-class FM_PSG_Impl : public FM_PSG
+class Chromasound_Direct : public Chromasound
 {
     public:
-        FM_PSG_Impl(const Project& project);
-        ~FM_PSG_Impl();
+    Chromasound_Direct(const Project& project);
+        ~Chromasound_Direct();
 
         quint32 position();
         void setPosition(const float pos);
@@ -45,4 +45,4 @@ class FM_PSG_Impl : public FM_PSG
         void reset();
 };
 
-#endif // FM_PSG_IMPL_H
+#endif // CHROMASOUND_DIRECT_H

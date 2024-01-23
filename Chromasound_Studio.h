@@ -1,9 +1,9 @@
-#ifndef FM_PSG_STUDIO_H
-#define FM_PSG_STUDIO_H
+#ifndef CHROMASOUND_STUDIO_H
+#define CHROMASOUND_STUDIO_H
 
 #include <QString>
 
-class FM_PSG_Studio {
+class Chromasound_Studio {
     public:
         static const QString Organization;
         static const QString Application;
@@ -12,8 +12,8 @@ class FM_PSG_Studio {
         static const QString EqualizerTreble;
         static const QString Format;
 
-        static const QString FM_PSG;
+        static const QString Chromasound;
         static const QString Standard;
 };
 
-#endif // FM_PSG_STUDIO_H
+#endif // CHROMASOUND_STUDIO_H

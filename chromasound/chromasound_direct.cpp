@@ -1,6 +1,6 @@
-#include "fm-psg_impl.h"
+#include "chromasound_direct.h"
 
-FM_PSG_Impl::FM_PSG_Impl(const Project& project)
+Chromasound_Direct::Chromasound_Direct(const Project& project)
     : _project(project)
     , _timeOffset(0)
 {
@@ -69,14 +69,14 @@ FM_PSG_Impl::FM_PSG_Impl(const Project& project)
 
     _vgmPlayer = new VGMPlayer(_spi, this);
     reset();
-
-    connect(_vgmPlayer, &VGMPlayer::pcmUploadStarted, this, &FM_PSG::pcmUploadStarted);
-    connect(_vgmPlayer, &VGMPlayer::pcmUploadFinished, this, &FM_PSG::pcmUploadFinished);
+    
+    connect(_vgmPlayer, &VGMPlayer::pcmUploadStarted, this, &Chromasound::pcmUploadStarted);
+    connect(_vgmPlayer, &VGMPlayer::pcmUploadFinished, this, &Chromasound::pcmUploadFinished);
 
     _vgmPlayer->start();
 }
 
-FM_PSG_Impl::~FM_PSG_Impl()
+Chromasound_Direct::~Chromasound_Direct()
 {
     _vgmPlayer->stop();
     _vgmPlayer->quit();
@@ -89,7 +89,7 @@ FM_PSG_Impl::~FM_PSG_Impl()
     gpioTerminate();
 }
 
-quint32 FM_PSG_Impl::position()
+quint32 Chromasound_Direct::position()
 {
     uint32_t time = _vgmPlayer->time();
     uint32_t introLength = _vgmPlayer->introLength();
@@ -114,12 +114,12 @@ quint32 FM_PSG_Impl::position()
     }
 }
 
-void FM_PSG_Impl::setPosition(const float pos)
+void Chromasound_Direct::setPosition(const float pos)
 {
     _timeOffset = pos / _project.tempo() * 60 * 44100;
 }
 
-void FM_PSG_Impl::play(const QByteArray& vgm, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection)
+void Chromasound_Direct::play(const QByteArray& vgm, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection)
 {
     if (isSelection) {
         _timeOffset = currentOffsetSamples;
@@ -136,17 +136,17 @@ void FM_PSG_Impl::play(const QByteArray& vgm, const int currentOffsetSamples, co
     _vgmPlayer->start();
 }
 
-void FM_PSG_Impl::play()
+void Chromasound_Direct::play()
 {
     _vgmPlayer->start();
 }
 
-void FM_PSG_Impl::pause()
+void Chromasound_Direct::pause()
 {
     _vgmPlayer->pause();
 }
 
-void FM_PSG_Impl::stop()
+void Chromasound_Direct::stop()
 {
     _vgmPlayer->stop();
     _vgmPlayer->quit();
@@ -160,12 +160,12 @@ void FM_PSG_Impl::stop()
     _vgmPlayer->start();
 }
 
-bool FM_PSG_Impl::isPlaying() const
+bool Chromasound_Direct::isPlaying() const
 {
     return _vgmPlayer->isPlaying();
 }
 
-void FM_PSG_Impl::keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity)
+void Chromasound_Direct::keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity)
 {
     VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(0, channelType, nullptr, Note(key, 0, velocity), &settings);
     _keys[key] = sni;
@@ -183,7 +183,7 @@ void FM_PSG_Impl::keyOn(const Project& project, const Channel::Type channelType,
     _timer.start(20);
 }
 
-void FM_PSG_Impl::keyOff(int key)
+void Chromasound_Direct::keyOff(int key)
 {
     if (!_keys.contains(key)) return;
 
@@ -207,7 +207,7 @@ void FM_PSG_Impl::keyOff(int key)
     _timer.start(20);
 }
 
-void FM_PSG_Impl::reset()
+void Chromasound_Direct::reset()
 {
     gpioWrite(2, 0);
     gpioDelay(100);
@@ -218,7 +218,7 @@ void FM_PSG_Impl::reset()
     _vgmStream.reset();
 }
 
-QList<VGMStream::Format> FM_PSG_Impl::supportedFormats()
+QList<VGMStream::Format> Chromasound_Direct::supportedFormats()
 {
-    return QList<VGMStream::Format>({VGMStream::Format::FM_PSG, VGMStream::Format::STANDARD});
+    return QList<VGMStream::Format>({VGMStream::Format::CHROMASOUND, VGMStream::Format::STANDARD});
 }

@@ -215,7 +215,7 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
         QByteArray dataBlock;
         quint32 dataBlockSize;
         QByteArray pcmBlock;
-        if (_format == Format::FM_PSG) {
+        if (_format == Format::CHROMASOUND) {
             dataBlock = project.pcm();
         } else {
             dataBlock = encodeStandardPCM(project, pattern, loopStart, loopEnd);
@@ -434,7 +434,7 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
         QByteArray dataBlock;
         quint32 dataBlockSize;
         QByteArray pcmBlock;
-        if (_format == Format::FM_PSG) {
+        if (_format == Format::CHROMASOUND) {
             dataBlock = project.pcm();
         } else {
             dataBlock = encodeStandardPCM(project, loopStart, loopEnd);
@@ -1461,8 +1461,8 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
 
 int VGMStream::encodeDelay(const quint32 samples, QByteArray& data, const bool pcm) {
     quint32 s = samples;
-
-    if (_format == Format::FM_PSG && pcm && samples > 8) {
+    
+    if (_format == Format::CHROMASOUND && pcm && samples > 8) {
         data.append(0x96);
         data.append((char*)&samples, sizeof(samples));
 
@@ -1592,7 +1592,7 @@ void VGMStream::encodeSettingsItem(const StreamSettingsItem* item, QByteArray& d
         data.append(0xB4 + channel);
         data.append(datum);
     } else if ((pcs = dynamic_cast<const PCMChannelSettings*>(item->channelSettings())) != nullptr) {
-        if (_format == Format::FM_PSG) {
+        if (_format == Format::CHROMASOUND) {
             int volume = pcs->volume() * item->velocity() / 100;
             int att = MAX_PCM_ATTENUATION * (float)(100 - volume) / 100;
             data.append(0xF0 | item->channel());
@@ -1724,7 +1724,7 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
         data.append(0x28);
         data.append(((item->on() ? 0xF : 0x0) << 4) | c);
     } else if (item->type() == Channel::Type::PCM) {
-        if (_format == Format::FM_PSG) {
+        if (_format == Format::CHROMASOUND) {
             if (item->on()) {
                 const PCMChannelSettings* pcmcs = dynamic_cast<const PCMChannelSettings*>(item->channelSettings());
                 int volume = pcmcs->volume() * item->note().velocity() / 100;

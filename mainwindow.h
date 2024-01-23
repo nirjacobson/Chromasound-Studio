@@ -92,7 +92,7 @@ class MainWindow : public QMainWindow
         void newTriggered();
         void openTriggered();
         void saveTriggered();
-        void renderForFMPSGTriggered();
+        void renderForChromasoundTriggered();
         void renderFor3rdPartyTriggered();
 
         void keyOn(const int key, const int velocity);

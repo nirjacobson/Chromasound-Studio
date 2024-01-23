@@ -15,8 +15,8 @@ void EditProjectOPLLTypeCommand::undo()
     _project.setOpllType(_oldType);
 
     try {
-        FM_PSG_Soft& fmPsgSoft = dynamic_cast<FM_PSG_Soft&>(_mainWindow->app()->fmPSG());
-        fmPsgSoft.setOPLLPatchset(_oldType);
+        Chromasound_Emu& emu = dynamic_cast<Chromasound_Emu&>(_mainWindow->app()->chromasound());
+        emu.setOPLLPatchset(_oldType);
     } catch (std::bad_cast&) { }
 
     _mainWindow->doUpdate();
@@ -27,8 +27,8 @@ void EditProjectOPLLTypeCommand::redo()
     _project.setOpllType(_newType);
 
     try {
-        FM_PSG_Soft& fmPsgSoft = dynamic_cast<FM_PSG_Soft&>(_mainWindow->app()->fmPSG());
-        fmPsgSoft.setOPLLPatchset(_newType);
+        Chromasound_Emu& emu = dynamic_cast<Chromasound_Emu&>(_mainWindow->app()->chromasound());
+        emu.setOPLLPatchset(_newType);
     } catch (std::bad_cast&) { }
 
     _mainWindow->doUpdate();

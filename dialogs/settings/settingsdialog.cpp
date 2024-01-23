@@ -6,13 +6,13 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui(new Ui::SettingsDialog)
 {
     ui->setupUi(this);
-
-    QSettings settings(FM_PSG_Studio::Organization, FM_PSG_Studio::Application);
-    ui->bassSpinBox->setValue(settings.value(FM_PSG_Studio::EqualizerBass, 0).toInt());
-    ui->trebleSpinBox->setValue(settings.value(FM_PSG_Studio::EqualizerTreble, 0).toInt());
-
-    if (settings.value("format", FM_PSG_Studio::FM_PSG).toString() == FM_PSG_Studio::FM_PSG) {
-        ui->fmPSGRadioButton->setChecked(true);
+    
+    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+    ui->bassSpinBox->setValue(settings.value(Chromasound_Studio::EqualizerBass, 0).toInt());
+    ui->trebleSpinBox->setValue(settings.value(Chromasound_Studio::EqualizerTreble, 0).toInt());
+    
+    if (settings.value("format", Chromasound_Studio::Chromasound).toString() == Chromasound_Studio::Chromasound) {
+        ui->chromasoundRadioButton->setChecked(true);
     } else {
         ui->standardRadioButton->setChecked(true);
     }
@@ -28,11 +28,11 @@ SettingsDialog::~SettingsDialog()
 
 void SettingsDialog::accepted()
 {
-    QSettings settings(FM_PSG_Studio::Organization, FM_PSG_Studio::Application);
-
-    settings.setValue(FM_PSG_Studio::EqualizerBass, ui->bassSpinBox->value());
-    settings.setValue(FM_PSG_Studio::EqualizerTreble, ui->trebleSpinBox->value());
-    settings.setValue(FM_PSG_Studio::Format, ui->fmPSGRadioButton->isChecked() ? FM_PSG_Studio::FM_PSG : FM_PSG_Studio::Standard);
+    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+    
+    settings.setValue(Chromasound_Studio::EqualizerBass, ui->bassSpinBox->value());
+    settings.setValue(Chromasound_Studio::EqualizerTreble, ui->trebleSpinBox->value());
+    settings.setValue(Chromasound_Studio::Format, ui->chromasoundRadioButton->isChecked() ? Chromasound_Studio::Chromasound : Chromasound_Studio::Standard);
 
     close();
 }

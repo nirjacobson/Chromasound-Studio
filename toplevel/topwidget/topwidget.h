@@ -52,7 +52,7 @@ class TopWidget : public QWidget
         void beatsPerBarDidChange(int beats);
         void patModeSelected();
         void songModeSelected();
-        void fmpsgStopped();
+        void chromasoundStopped();
 
         // QWidget interface
     protected:
