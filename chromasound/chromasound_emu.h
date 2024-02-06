@@ -22,13 +22,19 @@ class Chromasound_Emu : public Chromasound, public Producer<int16_t>
         ~Chromasound_Emu();
 
     private:
+        static constexpr int FRAMES_PER_BUFFER = 4096;
+
         const Project& _project;
+
+        class Player;
 
         Music_Emu* _emu;
         gme_type_t _type;
         AudioOutput<int16_t>* _output;
 
-        Music_Emu::sample_t _buffer[4096];
+        Music_Emu::sample_t _buffers[FRAMES_PER_BUFFER * 2][2];
+        int _buffer;
+        int _bufferIdx;
 
         long _position;
         long _positionOffset;
@@ -44,6 +50,10 @@ class Chromasound_Emu : public Chromasound, public Producer<int16_t>
         QList<VGMStream::StreamItem*> _items;
 
         QMutex _mutex;
+
+        QMutex _loadLock;
+
+        Player* _player;
 
         void setEqualizer();
 
@@ -67,6 +77,36 @@ class Chromasound_Emu : public Chromasound, public Producer<int16_t>
         // Producer interface
     public:
         int16_t* next(int size);
+};
+
+class Chromasound_Emu::Player : public QThread {
+    public:
+        enum Action {
+            Idle,
+            Load,
+            Exit
+        };
+
+        Player(Chromasound_Emu& emu);
+
+        void action(const Action action);
+        Action action();
+
+        void buffer(const int buffer);
+
+    private:
+        Chromasound_Emu& _emu;
+
+        Action _action;
+
+        int _buffer;
+
+        QMutex _actionLock;
+
+
+        // QThread interface
+    protected:
+        void run();
 };
 
 #endif // CHROMASOUND_EMU_H
