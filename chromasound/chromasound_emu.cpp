@@ -19,6 +19,9 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
     , _positionOffset(0)
     , _project(project)
     , _startedInteractive(false)
+    , _buffer(0)
+    , _bufferIdx(0)
+    , _player(new Player(*this))
 {
     _timer.setSingleShot(true);
 
@@ -130,7 +133,8 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
         }
     });
 
-    memset(_buffer, 0, sizeof(_buffer));
+    memset(_buffers[0], 0, FRAMES_PER_BUFFER * 2 * sizeof(int16_t));
+    memset(_buffers[1], 0, FRAMES_PER_BUFFER * 2 * sizeof(int16_t));
 
     _type = gme_vgm_type;
     _emu = gme_new_emu(_type, 44100);
@@ -143,6 +147,9 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
 
     _stopped = true;
 
+    _player->action(Player::Action::Load);
+    _player->start();
+
     _output->init();
     _output->start();
 }
@@ -151,6 +158,12 @@ Chromasound_Emu::~Chromasound_Emu()
 {
     _output->stop();
     _output->destroy();
+
+    _player->action(Player::Action::Exit);
+    _player->quit();
+    _player->wait();
+
+    delete _player;
 
     gme_delete(_emu);
 }
@@ -345,9 +358,25 @@ int16_t* Chromasound_Emu::next(int size)
         _position = _emu->tell();
     }
 
-    _emu->play(size, _buffer);
+    if (_bufferIdx == 0) {
+        _loadLock.lock();
+        _player->buffer(1 - _buffer);
+        _player->action(Player::Action::Load);
+        _loadLock.unlock();
+    }
 
-    return _buffer;
+    int16_t* addr = &_buffers[_buffer][_bufferIdx];
+
+    _bufferIdx += size;
+    _bufferIdx %= FRAMES_PER_BUFFER * 2;
+
+    int b = _buffer;
+
+    if (_bufferIdx == 0) {
+        _buffer = 1 - _buffer;
+    }
+
+    return &_buffers[b][_bufferIdx];
 }
 
 QList<VGMStream::Format> Chromasound_Emu::supportedFormats()
@@ -359,3 +388,58 @@ void Chromasound_Emu::setOPLLPatchset(OPLL::Type type)
 {
     dynamic_cast<Vgm_Emu*>(_emu)->set_opll_patchset(static_cast<int>(type));
 }
+
+Chromasound_Emu::Player::Player(Chromasound_Emu& emu)
+    : _emu(emu)
+    , _action(Action::Idle)
+    , _buffer(emu._buffer)
+{
+
+}
+
+void Chromasound_Emu::Player::action(const Action action)
+{
+    _actionLock.lock();
+    _action = action;
+    _actionLock.unlock();
+}
+
+Chromasound_Emu::Player::Action Chromasound_Emu::Player::action()
+{
+    _actionLock.lock();
+    Action a = _action;
+    _actionLock.unlock();
+
+    return a;
+}
+
+void Chromasound_Emu::Player::buffer(const int buffer)
+{
+    _buffer = buffer;
+}
+
+void Chromasound_Emu::Player::run()
+{
+    while (true) {
+        Action a = action();
+
+        switch (a) {
+        case Idle:
+            break;
+        case Load:
+            _emu._loadLock.lock();
+            _emu._emu->play(FRAMES_PER_BUFFER * 2, _emu._buffers[_buffer]);
+            _emu._loadLock.unlock();
+
+            if (action() == Action::Exit) {
+                return;
+            }
+
+            action(Action::Idle);
+            break;
+        case Exit:
+            return;
+        }
+    }
+}
+
