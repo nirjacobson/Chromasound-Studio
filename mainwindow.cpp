@@ -413,12 +413,13 @@ void MainWindow::pianoRollTriggered(const int index, const bool on)
         pianoRollWidget->setTrack(_app->project().frontPattern(), index);
 
         MdiSubWindow* pianoRollWindow = new MdiSubWindow(ui->mdiArea);
+        pianoRollWindow->setWidget(pianoRollWidget);
+
         pianoRollWindow->resize(pianoRollWidget->size());
 
         pianoRollWindow->setAttribute(Qt::WA_DeleteOnClose);
         ui->mdiArea->addSubWindow(pianoRollWindow);
 
-        pianoRollWindow->setWidget(pianoRollWidget);
         connect(pianoRollWindow, &MdiSubWindow::closed, this, [=]() {
             windowClosed(pianoRollWindow);
         });
@@ -819,6 +820,14 @@ void MainWindow::settingsTriggered()
         connect(_settingsDialog, &QDialog::finished, window, &MdiSubWindow::close);
         connect(window, &MdiSubWindow::closed, this, [&]() {
             _settingsDialogWindow = nullptr;
+        });
+        connect(_settingsDialog, &SettingsDialog::done, this, [&](){
+            try {
+                Chromasound_Emu& emu = dynamic_cast<Chromasound_Emu&>(_app->chromasound());
+                emu.setBufferSizes();
+            } catch (std::bad_cast) {
+
+            }
         });
         window->setAttribute(Qt::WA_DeleteOnClose);
         window->setWidget(_settingsDialog);

@@ -22,8 +22,6 @@ class Chromasound_Emu : public Chromasound, public Producer<int16_t>
         ~Chromasound_Emu();
 
     private:
-        static constexpr int FRAMES_PER_BUFFER = 4096;
-
         const Project& _project;
 
         class Player;
@@ -32,12 +30,13 @@ class Chromasound_Emu : public Chromasound, public Producer<int16_t>
         gme_type_t _type;
         AudioOutput<int16_t>* _output;
 
-        Music_Emu::sample_t _buffers[FRAMES_PER_BUFFER * 2][2];
+        Music_Emu::sample_t* _buffers[2];
         int _buffer;
         int _bufferIdx;
+        int _framesPerReadBuffer;
 
-        long _position;
-        long _positionOffset;
+        quint32 _position;
+        quint32 _positionOffset;
         bool _stopped;
 
         track_info_t _info;
@@ -70,6 +69,8 @@ class Chromasound_Emu : public Chromasound, public Producer<int16_t>
         void keyOff(int key);
 
         QList<VGMStream::Format> supportedFormats();
+
+        void setBufferSizes();
 
     public:
         void setOPLLPatchset(OPLL::Type type);

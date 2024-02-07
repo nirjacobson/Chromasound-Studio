@@ -12,15 +12,15 @@ class AudioOutput : public Consumer<T> {
     public:
         static AudioOutput* instance();
 
-        static void init();
-        static void destroy();
+        void init(int framesPerBuffer);
+        void destroy();
 
-        static void start();
-        static void stop();
-        static void restart();
+        void start();
+        void stop();
+        void restart();
 
-        static bool isDefault();
-        static bool isRunning();
+        bool isDefault();
+        bool isRunning();
 
         static constexpr int SAMPLE_RATE = 44100;
 
@@ -31,6 +31,8 @@ class AudioOutput : public Consumer<T> {
         static PaStream* _paStream;
 
         static bool _running;
+
+        static int _framesPerBuffer;
 
         static int paCallback(const void* inputBuffer,
                               void* outputBuffer,
@@ -48,6 +50,8 @@ template <typename T>
 PaStream* AudioOutput<T>::_paStream;
 template <typename T>
 bool AudioOutput<T>::_running;
+template <typename T>
+int AudioOutput<T>::_framesPerBuffer;
 
 template <typename T>
 AudioOutput<T>* AudioOutput<T>::instance() {
@@ -59,7 +63,9 @@ AudioOutput<T>* AudioOutput<T>::instance() {
 }
 
 template <typename T>
-void AudioOutput<T>::init() {
+void AudioOutput<T>::init(int framesPerBuffer) {
+    _framesPerBuffer = framesPerBuffer;
+
     _running = false;
 
     _paError = Pa_Initialize();
@@ -80,7 +86,7 @@ void AudioOutput<T>::init() {
                                      2,          /* stereo output */
                                      format,
                                      SAMPLE_RATE,
-                                     2048, /* frames per buffer, i.e. the number
+                                     framesPerBuffer, /* frames per buffer, i.e. the number
                                                   of sample frames that PortAudio will
                                                   request from the callback. Many apps
                                                   may want to use
@@ -111,6 +117,7 @@ void AudioOutput<T>::destroy() {
     }
 
     delete _instance;
+    _instance = nullptr;
 }
 
 template <typename T>
@@ -155,7 +162,7 @@ void AudioOutput<T>::restart() {
         return;
     }
 
-    init();
+    init(_framesPerBuffer);
 
     if (started) {
         start();

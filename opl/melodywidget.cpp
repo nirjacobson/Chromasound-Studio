@@ -8,8 +8,6 @@ MelodyWidget::MelodyWidget(QWidget *parent, Application* app) :
 {
     ui->setupUi(this);
 
-    ui->instrumentComboBox->addItems(OPLL::patches(_app->project().opllType()));
-
     connect(ui->instrumentComboBox, &QComboBox::currentIndexChanged, this, &MelodyWidget::selectionChanged);
 }
 
@@ -21,6 +19,10 @@ MelodyWidget::~MelodyWidget()
 void MelodyWidget::setApplication(Application* app)
 {
     _app = app;
+
+    ui->instrumentComboBox->blockSignals(true);
+    ui->instrumentComboBox->addItems(OPLL::patches(_app->project().opllType()));
+    ui->instrumentComboBox->blockSignals(false);
 }
 
 void MelodyWidget::setSettings(MelodyChannelSettings* settings)
