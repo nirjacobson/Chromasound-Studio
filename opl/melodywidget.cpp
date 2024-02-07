@@ -8,6 +8,10 @@ MelodyWidget::MelodyWidget(QWidget *parent, Application* app) :
 {
     ui->setupUi(this);
 
+    if (app) {
+        ui->instrumentComboBox->addItems(OPLL::patches(_app->project().opllType()));
+    }
+
     connect(ui->instrumentComboBox, &QComboBox::currentIndexChanged, this, &MelodyWidget::selectionChanged);
 }
 
