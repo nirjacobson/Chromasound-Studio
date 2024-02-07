@@ -394,8 +394,6 @@ void Chromasound_Emu::keyOff(int key)
 
 int16_t* Chromasound_Emu::next(int size)
 {
-    static bool first = true;
-
     if (_bufferIdx == 0) {
         _loadLock.lock();
         _player->buffer(1 - _buffer);
@@ -408,15 +406,13 @@ int16_t* Chromasound_Emu::next(int size)
     _bufferIdx += size;
     _bufferIdx %= _framesPerReadBuffer * 2;
 
-    if (!_stopped && !first) {
+    if (!_stopped) {
         _position += size / 2;
     }
 
     if (_bufferIdx == 0) {
         _buffer = 1 - _buffer;
     }
-
-    first = false;
 
     return addr;
 }
