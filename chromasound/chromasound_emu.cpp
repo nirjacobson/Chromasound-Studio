@@ -230,19 +230,20 @@ quint32 Chromasound_Emu::position()
 {
     if (_info.loop_length <= 0) {
         quint32 lengthSamples = _info.length / 1000.0f * 44100;
-        if ((_position + _positionOffset) >= lengthSamples) {
+        quint32 pos = _positionOffset + _position;
+        if (pos >= lengthSamples) {
             stop();
             return 0;
         }
-        return (_position + _positionOffset);
+        return pos;
     }
 
     quint32 loopLengthSamples = _info.loop_length / 1000.0f * 44100;
+    quint32 pos = _positionOffset + _position;
     if (_info.intro_length <= 0) {
-        return (_positionOffset + (_position % loopLengthSamples));
+        return (pos % loopLengthSamples);
     } else {
         quint32 introLengthSamples = _info.intro_length / 1000.0f * 44100;
-        quint32 pos = _positionOffset + _position;
         return ((pos < introLengthSamples)
                 ? pos
                 : (((pos - introLengthSamples) % loopLengthSamples) + introLengthSamples));
