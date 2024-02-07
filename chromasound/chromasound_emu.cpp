@@ -22,7 +22,9 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
     , _buffer(0)
     , _bufferIdx(0)
     , _player(new Player(*this))
+    , _output(nullptr)
 {
+
     _timer.setSingleShot(true);
 
     _timer.callOnTimeout([&]() {
@@ -133,24 +135,20 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
         }
     });
 
-    memset(_buffers[0], 0, FRAMES_PER_BUFFER * 2 * sizeof(int16_t));
-    memset(_buffers[1], 0, FRAMES_PER_BUFFER * 2 * sizeof(int16_t));
-
     _type = gme_vgm_type;
     _emu = gme_new_emu(_type, 44100);
     _emu->ignore_silence(true);
 
+    _buffers[0] = nullptr;
+    _buffers[1] = nullptr;
+    setBufferSizes(); // initializes _output
     setEqualizer();
-
-    _output = AudioOutput<int16_t>::instance();
-    _output->producer(this);
 
     _stopped = true;
 
     _player->action(Player::Action::Load);
     _player->start();
 
-    _output->init();
     _output->start();
 }
 
@@ -165,13 +163,16 @@ Chromasound_Emu::~Chromasound_Emu()
 
     delete _player;
 
+    delete _buffers[0];
+    delete _buffers[1];
+
     gme_delete(_emu);
 }
 
 void Chromasound_Emu::setEqualizer()
 {
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
-    
+
     int _bass = settings.value(Chromasound_Studio::EqualizerBass, 0).toInt();
     int _treble = settings.value(Chromasound_Studio::EqualizerTreble, 0).toInt();
 
@@ -188,29 +189,69 @@ void Chromasound_Emu::setEqualizer()
     _emu->set_equalizer(eq);
 }
 
+void Chromasound_Emu::setBufferSizes()
+{
+    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+
+    int audioBufferSize = settings.value(Chromasound_Studio::AudioBufferSize, 256).toInt();
+    int readBufferSize = settings.value(Chromasound_Studio::ReadBufferSize, 1).toInt();
+
+    bool wasRunning = false;
+    if (_output) {
+        wasRunning = _output->isRunning();
+        if (wasRunning) {
+            _output->stop();
+        }
+        _output->destroy();
+    }
+
+    _framesPerReadBuffer = audioBufferSize * readBufferSize;
+
+    if (_buffers[0] != nullptr && _buffers[1] != nullptr) {
+        delete _buffers[0];
+        delete _buffers[1];
+    }
+
+    _buffers[0] = new Music_Emu::sample_t[_framesPerReadBuffer * 2];
+    _buffers[1] = new Music_Emu::sample_t[_framesPerReadBuffer * 2];
+    memset(_buffers[0], 0, _framesPerReadBuffer * 2 * sizeof(int16_t));
+    memset(_buffers[1], 0, _framesPerReadBuffer * 2 * sizeof(int16_t));
+
+    _output = AudioOutput<int16_t>::instance();
+    _output->producer(this);
+    _output->init(audioBufferSize);
+
+    if (wasRunning) {
+        _output->start();
+    }
+}
+
 quint32 Chromasound_Emu::position()
 {
     if (_info.loop_length <= 0) {
-        if ((_position + _positionOffset) >= _info.length) {
+        quint32 lengthSamples = _info.length / 1000.0f * 44100;
+        if ((_position + _positionOffset) >= lengthSamples) {
             stop();
             return 0;
         }
-        return (_position + _positionOffset) / 1000.0f * 44100;
+        return (_position + _positionOffset);
     }
 
+    quint32 loopLengthSamples = _info.loop_length / 1000.0f * 44100;
     if (_info.intro_length <= 0) {
-        return (_positionOffset + (_position % _info.loop_length)) / 1000.0f * 44100;
+        return (_positionOffset + (_position % loopLengthSamples));
     } else {
-        return (_positionOffset + ((_position < _info.intro_length)
-                                   ? _position
-                                   : (((_position - _info.intro_length) % _info.loop_length) + _info.intro_length)))
-               / 1000.0f * 44100;
+        quint32 introLengthSamples = _info.intro_length / 1000.0f * 44100;
+        quint32 pos = _positionOffset + _position;
+        return ((pos < introLengthSamples)
+                   ? pos
+                   : (((pos - introLengthSamples) % loopLengthSamples) + introLengthSamples));
     }
 }
 
 void Chromasound_Emu::setPosition(const float pos)
 {
-    _positionOffset = pos / _project.tempo() * 60 * 1000;
+    _positionOffset = pos / _project.tempo() * 60 * 44100;
     _position = 0;
 }
 
@@ -234,11 +275,10 @@ void Chromasound_Emu::play(const QByteArray& vgm, const int currentOffsetSamples
 
     _position = 0;
     if (isSelection) {
-        _positionOffset = currentOffsetSamples / 44100.0f * 1000.0f;
+        _positionOffset = currentOffsetSamples;
     } else {
         if (log_err(_emu->skip(currentOffsetSamples * 2)))
             return;
-        _positionOffset = 0;
     }
 
     _startedInteractive = false;
@@ -354,9 +394,7 @@ void Chromasound_Emu::keyOff(int key)
 
 int16_t* Chromasound_Emu::next(int size)
 {
-    if (!_stopped) {
-        _position = _emu->tell();
-    }
+    static bool first = true;
 
     if (_bufferIdx == 0) {
         _loadLock.lock();
@@ -368,15 +406,19 @@ int16_t* Chromasound_Emu::next(int size)
     int16_t* addr = &_buffers[_buffer][_bufferIdx];
 
     _bufferIdx += size;
-    _bufferIdx %= FRAMES_PER_BUFFER * 2;
+    _bufferIdx %= _framesPerReadBuffer * 2;
 
-    int b = _buffer;
+    if (!_stopped && !first) {
+        _position += size / 2;
+    }
 
     if (_bufferIdx == 0) {
         _buffer = 1 - _buffer;
     }
 
-    return &_buffers[b][_bufferIdx];
+    first = false;
+
+    return addr;
 }
 
 QList<VGMStream::Format> Chromasound_Emu::supportedFormats()
@@ -428,7 +470,7 @@ void Chromasound_Emu::Player::run()
             break;
         case Load:
             _emu._loadLock.lock();
-            _emu._emu->play(FRAMES_PER_BUFFER * 2, _emu._buffers[_buffer]);
+            _emu._emu->play(_emu._framesPerReadBuffer * 2, _emu._buffers[_buffer]);
             _emu._loadLock.unlock();
 
             if (action() == Action::Exit) {
