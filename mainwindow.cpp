@@ -821,7 +821,7 @@ void MainWindow::settingsTriggered()
         connect(window, &MdiSubWindow::closed, this, [&]() {
             _settingsDialogWindow = nullptr;
         });
-        connect(_settingsDialog, &SettingsDialog::done, this, [&](){
+        connect(_settingsDialog, &SettingsDialog::done, this, [&]() {
             try {
                 Chromasound_Emu& emu = dynamic_cast<Chromasound_Emu&>(_app->chromasound());
                 emu.setBufferSizes();

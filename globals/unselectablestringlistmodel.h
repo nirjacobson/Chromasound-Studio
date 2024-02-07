@@ -5,12 +5,12 @@
 
 class UnselectableStringListModel : public QStringListModel
 {
-public:
-    explicit UnselectableStringListModel(QObject *parent = nullptr);
+    public:
+        explicit UnselectableStringListModel(QObject *parent = nullptr);
 
-    // QAbstractItemModel interface
-public:
-    Qt::ItemFlags flags(const QModelIndex& index) const;
+        // QAbstractItemModel interface
+    public:
+        Qt::ItemFlags flags(const QModelIndex& index) const;
 };
 
 #endif // UNSELECTABLESTRINGLISTMODEL_H

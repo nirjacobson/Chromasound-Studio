@@ -244,8 +244,8 @@ quint32 Chromasound_Emu::position()
         quint32 introLengthSamples = _info.intro_length / 1000.0f * 44100;
         quint32 pos = _positionOffset + _position;
         return ((pos < introLengthSamples)
-                   ? pos
-                   : (((pos - introLengthSamples) % loopLengthSamples) + introLengthSamples));
+                ? pos
+                : (((pos - introLengthSamples) % loopLengthSamples) + introLengthSamples));
     }
 }
 
@@ -466,21 +466,21 @@ void Chromasound_Emu::Player::run()
         Action a = action();
 
         switch (a) {
-        case Idle:
-            break;
-        case Load:
-            _emu._loadLock.lock();
-            _emu._emu->play(_emu._framesPerReadBuffer * 2, _emu._buffers[_buffer]);
-            _emu._loadLock.unlock();
+            case Idle:
+                break;
+            case Load:
+                _emu._loadLock.lock();
+                _emu._emu->play(_emu._framesPerReadBuffer * 2, _emu._buffers[_buffer]);
+                _emu._loadLock.unlock();
 
-            if (action() == Action::Exit) {
+                if (action() == Action::Exit) {
+                    return;
+                }
+
+                action(Action::Idle);
+                break;
+            case Exit:
                 return;
-            }
-
-            action(Action::Idle);
-            break;
-        case Exit:
-            return;
         }
     }
 }

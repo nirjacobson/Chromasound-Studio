@@ -19,7 +19,7 @@ Application::Application(int &argc, char **argv, int flags)
     } else {
         _chromasound = new Chromasound_Direct(_project);
     }
-    
+
     connect(_chromasound, &Chromasound::pcmUploadStarted, this, &Application::pcmUploadStarted);
     connect(_chromasound, &Chromasound::pcmUploadFinished, this, &Application::pcmUploadFinished);
 }
@@ -52,7 +52,7 @@ void Application::play()
         QString format = settings.value(Chromasound_Studio::Format, Chromasound_Studio::Chromasound).toString();
         VGMStream::Format vgmFormat =
             _chromasound->supportedFormats().contains(VGMStream::Format::CHROMASOUND) && format == Chromasound_Studio::Chromasound
-                                          ? VGMStream::Format::CHROMASOUND
+            ? VGMStream::Format::CHROMASOUND
             : VGMStream::Format::STANDARD;
 
         if (vgmFormat == VGMStream::Format::CHROMASOUND) {
@@ -66,7 +66,7 @@ void Application::play()
                     emit compileStarted();
                     QByteArray vgm = vgmStream.compile(_project, _project.getFrontPattern(), false, nullptr, -1, -1, position(), &currentOffsetData);
                     emit compileFinished();
-                    
+
                     _chromasound->play(vgm, currentOffsetSamples, currentOffsetData);
                 });
 
@@ -86,7 +86,7 @@ void Application::play()
                     emit compileStarted();
                     QByteArray vgm = vgmStream.compile(_project, false, &loopOffsetData, -1, -1, position(), &currentOffsetData);
                     emit compileFinished();
-                    
+
                     _chromasound->play(vgm, currentOffsetSamples, currentOffsetData);
                 });
 
@@ -107,7 +107,7 @@ void Application::play()
                     emit compileStarted();
                     QByteArray vgm = vgmStream.compile(_project, _project.getFrontPattern(), false, nullptr, -1, -1, position(), &currentOffsetData);
                     emit compileFinished();
-                    
+
                     _chromasound->play(vgm, currentOffsetSamples, currentOffsetData);
                 });
 
@@ -126,7 +126,7 @@ void Application::play()
                     emit compileStarted();
                     QByteArray vgm = vgmStream.compile(_project, false, &loopOffsetData, -1, -1, position(), &currentOffsetData);
                     emit compileFinished();
-                    
+
                     _chromasound->play(vgm, currentOffsetSamples, currentOffsetData);
                 });
 
@@ -145,12 +145,12 @@ void Application::play()
 void Application::play(const Pattern& pattern, const float loopStart, const float loopEnd)
 {
     _ignoreCSTime = false;
-    
+
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
     QString format = settings.value(Chromasound_Studio::Format, Chromasound_Studio::Chromasound).toString();
     VGMStream::Format vgmFormat =
         _chromasound->supportedFormats().contains(VGMStream::Format::CHROMASOUND) && format == Chromasound_Studio::Chromasound
-                                      ? VGMStream::Format::CHROMASOUND
+        ? VGMStream::Format::CHROMASOUND
         : VGMStream::Format::STANDARD;
 
     if (vgmFormat == VGMStream::Format::CHROMASOUND) {
@@ -163,7 +163,7 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
             emit compileStarted();
             QByteArray vgm = VGMStream().compile(_project, pattern, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
             emit compileFinished();
-            
+
             _chromasound->setPosition(loopStart);
             _chromasound->play(vgm, currentOffsetSamples, currentOffsetData, true);
         }, loopStart, loopEnd);
@@ -183,7 +183,7 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
             emit compileStarted();
             QByteArray vgm = VGMStream(VGMStream::Format::STANDARD).compile(_project, pattern, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
             emit compileFinished();
-            
+
             _chromasound->setPosition(loopStart);
             _chromasound->play(vgm, currentOffsetSamples, currentOffsetData, true);
         }, loopStart, loopEnd);
@@ -199,12 +199,12 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
 void Application::play(const float loopStart, const float loopEnd)
 {
     _ignoreCSTime = false;
-    
+
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
     QString format = settings.value(Chromasound_Studio::Format, Chromasound_Studio::Chromasound).toString();
     VGMStream::Format vgmFormat =
         _chromasound->supportedFormats().contains(VGMStream::Format::CHROMASOUND) && format == Chromasound_Studio::Chromasound
-                                      ? VGMStream::Format::CHROMASOUND
+        ? VGMStream::Format::CHROMASOUND
         : VGMStream::Format::STANDARD;
 
     if (vgmFormat == VGMStream::Format::CHROMASOUND) {
@@ -217,7 +217,7 @@ void Application::play(const float loopStart, const float loopEnd)
             emit compileStarted();
             QByteArray vgm = VGMStream().compile(_project, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
             emit compileFinished();
-            
+
             _chromasound->setPosition(loopStart);
             _chromasound->play(vgm, currentOffsetSamples, currentOffsetData, true);
         }, loopStart, loopEnd);
@@ -237,7 +237,7 @@ void Application::play(const float loopStart, const float loopEnd)
             emit compileStarted();
             QByteArray vgm = VGMStream(VGMStream::Format::STANDARD).compile(_project, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
             emit compileFinished();
-            
+
             _chromasound->setPosition(loopStart);
             _chromasound->play(vgm, currentOffsetSamples, currentOffsetData, true);
         }, loopStart, loopEnd);
@@ -260,7 +260,7 @@ float Application::position() const
     if (_ignoreCSTime) {
         return 0;
     }
-    
+
     return _chromasound->position() / 44100.0f / 60 * _project.tempo();
 }
 

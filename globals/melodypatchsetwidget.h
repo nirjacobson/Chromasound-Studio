@@ -8,33 +8,33 @@
 #include "unselectablestringlistmodel.h"
 
 namespace Ui {
-class MelodyPatchsetWidget;
+    class MelodyPatchsetWidget;
 }
 
 class MelodyPatchsetWidget : public QWidget
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    explicit MelodyPatchsetWidget(QWidget *parent = nullptr, Application* app = nullptr);
-    ~MelodyPatchsetWidget();
+    public:
+        explicit MelodyPatchsetWidget(QWidget *parent = nullptr, Application* app = nullptr);
+        ~MelodyPatchsetWidget();
 
-    void setApplication(Application* app);
+        void setApplication(Application* app);
 
-    OPLL::Type selectedPatchset() const;
-    void setPatchset(const OPLL::Type type);
+        OPLL::Type selectedPatchset() const;
+        void setPatchset(const OPLL::Type type);
 
-signals:
-    void changed();
+    signals:
+        void changed();
 
-private:
-    Ui::MelodyPatchsetWidget *ui;
-    Application* _app;
+    private:
+        Ui::MelodyPatchsetWidget *ui;
+        Application* _app;
 
-    UnselectableStringListModel _listModel;
+        UnselectableStringListModel _listModel;
 
-private slots:
-    void patchsetChanged(const int index);
+    private slots:
+        void patchsetChanged(const int index);
 };
 
 #endif // MELODYPATCHSETWIDGET_H

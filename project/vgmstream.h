@@ -98,7 +98,7 @@ class VGMStream
             private:
                 OPLSettings _settings;
         };
-        
+
         VGMStream(const Format format = Format::CHROMASOUND);
         ~VGMStream();
 

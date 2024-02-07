@@ -9,7 +9,7 @@
 class Chromasound_Standin : public Chromasound
 {
     public:
-    Chromasound_Standin(const Project& project);
+        Chromasound_Standin(const Project& project);
 
         void play(const QByteArray&vgm, const int, const int, const bool = -1);
         void play();

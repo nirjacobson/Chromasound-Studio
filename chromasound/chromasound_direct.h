@@ -11,7 +11,7 @@
 class Chromasound_Direct : public Chromasound
 {
     public:
-    Chromasound_Direct(const Project& project);
+        Chromasound_Direct(const Project& project);
         ~Chromasound_Direct();
 
         quint32 position();
