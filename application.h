@@ -45,7 +45,7 @@ class Application : public QApplication
         void keyOff(int key);
 
         QUndoStack& undoStack();
-        
+
         Chromasound& chromasound();
 
         void ignoreCSTime(const bool ignore);
@@ -59,7 +59,7 @@ class Application : public QApplication
     private:
         MainWindow* _mainWindow;
         QUndoStack _undoStack;
-        
+
         Chromasound* _chromasound;
 
         Project _project;

@@ -41,7 +41,7 @@ Player::Player(QWidget *parent, Application* app)
     connect(ui->nextButton, &QToolButton::clicked, this, &Player::next);
 
     connect(ui->playlistTableView, &QTableView::doubleClicked, this, &Player::itemDoubleClicked);
-    
+
     connect(&_app->chromasound(), &Chromasound::stopped, this, &Player::chromasoundStopped);
 
     _timer.setInterval(1000 / 30);

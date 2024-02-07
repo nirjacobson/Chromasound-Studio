@@ -69,7 +69,7 @@ Chromasound_Direct::Chromasound_Direct(const Project& project)
 
     _vgmPlayer = new VGMPlayer(_spi, this);
     reset();
-    
+
     connect(_vgmPlayer, &VGMPlayer::pcmUploadStarted, this, &Chromasound::pcmUploadStarted);
     connect(_vgmPlayer, &VGMPlayer::pcmUploadFinished, this, &Chromasound::pcmUploadFinished);
 

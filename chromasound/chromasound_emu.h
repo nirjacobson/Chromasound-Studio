@@ -18,7 +18,7 @@
 class Chromasound_Emu : public Chromasound, public Producer<int16_t>
 {
     public:
-    Chromasound_Emu(const Project& project);
+        Chromasound_Emu(const Project& project);
         ~Chromasound_Emu();
 
     private:

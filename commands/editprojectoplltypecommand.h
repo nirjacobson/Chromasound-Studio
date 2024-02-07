@@ -10,19 +10,19 @@ class MainWindow;
 
 class EditProjectOPLLTypeCommand : public QUndoCommand
 {
-public:
-    EditProjectOPLLTypeCommand(MainWindow* window, Project& project, const OPLL::Type newType);
+    public:
+        EditProjectOPLLTypeCommand(MainWindow* window, Project& project, const OPLL::Type newType);
 
-private:
-    MainWindow* _mainWindow;
-    Project& _project;
-    OPLL::Type _oldType;
-    OPLL::Type _newType;
+    private:
+        MainWindow* _mainWindow;
+        Project& _project;
+        OPLL::Type _oldType;
+        OPLL::Type _newType;
 
-    // QUndoCommand interface
-public:
-    void undo();
-    void redo();
+        // QUndoCommand interface
+    public:
+        void undo();
+        void redo();
 };
 
 #endif // EDITPROJECTOPLLTYPECOMMAND_H
