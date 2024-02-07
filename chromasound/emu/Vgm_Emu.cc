@@ -272,13 +272,13 @@ void Vgm_Emu::mute_voices_( int mask )
 {
     Classic_Emu::mute_voices_( mask );
     dac_synth.output( &blip_buf );
+    dac_synth.volume( (mask & 0x40) ? 0.0 : 0.1115 / 256 * fm_gain * gain() );
     if ( uses_fm )
     {
         psg.output( (mask & 0x80) ? 0 : &blip_buf );
         ssg.output( (mask & 0x80) ? 0 : &blip_buf );
         if ( ym2612.enabled() )
         {
-            dac_synth.volume( (mask & 0x40) ? 0.0 : 0.1115 / 256 * fm_gain * gain() );
             ym2612.mute_voices( mask );
         }
 
@@ -407,10 +407,10 @@ blargg_err_t Vgm_Emu::start_track_( int track )
     psg.reset( GET_LE16( header().noise_feedback ), header().noise_width );
     ssg.reset();
 
-    dac_disabled = -1;
+    dac_disabled = 0;
     pos          = data + header_size;
     pcm_data     = pos;
-    dac_amp      = -1;
+    dac_amp      = 0;
     vgm_time     = 0;
     if ( GET_LE32( header().version ) >= 0x150 )
     {
