@@ -230,7 +230,6 @@ void Chromasound_Emu::setBufferSizes()
 quint32 Chromasound_Emu::position()
 {
     quint32 pos = _positionOffset + _position;
-    if (pos >= 11025) pos -= 11025; else pos = 0;
 
     if (_info.loop_length <= 0) {
         quint32 lengthSamples = _info.length / 1000.0f * 44100;
