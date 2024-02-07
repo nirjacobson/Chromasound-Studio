@@ -146,6 +146,7 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
 
     _stopped = true;
 
+    _player->setPriority(QThread::Priority::HighestPriority);
     _player->action(Player::Action::Load);
     _player->start();
 
