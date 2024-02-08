@@ -298,11 +298,6 @@ void Chromasound_Emu::play()
 {
     setEqualizer();
 
-    _loadLock.lock();
-    _player->buffer(_buffer);
-    _player->action(Player::Action::Load);
-    _loadLock.unlock();
-
     _output->start();
     _stopped = false;
 }
