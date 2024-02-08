@@ -146,8 +146,6 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
 
     _stopped = true;
 
-    _player->setPriority(QThread::Priority::HighestPriority);
-    _player->action(Player::Action::Load);
     _player->start();
 
     _output->start();
@@ -242,7 +240,7 @@ quint32 Chromasound_Emu::position()
 
     quint32 loopLengthSamples = _info.loop_length / 1000.0f * 44100;
     if (_info.intro_length <= 0) {
-        return (pos % loopLengthSamples);
+        return _positionOffset + (_position % loopLengthSamples);
     } else {
         quint32 introLengthSamples = _info.intro_length / 1000.0f * 44100;
         return ((pos < introLengthSamples)
@@ -287,6 +285,11 @@ void Chromasound_Emu::play(const QByteArray& vgm, const int currentOffsetSamples
 
     setEqualizer();
 
+    _loadLock.lock();
+    _player->buffer(_buffer);
+    _player->action(Player::Action::Load);
+    _loadLock.unlock();
+
     _stopped = false;
     _output->start();
 }
@@ -294,6 +297,12 @@ void Chromasound_Emu::play(const QByteArray& vgm, const int currentOffsetSamples
 void Chromasound_Emu::play()
 {
     setEqualizer();
+
+    _loadLock.lock();
+    _player->buffer(_buffer);
+    _player->action(Player::Action::Load);
+    _loadLock.unlock();
+
     _output->start();
     _stopped = false;
 }
