@@ -286,6 +286,7 @@ void Chromasound_Emu::play(const QByteArray& vgm, const int currentOffsetSamples
     setEqualizer();
 
     _loadLock.lock();
+    _bufferIdx = 0;
     _player->buffer(_buffer);
     _player->action(Player::Action::Load);
     _loadLock.unlock();
