@@ -2017,7 +2017,7 @@ QByteArray VGMStream::generateHeader(const Project& project, const QByteArray& d
     // YM2612 clock
     *(uint32_t*)&headerData[0x2C] = project.usesOPL() ? 0 : 7680000;
     // Data offset
-    *(uint32_t*)&headerData[0x34] = 0xC;
+    *(uint32_t*)&headerData[0x34] = headerData.size() - 0x34;
     // AY8910 clock
     *(uint32_t*)&headerData[0x74] = 1789773;
 
