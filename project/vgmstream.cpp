@@ -147,19 +147,31 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
 
     if (loopStart >= 0 && loopEnd >= 0) {
         pad(items, loopEnd);
-        items.prepend(new StreamLFOItem(loopStart, project.lfoMode()));
-        items.prepend(new StreamNoiseFrequencyItem(loopStart, project.ssgNoiseFrequency()));
-        items.prepend(new StreamEnvelopeFrequencyItem(loopStart, project.ssgEnvelopeFrequency()));
-        items.prepend(new StreamEnvelopeShapeItem(loopStart, project.ssgEnvelopeShape()));
-        items.prepend(new StreamUserToneItem(loopStart, project.userTone()));
+        if (project.usesOPN()) {
+            items.prepend(new StreamLFOItem(loopStart, project.lfoMode()));
+        }
+        if (project.usesSSG()) {
+            items.prepend(new StreamNoiseFrequencyItem(loopStart, project.ssgNoiseFrequency()));
+            items.prepend(new StreamEnvelopeFrequencyItem(loopStart, project.ssgEnvelopeFrequency()));
+            items.prepend(new StreamEnvelopeShapeItem(loopStart, project.ssgEnvelopeShape()));
+        }
+        if (project.usesOPL()) {
+            items.prepend(new StreamUserToneItem(loopStart, project.userTone()));
+        }
         totalSamples = encode(project, items, data, loopStart, nullptr, currentOffset, &_currentOffsetData, true);
     } else {
         pad(items, project.getPatternBarLength(pattern));
-        items.prepend(new StreamLFOItem(0, project.lfoMode()));
-        items.prepend(new StreamNoiseFrequencyItem(0, project.ssgNoiseFrequency()));
-        items.prepend(new StreamEnvelopeFrequencyItem(0, project.ssgEnvelopeFrequency()));
-        items.prepend(new StreamEnvelopeShapeItem(0, project.ssgEnvelopeShape()));
-        items.prepend(new StreamUserToneItem(0, project.userTone()));
+        if (project.usesOPN()) {
+            items.prepend(new StreamLFOItem(0, project.lfoMode()));
+        }
+        if (project.usesSSG()) {
+            items.prepend(new StreamNoiseFrequencyItem(0, project.ssgNoiseFrequency()));
+            items.prepend(new StreamEnvelopeFrequencyItem(0, project.ssgEnvelopeFrequency()));
+            items.prepend(new StreamEnvelopeShapeItem(0, project.ssgEnvelopeShape()));
+        }
+        if (project.usesOPL()) {
+            items.prepend(new StreamUserToneItem(0, project.userTone()));
+        }
         totalSamples = encode(project, items, data, 0, nullptr, currentOffset, &_currentOffsetData, true);
     }
 
@@ -289,85 +301,91 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
         pad(items, project.getLength());
     }
 
-    // LFO changes
-    QList<Playlist::LFOChange*> lfoChanges = project.playlist().lfoChanges();
+    if (project.usesOPN()) {
+        // LFO changes
+        QList<Playlist::LFOChange*> lfoChanges = project.playlist().lfoChanges();
 
-    std::sort(lfoChanges.begin(), lfoChanges.end(), [](Playlist::LFOChange* a, Playlist::LFOChange* b) {
-        return a->time() < b->time();
-    });
+        std::sort(lfoChanges.begin(), lfoChanges.end(), [](Playlist::LFOChange* a, Playlist::LFOChange* b) {
+            return a->time() < b->time();
+        });
 
-    auto mostRecentLFOChangeIt = std::find_if(lfoChanges.rbegin(), lfoChanges.rend(),
-    [&](Playlist::LFOChange* change) {
-        return change->time() <= currentOffset;
-    });
-    if (mostRecentLFOChangeIt == lfoChanges.rend()) {
-        items.prepend(new StreamLFOItem(currentOffset, project.lfoMode()));
-    } else {
-        items.prepend(new StreamLFOItem(currentOffset, (*mostRecentLFOChangeIt)->mode()));
+        auto mostRecentLFOChangeIt = std::find_if(lfoChanges.rbegin(), lfoChanges.rend(),
+        [&](Playlist::LFOChange* change) {
+            return change->time() <= currentOffset;
+        });
+        if (mostRecentLFOChangeIt == lfoChanges.rend()) {
+            items.prepend(new StreamLFOItem(currentOffset, project.lfoMode()));
+        } else {
+            items.prepend(new StreamLFOItem(currentOffset, (*mostRecentLFOChangeIt)->mode()));
+        }
     }
 
-    // SSG noise frequency
-    QList<Playlist::NoiseFrequencyChange*> nfChanges = project.playlist().noiseFrequencyChanges();
+    if (project.usesSSG()) {
+        // SSG noise frequency
+        QList<Playlist::NoiseFrequencyChange*> nfChanges = project.playlist().noiseFrequencyChanges();
 
-    std::sort(nfChanges.begin(), nfChanges.end(), [](Playlist::NoiseFrequencyChange* a, Playlist::NoiseFrequencyChange* b) {
-        return a->time() < b->time();
-    });
+        std::sort(nfChanges.begin(), nfChanges.end(), [](Playlist::NoiseFrequencyChange* a, Playlist::NoiseFrequencyChange* b) {
+            return a->time() < b->time();
+        });
 
-    auto mostRecentNFChangeIt = std::find_if(nfChanges.rbegin(), nfChanges.rend(), [&](Playlist::NoiseFrequencyChange* change) {
-        return change->time() <= currentOffset;
-    });
-    if (mostRecentNFChangeIt == nfChanges.rend()) {
-        items.prepend(new StreamNoiseFrequencyItem(currentOffset, project.ssgNoiseFrequency()));
-    } else {
-        items.prepend(new StreamNoiseFrequencyItem(currentOffset, (*mostRecentNFChangeIt)->frequency()));
+        auto mostRecentNFChangeIt = std::find_if(nfChanges.rbegin(), nfChanges.rend(), [&](Playlist::NoiseFrequencyChange* change) {
+            return change->time() <= currentOffset;
+        });
+        if (mostRecentNFChangeIt == nfChanges.rend()) {
+            items.prepend(new StreamNoiseFrequencyItem(currentOffset, project.ssgNoiseFrequency()));
+        } else {
+            items.prepend(new StreamNoiseFrequencyItem(currentOffset, (*mostRecentNFChangeIt)->frequency()));
+        }
+
+        // SSG envelope frequency
+        QList<Playlist::EnvelopeFrequencyChange*> efChanges = project.playlist().envelopeFrequencyChanges();
+
+        std::sort(efChanges.begin(), efChanges.end(), [](Playlist::EnvelopeFrequencyChange* a, Playlist::EnvelopeFrequencyChange* b) {
+            return a->time() < b->time();
+        });
+
+        auto mostRecentEFChangeIt = std::find_if(efChanges.rbegin(), efChanges.rend(), [&](Playlist::EnvelopeFrequencyChange* change) {
+            return change->time() <= currentOffset;
+        });
+        if (mostRecentEFChangeIt == efChanges.rend()) {
+            items.prepend(new StreamEnvelopeFrequencyItem(currentOffset, project.ssgEnvelopeFrequency()));
+        } else {
+            items.prepend(new StreamEnvelopeFrequencyItem(currentOffset, (*mostRecentEFChangeIt)->frequency()));
+        }
+
+        // SSG envelope shape
+        QList<Playlist::EnvelopeShapeChange*> esChanges = project.playlist().envelopeShapeChanges();
+
+        std::sort(esChanges.begin(), esChanges.end(), [](Playlist::EnvelopeShapeChange* a, Playlist::EnvelopeShapeChange* b) {
+            return a->time() < b->time();
+        });
+
+        auto mostRecentESChangeIt = std::find_if(esChanges.rbegin(), esChanges.rend(), [&](Playlist::EnvelopeShapeChange* change) {
+            return change->time() <= currentOffset;
+        });
+        if (mostRecentESChangeIt == esChanges.rend()) {
+            items.prepend(new StreamEnvelopeShapeItem(currentOffset, project.ssgEnvelopeShape()));
+        } else {
+            items.prepend(new StreamEnvelopeShapeItem(currentOffset, (*mostRecentESChangeIt)->shape()));
+        }
     }
 
-    // SSG envelope frequency
-    QList<Playlist::EnvelopeFrequencyChange*> efChanges = project.playlist().envelopeFrequencyChanges();
+    if (project.usesOPL()) {
+        // OPL User tone
+        QList<Playlist::UserToneChange*> utChanges = project.playlist().userToneChanges();
 
-    std::sort(efChanges.begin(), efChanges.end(), [](Playlist::EnvelopeFrequencyChange* a, Playlist::EnvelopeFrequencyChange* b) {
-        return a->time() < b->time();
-    });
+        std::sort(utChanges.begin(), utChanges.end(), [](Playlist::UserToneChange* a, Playlist::UserToneChange* b) {
+            return a->time() < b->time();
+        });
 
-    auto mostRecentEFChangeIt = std::find_if(efChanges.rbegin(), efChanges.rend(), [&](Playlist::EnvelopeFrequencyChange* change) {
-        return change->time() <= currentOffset;
-    });
-    if (mostRecentEFChangeIt == efChanges.rend()) {
-        items.prepend(new StreamEnvelopeFrequencyItem(currentOffset, project.ssgEnvelopeFrequency()));
-    } else {
-        items.prepend(new StreamEnvelopeFrequencyItem(currentOffset, (*mostRecentEFChangeIt)->frequency()));
-    }
-
-    // SSG envelope shape
-    QList<Playlist::EnvelopeShapeChange*> esChanges = project.playlist().envelopeShapeChanges();
-
-    std::sort(esChanges.begin(), esChanges.end(), [](Playlist::EnvelopeShapeChange* a, Playlist::EnvelopeShapeChange* b) {
-        return a->time() < b->time();
-    });
-
-    auto mostRecentESChangeIt = std::find_if(esChanges.rbegin(), esChanges.rend(), [&](Playlist::EnvelopeShapeChange* change) {
-        return change->time() <= currentOffset;
-    });
-    if (mostRecentESChangeIt == esChanges.rend()) {
-        items.prepend(new StreamEnvelopeShapeItem(currentOffset, project.ssgEnvelopeShape()));
-    } else {
-        items.prepend(new StreamEnvelopeShapeItem(currentOffset, (*mostRecentESChangeIt)->shape()));
-    }
-
-    // OPL User tone
-    QList<Playlist::UserToneChange*> utChanges = project.playlist().userToneChanges();
-
-    std::sort(utChanges.begin(), utChanges.end(), [](Playlist::UserToneChange* a, Playlist::UserToneChange* b) {
-        return a->time() < b->time();
-    });
-
-    auto mostRecentUTChangeIt = std::find_if(utChanges.rbegin(), utChanges.rend(), [&](Playlist::UserToneChange* change) {
-        return change->time() <= currentOffset;
-    });
-    if (mostRecentESChangeIt == esChanges.rend()) {
-        items.prepend(new StreamUserToneItem(currentOffset, project.userTone()));
-    } else {
-        items.prepend(new StreamUserToneItem(currentOffset, (*mostRecentUTChangeIt)->userTone()));
+        auto mostRecentUTChangeIt = std::find_if(utChanges.rbegin(), utChanges.rend(), [&](Playlist::UserToneChange* change) {
+            return change->time() <= currentOffset;
+        });
+        if (mostRecentUTChangeIt == utChanges.rend()) {
+            items.prepend(new StreamUserToneItem(currentOffset, project.userTone()));
+        } else {
+            items.prepend(new StreamUserToneItem(currentOffset, (*mostRecentUTChangeIt)->userTone()));
+        }
     }
 
     sortItems(items);
@@ -1423,7 +1441,10 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
         StreamUserToneItem* suti;
         if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
             encodeSettingsItem(ssi, data);
-        } else if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
+            continue;
+        }
+
+        if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
             encodeNoteItem(project, sni, data);
 
             if (sni->on() && sni->type() == Channel::Type::PCM) {
@@ -1434,16 +1455,28 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
                     pcmSize = pcmWritten + newPcmSize;
                 }
             }
-        } else if ((sli = dynamic_cast<StreamLFOItem*>(items[i])) != nullptr) {
+            continue;
+        }
+
+        if ((sli = dynamic_cast<StreamLFOItem*>(items[i])) != nullptr) {
             encodeLFOItem(sli, data);
-        } else if ((snfi = dynamic_cast<StreamNoiseFrequencyItem*>(items[i])) != nullptr) {
+            continue;
+        }
+
+        if ((snfi = dynamic_cast<StreamNoiseFrequencyItem*>(items[i])) != nullptr) {
             encodeNoiseFrequencyItem(snfi, data);
+            continue;
         } else if ((sefi = dynamic_cast<StreamEnvelopeFrequencyItem*>(items[i])) != nullptr) {
             encodeEnvelopeFrequencyItem(sefi, data);
+            continue;
         } else if ((sesi = dynamic_cast<StreamEnvelopeShapeItem*>(items[i])) != nullptr) {
             encodeEnvelopeShapeItem(sesi, data);
-        } else if ((suti = dynamic_cast<StreamUserToneItem*>(items[i])) != nullptr) {
+            continue;
+        }
+
+        if ((suti = dynamic_cast<StreamUserToneItem*>(items[i])) != nullptr) {
             encodeUserToneItem(suti, data);
+            continue;
         }
     }
     data.append(0x66);

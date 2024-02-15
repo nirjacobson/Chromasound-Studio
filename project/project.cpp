@@ -370,6 +370,28 @@ void Project::setOpllType(const OPLL::Type type)
     _opllType = type;
 }
 
+bool Project::usesOPN() const
+{
+    for (int i = 0; i < _channels.size(); i++) {
+        if (_channels[i].type() == Channel::Type::FM || _channels[i].type() == Channel::Type::PCM) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool Project::usesSSG() const
+{
+    for (int i = 0; i < _channels.size(); i++) {
+        if (_channels[i].type() == Channel::Type::SSG) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 bool Project::usesOPL() const
 {
     for (int i = 0; i < _channels.size(); i++) {

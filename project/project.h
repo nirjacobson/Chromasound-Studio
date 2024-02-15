@@ -113,6 +113,8 @@ class Project
         OPLL::Type opllType() const;
         void setOpllType(const OPLL::Type type);
 
+        bool usesOPN() const;
+        bool usesSSG() const;
         bool usesOPL() const;
         bool usesRhythm() const;
 

@@ -36,6 +36,7 @@ void VGMPlayer::setVGM(const QByteArray& vgm, const int currentOffsetData)
             _currentOffsetData -= dataOffset + 7 + size;
         }
     } else {
+        _pcmBlock.clear();
         _vgm = vgm.mid(dataOffset, gd3Offset - dataOffset);
         if (_currentOffsetData != 0) {
             _currentOffsetData -= dataOffset;
