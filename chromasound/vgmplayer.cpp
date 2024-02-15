@@ -286,7 +286,7 @@ void VGMPlayer::runPlayback()
         }
     }
 
-    _timer.restart();
+    _timer.start();
     _playing = true;
 
     while (true) {
@@ -351,7 +351,7 @@ void VGMPlayer::runPlayback()
         _time |= (int)rx << 16;
         spi_xfer(&tx, &rx);
         _time |= (int)rx << 24;
-        _timer.restart();
+        _timer.start();
         _timeLock.unlock();
     }
 }
