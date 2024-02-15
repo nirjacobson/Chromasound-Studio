@@ -157,14 +157,14 @@ void VGMPlayer::spi_write(char val)
 {
     while (_spiTimer.isValid() && _spiTimer.nsecsElapsed() < _spiDelay);
     spiWrite(_spi, &val, 1);
-    _spiTimer.restart();
+    _spiTimer.start();
 }
 
 void VGMPlayer::spi_xfer(char* tx, char* rx)
 {
     while (_spiTimer.isValid() && _spiTimer.nsecsElapsed() < _spiDelay);
     spiXfer(_spi, tx, rx, 1);
-    _spiTimer.restart();
+    _spiTimer.start();
 }
 
 void VGMPlayer::run() {
