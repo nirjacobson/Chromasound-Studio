@@ -295,6 +295,8 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
     applySettingsChanges2(project, items);
     addSettingsAtCurrentOffset(items, currentOffset);
 
+    sortItems(items);
+
     if (loopStart >= 0 && loopEnd >= 0) {
         pad(items, loopEnd);
     } else {
@@ -387,8 +389,6 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
             items.prepend(new StreamUserToneItem(currentOffset, (*mostRecentUTChangeIt)->userTone()));
         }
     }
-
-    sortItems(items);
 
     if (loopStart >= 0 && loopEnd >= 0) {
         totalSamples = encode(project, items, data, loopStart, nullptr, currentOffset, &_currentOffsetData, true);
