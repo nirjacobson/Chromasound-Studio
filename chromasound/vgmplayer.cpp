@@ -28,20 +28,18 @@ void VGMPlayer::setVGM(const QByteArray& vgm, const int currentOffsetData)
     quint32 gd3Offset = *(quint32*)&vgm.constData()[0x14] + 0x14;
     quint32 dataOffset = *(quint32*)&vgm.constData()[0x34] + 0x34;
 
+    _vgmLock.lock();
+
     if (vgm[dataOffset] == 0x67) {
         quint32 size = *(quint32*)&vgm.constData()[dataOffset + 3];
-        _vgmLock.lock();
         _pcmBlock = vgm.mid(dataOffset, 7 + size);
         _vgm = vgm.mid(dataOffset + 7 + size, gd3Offset - dataOffset - 7 - size);
-        _vgmLock.unlock();
         if (_currentOffsetData != 0) {
             _currentOffsetData -= dataOffset + 7 + size;
         }
     } else {
-        _vgmLock.lock();
         _pcmBlock.clear();
         _vgm = vgm.mid(dataOffset, gd3Offset - dataOffset);
-        _vgmLock.unlock();
         if (_currentOffsetData != 0) {
             _currentOffsetData -= dataOffset;
         }
@@ -56,6 +54,8 @@ void VGMPlayer::setVGM(const QByteArray& vgm, const int currentOffsetData)
     }
 
     _position = _currentOffsetData;
+
+    _vgmLock.unlock();
 }
 
 void VGMPlayer::setMode(const Mode mode)
