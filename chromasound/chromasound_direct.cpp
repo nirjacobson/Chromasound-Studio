@@ -210,10 +210,10 @@ void Chromasound_Direct::keyOff(int key)
 void Chromasound_Direct::reset()
 {
     gpioWrite(2, 0);
-    gpioDelay(100);
+    gpioDelay(10000);
 
     gpioWrite(2, 1);
-    gpioDelay(100);
+    gpioDelay(10000);
 
     _vgmStream.reset();
 }
