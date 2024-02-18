@@ -84,6 +84,8 @@ class VGMPlayer : public QThread
         QElapsedTimer _spiTimer;
         qint64 _spiDelay;
 
+        bool _fillWithPCM;
+
         quint32 fletcher32(const QByteArray& data);
         quint32 _lastPCMBlockChecksum;
 
