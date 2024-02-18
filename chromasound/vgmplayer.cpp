@@ -13,6 +13,7 @@ VGMPlayer::VGMPlayer(int spi, QObject *parent)
     , _playing(false)
     , _lastPCMBlockChecksum(0)
     , _spiDelay(SPI_DELAY_FAST)
+    , _fillWithPCM(false)
 {
 
 }
