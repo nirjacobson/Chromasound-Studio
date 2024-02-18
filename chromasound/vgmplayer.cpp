@@ -130,7 +130,7 @@ void VGMPlayer::setTime(const uint32_t time)
 
 void VGMPlayer::fillWithPCM(const bool enable)
 {
-    spi_write(enable ? FILL_WITH_PCM : STOP_FILL_WITH_PCM);
+    _fillWithPCM = enable;
 }
 
 quint32 VGMPlayer::fletcher32(const QByteArray& data)
@@ -190,6 +190,8 @@ void VGMPlayer::runInteractive()
     _paused = false;
     _stop = false;
 
+    bool fillWithPCM = _fillWithPCM;
+
     while (true) {
         _stopLock.lock();
         bool stop = _stop;
@@ -220,7 +222,13 @@ void VGMPlayer::runInteractive()
                     spi_write(_vgm[_position++]);
                 }
             }
+
             _vgmLock.unlock();
+        }
+
+        if (_fillWithPCM != fillWithPCM) {
+            spi_write(_fillWithPCM ? FILL_WITH_PCM : STOP_FILL_WITH_PCM);
+            fillWithPCM = _fillWithPCM;
         }
     }
 }
