@@ -185,17 +185,18 @@ void Chromasound_Direct::keyOn(const Project& project, const Channel::Type chann
 
 void Chromasound_Direct::keyOff(int key)
 {
-    if (!_keys.contains(key)) return;
+    _mutex.lock();
+
+    if (!_keys.contains(key)) {
+        _mutex.unlock();
+        return;
+    }
 
     VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(*_keys[key]);
-
-    _mutex.lock();
 
     _vgmStream.releaseChannel(sni->type(), sni->channel());
     sni->setOn(false);
     _items.append(sni);
-
-    _mutex.unlock();
 
     bool havePCM = false;
     for (auto it = _keys.begin(); it != _keys.end(); ++it) {
@@ -204,6 +205,8 @@ void Chromasound_Direct::keyOff(int key)
             break;
         }
     }
+
+    _mutex.unlock();
 
     if (!havePCM) {
         _vgmPlayer->fillWithPCM(false);
