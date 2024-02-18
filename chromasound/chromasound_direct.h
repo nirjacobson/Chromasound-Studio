@@ -4,9 +4,12 @@
 #include <QMap>
 
 #include <QTimer>
+#include <QMutex>
+
 #include "chromasound.h"
 #include "project/project.h"
 #include "project/vgmstream.h"
+#include "direct/vgmplayer.h"
 
 class Chromasound_Direct : public Chromasound
 {
@@ -28,7 +31,7 @@ class Chromasound_Direct : public Chromasound
         QList<VGMStream::Format> supportedFormats();
     private:
         const Project& _project;
-        int _spi;
+        int _gpioFd;
 
         VGMStream _vgmStream;
         QMap<int, VGMStream::StreamNoteItem*> _keys;

@@ -5,7 +5,6 @@
 #include <QMutex>
 #include <QElapsedTimer>
 
-#include <pigpio.h>
 
 class VGMPlayer : public QThread
 {
@@ -17,7 +16,8 @@ class VGMPlayer : public QThread
             Interactive
         };
 
-        explicit VGMPlayer(int spi, QObject *parent = nullptr);
+        explicit VGMPlayer(QObject *parent = nullptr);
+        ~VGMPlayer();
 
         void setVGM(const QByteArray& vgm, const int currentOffsetData);
         void setMode(const Mode mode);
@@ -58,7 +58,7 @@ class VGMPlayer : public QThread
 
         Mode _mode;
 
-        int _spi;
+        int _spiFd;
 
         QByteArray _vgm;
         QByteArray _pcmBlock;
@@ -89,8 +89,8 @@ class VGMPlayer : public QThread
         quint32 fletcher32(const QByteArray& data);
         quint32 _lastPCMBlockChecksum;
 
-        void spi_write(char val);
-        void spi_xfer(char* tx, char* rx);
+        void spi_write_wait(uint8_t val);
+        void spi_xfer_wait(uint8_t* tx, uint8_t* rx);
 
         void runInteractive();
         void runPlayback();

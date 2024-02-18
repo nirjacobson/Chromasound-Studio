@@ -40,8 +40,8 @@ set(PROJECT_SOURCES
     chromasound/chromasound_standin.h
     chromasound/chromasound_direct.cpp
     chromasound/chromasound_direct.h
-    chromasound/vgmplayer.cpp
-    chromasound/vgmplayer.h
+    chromasound/direct/vgmplayer.cpp
+    chromasound/direct/vgmplayer.h
     opn/algorithmdisplaywidget.cpp
     opn/algorithmdisplaywidget.h
     opn/algorithmgraph.cpp
@@ -449,6 +449,10 @@ set(PROJECT_SOURCES
     commands/editprojectoplltypecommand.cpp
     globals/unselectablestringlistmodel.h
     globals/unselectablestringlistmodel.cpp
+    chromasound/direct/gpio.h
+    chromasound/direct/gpio.cpp
+    chromasound/direct/spi.h
+    chromasound/direct/spi.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -475,7 +479,6 @@ else()
 endif()
 
 target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
-                                            /usr/lib64/libpigpio.so
                                             /usr/lib64/libportmidi.so
                                             /usr/lib64/libbson-1.0.so
                                             /usr/lib64/libz.so
