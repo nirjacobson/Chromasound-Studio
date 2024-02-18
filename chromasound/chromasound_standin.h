@@ -2,6 +2,7 @@
 #define CHROMASOUND_STANDIN_H
 
 #include <QTimer>
+#include <QElapsedTimer>
 
 #include "chromasound.h"
 #include "project/project.h"

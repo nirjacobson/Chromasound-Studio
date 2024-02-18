@@ -1,4 +1,5 @@
 #include "chromasound_direct.h"
+#include "direct/gpio.h"
 
 Chromasound_Direct::Chromasound_Direct(const Project& project)
     : _project(project)
@@ -59,15 +60,9 @@ Chromasound_Direct::Chromasound_Direct(const Project& project)
 
         _vgmPlayer->setVGM(data, 0);
     });
-    if (gpioInitialise() < 0) {
-        throw "Error initializing pigpio.";
-    }
+    _gpioFd = gpio_init();
 
-    if ((_spi = spiOpen(0, 2500000, 0)) < 0) {
-        throw "Error initializing SPI.";
-    }
-
-    _vgmPlayer = new VGMPlayer(_spi, this);
+    _vgmPlayer = new VGMPlayer(this);
     reset();
 
     connect(_vgmPlayer, &VGMPlayer::pcmUploadStarted, this, &Chromasound::pcmUploadStarted);
@@ -84,9 +79,7 @@ Chromasound_Direct::~Chromasound_Direct()
 
     delete _vgmPlayer;
 
-    spiClose(_spi);
-
-    gpioTerminate();
+    gpio_close(_gpioFd);
 }
 
 quint32 Chromasound_Direct::position()
@@ -217,11 +210,11 @@ void Chromasound_Direct::keyOff(int key)
 
 void Chromasound_Direct::reset()
 {
-    gpioWrite(2, 0);
-    gpioDelay(10000);
+    gpio_write(_gpioFd, 2, 0);
+    QThread::usleep(10000);
 
-    gpioWrite(2, 1);
-    gpioDelay(10000);
+    gpio_write(_gpioFd, 2, 1);
+    QThread::usleep(10000);
 
     _vgmStream.reset();
 }

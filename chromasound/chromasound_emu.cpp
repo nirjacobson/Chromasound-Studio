@@ -1,4 +1,7 @@
 #include "chromasound_emu.h"
+#include "emu/Vgm_Emu.h"
+#include "emu/Data_Reader.h"
+#include "Chromasound_Studio.h"
 
 static bool log_err(blargg_err_t err)
 {

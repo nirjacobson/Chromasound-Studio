@@ -3,16 +3,15 @@
 
 #include <QTimer>
 #include <QSettings>
+#include <QMutex>
+#include <QThread>
 
 #include "chromasound.h"
 #include "project/vgmstream.h"
 #include "emu/gme.h"
 #include "emu/Music_Emu.h"
-#include "emu/Vgm_Emu.h"
-#include "emu/Data_Reader.h"
 #include "emu/producer.h"
 #include "emu/audio_output.h"
-#include "Chromasound_Studio.h"
 #include "opl/opll.h"
 
 class Chromasound_Emu : public Chromasound, public Producer<int16_t>

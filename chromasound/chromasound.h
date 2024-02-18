@@ -6,7 +6,6 @@
 
 #include <QObject>
 
-#include "vgmplayer.h"
 #include "project/project.h"
 #include "project/vgmstream.h"
 #include "project/channel/channel.h"

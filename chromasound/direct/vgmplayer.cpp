@@ -1,9 +1,9 @@
 #include "vgmplayer.h"
+#include "spi.h"
 
-VGMPlayer::VGMPlayer(int spi, QObject *parent)
+VGMPlayer::VGMPlayer(QObject *parent)
     : QThread{parent}
     , _mode(Mode::Interactive)
-    , _spi(spi)
     , _time(0)
     , _position(0)
     , _stop(false)
@@ -15,7 +15,12 @@ VGMPlayer::VGMPlayer(int spi, QObject *parent)
     , _spiDelay(SPI_DELAY_FAST)
     , _fillWithPCM(false)
 {
+    _spiFd = spi_init();
+}
 
+VGMPlayer::~VGMPlayer()
+{
+    spi_close(_spiFd);
 }
 
 void VGMPlayer::setVGM(const QByteArray& vgm, const int currentOffsetData)
@@ -159,17 +164,17 @@ quint32 VGMPlayer::fletcher32(const QByteArray& data)
     return ((c1 << 16) | c0);
 }
 
-void VGMPlayer::spi_write(char val)
+void VGMPlayer::spi_write_wait(uint8_t val)
 {
     while (_spiTimer.isValid() && _spiTimer.nsecsElapsed() < _spiDelay);
-    spiWrite(_spi, &val, 1);
+    spi_write(_spiFd, val);
     _spiTimer.start();
 }
 
-void VGMPlayer::spi_xfer(char* tx, char* rx)
+void VGMPlayer::spi_xfer_wait(uint8_t* tx, uint8_t* rx)
 {
     while (_spiTimer.isValid() && _spiTimer.nsecsElapsed() < _spiDelay);
-    spiXfer(_spi, tx, rx, 1);
+    spi_xfer(_spiFd, tx, rx);
     _spiTimer.start();
 }
 
@@ -183,7 +188,7 @@ void VGMPlayer::run() {
 
 void VGMPlayer::runInteractive()
 {
-    char rx, tx;
+    uint8_t rx, tx;
     uint16_t space;
 
     _spiDelay = SPI_DELAY_FAST;
@@ -201,10 +206,10 @@ void VGMPlayer::runInteractive()
             break;
         }
 
-        spi_write(REPORT_SPACE);
-        spi_xfer(&tx, &rx);
+        spi_write_wait(REPORT_SPACE);
+        spi_xfer_wait(&tx, &rx);
         space = rx;
-        spi_xfer(&tx, &rx);
+        spi_xfer_wait(&tx, &rx);
         space |= (int)rx << 8;
 
         if (space > 0) {
@@ -213,14 +218,14 @@ void VGMPlayer::runInteractive()
             long count = space < remaining ? space : remaining;
 
             if (count > 0) {
-                spi_write(RECEIVE_DATA);
+                spi_write_wait(RECEIVE_DATA);
 
                 for (int i = 0; i < 4; i++) {
-                    spi_write(((char*)&count)[i]);
+                    spi_write_wait(((char*)&count)[i]);
                 }
 
                 for (int i = 0; i < count; i++) {
-                    spi_write(_vgm[_position++]);
+                    spi_write_wait(_vgm[_position++]);
                 }
             }
 
@@ -228,7 +233,7 @@ void VGMPlayer::runInteractive()
         }
 
         if (_fillWithPCM != fillWithPCM) {
-            spi_write(_fillWithPCM ? FILL_WITH_PCM : STOP_FILL_WITH_PCM);
+            spi_write_wait(_fillWithPCM ? FILL_WITH_PCM : STOP_FILL_WITH_PCM);
             fillWithPCM = _fillWithPCM;
         }
     }
@@ -236,7 +241,7 @@ void VGMPlayer::runInteractive()
 
 void VGMPlayer::runPlayback()
 {
-    char rx, tx;
+    uint8_t rx, tx;
     uint16_t space;
 
     bool loop = _loopOffsetData >= 0 && _loopOffsetSamples >= 0;
@@ -248,9 +253,9 @@ void VGMPlayer::runPlayback()
     _stop = false;
 
     if (paused) {
-        spi_write(PAUSE_RESUME);
+        spi_write_wait(PAUSE_RESUME);
     } else {
-        spi_write(RESET);
+        spi_write_wait(RESET);
 
         if (!_pcmBlock.isEmpty()) {
             quint32 lastPCMBlockChecksum = _lastPCMBlockChecksum;
@@ -268,10 +273,10 @@ void VGMPlayer::runPlayback()
                         return;
                     }
 
-                    spi_write(REPORT_SPACE);
-                    spi_xfer(&tx, &rx);
+                    spi_write_wait(REPORT_SPACE);
+                    spi_xfer_wait(&tx, &rx);
                     space = rx;
-                    spi_xfer(&tx, &rx);
+                    spi_xfer_wait(&tx, &rx);
                     space |= (int)rx << 8;
 
                     if (space > 0) {
@@ -279,14 +284,14 @@ void VGMPlayer::runPlayback()
                         long count = space < remaining ? space : remaining;
 
                         if (count > 0) {
-                            spi_write(RECEIVE_DATA);
+                            spi_write_wait(RECEIVE_DATA);
 
                             for (int i = 0; i < 4; i++) {
-                                spi_write(((char*)&count)[i]);
+                                spi_write_wait(((char*)&count)[i]);
                             }
 
                             for (int i = 0; i < count; i++) {
-                                spi_write(_pcmBlock[position++]);
+                                spi_write_wait(_pcmBlock[position++]);
                             }
                         }
 
@@ -309,7 +314,7 @@ void VGMPlayer::runPlayback()
         bool paused = _paused;
         _stopLock.unlock();
         if (stop) {
-            spi_write(paused ? PAUSE_RESUME : STOP);
+            spi_write_wait(paused ? PAUSE_RESUME : STOP);
             if (!paused) {
                 _timeLock.lock();
                 _time = 0;
@@ -319,10 +324,10 @@ void VGMPlayer::runPlayback()
             return;
         }
 
-        spi_write(REPORT_SPACE);
-        spi_xfer(&tx, &rx);
+        spi_write_wait(REPORT_SPACE);
+        spi_xfer_wait(&tx, &rx);
         space = rx;
-        spi_xfer(&tx, &rx);
+        spi_xfer_wait(&tx, &rx);
         space |= (int)rx << 8;
 
         if (space > 0) {
@@ -332,16 +337,16 @@ void VGMPlayer::runPlayback()
 
             if (count > 0) {
                 tx = RECEIVE_DATA;
-                spi_xfer(&tx, &rx);
+                spi_xfer_wait(&tx, &rx);
 
                 for (int i = 0; i < 4; i++) {
                     tx = ((char*)&count)[i];
-                    spi_xfer(&tx, &rx);
+                    spi_xfer_wait(&tx, &rx);
                 }
 
                 for (int i = 0; i < count; i++) {
                     tx = _vgm[_position++];
-                    spi_xfer(&tx, &rx);
+                    spi_xfer_wait(&tx, &rx);
 
                     if (i > 0) {
                         _spiDelay = !!rx ? SPI_DELAY_SLOW : SPI_DELAY_FAST;
@@ -356,14 +361,14 @@ void VGMPlayer::runPlayback()
         }
 
         _timeLock.lock();
-        spi_write(REPORT_TIME);
-        spi_xfer(&tx, &rx);
+        spi_write_wait(REPORT_TIME);
+        spi_xfer_wait(&tx, &rx);
         _time = rx;
-        spi_xfer(&tx, &rx);
+        spi_xfer_wait(&tx, &rx);
         _time |= (int)rx << 8;
-        spi_xfer(&tx, &rx);
+        spi_xfer_wait(&tx, &rx);
         _time |= (int)rx << 16;
-        spi_xfer(&tx, &rx);
+        spi_xfer_wait(&tx, &rx);
         _time |= (int)rx << 24;
         _timer.start();
         _timeLock.unlock();
