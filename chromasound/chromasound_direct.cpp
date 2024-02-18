@@ -188,9 +188,14 @@ void Chromasound_Direct::keyOff(int key)
     if (!_keys.contains(key)) return;
 
     VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(*_keys[key]);
+
+    _mutex.lock();
+
     _vgmStream.releaseChannel(sni->type(), sni->channel());
     sni->setOn(false);
     _items.append(sni);
+
+    _mutex.unlock();
 
     bool havePCM = false;
     for (auto it = _keys.begin(); it != _keys.end(); ++it) {
