@@ -12,6 +12,7 @@
 #include "chromasound/chromasound_standin.h"
 #include "chromasound/chromasound_direct.h"
 #include "chromasound/chromasound_emu.h"
+#include "chromasound/chromasound_proxy.h"
 #include "Chromasound_Studio.h"
 
 class MainWindow;
@@ -50,6 +51,8 @@ class Application : public QApplication
 
         void ignoreCSTime(const bool ignore);
 
+        void setupChromasound();
+
     signals:
         void pcmUploadStarted();
         void pcmUploadFinished();
@@ -60,6 +63,7 @@ class Application : public QApplication
         MainWindow* _mainWindow;
         QUndoStack _undoStack;
 
+        AudioOutput<int16_t>* _output;
         Chromasound* _chromasound;
 
         Project _project;

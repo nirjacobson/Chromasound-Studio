@@ -824,7 +824,7 @@ void MainWindow::settingsTriggered()
         connect(_settingsDialog, &SettingsDialog::done, this, [&]() {
             try {
                 Chromasound_Emu& emu = dynamic_cast<Chromasound_Emu&>(_app->chromasound());
-                emu.setBufferSizes();
+                _app->setupChromasound();
             } catch (std::bad_cast) {
 
             }

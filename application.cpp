@@ -7,18 +7,9 @@ Application::Application(int &argc, char **argv, int flags)
     , _paused(false)
     , _ignoreCSTime(false)
     , _mainWindow(nullptr)
+    , _output(nullptr)
 {
-    const char* chromasound = std::getenv("CHROMASOUND");
-
-    if (!chromasound) {
-        _chromasound = new Chromasound_Direct(_project);
-    } else if (QString(chromasound).toLower() == "standin") {
-        _chromasound = new Chromasound_Standin(_project);
-    } else if (QString(chromasound).toLower() == "emu") {
-        _chromasound = new Chromasound_Emu(_project);
-    } else {
-        _chromasound = new Chromasound_Direct(_project);
-    }
+    setupChromasound();
 
     connect(_chromasound, &Chromasound::pcmUploadStarted, this, &Application::pcmUploadStarted);
     connect(_chromasound, &Chromasound::pcmUploadFinished, this, &Application::pcmUploadFinished);
@@ -26,6 +17,11 @@ Application::Application(int &argc, char **argv, int flags)
 
 Application::~Application()
 {
+    if (_output) {
+        _output->stop();
+        _output->destroy();
+    }
+
     delete _chromasound;
 }
 
@@ -164,8 +160,10 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
             QByteArray vgm = VGMStream().compile(_project, pattern, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
             emit compileFinished();
 
+            if (_output) _output->stop();
             _chromasound->setPosition(loopStart);
             _chromasound->play(vgm, currentOffsetSamples, currentOffsetData, true);
+            if (_output) _output->start();
         }, loopStart, loopEnd);
 
         connect(thread, &QThread::finished, this, [=]() {
@@ -184,8 +182,10 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
             QByteArray vgm = VGMStream(VGMStream::Format::STANDARD).compile(_project, pattern, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
             emit compileFinished();
 
+            if (_output) _output->stop();
             _chromasound->setPosition(loopStart);
             _chromasound->play(vgm, currentOffsetSamples, currentOffsetData, true);
+            if (_output) _output->start();
         }, loopStart, loopEnd);
 
         connect(thread, &QThread::finished, this, [=]() {
@@ -218,8 +218,10 @@ void Application::play(const float loopStart, const float loopEnd)
             QByteArray vgm = VGMStream().compile(_project, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
             emit compileFinished();
 
+            if (_output) _output->stop();
             _chromasound->setPosition(loopStart);
             _chromasound->play(vgm, currentOffsetSamples, currentOffsetData, true);
+            if (_output) _output->start();
         }, loopStart, loopEnd);
 
         connect(thread, &QThread::finished, this, [=]() {
@@ -238,8 +240,10 @@ void Application::play(const float loopStart, const float loopEnd)
             QByteArray vgm = VGMStream(VGMStream::Format::STANDARD).compile(_project, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
             emit compileFinished();
 
+            if (_output) _output->stop();
             _chromasound->setPosition(loopStart);
             _chromasound->play(vgm, currentOffsetSamples, currentOffsetData, true);
+            if (_output) _output->start();
         }, loopStart, loopEnd);
 
         connect(thread, &QThread::finished, this, [=]() {
@@ -318,5 +322,58 @@ Chromasound& Application::chromasound()
 void Application::ignoreCSTime(const bool ignore)
 {
     _ignoreCSTime = ignore;
+}
+
+void Application::setupChromasound()
+{
+    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+
+    int audioBufferSize = settings.value(Chromasound_Studio::AudioBufferSize, 256).toInt();
+    int readBufferSize = settings.value(Chromasound_Studio::ReadBufferSize, 1).toInt();
+
+    int numChromasounds = 2;
+    QString chromasound1Type = "emu";
+    QString chromasound2Type = "emu";
+
+    Chromasound* chromasound1 = nullptr;
+    Chromasound* chromasound2 = nullptr;
+
+
+    bool wasRunning = false;
+    if (_output) {
+        _output->stop();
+        _output->destroy();
+    }
+
+    if (chromasound1Type == "emu" || (chromasound2Type == "emu" && numChromasounds == 2)) {
+        _output = AudioOutput<int16_t>::instance();
+        _output->init(audioBufferSize);
+    }
+
+    if (chromasound1Type == "emu") {
+        chromasound1 = new Chromasound_Emu(_project);
+        _output->producer(dynamic_cast<Chromasound_Emu*>(chromasound1));
+    } else {
+        chromasound1 = new Chromasound_Direct(_project);
+    }
+
+    if (numChromasounds == 2) {
+        if (chromasound2Type == "emu") {
+            chromasound2 = new Chromasound_Emu(_project);
+            _output->producer(dynamic_cast<Chromasound_Emu*>(chromasound2));
+        } else {
+            chromasound2 = new Chromasound_Direct(_project);
+        }
+    }
+
+    if (numChromasounds == 1) {
+        _chromasound = chromasound1;
+    } else {
+        _chromasound = new Chromasound_Proxy(chromasound1, chromasound2);
+    }
+
+    if (chromasound1Type == "emu" || (chromasound2Type == "emu" && numChromasounds == 2)) {
+        _output->start();
+    }
 }
 
