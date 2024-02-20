@@ -455,6 +455,15 @@ set(PROJECT_SOURCES
     chromasound/direct/spi.cpp
     chromasound/chromasound_proxy.h
     chromasound/chromasound_proxy.cpp
+    dialogs/settings/emulationsettingswidget.h
+    dialogs/settings/emulationsettingswidget.cpp
+    dialogs/settings/emulationsettingswidget.ui
+    dialogs/settings/playbacksettingswidget.h
+    dialogs/settings/playbacksettingswidget.cpp
+    dialogs/settings/playbacksettingswidget.ui
+    dialogs/settings/chromasoundlayoutwidget.h
+    dialogs/settings/chromasoundlayoutwidget.cpp
+    dialogs/settings/chromasoundlayoutwidget.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

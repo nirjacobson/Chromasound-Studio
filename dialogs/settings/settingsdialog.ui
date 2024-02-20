@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>517</width>
-    <height>284</height>
+    <height>389</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -21,213 +21,30 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
-    <widget class="QGroupBox" name="groupBox_2">
+    <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Emulation Adjustments</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="3">
-       <widget class="QLabel" name="audioBufferSizeLabel">
-        <property name="text">
-         <string>Audio buffer size:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QLabel" name="readBufferSizeLabel">
-        <property name="text">
-         <string>Read buffer size:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="4">
-       <widget class="QSpinBox" name="readBufferSizeSpinBox">
-        <property name="maximumSize">
-         <size>
-          <width>72</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>1000</number>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="trebleLabel">
-        <property name="text">
-         <string>Treble:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QSpinBox" name="bassSpinBox">
-        <property name="maximumSize">
-         <size>
-          <width>64</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="sizeIncrement">
-         <size>
-          <width>64</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="minimum">
-         <number>-100</number>
-        </property>
-        <property name="maximum">
-         <number>100</number>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="0">
-       <widget class="QLabel" name="bassLabel">
-        <property name="text">
-         <string>Bass:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4">
-       <widget class="QSpinBox" name="audioBufferSizeSpinBox">
-        <property name="maximumSize">
-         <size>
-          <width>72</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="minimum">
-         <number>0</number>
-        </property>
-        <property name="maximum">
-         <number>44100</number>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QSpinBox" name="trebleSpinBox">
-        <property name="maximumSize">
-         <size>
-          <width>64</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="sizeIncrement">
-         <size>
-          <width>64</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="minimum">
-         <number>-100</number>
-        </property>
-        <property name="maximum">
-         <number>100</number>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2" rowspan="2">
-       <widget class="Line" name="line">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="5">
-       <widget class="QLabel" name="framesLabel">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>frames</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="5">
-       <widget class="QLabel" name="audioBuffersLabel">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>audio buffers</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QGroupBox" name="groupBox_3">
-     <property name="title">
-      <string>Playback Format</string>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QRadioButton" name="chromasoundRadioButton">
-        <property name="text">
-         <string>Chromasound</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="chromasoundLabel">
-        <property name="styleSheet">
-         <string notr="true">color: gray;</string>
-        </property>
-        <property name="text">
-         <string>More compact.</string>
-        </property>
-        <property name="indent">
-         <number>20</number>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="standardRadioButton">
-        <property name="text">
-         <string>Standard</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="standardLabel">
-        <property name="styleSheet">
-         <string notr="true">color: gray;</string>
-        </property>
-        <property name="text">
-         <string>Compatible with all VGM players.</string>
-        </property>
-        <property name="indent">
-         <number>20</number>
-        </property>
-       </widget>
+       <widget class="EmulationSettingsWidget" name="emulationSettingsWidget" native="true"/>
       </item>
      </layout>
     </widget>
    </item>
    <item row="2" column="0">
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Playback Format</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="PlaybackSettingsWidget" name="playbackSettingsWidget" native="true"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="5" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -237,16 +54,53 @@
      </property>
     </widget>
    </item>
+   <item row="4" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="3" column="0">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Chromasound Layout</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="0">
+       <widget class="ChromasoundLayoutWidget" name="chromasoundLayoutWidget" native="true"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
   </layout>
  </widget>
- <tabstops>
-  <tabstop>bassSpinBox</tabstop>
-  <tabstop>trebleSpinBox</tabstop>
-  <tabstop>audioBufferSizeSpinBox</tabstop>
-  <tabstop>readBufferSizeSpinBox</tabstop>
-  <tabstop>chromasoundRadioButton</tabstop>
-  <tabstop>standardRadioButton</tabstop>
- </tabstops>
+ <customwidgets>
+  <customwidget>
+   <class>EmulationSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>dialogs/settings/emulationsettingswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PlaybackSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>dialogs/settings/playbacksettingswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ChromasoundLayoutWidget</class>
+   <extends>QWidget</extends>
+   <header>dialogs/settings/chromasoundlayoutwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

@@ -13,9 +13,15 @@ class Chromasound_Studio {
         static const QString AudioBufferSize;
         static const QString ReadBufferSize;
         static const QString Format;
+        static const QString NumberOfChromasounds;
+        static const QString Chromasound1;
+        static const QString Chromasound2;
 
         static const QString Chromasound;
         static const QString Standard;
+
+        static const QString Emulator;
+        static const QString ChromasoundDirect;
 };
 
 #endif // CHROMASOUND_STUDIO_H
