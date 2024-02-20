@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>EmulationSettingsWidget</class>
+ <widget class="QWidget" name="EmulationSettingsWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>591</width>
+    <height>72</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item row="0" column="0">
+    <widget class="QLabel" name="bassLabel">
+     <property name="text">
+      <string>Bass:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QSpinBox" name="bassSpinBox">
+     <property name="maximumSize">
+      <size>
+       <width>64</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="sizeIncrement">
+      <size>
+       <width>64</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="minimum">
+      <number>-100</number>
+     </property>
+     <property name="maximum">
+      <number>100</number>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2" rowspan="2">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3">
+    <widget class="QLabel" name="audioBufferSizeLabel">
+     <property name="text">
+      <string>Audio buffer size:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="4">
+    <widget class="QSpinBox" name="audioBufferSizeSpinBox">
+     <property name="maximumSize">
+      <size>
+       <width>72</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="minimum">
+      <number>0</number>
+     </property>
+     <property name="maximum">
+      <number>44100</number>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="5">
+    <widget class="QLabel" name="framesLabel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>frames</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="trebleLabel">
+     <property name="text">
+      <string>Treble:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QSpinBox" name="trebleSpinBox">
+     <property name="maximumSize">
+      <size>
+       <width>64</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="sizeIncrement">
+      <size>
+       <width>64</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="minimum">
+      <number>-100</number>
+     </property>
+     <property name="maximum">
+      <number>100</number>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <widget class="QLabel" name="readBufferSizeLabel">
+     <property name="text">
+      <string>Read buffer size:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="4">
+    <widget class="QSpinBox" name="readBufferSizeSpinBox">
+     <property name="maximumSize">
+      <size>
+       <width>72</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>1000</number>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="5">
+    <widget class="QLabel" name="audioBuffersLabel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>audio buffers</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

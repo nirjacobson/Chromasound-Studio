@@ -822,12 +822,7 @@ void MainWindow::settingsTriggered()
             _settingsDialogWindow = nullptr;
         });
         connect(_settingsDialog, &SettingsDialog::done, this, [&]() {
-            try {
-                Chromasound_Emu& emu = dynamic_cast<Chromasound_Emu&>(_app->chromasound());
-                _app->setupChromasound();
-            } catch (std::bad_cast) {
-
-            }
+            _app->setupChromasound();
         });
         window->setAttribute(Qt::WA_DeleteOnClose);
         window->setWidget(_settingsDialog);

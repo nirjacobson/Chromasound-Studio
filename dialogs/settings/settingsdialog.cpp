@@ -7,18 +7,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
-    ui->bassSpinBox->setValue(settings.value(Chromasound_Studio::EqualizerBass, 0).toInt());
-    ui->trebleSpinBox->setValue(settings.value(Chromasound_Studio::EqualizerTreble, 0).toInt());
-    ui->audioBufferSizeSpinBox->setValue(settings.value(Chromasound_Studio::AudioBufferSize, 256).toInt());
-    ui->readBufferSizeSpinBox->setValue(settings.value(Chromasound_Studio::ReadBufferSize, 1).toInt());
-
-    if (settings.value("format", Chromasound_Studio::Chromasound).toString() == Chromasound_Studio::Chromasound) {
-        ui->chromasoundRadioButton->setChecked(true);
-    } else {
-        ui->standardRadioButton->setChecked(true);
-    }
-
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::close);
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &SettingsDialog::accepted);
 }
@@ -32,11 +20,14 @@ void SettingsDialog::accepted()
 {
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 
-    settings.setValue(Chromasound_Studio::EqualizerBass, ui->bassSpinBox->value());
-    settings.setValue(Chromasound_Studio::EqualizerTreble, ui->trebleSpinBox->value());
-    settings.setValue(Chromasound_Studio::AudioBufferSize, ui->audioBufferSizeSpinBox->value());
-    settings.setValue(Chromasound_Studio::ReadBufferSize, ui->readBufferSizeSpinBox->value());
-    settings.setValue(Chromasound_Studio::Format, ui->chromasoundRadioButton->isChecked() ? Chromasound_Studio::Chromasound : Chromasound_Studio::Standard);
+    settings.setValue(Chromasound_Studio::EqualizerBass, ui->emulationSettingsWidget->bass());
+    settings.setValue(Chromasound_Studio::EqualizerTreble, ui->emulationSettingsWidget->treble());
+    settings.setValue(Chromasound_Studio::AudioBufferSize, ui->emulationSettingsWidget->audioBufferSize());
+    settings.setValue(Chromasound_Studio::ReadBufferSize, ui->emulationSettingsWidget->readBufferSize());
+    settings.setValue(Chromasound_Studio::Format, ui->playbackSettingsWidget->format());
+    settings.setValue(Chromasound_Studio::NumberOfChromasounds, ui->chromasoundLayoutWidget->quantity());
+    settings.setValue(Chromasound_Studio::Chromasound1, ui->chromasoundLayoutWidget->chromasound1());
+    settings.setValue(Chromasound_Studio::Chromasound2, ui->chromasoundLayoutWidget->chromasound2());
 
     emit done();
 

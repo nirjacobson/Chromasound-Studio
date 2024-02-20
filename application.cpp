@@ -331,26 +331,24 @@ void Application::setupChromasound()
     int audioBufferSize = settings.value(Chromasound_Studio::AudioBufferSize, 256).toInt();
     int readBufferSize = settings.value(Chromasound_Studio::ReadBufferSize, 1).toInt();
 
-    int numChromasounds = 2;
-    QString chromasound1Type = "emu";
-    QString chromasound2Type = "emu";
+    int numChromasounds = settings.value(Chromasound_Studio::NumberOfChromasounds, 1).toInt();
+    QString chromasound1Type = settings.value(Chromasound_Studio::Chromasound1, Chromasound_Studio::Emulator).toString();
+    QString chromasound2Type = settings.value(Chromasound_Studio::Chromasound2, Chromasound_Studio::Emulator).toString();
 
     Chromasound* chromasound1 = nullptr;
     Chromasound* chromasound2 = nullptr;
 
-
-    bool wasRunning = false;
     if (_output) {
         _output->stop();
         _output->destroy();
     }
 
-    if (chromasound1Type == "emu" || (chromasound2Type == "emu" && numChromasounds == 2)) {
+    if (chromasound1Type == Chromasound_Studio::Emulator || (chromasound2Type == Chromasound_Studio::Emulator && numChromasounds == 2)) {
         _output = AudioOutput<int16_t>::instance();
         _output->init(audioBufferSize);
     }
 
-    if (chromasound1Type == "emu") {
+    if (chromasound1Type == Chromasound_Studio::Emulator) {
         chromasound1 = new Chromasound_Emu(_project);
         _output->producer(dynamic_cast<Chromasound_Emu*>(chromasound1));
     } else {
@@ -358,7 +356,7 @@ void Application::setupChromasound()
     }
 
     if (numChromasounds == 2) {
-        if (chromasound2Type == "emu") {
+        if (chromasound2Type == Chromasound_Studio::Emulator) {
             chromasound2 = new Chromasound_Emu(_project);
             _output->producer(dynamic_cast<Chromasound_Emu*>(chromasound2));
         } else {
@@ -372,7 +370,7 @@ void Application::setupChromasound()
         _chromasound = new Chromasound_Proxy(chromasound1, chromasound2);
     }
 
-    if (chromasound1Type == "emu" || (chromasound2Type == "emu" && numChromasounds == 2)) {
+    if (chromasound1Type == Chromasound_Studio::Emulator || (chromasound2Type == Chromasound_Studio::Emulator && numChromasounds == 2)) {
         _output->start();
     }
 }
