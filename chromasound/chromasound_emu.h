@@ -27,7 +27,6 @@ class Chromasound_Emu : public Chromasound, public Producer<int16_t>
 
         Music_Emu* _emu;
         gme_type_t _type;
-        AudioOutput<int16_t>* _output;
 
         Music_Emu::sample_t* _buffers[2];
         int _buffer;
@@ -54,6 +53,7 @@ class Chromasound_Emu : public Chromasound, public Producer<int16_t>
         Player* _player;
 
         void setEqualizer();
+        void setBufferSizes();
 
         // Chromasound interface
     public:
@@ -68,8 +68,6 @@ class Chromasound_Emu : public Chromasound, public Producer<int16_t>
         void keyOff(int key);
 
         QList<VGMStream::Format> supportedFormats();
-
-        void setBufferSizes();
 
     public:
         void setOPLLPatchset(OPLL::Type type);

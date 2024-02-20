@@ -27,12 +27,12 @@ class AudioOutput : public Consumer<T> {
     private:
         static AudioOutput* _instance;
 
-        static PaError _paError;
-        static PaStream* _paStream;
+        PaError _paError;
+        PaStream* _paStream;
 
-        static bool _running;
+        bool _running;
 
-        static int _framesPerBuffer;
+        int _framesPerBuffer;
 
         static int paCallback(const void* inputBuffer,
                               void* outputBuffer,
@@ -44,14 +44,6 @@ class AudioOutput : public Consumer<T> {
 
 template <typename T>
 AudioOutput<T>* AudioOutput<T>::_instance = nullptr;
-template <typename T>
-PaError AudioOutput<T>::_paError;
-template <typename T>
-PaStream* AudioOutput<T>::_paStream;
-template <typename T>
-bool AudioOutput<T>::_running;
-template <typename T>
-int AudioOutput<T>::_framesPerBuffer;
 
 template <typename T>
 AudioOutput<T>* AudioOutput<T>::instance() {
@@ -192,12 +184,19 @@ int AudioOutput<T>::paCallback(const void* inputBuffer,
     (void) inputBuffer; /* Prevent unused variable warning. */
     (void) userData;
 
-    T* buffer = instance()->consume(framesPerBuffer * 2);
+    bool activeA = instance()->producerA() && instance()->producerA()->active();
+    bool activeB = instance()->producerB() && instance()->producerB()->active();
+
+    T* bufferA = activeA ? instance()->consumeA(framesPerBuffer * 2) : nullptr;
+    T* bufferB = activeB ? instance()->consumeB(framesPerBuffer * 2) : nullptr;
 
     for( i=0, j=0; i<framesPerBuffer; i++)
     {
-        *out++ = buffer[j++]; // left
-        *out++ = buffer[j++]; // right
+        *out++ = (activeA ? bufferA[j] : 0) + (activeB ? bufferB[j] : 0); // left
+        j++;
+
+        *out++ = (activeA ? bufferA[j] : 0) + (activeB ? bufferB[j] : 0); // right
+        j++;
     }
 
     return 0;

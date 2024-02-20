@@ -25,7 +25,6 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
     , _buffer(0)
     , _bufferIdx(0)
     , _player(new Player(*this))
-    , _output(nullptr)
 {
 
     _timer.setSingleShot(true);
@@ -144,21 +143,14 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
 
     _buffers[0] = nullptr;
     _buffers[1] = nullptr;
-    setBufferSizes(); // initializes _output
+    setBufferSizes();
     setEqualizer();
 
-    _stopped = true;
-
     _player->start();
-
-    _output->start();
 }
 
 Chromasound_Emu::~Chromasound_Emu()
 {
-    _output->stop();
-    _output->destroy();
-
     _player->action(Player::Action::Exit);
     _player->quit();
     _player->wait();
@@ -198,15 +190,6 @@ void Chromasound_Emu::setBufferSizes()
     int audioBufferSize = settings.value(Chromasound_Studio::AudioBufferSize, 256).toInt();
     int readBufferSize = settings.value(Chromasound_Studio::ReadBufferSize, 1).toInt();
 
-    bool wasRunning = false;
-    if (_output) {
-        wasRunning = _output->isRunning();
-        if (wasRunning) {
-            _output->stop();
-        }
-        _output->destroy();
-    }
-
     _framesPerReadBuffer = audioBufferSize * readBufferSize;
 
     if (_buffers[0] != nullptr && _buffers[1] != nullptr) {
@@ -218,14 +201,6 @@ void Chromasound_Emu::setBufferSizes()
     _buffers[1] = new Music_Emu::sample_t[_framesPerReadBuffer * 2];
     memset(_buffers[0], 0, _framesPerReadBuffer * 2 * sizeof(int16_t));
     memset(_buffers[1], 0, _framesPerReadBuffer * 2 * sizeof(int16_t));
-
-    _output = AudioOutput<int16_t>::instance();
-    _output->producer(this);
-    _output->init(audioBufferSize);
-
-    if (wasRunning) {
-        _output->start();
-    }
 }
 
 quint32 Chromasound_Emu::position()
@@ -260,8 +235,6 @@ void Chromasound_Emu::setPosition(const float pos)
 
 void Chromasound_Emu::play(const QByteArray& vgm, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection)
 {
-    _output->stop();
-
     Mem_File_Reader reader(vgm.constData(), vgm.size());
     if (log_err(_emu->load(reader)))
         return;
@@ -295,21 +268,21 @@ void Chromasound_Emu::play(const QByteArray& vgm, const int currentOffsetSamples
     _loadLock.unlock();
 
     _stopped = false;
-    _output->start();
+    activate();
 }
 
 void Chromasound_Emu::play()
 {
     setEqualizer();
 
-    _output->start();
     _stopped = false;
+    activate();
 }
 
 void Chromasound_Emu::pause()
 {
-    _output->stop();
     _stopped = true;
+    deactivate();
 }
 
 void Chromasound_Emu::stop()

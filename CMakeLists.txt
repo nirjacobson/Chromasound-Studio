@@ -453,6 +453,8 @@ set(PROJECT_SOURCES
     chromasound/direct/gpio.cpp
     chromasound/direct/spi.h
     chromasound/direct/spi.cpp
+    chromasound/chromasound_proxy.h
+    chromasound/chromasound_proxy.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
