@@ -37,20 +37,20 @@ QString ChromasoundLayoutWidget::chromasound1() const
 {
     if (quantity() == 1) {
         return ui->implementationComboBox->currentIndex() == 0
-                   ? Chromasound_Studio::Emulator
-                   : Chromasound_Studio::ChromasoundDirect;
+               ? Chromasound_Studio::Emulator
+               : Chromasound_Studio::ChromasoundDirect;
     }
 
     return ui->playbackComboBox->currentIndex() == 0
-               ? Chromasound_Studio::Emulator
-               : Chromasound_Studio::ChromasoundDirect;
+           ? Chromasound_Studio::Emulator
+           : Chromasound_Studio::ChromasoundDirect;
 }
 
 QString ChromasoundLayoutWidget::chromasound2() const
 {
     return ui->interactiveComboBox->currentIndex() == 0
-               ? Chromasound_Studio::Emulator
-               : Chromasound_Studio::ChromasoundDirect;
+           ? Chromasound_Studio::Emulator
+           : Chromasound_Studio::ChromasoundDirect;
 }
 
 void ChromasoundLayoutWidget::quantityChanged(int index)
