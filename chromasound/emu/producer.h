@@ -27,19 +27,19 @@ Producer<T>::Producer()
 template<typename T>
 bool Producer<T>::active() const
 {
-        return _active;
+    return _active;
 }
 
 template<typename T>
 void Producer<T>::activate()
 {
-        _active = true;
+    _active = true;
 }
 
 template<typename T>
 void Producer<T>::deactivate()
 {
-        _active = false;
+    _active = false;
 }
 
 #endif // PRODUCER_H
