@@ -453,8 +453,8 @@ set(PROJECT_SOURCES
     chromasound/direct/gpio.cpp
     chromasound/direct/spi.h
     chromasound/direct/spi.cpp
-    chromasound/chromasound_proxy.h
-    chromasound/chromasound_proxy.cpp
+    chromasound/chromasound_dual.h
+    chromasound/chromasound_dual.cpp
     dialogs/settings/emulationsettingswidget.h
     dialogs/settings/emulationsettingswidget.cpp
     dialogs/settings/emulationsettingswidget.ui

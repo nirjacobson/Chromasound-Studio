@@ -372,7 +372,7 @@ void Application::setupChromasound()
     if (numChromasounds == 1) {
         _chromasound = chromasound1;
     } else {
-        _chromasound = new Chromasound_Proxy(chromasound1, chromasound2);
+        _chromasound = new Chromasound_Dual(chromasound1, chromasound2);
     }
 
     if (chromasound1Type == Chromasound_Studio::Emulator || (chromasound2Type == Chromasound_Studio::Emulator && numChromasounds == 2)) {

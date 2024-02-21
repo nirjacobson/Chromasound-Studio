@@ -12,7 +12,7 @@
 #include "chromasound/chromasound_standin.h"
 #include "chromasound/chromasound_direct.h"
 #include "chromasound/chromasound_emu.h"
-#include "chromasound/chromasound_proxy.h"
+#include "chromasound/chromasound_dual.h"
 #include "Chromasound_Studio.h"
 
 class MainWindow;
