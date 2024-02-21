@@ -8,6 +8,7 @@ Application::Application(int &argc, char **argv, int flags)
     , _ignoreCSTime(false)
     , _mainWindow(nullptr)
     , _output(nullptr)
+    , _chromasound(nullptr)
 {
     setupChromasound();
 
@@ -362,6 +363,10 @@ void Application::setupChromasound()
         } else {
             chromasound2 = new Chromasound_Direct(_project);
         }
+    }
+
+    if (_chromasound) {
+        delete _chromasound;
     }
 
     if (numChromasounds == 1) {
