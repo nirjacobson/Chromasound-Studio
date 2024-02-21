@@ -1,13 +1,13 @@
-#ifndef CHROMASOUND_PROXY_H
-#define CHROMASOUND_PROXY_H
+#ifndef CHROMASOUND_DUAL_H
+#define CHROMASOUND_DUAL_H
 
 #include "chromasound.h"
 
-class Chromasound_Proxy : public Chromasound
+class Chromasound_Dual : public Chromasound
 {
     public:
-        Chromasound_Proxy(Chromasound* chromasound1, Chromasound* chromasound2);
-        ~Chromasound_Proxy();
+    Chromasound_Dual(Chromasound* chromasound1, Chromasound* chromasound2);
+        ~Chromasound_Dual();
 
         // Chromasound interface
     public:
@@ -27,4 +27,4 @@ class Chromasound_Proxy : public Chromasound
         Chromasound* _chromasound2;
 };
 
-#endif // CHROMASOUND_PROXY_H
+#endif // CHROMASOUND_DUAL_H
