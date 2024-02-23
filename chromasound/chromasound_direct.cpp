@@ -24,9 +24,8 @@ Chromasound_Direct::Chromasound_Direct(const Project& project)
                     }
                     continue;
                 } else {
-                    delete _keys[sni->note().key()];
-                    _keys.remove(sni->note().key());
-                    continue;
+                    int key = sni->note().key();
+                    _keys.remove(key);
                 }
             }
             delete item;
