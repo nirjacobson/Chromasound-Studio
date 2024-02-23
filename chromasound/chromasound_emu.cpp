@@ -356,6 +356,9 @@ void Chromasound_Emu::keyOff(int key)
     if (!_keys.contains(key)) return;
 
     VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(*_keys[key]);
+
+    _mutex.lock();
+
     _vgmStream.releaseChannel(sni->type(), sni->channel());
     sni->setOn(false);
     _items.append(sni);
@@ -371,6 +374,8 @@ void Chromasound_Emu::keyOff(int key)
     if (!havePCM) {
         _emu->set_fill_past_end_with_pcm(false);
     }
+
+    _mutex.unlock();
 
     _timer.start(20);
 }
