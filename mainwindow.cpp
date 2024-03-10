@@ -1217,10 +1217,8 @@ void MainWindow::dragEnterEvent(QDragEnterEvent* event)
 void MainWindow::dropEvent(QDropEvent* event)
 {
     QByteArray data = event->mimeData()->data("text/uri-list");
-    QString path(data);
-    path = path.mid(QString("file://").length());
-    path = path.replace("%20", " ");
-    path = path.replace("\r\n", "");
+    QStringList paths = QString(data).split("\r\n");
+    QString path = paths.first().mid(QString("file://").length()).replace("%20", " ");
 
     QFile file(path);
     QFileInfo fileInfo(file);
