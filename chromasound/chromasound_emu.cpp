@@ -25,8 +25,9 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
     , _buffer(0)
     , _bufferIdx(0)
     , _player(new Player(*this))
+    , _stopped(true)
+    , _haveInfo(false)
 {
-
     _timer.setSingleShot(true);
 
     _timer.callOnTimeout([&]() {
@@ -207,6 +208,10 @@ quint32 Chromasound_Emu::position()
 {
     quint32 pos = _positionOffset + _position;
 
+    if (!_haveInfo) {
+        return pos;
+    }
+
     if (_info.loop_length <= 0) {
         quint32 lengthSamples = _info.length / 1000.0f * 44100;
         if (pos >= lengthSamples) {
@@ -218,7 +223,7 @@ quint32 Chromasound_Emu::position()
 
     quint32 loopLengthSamples = _info.loop_length / 1000.0f * 44100;
     if (_info.intro_length <= 0) {
-        return _positionOffset + (_position % loopLengthSamples);
+        return pos % loopLengthSamples;
     } else {
         quint32 introLengthSamples = _info.intro_length / 1000.0f * 44100;
         return ((pos < introLengthSamples)
@@ -235,6 +240,7 @@ void Chromasound_Emu::setPosition(const float pos)
 
 void Chromasound_Emu::play(const QByteArray& vgm, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection)
 {
+    deactivate();
     Mem_File_Reader reader(vgm.constData(), vgm.size());
     if (log_err(_emu->load(reader)))
         return;
@@ -248,6 +254,7 @@ void Chromasound_Emu::play(const QByteArray& vgm, const int currentOffsetSamples
     log_warning(_emu);
 
     _emu->track_info(&_info);
+    _haveInfo = true;
 
     _position = 0;
     if (isSelection) {
@@ -273,6 +280,7 @@ void Chromasound_Emu::play(const QByteArray& vgm, const int currentOffsetSamples
 
 void Chromasound_Emu::play()
 {
+    deactivate();
     setEqualizer();
 
     _stopped = false;
