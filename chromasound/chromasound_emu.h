@@ -52,6 +52,8 @@ class Chromasound_Emu : public Chromasound, public Producer<int16_t>
 
         Player* _player;
 
+        bool _haveInfo;
+
         void setEqualizer();
         void setBufferSizes();
 

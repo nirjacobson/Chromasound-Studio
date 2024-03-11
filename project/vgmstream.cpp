@@ -143,10 +143,9 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
     applySettingsChanges2(project, 0, pattern, items);
     addSettingsAtCurrentOffset(items, currentOffset);
 
-    sortItems(items);
-
     if (loopStart >= 0 && loopEnd >= 0) {
         pad(items, loopEnd);
+
         if (project.usesOPN()) {
             items.prepend(new StreamLFOItem(loopStart, project.lfoMode()));
         }
@@ -158,9 +157,12 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
         if (project.usesOPL()) {
             items.prepend(new StreamUserToneItem(loopStart, project.userTone()));
         }
+
+        sortItems(items);
         totalSamples = encode(project, items, data, loopStart, nullptr, currentOffset, &_currentOffsetData, true);
     } else {
         pad(items, project.getPatternBarLength(pattern));
+
         if (project.usesOPN()) {
             items.prepend(new StreamLFOItem(0, project.lfoMode()));
         }
@@ -172,6 +174,8 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
         if (project.usesOPL()) {
             items.prepend(new StreamUserToneItem(0, project.userTone()));
         }
+
+        sortItems(items);
         totalSamples = encode(project, items, data, 0, nullptr, currentOffset, &_currentOffsetData, true);
     }
 
@@ -295,8 +299,6 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
     applySettingsChanges2(project, items);
     addSettingsAtCurrentOffset(items, currentOffset);
 
-    sortItems(items);
-
     if (loopStart >= 0 && loopEnd >= 0) {
         pad(items, loopEnd);
     } else {
@@ -389,6 +391,8 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
             items.prepend(new StreamUserToneItem(currentOffset, (*mostRecentUTChangeIt)->userTone()));
         }
     }
+
+    sortItems(items);
 
     if (loopStart >= 0 && loopEnd >= 0) {
         totalSamples = encode(project, items, data, loopStart, nullptr, currentOffset, &_currentOffsetData, true);
