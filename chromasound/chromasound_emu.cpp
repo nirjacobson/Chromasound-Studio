@@ -47,10 +47,7 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
                     }
                     continue;
                 } else {
-                    delete _keys[sni->note().key()];
                     _keys.remove(sni->note().key());
-                    delete item;
-                    continue;
                 }
             }
             delete item;
