@@ -72,3 +72,9 @@ QList<VGMStream::Format> Chromasound_Dual::supportedFormats()
 
     return intersectionList;
 }
+
+void Chromasound_Dual::setOPLLPatchset(OPLL::Type type)
+{
+    _chromasound1->setOPLLPatchset(type);
+    _chromasound2->setOPLLPatchset(type);
+}

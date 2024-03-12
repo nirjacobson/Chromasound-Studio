@@ -71,7 +71,6 @@ class Chromasound_Emu : public Chromasound, public Producer<int16_t>
 
         QList<VGMStream::Format> supportedFormats();
 
-    public:
         void setOPLLPatchset(OPLL::Type type);
 
         // Producer interface

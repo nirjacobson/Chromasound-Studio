@@ -24,6 +24,8 @@ class Chromasound_Standin : public Chromasound
         void keyOff(int);
 
         QList<VGMStream::Format> supportedFormats();
+
+        void setOPLLPatchset(OPLL::Type type) { }
     private:
         const Project& _project;
         QElapsedTimer _timer;
