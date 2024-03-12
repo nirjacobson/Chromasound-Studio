@@ -2148,13 +2148,10 @@ OPLL_calc_stereo (OPLL * opll, e_int32 out[2])
 
 #include <assert.h>
 
-static int use_count = 0;
-
 Ym2413_Emu::~Ym2413_Emu()
 {
     if ( opll )
     {
-        use_count--;
         OPLL_delete( opll );
     }
 }
@@ -2171,12 +2168,9 @@ int Ym2413_Emu::set_rate( double sample_rate, double clock_rate )
     {
         OPLL_delete( opll );
         opll = 0;
-        use_count--;
     }
 
     // Only one YM2413 may be used at a time (emu2413 uses lots of global data)
-    assert( use_count == 0 );
-    use_count++;
 
     opll = OPLL_new ((int) clock_rate, (int) sample_rate);
     if ( !opll )

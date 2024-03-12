@@ -14,10 +14,7 @@ void EditProjectOPLLTypeCommand::undo()
 {
     _project.setOpllType(_oldType);
 
-    try {
-        Chromasound_Emu& emu = dynamic_cast<Chromasound_Emu&>(_mainWindow->app()->chromasound());
-        emu.setOPLLPatchset(_oldType);
-    } catch (std::bad_cast&) { }
+    _mainWindow->app()->chromasound().setOPLLPatchset(_oldType);
 
     _mainWindow->doUpdate();
 }

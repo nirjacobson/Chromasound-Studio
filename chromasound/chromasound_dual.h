@@ -22,6 +22,7 @@ class Chromasound_Dual : public Chromasound
         void keyOff(int key);
         QList<VGMStream::Format> supportedFormats();
 
+        void setOPLLPatchset(OPLL::Type type);
     private:
         Chromasound* _chromasound1;
         Chromasound* _chromasound2;
