@@ -30,8 +30,6 @@ class Chromasound_Direct : public Chromasound
 
         QList<VGMStream::Format> supportedFormats();
 
-        void setOPLLPatchset(OPLL::Type type) { }
-
     private:
         const Project& _project;
         int _gpioFd;

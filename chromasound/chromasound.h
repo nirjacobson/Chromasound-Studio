@@ -32,8 +32,6 @@ class Chromasound : public QObject
 
         virtual QList<VGMStream::Format> supportedFormats() = 0;
 
-        virtual void setOPLLPatchset(OPLL::Type type) = 0;
-
     signals:
         void pcmUploadStarted();
         void pcmUploadFinished();
