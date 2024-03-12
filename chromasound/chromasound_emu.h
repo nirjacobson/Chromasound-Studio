@@ -54,6 +54,8 @@ class Chromasound_Emu : public Chromasound, public Producer<int16_t>
 
         bool _haveInfo;
 
+        bool _isSelection;
+
         void setEqualizer();
         void setBufferSizes();
 
