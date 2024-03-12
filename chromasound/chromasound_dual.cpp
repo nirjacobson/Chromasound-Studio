@@ -1,4 +1,5 @@
 #include "chromasound_dual.h"
+#include "chromasound_emu.h"
 
 Chromasound_Dual::Chromasound_Dual(Chromasound* chromasound1, Chromasound* chromasound2)
     : _chromasound1(chromasound1)
@@ -75,6 +76,11 @@ QList<VGMStream::Format> Chromasound_Dual::supportedFormats()
 
 void Chromasound_Dual::setOPLLPatchset(OPLL::Type type)
 {
-    _chromasound1->setOPLLPatchset(type);
-    _chromasound2->setOPLLPatchset(type);
+    Chromasound_Emu* emu;
+    if ((emu = dynamic_cast<Chromasound_Emu*>(_chromasound1))) {
+        emu->setOPLLPatchset(type);
+    }
+    if ((emu = dynamic_cast<Chromasound_Emu*>(_chromasound2))) {
+        emu->setOPLLPatchset(type);
+    }
 }
