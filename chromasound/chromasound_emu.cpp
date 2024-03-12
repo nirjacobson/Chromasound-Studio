@@ -27,6 +27,7 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
     , _player(new Player(*this))
     , _stopped(true)
     , _haveInfo(false)
+    , _isSelection(false)
 {
     _timer.setSingleShot(true);
 
@@ -220,6 +221,9 @@ quint32 Chromasound_Emu::position()
 
     quint32 loopLengthSamples = _info.loop_length / 1000.0f * 44100;
     if (_info.intro_length <= 0) {
+        if (_isSelection) {
+            return _positionOffset + (_position & loopLengthSamples);
+        }
         return pos % loopLengthSamples;
     } else {
         quint32 introLengthSamples = _info.intro_length / 1000.0f * 44100;
@@ -252,6 +256,8 @@ void Chromasound_Emu::play(const QByteArray& vgm, const int currentOffsetSamples
 
     _emu->track_info(&_info);
     _haveInfo = true;
+
+    _isSelection = isSelection;
 
     _position = 0;
     if (isSelection) {
