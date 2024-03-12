@@ -222,7 +222,7 @@ quint32 Chromasound_Emu::position()
     quint32 loopLengthSamples = _info.loop_length / 1000.0f * 44100;
     if (_info.intro_length <= 0) {
         if (_isSelection) {
-            return _positionOffset + (_position & loopLengthSamples);
+            return _positionOffset + (_position % loopLengthSamples);
         }
         return pos % loopLengthSamples;
     } else {
