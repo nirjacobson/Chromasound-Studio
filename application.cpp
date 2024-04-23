@@ -287,7 +287,7 @@ void Application::setWindow(MainWindow* window)
 
 void Application::showWindow()
 {
-    _mainWindow->showMaximized();
+    _mainWindow->show();
 }
 
 MainWindow* Application::window()
