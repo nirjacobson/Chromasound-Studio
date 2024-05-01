@@ -1,10 +1,19 @@
 #include "gpio.h"
 
 int gpio_init() {
-    int fd = open(GPIO_DEV_NAME, O_RDONLY);
-    if (fd < 0) {
-        printf("Unable to open %s: %s", GPIO_DEV_NAME, strerror(errno));
-        return -1;
+    int fd;
+    if (access(GPIO_DEV_NAME_PI5, F_OK) != -1) {
+        fd = open(GPIO_DEV_NAME_PI5, O_RDONLY);
+        if (fd < 0) {
+            printf("Unable to open %s: %s", GPIO_DEV_NAME_PI5, strerror(errno));
+            return -1;
+        }
+    } else {
+        fd = open(GPIO_DEV_NAME, O_RDONLY);
+        if (fd < 0) {
+            printf("Unable to open %s: %s", GPIO_DEV_NAME, strerror(errno));
+            return -1;
+        }
     }
 
     return fd;

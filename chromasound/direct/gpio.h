@@ -11,7 +11,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define GPIO_DEV_NAME "/dev/gpiochip0"
+#define GPIO_DEV_NAME     "/dev/gpiochip0"
+#define GPIO_DEV_NAME_PI5 "/dev/gpiochip4"
 
 int gpio_init();
 void gpio_close(int fd);
