@@ -6,8 +6,10 @@
 #include <QColor>
 #include <QtMath>
 #include <QMouseEvent>
+#include <QInputDialog>
 
 #include "common/ganttwidget/ganttleftwidget.h"
+#include "commands/setpatternnamecommand.h"
 #include "application.h"
 
 class PlaylistPatternsWidget : public GanttLeftWidget
