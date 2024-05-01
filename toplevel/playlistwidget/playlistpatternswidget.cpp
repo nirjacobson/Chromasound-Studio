@@ -98,12 +98,24 @@ void PlaylistPatternsWidget::paintEvent(QPaintEvent*)
         QColor color = QWidget::palette().color(QWidget::backgroundRole());
 
         QPoint thisTopLeft = topLeft + QPoint(0, i * _rowHeight);
-        QRect rect(thisTopLeft, thisTopLeft + QPoint(width() - 2, _rowHeight));
+
+        QRect rect(thisTopLeft, thisTopLeft + QPoint(_rowHeight, _rowHeight));
         painter.setPen(color.lightness() <= 128 ? color.lighter() : color.darker());
         painter.setBrush(color);
         painter.fillRect(rect, painter.brush());
         painter.drawRect(rect);
-        painter.drawText(rect.adjusted(4, 4, 0, 0), QString("Pattern %1").arg(firstPattern + i + 1));
+        painter.drawText(rect.adjusted(4, 4, -6, -4), Qt::AlignRight, QString("%1").arg(pattern + 1));
+
+        rect = QRect(rect.topRight(), thisTopLeft + QPoint(width() - 2, _rowHeight));
+        painter.setPen(color.lightness() <= 128 ? color.lighter() : color.darker());
+        painter.setBrush(color);
+        painter.fillRect(rect, painter.brush());
+        painter.drawRect(rect);
+
+        QString name = _app->project().getPattern(pattern).name();
+        painter.drawText(rect.adjusted(4, 4, 0, 0), name.isEmpty()
+                                                        ? QString("Pattern %1").arg(pattern + 1)
+                                                        : name);
 
         rect.setTopLeft(QPoint(width() - 2 - LED_WIDTH, thisTopLeft.y()));
 
@@ -121,11 +133,17 @@ void PlaylistPatternsWidget::mousePressEvent(QMouseEvent* event)
     int firstPattern = _top / _rowHeight;
     int firstPatternStart = firstPattern * _rowHeight - _top;
 
-    int numPatternsAcrossHeight = qCeil((float)height()/_rowHeight) + 1;
-
     int pattern = firstPattern + ((event->pos().y() - firstPatternStart) / _rowHeight);
 
-    emit patternClicked(pattern + 1);
+    if (Qt::ShiftModifier == QApplication::keyboardModifiers()) {
+        bool ok;
+        const QString name = QInputDialog::getText(this, tr("Change Pattern Name"), tr("Pattern name:"), QLineEdit::Normal, _app->project().getPattern(pattern).name(), &ok);
+        if (ok && !name.isEmpty()) {
+            _app->undoStack().push(new SetPatternNameCommand(_app->window(), _app->project().getPattern(pattern), name));
+        }
+    } else {
+        emit patternClicked(pattern + 1);
+    }
 }
 
 const QColor& PlaylistPatternsWidget::ledColor() const

@@ -14,6 +14,7 @@ Pattern::~Pattern()
 
 Pattern::Pattern(Pattern&& o)
 {
+    _name = o._name;
     _tracks = o._tracks;
 
     o._tracks.clear();
@@ -21,6 +22,7 @@ Pattern::Pattern(Pattern&& o)
 
 Pattern& Pattern::operator=(Pattern&& o)
 {
+    _name = o._name;
     _tracks = o._tracks;
 
     o._tracks.clear();
@@ -128,4 +130,14 @@ void Pattern::swapChannels(const int idxa, const int idxb)
     if (!hasA) {
         _tracks.remove(idxb);
     }
+}
+
+const QString& Pattern::name() const
+{
+    return _name;
+}
+
+void Pattern::setName(const QString& name)
+{
+    _name = name;
 }

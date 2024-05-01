@@ -310,6 +310,10 @@ void BSON::fromPattern(bson_t* dst, const Pattern& pattern)
 {
     bson_t tracks;
 
+    if (!pattern.name().isEmpty()) {
+        BSON_APPEND_UTF8(dst, "name", pattern.name().toStdString().c_str());
+    }
+
     BSON_APPEND_DOCUMENT_BEGIN(dst, "tracks", &tracks);
     for (auto it = pattern._tracks.begin(); it != pattern._tracks.end(); ++it) {
         bson_t b_track;
@@ -329,9 +333,16 @@ Pattern BSON::toPattern(bson_iter_t& b)
 {
     Pattern p;
 
+    bson_iter_t name;
     bson_iter_t tracks;
     bson_iter_t child;
     bson_iter_t track;
+
+    bson_iter_t bb = b;
+
+    if (bson_iter_find_descendant(&bb, "name", &name) && BSON_ITER_HOLDS_UTF8(&name)) {
+        p._name = bson_iter_utf8(&name, nullptr);
+    }
 
     if (bson_iter_find_descendant(&b, "tracks", &tracks) && BSON_ITER_HOLDS_DOCUMENT(&tracks) && bson_iter_recurse(&tracks, &child)) {
         while (bson_iter_next(&child)) {

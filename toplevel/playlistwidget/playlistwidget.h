@@ -40,7 +40,7 @@ class PlaylistWidget : public QMainWindow
         explicit PlaylistWidget(QWidget *parent = nullptr, Application* app = nullptr);
         ~PlaylistWidget();
 
-        static constexpr int Rows = 100;
+        static constexpr int Rows = 99;
         static constexpr int RowHeight = 24;
         static constexpr int CellWidth = 24;
 

@@ -32,7 +32,11 @@ class Pattern
 
         void swapChannels(const int idxa, const int idxb);
 
+        const QString& name() const;
+        void setName(const QString& name);
+
     private:
+        QString _name;
         QMap<int, Track*> _tracks;
 };
 
