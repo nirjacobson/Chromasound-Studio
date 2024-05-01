@@ -15,7 +15,7 @@
 #include <stdio.h>
 
 #define SPI_DEV_NAME "/dev/spidev0.0"
-#define SPI_SPEED 5000000;
+#define SPI_SPEED 4000000;
 
 int spi_init();
 void spi_close(int fd);
