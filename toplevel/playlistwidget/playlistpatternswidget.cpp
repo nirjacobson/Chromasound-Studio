@@ -8,9 +8,29 @@ PlaylistPatternsWidget::PlaylistPatternsWidget(QWidget *parent, Application* app
     , _rowHeight(16)
     , _ledColor(Qt::green)
     , _appPosition(0)
+    , _contextMenu(tr("Context menu"), this)
+    , _moveUpAction("Move up", this)
+    , _moveDownAction("Move down", this)
+    , _insertAction("Insert", this)
+    , _deleteAction("Delete", this)
+    , _contextPattern(0)
 {
     setMinimumWidth(128);
     setMaximumWidth(128);
+
+    connect(&_moveUpAction, &QAction::triggered, this, &PlaylistPatternsWidget::moveUpTriggered);
+    connect(&_moveDownAction, &QAction::triggered, this, &PlaylistPatternsWidget::moveDownTriggered);
+    connect(&_insertAction, &QAction::triggered, this, &PlaylistPatternsWidget::insertTriggered);
+    connect(&_deleteAction, &QAction::triggered, this, &PlaylistPatternsWidget::deleteTriggered);
+
+    _contextMenu.addAction(&_moveUpAction);
+    _contextMenu.addAction(&_moveDownAction);
+    _contextMenu.addSeparator();
+    _contextMenu.addAction(&_insertAction);
+    _contextMenu.addAction(&_deleteAction);
+
+    setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
+    connect(this, &QWidget::customContextMenuRequested, this, &PlaylistPatternsWidget::contextMenuRequested);
 }
 
 float PlaylistPatternsWidget::getScrollPercentage()
@@ -144,6 +164,36 @@ void PlaylistPatternsWidget::mousePressEvent(QMouseEvent* event)
     } else {
         emit patternClicked(pattern + 1);
     }
+}
+
+void PlaylistPatternsWidget::contextMenuRequested(const QPoint& p)
+{
+    int firstPattern = _top / _rowHeight;
+    int firstPatternStart = firstPattern * _rowHeight - _top;
+
+    _contextPattern = firstPattern + ((p.y() - firstPatternStart) / _rowHeight);
+
+    _contextMenu.exec(mapToGlobal(p));
+}
+
+void PlaylistPatternsWidget::moveUpTriggered()
+{
+    _app->undoStack().push(new MovePatternUpCommand(_app->window(), _contextPattern));
+}
+
+void PlaylistPatternsWidget::moveDownTriggered()
+{
+    _app->undoStack().push(new MovePatternDownCommand(_app->window(), _contextPattern));
+}
+
+void PlaylistPatternsWidget::insertTriggered()
+{
+    _app->undoStack().push(new InsertPatternCommand(_app->window(), _contextPattern));
+}
+
+void PlaylistPatternsWidget::deleteTriggered()
+{
+    _app->undoStack().push(new DeletePatternCommand(_app->window(), _contextPattern));
 }
 
 const QColor& PlaylistPatternsWidget::ledColor() const

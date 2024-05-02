@@ -94,6 +94,8 @@ class Track
 
         void useStepSequencer();
 
+        Track* copy() const;
+
     private:
         QList<Item*> _items;
         QList<SettingsChange*> _settingsChanges;

@@ -299,6 +299,36 @@ void MainWindow::setChannelVolume(const int index, const int volume)
     _channelsWidget->setVolume(index, volume);
 }
 
+void MainWindow::movePatternUp(const int index)
+{
+    _app->project().movePatternUp(index);
+    doUpdate();
+}
+
+void MainWindow::movePatternDown(const int index)
+{
+    _app->project().movePatternDown(index);
+    doUpdate();
+}
+
+QList<Playlist::Item*> MainWindow::deletePattern(const int index)
+{
+    QList<Playlist::Item*> items = _app->project().deletePattern(index);
+
+    doUpdate();
+
+    return items;
+}
+
+void MainWindow::insertPattern(const int index, Pattern* pattern, const QList<Playlist::Item*>& items)
+{
+    _app->project().insertPattern(index, pattern);
+    if (pattern) {
+        _app->project().playlist().addItems(items);
+    }
+    doUpdate();
+}
+
 int MainWindow::channels() const
 {
     return _app->project().channelCount();

@@ -66,6 +66,11 @@ class MainWindow : public QMainWindow
         int getChannelVolume(const int index);
         void setChannelVolume(const int index, const int volume);
 
+        void movePatternUp(const int index);
+        void movePatternDown(const int index);
+        QList<Playlist::Item*> deletePattern(const int index);
+        void insertPattern(const int index, Pattern* pattern = nullptr, const QList<Playlist::Item*>& items = QList<Playlist::Item*>());
+
         int channels() const;
 
         void doUpdate();

@@ -81,6 +81,7 @@ void TopWidget::setStatusMessage(const QString& message)
 
 void TopWidget::doUpdate(const float position)
 {
+    updateFromProject(_app->project());
     ui->seekWidget->doUpdate(position);
     ui->positionDisplay->doUpdate(position);
 }

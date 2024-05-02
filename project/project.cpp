@@ -73,6 +73,70 @@ void Project::moveChannelDown(const int idx)
     }
 }
 
+void Project::movePatternUp(const int idx)
+{
+    if (idx != 0) {
+        swapPatterns(idx, idx-1);
+        for (Playlist::Item* item : _playlist.items()) {
+            if (item->pattern() == idx) {
+                item->setRow(idx - 1);
+            }
+        }
+    }
+}
+
+void Project::movePatternDown(const int idx)
+{
+    if (idx != _patterns.size()-1) {
+        swapPatterns(idx, idx+1);
+        for (Playlist::Item* item : _playlist.items()) {
+            if (item->pattern() == idx) {
+                item->setRow(idx + 1);
+            }
+        }
+    }
+}
+
+void Project::insertPattern(const int idx, Pattern* pattern)
+{
+    if (idx != _patterns.size()-1) {
+        _patterns.insert(idx, pattern ? pattern : new Pattern);
+        for (Playlist::Item* item : _playlist.items()) {
+            if (item->pattern() >= idx) {
+                item->setRow(item->pattern() + 1);
+            }
+        }
+    }
+
+    if (_frontPattern == idx) {
+        _frontPattern++;
+    }
+}
+
+QList<Playlist::Item*> Project::deletePattern(const int idx)
+{
+    if (_patterns.size() > 1) {
+        delete _patterns[idx];
+        _patterns.removeAt(idx);
+
+        QList<Playlist::Item*> toRemove;
+        for (Playlist::Item* item : _playlist.items()) {
+            if (item->pattern() == idx) {
+                toRemove.append(item);
+            }
+            if (item->pattern() > idx) {
+                item->setRow(item->pattern() - 1);
+            }
+        }
+
+        _playlist.removeItems(toRemove);
+
+        return toRemove;
+    }
+
+    return QList<Playlist::Item*>();
+}
+
 Pattern& Project::getPattern(const int idx)
 {
     if (idx >= _patterns.size()) {
@@ -421,6 +485,17 @@ void Project::swapChannels(const int idxa, const int idxb)
     }
 
     _channels.swapItemsAt(idxa, idxb);
+}
+
+void Project::swapPatterns(const int idxa, const int idxb)
+{
+    _patterns.swapItemsAt(idxa, idxb);
+
+    if (_frontPattern == idxa) {
+        _frontPattern = idxb;
+    } else if (_frontPattern == idxb) {
+        _frontPattern = idxa;
+    }
 }
 
 const QString& Project::Info::title() const

@@ -466,6 +466,14 @@ set(PROJECT_SOURCES
     dialogs/settings/chromasoundlayoutwidget.ui
     commands/setpatternnamecommand.h
     commands/setpatternnamecommand.cpp
+    commands/movepatternupcommand.h
+    commands/movepatternupcommand.cpp
+    commands/movepatterndowncommand.h
+    commands/movepatterndowncommand.cpp
+    commands/deletepatterncommand.h
+    commands/deletepatterncommand.cpp
+    commands/insertpatterncommand.h
+    commands/insertpatterncommand.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
