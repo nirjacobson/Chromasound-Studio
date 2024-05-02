@@ -156,6 +156,21 @@ void Track::useStepSequencer()
     _usePianoRoll = false;
 }
 
+Track* Track::copy() const
+{
+    Track* track = new Track;
+    track->_usePianoRoll = _usePianoRoll;
+
+    for (Track::Item* item : _items) {
+        track->_items.append(new Track::Item(*item));
+    }
+    for (Track::SettingsChange* sc : _settingsChanges) {
+        track->_settingsChanges.append(new Track::SettingsChange(*sc));
+    }
+
+    return track;
+}
+
 Track::Item::Item(const float time, const Note& note)
     : _time(time)
     , _note(note)

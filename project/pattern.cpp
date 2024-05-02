@@ -141,3 +141,16 @@ void Pattern::setName(const QString& name)
 {
     _name = name;
 }
+
+Pattern* Pattern::copy() const
+{
+    Pattern* pattern = new Pattern;
+
+    pattern->_name = _name;
+
+    for (auto it = _tracks.begin(); it != _tracks.end(); ++it) {
+        pattern->_tracks[it.key()] = _tracks[it.key()]->copy();
+    }
+
+    return pattern;
+}

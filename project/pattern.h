@@ -35,6 +35,8 @@ class Pattern
         const QString& name() const;
         void setName(const QString& name);
 
+        Pattern* copy() const;
+
     private:
         QString _name;
         QMap<int, Track*> _tracks;

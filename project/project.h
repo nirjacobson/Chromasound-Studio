@@ -54,6 +54,10 @@ class Project
         void removeChannel(const int index);
         void moveChannelUp(const int idx);
         void moveChannelDown(const int idx);
+        void movePatternUp(const int idx);
+        void movePatternDown(const int idx);
+        void insertPattern(const int idx, Pattern* pattern = nullptr);
+        QList<Playlist::Item*> deletePattern(const int idx);
 
         Pattern& getPattern(const int idx);
         const Pattern& getPattern(const int idx) const;
@@ -138,6 +142,7 @@ class Project
         OPLL::Type _opllType;
 
         void swapChannels(const int idxa, const int idxb);
+        void swapPatterns(const int idxa, const int idxb);
 };
 
 #endif // PROJECT_H
