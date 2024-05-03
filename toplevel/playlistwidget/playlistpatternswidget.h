@@ -13,6 +13,7 @@
 #include "commands/setpatternnamecommand.h"
 #include "commands/insertpatterncommand.h"
 #include "commands/deletepatterncommand.h"
+#include "commands/duplicatepatterncommand.h"
 #include "commands/movepatterndowncommand.h"
 #include "commands/movepatternupcommand.h"
 #include "application.h"
@@ -45,6 +46,7 @@ class PlaylistPatternsWidget : public GanttLeftWidget
         void contextMenuRequested(const QPoint& p);
         void moveUpTriggered();
         void moveDownTriggered();
+        void duplicateTriggered();
         void insertTriggered();
         void deleteTriggered();
 
@@ -68,6 +70,7 @@ class PlaylistPatternsWidget : public GanttLeftWidget
         int _contextPattern;
         QAction _moveUpAction;
         QAction _moveDownAction;
+        QAction _duplicateAction;
         QAction _insertAction;
         QAction _deleteAction;
 };
