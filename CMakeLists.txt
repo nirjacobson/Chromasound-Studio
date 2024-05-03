@@ -474,6 +474,8 @@ set(PROJECT_SOURCES
     commands/deletepatterncommand.cpp
     commands/insertpatterncommand.h
     commands/insertpatterncommand.cpp
+    commands/duplicatepatterncommand.h
+    commands/duplicatepatterncommand.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

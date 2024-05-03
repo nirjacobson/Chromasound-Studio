@@ -11,6 +11,7 @@ PlaylistPatternsWidget::PlaylistPatternsWidget(QWidget *parent, Application* app
     , _contextMenu(tr("Context menu"), this)
     , _moveUpAction("Move up", this)
     , _moveDownAction("Move down", this)
+    , _duplicateAction("Duplicate", this)
     , _insertAction("Insert", this)
     , _deleteAction("Delete", this)
     , _contextPattern(0)
@@ -20,12 +21,14 @@ PlaylistPatternsWidget::PlaylistPatternsWidget(QWidget *parent, Application* app
 
     connect(&_moveUpAction, &QAction::triggered, this, &PlaylistPatternsWidget::moveUpTriggered);
     connect(&_moveDownAction, &QAction::triggered, this, &PlaylistPatternsWidget::moveDownTriggered);
+    connect(&_duplicateAction, &QAction::triggered, this, &PlaylistPatternsWidget::duplicateTriggered);
     connect(&_insertAction, &QAction::triggered, this, &PlaylistPatternsWidget::insertTriggered);
     connect(&_deleteAction, &QAction::triggered, this, &PlaylistPatternsWidget::deleteTriggered);
 
     _contextMenu.addAction(&_moveUpAction);
     _contextMenu.addAction(&_moveDownAction);
     _contextMenu.addSeparator();
+    _contextMenu.addAction(&_duplicateAction);
     _contextMenu.addAction(&_insertAction);
     _contextMenu.addAction(&_deleteAction);
 
@@ -184,6 +187,11 @@ void PlaylistPatternsWidget::moveUpTriggered()
 void PlaylistPatternsWidget::moveDownTriggered()
 {
     _app->undoStack().push(new MovePatternDownCommand(_app->window(), _contextPattern));
+}
+
+void PlaylistPatternsWidget::duplicateTriggered()
+{
+    _app->undoStack().push(new DuplicatePatternCommand(_app->window(), _contextPattern));
 }
 
 void PlaylistPatternsWidget::insertTriggered()
