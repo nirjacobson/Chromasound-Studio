@@ -12,7 +12,7 @@ PlaylistPatternsWidget::PlaylistPatternsWidget(QWidget *parent, Application* app
     , _moveUpAction("Move up", this)
     , _moveDownAction("Move down", this)
     , _duplicateAction("Duplicate", this)
-    , _insertAction("Insert", this)
+    , _insertAction("Insert new", this)
     , _deleteAction("Delete", this)
     , _contextPattern(0)
 {
@@ -29,8 +29,9 @@ PlaylistPatternsWidget::PlaylistPatternsWidget(QWidget *parent, Application* app
     _contextMenu.addAction(&_moveDownAction);
     _contextMenu.addSeparator();
     _contextMenu.addAction(&_duplicateAction);
-    _contextMenu.addAction(&_insertAction);
     _contextMenu.addAction(&_deleteAction);
+    _contextMenu.addSeparator();
+    _contextMenu.addAction(&_insertAction);
 
     setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
     connect(this, &QWidget::customContextMenuRequested, this, &PlaylistPatternsWidget::contextMenuRequested);
