@@ -211,7 +211,6 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
         enableRhythm.append(0x01);
 
         _loopOffsetData += enableRhythm.size();
-        _currentOffsetData += enableRhythm.size();
 
         data.prepend(enableRhythm);
     }
@@ -436,7 +435,6 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
         enableRhythm.append(0x01);
 
         _loopOffsetData += enableRhythm.size();
-        _currentOffsetData += enableRhythm.size();
 
         data.prepend(enableRhythm);
     }
