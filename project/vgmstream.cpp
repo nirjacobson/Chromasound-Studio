@@ -1902,10 +1902,6 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
                     break;
             }
 
-            data.append(0x51);
-            data.append(0x0E);
-            data.append((1 << 5) | newRhythm);
-
             uint8_t newChanVal = _lastChanVal[6 + offset];
             uint8_t mask = 0x0F << (4 * high);
             newChanVal &= ~mask;
@@ -1916,6 +1912,10 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
             data.append(newChanVal);
 
             _lastChanVal[6 + offset] = newChanVal;
+
+            data.append(0x51);
+            data.append(0x0E);
+            data.append((1 << 5) | newRhythm);
         } else {
             newRhythm &= ~mask;
 
