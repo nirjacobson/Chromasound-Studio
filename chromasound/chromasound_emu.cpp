@@ -39,12 +39,16 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
         _vgmStream.encode(project, _items, data);
 
         bool havePCM = false;
+        bool haveROM = false;
         for (VGMStream::StreamItem* item : _items) {
             VGMStream::StreamNoteItem* sni;
             if ((sni = dynamic_cast<VGMStream::StreamNoteItem*>(item))) {
                 if (sni->on()) {
                     if (sni->type() == Channel::Type::PCM) {
                         havePCM = true;
+                    }
+                    if (sni->type() == Channel::Type::ROM) {
+                        haveROM = true;
                     }
                     continue;
                 } else {
@@ -105,6 +109,15 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
             data.prepend(pcmBlock);
 
             _emu->set_fill_past_end_with_pcm(true);
+        } else if (haveROM) {
+            QByteArray pcmBlock;
+            pcmBlock.append(0x52);
+            pcmBlock.append(0x2B);
+            pcmBlock.append(0x80);
+
+            data.prepend(pcmBlock);
+
+            _emu->set_fill_past_end_with_pcm(true);
         }
 
         if (!_startedInteractive) {
@@ -144,6 +157,10 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
     _buffers[1] = nullptr;
     setBufferSizes();
     setEqualizer();
+
+    if (!project.romFile().isEmpty()) {
+        dynamic_cast<Vgm_Emu*>(_emu)->set_rom_file(project.romFile().toStdString().c_str());
+    }
 
     _player->start();
 }
@@ -376,7 +393,7 @@ void Chromasound_Emu::keyOff(int key)
 
     bool havePCM = false;
     for (auto it = _keys.begin(); it != _keys.end(); ++it) {
-        if (it.value()->type() == Channel::Type::PCM) {
+        if (it.value()->type() == Channel::Type::PCM || it.value()->type() == Channel::Type::ROM) {
             havePCM = true;
             break;
         }

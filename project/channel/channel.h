@@ -11,6 +11,7 @@
 #include "ssgchannelsettings.h"
 #include "melodychannelsettings.h"
 #include "rhythmchannelsettings.h"
+#include "romchannelsettings.h"
 
 class Channel
 {
@@ -24,7 +25,8 @@ class Channel
             PCM,
             SSG,
             MELODY,
-            RHYTHM
+            RHYTHM,
+            ROM
         };
 
         Channel();

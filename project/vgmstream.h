@@ -8,6 +8,7 @@
 #include "project.h"
 #include "note.h"
 #include "formats/gd3.h"
+#include "formats/rom.h"
 
 class VGMStream
 {
@@ -206,11 +207,20 @@ class VGMStream
             private:
                 RhythmChannelSettings _settings;
         };
+        class ROMChannel : public PhysicalChannel {
+        public:
+            ROMChannelSettings& settings();
+            void reset() override;
+
+        private:
+            ROMChannelSettings _settings;
+        };
 
         static constexpr int FM_CHANNELS = 6;
         static constexpr int TONE_CHANNELS = 3;
         static constexpr int NOISE_CHANNELS = 1;
         static constexpr int PCM_CHANNELS = 4;
+        static constexpr int ROM_CHANNELS = 4;
         static constexpr int SSG_CHANNELS = 3;
         static constexpr int MELODY_CHANNELS = 9;
         static constexpr int RHYTHM_CHANNELS = 5;
@@ -225,6 +235,7 @@ class VGMStream
         SSGChannel _ssgChannels[SSG_CHANNELS];
         MelodyChannel _melodyChannels[MELODY_CHANNELS];
         RhythmChannel _rhythmChannels[RHYTHM_CHANNELS];
+        ROMChannel _romChannels[ROM_CHANNELS];
 
         uint8_t _lastSSGMixer;
         uint8_t _lastSSGLevel[SSG_CHANNELS];
@@ -241,16 +252,17 @@ class VGMStream
         int acquireSSGChannel(const float time, const float duration, const SSGChannelSettings* settings, QList<StreamItem*>& items);
         int acquireMelodyChannel(const float time, const float duration, const MelodyChannelSettings* settings, QList<StreamItem*>& items);
         int acquireRhythmChannel(const float time, const float duration, const RhythmChannelSettings* settings, QList<StreamItem*>& items);
+        int acquireROMChannel(const float time, const float duration, const ROMChannelSettings* settings, QList<StreamItem*>& items);
 
         void processProject(const Project& project, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
         void processPattern(const float time, const Project& project, const Pattern& pattern, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
         void processTrack(const float time, const Channel& channel, const Track* track, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
 
         void assignChannelsAndExpand(const Project& project, QList<StreamItem*>& items, const int tempo);
-        void applySettingsChanges(Project& project, const float time, const Pattern& pattern, QList<StreamItem*>& items);
-        void applySettingsChanges2(Project& project, const float time, const Pattern& pattern, QList<StreamItem*>& items);
-        void applySettingsChanges(Project& project, QList<StreamItem*>& items);
-        void applySettingsChanges2(Project& project, QList<StreamItem*>& items);
+        void applySettingsChanges(const float time, const Pattern& pattern, QList<StreamItem*>& items);
+        void applySettingsChanges2(const float time, const Pattern& pattern, QList<StreamItem*>& items);
+        void applySettingsChanges(const Project& project, QList<StreamItem*>& items);
+        void applySettingsChanges2(const Project& project, QList<StreamItem*>& items);
         void addSettingsAtCurrentOffset(QList<StreamItem*>& items, const float currentTime);
 
         void sortItems(QList<StreamItem*>& items);
@@ -261,7 +273,7 @@ class VGMStream
 
         int encodeDelay(const quint32 samples, QByteArray& data, const bool pcm = false);
 
-        void encodeSettingsItem(const StreamSettingsItem* item, QByteArray& data);
+        void encodeSettingsItem(const StreamSettingsItem* item, QByteArray& data, const ROM& rom);
         void encodeNoteItem(const Project& project, const StreamNoteItem* item, QByteArray& data);
         void encodeLFOItem(const StreamLFOItem* item, QByteArray& data);
         void encodeNoiseFrequencyItem(const StreamNoiseFrequencyItem* item, QByteArray& data);

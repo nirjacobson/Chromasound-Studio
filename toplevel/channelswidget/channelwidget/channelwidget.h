@@ -41,6 +41,7 @@ class ChannelWidget : public QWidget
         Q_PROPERTY(QColor ssgColor READ ssgColor WRITE setSSGColor)
         Q_PROPERTY(QColor melodyColor READ melodyColor WRITE setMelodyColor)
         Q_PROPERTY(QColor rhythmColor READ rhythmColor WRITE setRhythmColor)
+        Q_PROPERTY(QColor romColor READ romColor WRITE setROMColor)
 
     public:
         explicit ChannelWidget(QWidget *parent = nullptr, Application* app = nullptr, int index = 0);
@@ -88,6 +89,7 @@ class ChannelWidget : public QWidget
         QAction _ssgAction;
         QAction _melodyAction;
         QAction _rhythmAction;
+        QAction _romAction;
 
         QAction _fillEvery2StepsAction;
         QAction _fillEvery4StepsAction;
@@ -99,6 +101,7 @@ class ChannelWidget : public QWidget
         QColor _ssgColor;
         QColor _melodyColor;
         QColor _rhythmColor;
+        QColor _romColor;
 
         const QColor& fmColor() const;
         const QColor& toneColor() const;
@@ -107,6 +110,7 @@ class ChannelWidget : public QWidget
         const QColor& ssgColor() const;
         const QColor& melodyColor() const;
         const QColor& rhythmColor() const;
+        const QColor& romColor() const;
 
         void setFMColor(const QColor& color);
         void setToneColor(const QColor& color);
@@ -115,6 +119,7 @@ class ChannelWidget : public QWidget
         void setSSGColor(const QColor& color);
         void setMelodyColor(const QColor& color);
         void setRhythmColor(const QColor& color);
+        void setROMColor(const QColor& color);
 
     signals:
         void pianoKeyClicked(const Qt::MouseButton button, const int step, const int key);
@@ -144,6 +149,7 @@ class ChannelWidget : public QWidget
         void ssgWasTriggered();
         void melodyWasTriggered();
         void rhythmWasTriggered();
+        void romWasTriggered();
         void volumeDialChanged(const int val);
 
         void deleteTriggered();

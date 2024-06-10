@@ -476,6 +476,26 @@ set(PROJECT_SOURCES
     commands/insertpatterncommand.cpp
     commands/duplicatepatterncommand.h
     commands/duplicatepatterncommand.cpp
+    tools/rom/rombuilderdialog.h
+    tools/rom/rombuilderdialog.cpp
+    tools/rom/rombuilderdialog.ui
+    tools/rom/rombuildertablemodel.h
+    tools/rom/rombuildertablemodel.cpp
+    formats/rom.h formats/rom.cpp
+    globals/romglobalswidget.h
+    globals/romglobalswidget.cpp
+    globals/romglobalswidget.ui
+    globals/romtablemodel.h
+    globals/romtablemodel.cpp
+    commands/setprojectromfilecommand.h
+    commands/setprojectromfilecommand.cpp
+    project/channel/romchannelsettings.h
+    project/channel/romchannelsettings.cpp
+    rom/romwidget.h
+    rom/romwidget.cpp
+    rom/romwidget.ui
+    commands/editromchannelsettingscommand.h
+    commands/editromchannelsettingscommand.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

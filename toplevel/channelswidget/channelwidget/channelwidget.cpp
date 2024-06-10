@@ -20,15 +20,17 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     , _ssgAction("SSG", this)
     , _melodyAction("Melody", this)
     , _rhythmAction("Rhythm", this)
+    , _romAction("ROM", this)
     , _fillEvery2StepsAction("Every 2 steps")
     , _fillEvery4StepsAction("Every 4 steps")
     , _toneColor(Qt::cyan)
     , _noiseColor(Qt::lightGray)
     , _fmColor(Qt::magenta)
-    , _pcmColor(Qt::blue)
+    , _pcmColor(QColor(128, 0, 255))
     , _ssgColor(Qt::green)
     , _melodyColor(Qt::yellow)
     , _rhythmColor(QColor(255, 128, 0))
+    , _romColor(QColor(0, 128, 255))
     , _appPosition(0)
 {
     ui->setupUi(this);
@@ -56,6 +58,9 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
             break;
         case Channel::RHYTHM:
             ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_rhythmColor.name()));
+            break;
+        case Channel::ROM:
+            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_romColor.name()));
             break;
     }
 
@@ -100,6 +105,7 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     connect(&_ssgAction, &QAction::triggered, this, &ChannelWidget::ssgWasTriggered);
     connect(&_melodyAction, &QAction::triggered, this, &ChannelWidget::melodyWasTriggered);
     connect(&_rhythmAction, &QAction::triggered, this, &ChannelWidget::rhythmWasTriggered);
+    connect(&_romAction, &QAction::triggered, this, &ChannelWidget::romWasTriggered);
 
     connect(ui->stepKeys, &StepKeysWidget::clicked, this, &ChannelWidget::pianoKeyClicked);
     connect(ui->stepVelocities, &StepVelocitiesWidget::clicked, this, &ChannelWidget::velocityClicked);
@@ -131,6 +137,8 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     _melodyAction.setChecked(_app->project().getChannel(index).type() == Channel::Type::MELODY);
     _rhythmAction.setCheckable(true);
     _rhythmAction.setChecked(_app->project().getChannel(index).type() == Channel::Type::RHYTHM);
+    _romAction.setCheckable(true);
+    _romAction.setChecked(_app->project().getChannel(index).type() == Channel::Type::ROM);
     _typeActionGroup.addAction(&_toneAction);
     _typeActionGroup.addAction(&_noiseAction);
     _typeActionGroup.addAction(&_fmAction);
@@ -138,6 +146,7 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     _typeActionGroup.addAction(&_ssgAction);
     _typeActionGroup.addAction(&_melodyAction);
     _typeActionGroup.addAction(&_rhythmAction);
+    _typeActionGroup.addAction(&_romAction);
 
     _contextMenu.addSection("Type");
     _contextMenu.addAction(&_toneAction);
@@ -147,6 +156,7 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     _contextMenu.addAction(&_ssgAction);
     _contextMenu.addAction(&_melodyAction);
     _contextMenu.addAction(&_rhythmAction);
+    _contextMenu.addAction(&_romAction);
 
     _contextMenu.addSeparator();
     _contextMenu.addAction(&_deleteAction);
@@ -216,6 +226,9 @@ void ChannelWidget::setIndex(const int idx)
         case Channel::RHYTHM:
             ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_rhythmColor.name()));
             break;
+        case Channel::ROM:
+            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_romColor.name()));
+            break;
     }
 
     ui->pushButton->setText(_app->project().getChannel(_index).name());
@@ -270,6 +283,7 @@ void ChannelWidget::setIndex(const int idx)
     _ssgAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::SSG);
     _melodyAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::MELODY);
     _rhythmAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::RHYTHM);
+    _romAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::ROM);
 
     update();
 }
@@ -394,6 +408,11 @@ const QColor& ChannelWidget::rhythmColor() const
     return _rhythmColor;
 }
 
+const QColor& ChannelWidget::romColor() const
+{
+    return _romColor;
+}
+
 void ChannelWidget::setFMColor(const QColor& color)
 {
     _fmColor = color;
@@ -457,6 +476,15 @@ void ChannelWidget::setRhythmColor(const QColor& color)
     }
 }
 
+void ChannelWidget::setROMColor(const QColor& color)
+{
+    _romColor = color;
+
+    if (_app->project().getChannel(_index).type() == Channel::ROM) {
+        ui->pushButton->setStyleSheet(QString("background-color: %1; color: %2;").arg(_romColor.name()).arg(_romColor.lightness() <= 96 ? "white" : "default"));
+    }
+}
+
 void ChannelWidget::ledClicked(bool shift)
 {
     Channel& channel = _app->project().getChannel(_index);
@@ -496,6 +524,7 @@ void ChannelWidget::buttonContextMenuRequested(const QPoint& p)
     _ssgAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::SSG);
     _melodyAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::MELODY);
     _rhythmAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::RHYTHM);
+    _romAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::ROM);
 
     _contextMenu.exec(mapToGlobal(p));
 }
@@ -558,6 +587,13 @@ void ChannelWidget::melodyWasTriggered()
 void ChannelWidget::rhythmWasTriggered()
 {
     _app->undoStack().push(new SetChannelTypeCommand(_app->window(), _app->project().getChannel(_index), Channel::Type::RHYTHM));
+
+    emit selected();
+}
+
+void ChannelWidget::romWasTriggered()
+{
+    _app->undoStack().push(new SetChannelTypeCommand(_app->window(), _app->project().getChannel(_index), Channel::Type::ROM));
 
     emit selected();
 }
@@ -642,6 +678,9 @@ void ChannelWidget::paintEvent(QPaintEvent* event)
                 break;
             case Channel::RHYTHM:
                 ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_rhythmColor.name()));
+                break;
+            case Channel::ROM:
+                ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_romColor.name()));
                 break;
         }
     }
