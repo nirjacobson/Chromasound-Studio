@@ -5,6 +5,7 @@
 #define VGM_EMU_IMPL_H
 
 #define PCM_CHANNELS    4
+#define ROM_CHANNELS    4
 
 #include "Dual_Resampler.h"
 #include "Classic_Emu.h"
@@ -64,6 +65,12 @@ class Vgm_Emu_Impl : public Classic_Emu, private Dual_Resampler {
         byte        pcm_att  [PCM_CHANNELS];
         uint32_t    pcm_size [PCM_CHANNELS];
         byte const* pcm_start[PCM_CHANNELS];
+
+        blargg_vector<byte> rom_data;
+        byte const* rom_pos  [ROM_CHANNELS];
+        byte        rom_att  [ROM_CHANNELS];
+        uint32_t    rom_size [ROM_CHANNELS];
+        byte const* rom_start[ROM_CHANNELS];
         int dac_amp;
         int dac_disabled; // -1 if disabled
         void write_pcm( vgm_time_t, int amp );
@@ -71,6 +78,8 @@ class Vgm_Emu_Impl : public Classic_Emu, private Dual_Resampler {
         bool is_pcm_long(int channel);
 
         void set_opll_patchset( int patchset );
+
+        blargg_err_t set_rom_file(const char* path);
 
         Ym_Emu<Ym2612_Emu> ym2612;
         Ym_Emu<Ym2413_Emu> ym2413;

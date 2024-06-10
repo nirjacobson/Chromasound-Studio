@@ -105,6 +105,8 @@ class Project
         quint32 pcmOffset(const QString& path) const;
         QByteArray pcm() const;
 
+        bool hasROM() const;
+
         Project& operator=(Project&& src);
         Project(Project&& o);
 
@@ -116,6 +118,9 @@ class Project
 
         OPLL::Type opllType() const;
         void setOpllType(const OPLL::Type type);
+
+        const QString& romFile() const;
+        void setROMFile(const QString& path);
 
         bool usesOPN() const;
         bool usesSSG() const;
@@ -140,6 +145,8 @@ class Project
         int _ssgNoiseFreq;
         OPLSettings _userTone;
         OPLL::Type _opllType;
+
+        QString _romFile;
 
         void swapChannels(const int idxa, const int idxb);
         void swapPatterns(const int idxa, const int idxb);

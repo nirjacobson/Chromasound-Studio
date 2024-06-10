@@ -71,6 +71,8 @@ class Vgm_Emu : public Vgm_Emu_Impl {
         ~Vgm_Emu();
 
         void set_opll_patchset( int patchset );
+        void set_rom_file( const char* path );
+
     protected:
         blargg_err_t track_info_( track_info_t*, int track ) const;
         blargg_err_t load_mem_( byte const*, long );

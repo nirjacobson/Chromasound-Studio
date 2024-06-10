@@ -45,6 +45,14 @@ Vgm_Emu::Vgm_Emu()
         pcm_pos[i] = 0;
         pcm_start[i] = 0;
     }
+
+    for (int i = 0; i < ROM_CHANNELS; i++) {
+        rom_att[i] = 0;
+        rom_size[i] = 0;
+        rom_pos[i] = 0;
+        rom_start[i] = 0;
+    }
+
     fill_past_end_with_pcm = false;
 }
 
@@ -53,6 +61,11 @@ Vgm_Emu::~Vgm_Emu() { }
 void Vgm_Emu::set_opll_patchset( int patchset )
 {
     Vgm_Emu_Impl::set_opll_patchset( patchset );
+}
+
+void Vgm_Emu::set_rom_file(const char* path)
+{
+    Vgm_Emu_Impl::set_rom_file(path);
 }
 
 // Track info

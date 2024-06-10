@@ -15,9 +15,11 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _pcmUsageDialogWindow(nullptr)
     , _infoDialogWindow(nullptr)
     , _playerDialogWindow(nullptr)
+    , _romBuilderDialogWindow(nullptr)
     , _fmGlobalsWindow(nullptr)
     , _ssgGlobalsWindow(nullptr)
     , _melodyGlobalsWindow(nullptr)
+    , _romGlobalsWindow(nullptr)
 {
     _midiInput->init();
 
@@ -94,6 +96,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(ui->actionOPL, &QAction::triggered, this, &MainWindow::oplImportTriggered);
     connect(ui->actionPCMUsage, &QAction::triggered, this, &MainWindow::pcmUsageTriggered);
     connect(ui->actionMediaPlayer, &QAction::triggered, this, &MainWindow::playerTriggered);
+    connect(ui->actionROMBuilder, &QAction::triggered, this, &MainWindow::romBuilderTriggered);
 
     connect(_app, &Application::pcmUploadStarted, this, &MainWindow::pcmUploadStarted);
     connect(_app, &Application::pcmUploadFinished, this, &MainWindow::pcmUploadFinished);
@@ -103,6 +106,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(ui->actionFM, &QAction::triggered, this, &MainWindow::fmGlobalsTriggered);
     connect(ui->actionSSG, &QAction::triggered, this, &MainWindow::ssgGlobalsTriggered);
     connect(ui->actionMelody, &QAction::triggered, this, &MainWindow::melodyGlobalsTriggered);
+    connect(ui->actionROM, &QAction::triggered, this, &MainWindow::romGlobalsTriggered);
 
     showChannelsWindow();
     showPlaylistWindow();
@@ -484,6 +488,7 @@ void MainWindow::channelSelected(const int index)
     SSGWidget* ssgWidget;
     MelodyWidget* melodyWidget;
     RhythmWidget* rhythmWidget;
+    ROMWidget* romWidget;
     QList<MdiSubWindow*>::Iterator it;
 
     for (MdiSubWindow* window : _channelWindows[index]) {
@@ -549,6 +554,28 @@ void MainWindow::channelSelected(const int index)
                 pcmWidget->setWindowTitle(QString("%1: PCM").arg(_app->project().getChannel(index).name()));
 
                 channelWindow->setWidget(pcmWidget);
+                if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
+                    channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
+                }
+                _channelWindows[index].append(channelWindow);
+                connect(channelWindow, &MdiSubWindow::closed, this, [=]() {
+                    windowClosed(channelWindow);
+                });
+            }
+            break;
+        case Channel::ROM:
+            it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window) {
+                return dynamic_cast<ROMWidget*>(window->widget());
+            });
+            if (it != _channelWindows[index].end()) {
+                ui->mdiArea->setActiveSubWindow(*it);
+            } else {
+                romWidget = new ROMWidget(this, _app);
+                romWidget->setSettings(dynamic_cast<ROMChannelSettings*>(&_app->project().getChannel(index).settings()));
+                romWidget->setWindowTitle(QString("%1: ROM").arg(_app->project().getChannel(index).name()));
+
+                channelWindow->setWidget(romWidget);
+                channelWindow->resize(channelWindow->minimumSizeHint());
                 if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
                     channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
                 }
@@ -662,6 +689,7 @@ void MainWindow::newTriggered()
     }
 
     _app->project() = Project();
+    _app->setupChromasound();
 
     ui->topWidget->updateFromProject(_app->project());
 
@@ -676,6 +704,7 @@ void MainWindow::openTriggered()
 
     if (!path.isNull()) {
         _app->project() = BSON::decode(path);
+        _app->setupChromasound();
 
         ui->topWidget->updateFromProject(_app->project());
 
@@ -962,6 +991,25 @@ void MainWindow::playerTriggered()
     }
 }
 
+void MainWindow::romBuilderTriggered()
+{
+    if (_romBuilderDialogWindow == nullptr) {
+        _romBuilderDialog = new ROMBuilderDialog(this);
+
+        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        connect(window, &MdiSubWindow::closed, this, [&](){
+            _romBuilderDialogWindow = nullptr;
+        });
+        window->setAttribute(Qt::WA_DeleteOnClose);
+        window->setWidget(_romBuilderDialog);
+        _romBuilderDialogWindow = window;
+        ui->mdiArea->addSubWindow(window);
+        window->show();
+    } else {
+        ui->mdiArea->setActiveSubWindow(_romBuilderDialogWindow);
+    }
+}
+
 void MainWindow::fmGlobalsTriggered()
 {
     if (_fmGlobalsWindow == nullptr) {
@@ -1023,6 +1071,27 @@ void MainWindow::melodyGlobalsTriggered()
         window->show();
     } else {
         ui->mdiArea->setActiveSubWindow(_melodyGlobalsWindow);
+    }
+}
+
+void MainWindow::romGlobalsTriggered()
+{
+    if (_romGlobalsWindow == nullptr) {
+        _romGlobalsWidget = new ROMGlobalsWidget(this, _app);
+
+        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        connect(window, &MdiSubWindow::closed, this, [&]() {
+            _romGlobalsWindow = nullptr;
+        });
+        window->setAttribute(Qt::WA_DeleteOnClose);
+        window->setWidget(_romGlobalsWidget);
+        window->resize(window->minimumSizeHint());
+        window->setWindowTitle("ROM Globals");
+        _romGlobalsWindow = window;
+        ui->mdiArea->addSubWindow(window);
+        window->show();
+    } else {
+        ui->mdiArea->setActiveSubWindow(_romGlobalsWindow);
     }
 }
 
@@ -1132,6 +1201,8 @@ void MainWindow::doUpdate()
     if (_fmGlobalsWindow) _fmGlobalsWidget->doUpdate();
     if (_ssgGlobalsWindow) _ssgGlobalsWidget->doUpdate();
     if (_melodyGlobalsWindow) _melodyGlobalsWidget->doUpdate();
+    if (_romGlobalsWindow) _romGlobalsWidget->doUpdate();
+
     for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
         for (MdiSubWindow* window : (*it)) {
             PianoRollWidget* prw;
@@ -1255,6 +1326,7 @@ void MainWindow::dropEvent(QDropEvent* event)
 
     if (fileInfo.suffix() == "csp") {
         _app->project() = BSON::decode(path);
+        _app->setupChromasound();
 
         ui->topWidget->updateFromProject(_app->project());
 

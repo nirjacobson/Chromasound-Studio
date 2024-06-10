@@ -354,6 +354,16 @@ QByteArray Project::pcm() const
     return result;
 }
 
+bool Project::hasROM() const
+{
+    for (const Channel& channel : _channels) {
+        if (channel.type() == Channel::Type::ROM) {
+            return true;
+        }
+    }
+    return false;
+}
+
 Project& Project::operator=(Project&& src)
 {
     _channels = src._channels;
@@ -374,6 +384,7 @@ Project& Project::operator=(Project&& src)
     _ssgEnvelopeFreq = src._ssgEnvelopeFreq;
     _ssgNoiseFreq = src._ssgNoiseFreq;
     _userTone = src._userTone;
+    _romFile = src._romFile;
 
     _info = src._info;
 
@@ -400,6 +411,7 @@ Project::Project(Project&& o)
     _ssgEnvelopeFreq = o._ssgEnvelopeFreq;
     _ssgNoiseFreq = o._ssgNoiseFreq;
     _userTone = o._userTone;
+    _romFile = o._romFile;
 
     _info = o._info;
 }
@@ -432,6 +444,16 @@ OPLL::Type Project::opllType() const
 void Project::setOpllType(const OPLL::Type type)
 {
     _opllType = type;
+}
+
+const QString& Project::romFile() const
+{
+    return _romFile;
+}
+
+void Project::setROMFile(const QString& path)
+{
+    _romFile = path;
 }
 
 bool Project::usesOPN() const

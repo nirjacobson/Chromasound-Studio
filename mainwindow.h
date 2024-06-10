@@ -16,6 +16,7 @@
 #include "dialogs/pianorollwidget/pianorollwidget.h"
 #include "opn/opnwidgetwindow.h"
 #include "opn/pcmwidget.h"
+#include "rom/romwidget.h"
 #include "ssg/ssgwidget.h"
 #include "project/vgmstream.h"
 #include "formats/midi/midiinput.h"
@@ -25,12 +26,14 @@
 #include "tools/fmimport/opnimportdialog.h"
 #include "tools/fmimport/oplimportdialog.h"
 #include "tools/pcmusage/pcmusagedialog.h"
+#include "tools/rom/rombuilderdialog.h"
 #include "dialogs/info/projectinfodialog.h"
 #include "dialogs/settings/settingsdialog.h"
 #include "tools/player/player.h"
 #include "globals/melodyglobalswidget.h"
 #include "globals/ssgglobalswidget.h"
 #include "globals/fmglobalswidget.h"
+#include "globals/romglobalswidget.h"
 #include "opl/melodywidget.h"
 #include "opl/rhythmwidget.h"
 #include "opn/lfowidget.h"
@@ -112,9 +115,11 @@ class MainWindow : public QMainWindow
         void opnImportTriggered();
         void oplImportTriggered();
         void playerTriggered();
+        void romBuilderTriggered();
         void fmGlobalsTriggered();
         void ssgGlobalsTriggered();
         void melodyGlobalsTriggered();
+        void romGlobalsTriggered();
 
         void showChannelsWindow();
         void showPlaylistWindow();
@@ -148,10 +153,12 @@ class MainWindow : public QMainWindow
         OPNImportDialog* _opnImportDialog;
         OPLImportDialog* _oplImportDialog;
         PCMUsageDialog* _pcmUsageDialog;
+        ROMBuilderDialog* _romBuilderDialog;
         Player* _player;
         FMGlobalsWidget* _fmGlobalsWidget;
         SSGGlobalsWidget* _ssgGlobalsWidget;
         MelodyGlobalsWidget* _melodyGlobalsWidget;
+        ROMGlobalsWidget* _romGlobalsWidget;
 
         MdiSubWindow* _settingsDialogWindow;
         MdiSubWindow* _infoDialogWindow;
@@ -160,9 +167,11 @@ class MainWindow : public QMainWindow
         MdiSubWindow* _oplImportDialogWindow;
         MdiSubWindow* _pcmUsageDialogWindow;
         MdiSubWindow* _playerDialogWindow;
+        MdiSubWindow* _romBuilderDialogWindow;
         MdiSubWindow* _fmGlobalsWindow;
         MdiSubWindow* _ssgGlobalsWindow;
         MdiSubWindow* _melodyGlobalsWindow;
+        MdiSubWindow* _romGlobalsWindow;
 
         FilesystemModel _filesystemModel;
         SortFilterProxyModel _proxyModel;

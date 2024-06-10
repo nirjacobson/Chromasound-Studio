@@ -159,6 +159,10 @@ Channel BSON::toChannel(bson_iter_t& b)
             c._settings = new PCMChannelSettings;
             c._settings->fromBSON(settingsInner);
         }
+        if (c._type == Channel::Type::ROM) {
+            c._settings = new ROMChannelSettings;
+            c._settings->fromBSON(settingsInner);
+        }
         if (c._type == Channel::Type::SSG) {
             c._settings = new SSGChannelSettings;
             c._settings->fromBSON(settingsInner);
@@ -420,6 +424,10 @@ Track::SettingsChange BSON::toTrackSettingsChange(bson_iter_t& b)
                         break;
                     case Channel::PCM:
                         sc._settings = new PCMChannelSettings;
+                        sc._settings->fromBSON(settingsInner);
+                        break;
+                    case Channel::ROM:
+                        sc._settings = new ROMChannelSettings;
                         sc._settings->fromBSON(settingsInner);
                         break;
                     case Channel::SSG:
@@ -831,6 +839,11 @@ void BSON::fromProject(bson_t* dst,const Project& project)
     bson_t userTone = project._userTone.toBSON();
     BSON_APPEND_DOCUMENT(dst, "userTone", &userTone);
 
+    // ROM
+    if (!project.romFile().isEmpty()) {
+        BSON_APPEND_UTF8(dst, "romFile", project.romFile().toStdString().c_str());
+    }
+
     // Info
     bson_t b_info;
     bson_init(&b_info);
@@ -942,6 +955,14 @@ Project BSON::toProject(bson_iter_t& b)
 
     if (bson_iter_find_descendant(&b, "userTone", &userTone) && BSON_ITER_HOLDS_DOCUMENT(&userTone) && bson_iter_recurse(&userTone, &userToneInner)) {
         p._userTone.fromBSON(userToneInner);
+    }
+
+    // ROM
+
+    bson_iter_t romFile;
+
+    if (bson_iter_find_descendant(&b, "romFile", &romFile) && BSON_ITER_HOLDS_UTF8(&romFile)) {
+        p._romFile = bson_iter_utf8(&romFile, NULL);
     }
 
     // Info

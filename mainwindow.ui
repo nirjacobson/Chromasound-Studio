@@ -82,6 +82,7 @@
      <addaction name="actionFM"/>
      <addaction name="actionSSG"/>
      <addaction name="actionMelody"/>
+     <addaction name="actionROM"/>
     </widget>
     <addaction name="separator"/>
     <addaction name="menuGlobals"/>
@@ -110,6 +111,7 @@
     <addaction name="menuImportFMPatches"/>
     <addaction name="actionPCMUsage"/>
     <addaction name="actionMediaPlayer"/>
+    <addaction name="actionROMBuilder"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -205,6 +207,16 @@
   <action name="actionMelody">
    <property name="text">
     <string>&amp;Melody</string>
+   </property>
+  </action>
+  <action name="actionROMBuilder">
+   <property name="text">
+    <string>&amp;ROM Builder</string>
+   </property>
+  </action>
+  <action name="actionROM">
+   <property name="text">
+    <string>&amp;ROM</string>
    </property>
   </action>
  </widget>

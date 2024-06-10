@@ -59,6 +59,9 @@ void Channel::setType(const Type type)
         case RHYTHM:
             _settings = new RhythmChannelSettings;
             break;
+        case ROM:
+            _settings = new ROMChannelSettings;
+            break;
     }
 
     if (oldSettings) {
@@ -104,6 +107,8 @@ QString Channel::channelTypeToString(const Type type)
             return "MELODY";
         case RHYTHM:
             return "RHYTHM";
+        case ROM:
+            return "ROM";
     }
 
     return "TONE";
@@ -137,6 +142,10 @@ Channel::Type Channel::channelTypeFromString(const QString& str)
 
     if (str == "RHYTHM") {
         return Channel::Type::RHYTHM;
+    }
+
+    if (str == "ROM") {
+        return Channel::Type::ROM;
     }
 
     return Channel::Type::TONE;

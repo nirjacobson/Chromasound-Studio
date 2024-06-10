@@ -15,12 +15,16 @@ Chromasound_Direct::Chromasound_Direct(const Project& project)
         _vgmStream.encode(project, _items, data);
 
         bool havePCM = false;
+        bool haveROM = false;
         for (VGMStream::StreamItem* item : _items) {
             VGMStream::StreamNoteItem* sni;
             if ((sni = dynamic_cast<VGMStream::StreamNoteItem*>(item))) {
                 if (sni->on()) {
                     if (sni->type() == Channel::Type::PCM) {
                         havePCM = true;
+                    }
+                    if (sni->type() == Channel::Type::ROM) {
+                        haveROM = true;
                     }
                     continue;
                 } else {
@@ -45,6 +49,15 @@ Chromasound_Direct::Chromasound_Direct(const Project& project)
             pcmBlock.append((quint8)0x00);
             pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
             pcmBlock.append(dataBlock);
+            pcmBlock.append(0x52);
+            pcmBlock.append(0x2B);
+            pcmBlock.append(0x80);
+
+            data.prepend(pcmBlock);
+
+            _vgmPlayer->fillWithPCM(true);
+        } else if (haveROM) {
+            QByteArray pcmBlock;
             pcmBlock.append(0x52);
             pcmBlock.append(0x2B);
             pcmBlock.append(0x80);
@@ -191,7 +204,7 @@ void Chromasound_Direct::keyOff(int key)
 
     bool havePCM = false;
     for (auto it = _keys.begin(); it != _keys.end(); ++it) {
-        if (it.value()->type() == Channel::Type::PCM) {
+        if (it.value()->type() == Channel::Type::PCM || it.value()->type() == Channel::Type::ROM) {
             havePCM = true;
             break;
         }

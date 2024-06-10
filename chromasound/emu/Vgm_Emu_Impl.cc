@@ -126,6 +126,17 @@ void Vgm_Emu_Impl::set_opll_patchset(int patchset)
     ym2413.reset_patch( patchset );
 }
 
+blargg_err_t Vgm_Emu_Impl::set_rom_file(const char* path)
+{
+    Std_File_Reader reader;
+    reader.open(path);
+
+    RETURN_ERR( rom_data.resize( reader.remain() ) );
+    RETURN_ERR( reader.read( rom_data.begin(), rom_data.size() ) );
+
+    return 0;
+}
+
 int Vgm_Emu_Impl::pcm_read()
 {
     int result = 0x00;
@@ -139,6 +150,18 @@ int Vgm_Emu_Impl::pcm_read()
                 pcm_pos[i] = 0;
             }
             result += sample >> pcm_att[i];
+        }
+    }
+
+    for (int i = 0; i < ROM_CHANNELS; i++) {
+        if (rom_pos[i]) {
+            int sample = *rom_pos[i] - 0x80;
+            rom_pos[i]++;
+
+            if (rom_size[i] && rom_pos[i] == (rom_start[i] + rom_size[i])) {
+                rom_pos[i] = 0;
+            }
+            result += sample >> rom_att[i];
         }
     }
 
@@ -272,30 +295,49 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
                 {
                     case cmd_pcm_size:
                         channel = (cmd & 0x0F);
-                        if (is_pcm_long(channel)) {
-                            pcm_size[channel] = *(uint32_t*)pos;
-                            pos += 4;
+                        if (channel < PCM_CHANNELS) {
+                            if (is_pcm_long(channel)) {
+                                pcm_size[channel] = *(uint32_t*)pos;
+                                pos += 4;
+                            } else {
+                                pcm_size[channel] = *(uint16_t*)pos;
+                                pos += 2;
+                            }
                         } else {
-                            pcm_size[channel] = *(uint16_t*)pos;
+                            channel -= PCM_CHANNELS;
+
+                            rom_size[channel] = *(uint16_t*)pos;
                             pos += 2;
                         }
                         break;
                     case cmd_pcm_seek:
                         channel = (cmd & 0x0F);
-                        if (is_pcm_long(channel)) {
-                            offset = *(uint32_t*)pos;
-                            if (offset == -1) {
-                                pcm_pos[channel] = 0;
+                        if (channel < PCM_CHANNELS) {
+                            if (is_pcm_long(channel)) {
+                                offset = *(uint32_t*)pos;
+                                if (offset == -1) {
+                                    pcm_pos[channel] = 0;
+                                } else {
+                                    pcm_start[channel] = pcm_pos[channel] = pcm_data + offset;
+                                }
+                                pos += 4;
                             } else {
-                                pcm_start[channel] = pcm_pos[channel] = pcm_data + offset;
+                                offset = *(uint16_t*)pos;
+                                if (offset == (uint16_t)-1) {
+                                    pcm_pos[channel] = 0;
+                                } else {
+                                    pcm_start[channel] = pcm_pos[channel] = pcm_data + offset;
+                                }
+                                pos += 2;
                             }
-                            pos += 4;
                         } else {
+                            channel -= PCM_CHANNELS;
+
                             offset = *(uint16_t*)pos;
                             if (offset == (uint16_t)-1) {
-                                pcm_pos[channel] = 0;
+                                rom_pos[channel] = 0;
                             } else {
-                                pcm_start[channel] = pcm_pos[channel] = pcm_data + offset;
+                                rom_start[channel] = rom_pos[channel] = &rom_data[0] + offset;
                             }
                             pos += 2;
                         }
@@ -303,7 +345,12 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
                     case cmd_pcm_attenuation:
                         channel = (cmd & 0x0F);
                         att = *pos;
-                        pcm_att[channel] = att;
+                        if (channel < PCM_CHANNELS) {
+                            pcm_att[channel] = att;
+                        } else {
+                            channel -= PCM_CHANNELS;
+                            rom_att[channel] = att;
+                        }
                         pos++;
                         break;
                     case cmd_pcm_delay:
