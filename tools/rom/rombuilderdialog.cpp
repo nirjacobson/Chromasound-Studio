@@ -22,6 +22,8 @@ ROMBuilderDialog::ROMBuilderDialog(QWidget *parent)
 
     connect(ui->actionSave, &QAction::triggered, this, &ROMBuilderDialog::save);
     connect(ui->actionClose, &QAction::triggered, this, &QDialog::close);
+
+    connect(ui->tableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ROMBuilderDialog::selectionChanged);
 }
 
 ROMBuilderDialog::~ROMBuilderDialog()
@@ -75,11 +77,23 @@ void ROMBuilderDialog::add_(const QString& path)
 void ROMBuilderDialog::moveUp()
 {
     _tableModel.moveUp(ui->tableView->selectionModel()->selectedIndexes().first().row());
+
+    QItemSelection selected = ui->tableView->selectionModel()->selection();
+
+    ui->moveUpButton->setEnabled(!selected.indexes().empty() && selected.indexes().first().row() > 0);
+    ui->moveDownButton->setEnabled(!selected.indexes().empty() && selected.indexes().first().row() >= 0 && selected.indexes().first().row() < ui->tableView->model()->rowCount() - 1);
+    ui->removeButton->setEnabled(!selected.indexes().empty() && selected.indexes().first().row() >= 0);
 }
 
 void ROMBuilderDialog::moveDown()
 {
     _tableModel.moveDown(ui->tableView->selectionModel()->selectedIndexes().first().row());
+
+    QItemSelection selected = ui->tableView->selectionModel()->selection();
+
+    ui->moveUpButton->setEnabled(!selected.indexes().empty() && selected.indexes().first().row() > 0);
+    ui->moveDownButton->setEnabled(!selected.indexes().empty() && selected.indexes().first().row() >= 0 && selected.indexes().first().row() < ui->tableView->model()->rowCount() - 1);
+    ui->removeButton->setEnabled(!selected.indexes().empty() && selected.indexes().first().row() >= 0);
 }
 
 void ROMBuilderDialog::remove()
@@ -114,6 +128,13 @@ void ROMBuilderDialog::save()
 
         romFile.close();
     }
+}
+
+void ROMBuilderDialog::selectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
+{
+    ui->moveUpButton->setEnabled(!selected.indexes().empty() && selected.indexes().first().row() > 0);
+    ui->moveDownButton->setEnabled(!selected.indexes().empty() && selected.indexes().first().row() >= 0 && selected.indexes().first().row() < ui->tableView->model()->rowCount() - 1);
+    ui->removeButton->setEnabled(!selected.indexes().empty() && selected.indexes().first().row() >= 0);
 }
 
 void ROMBuilderDialog::dragEnterEvent(QDragEnterEvent* event)

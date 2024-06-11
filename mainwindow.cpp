@@ -1208,11 +1208,15 @@ void MainWindow::doUpdate()
         for (MdiSubWindow* window : (*it)) {
             PianoRollWidget* prw;
             MelodyWidget* mw;
+            ROMWidget* rw;
             if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
                 prw->doUpdate(position);
             }
             if ((mw = dynamic_cast<MelodyWidget*>(window->widget()))) {
                 mw->doUpdate();
+            }
+            if ((rw = dynamic_cast<ROMWidget*>(window->widget()))) {
+                rw->doUpdate();
             }
         }
     }
