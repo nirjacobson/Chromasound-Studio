@@ -83,11 +83,13 @@ bool ROMBuilderTableModel::setData(const QModelIndex& index, const QVariant& val
 
 Qt::ItemFlags ROMBuilderTableModel::flags(const QModelIndex& index) const
 {
+    Qt::ItemFlags flags = QAbstractTableModel::flags(index) | Qt::ItemIsDragEnabled;
+
     if (index.column() == 1) {
-        return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
+        return flags | Qt::ItemIsEditable;
     }
 
-    return QAbstractTableModel::flags(index);
+    return flags;
 }
 
 void ROMBuilderTableModel::insertRow(const QString& name, const QString& path)
@@ -149,4 +151,28 @@ quint32 ROMBuilderTableModel::offsetOf(const int index) const
     }
 
     return offset;
+}
+
+QStringList ROMBuilderTableModel::mimeTypes() const
+{
+    QStringList types;
+    types << "text/uri-list";
+
+    return types;
+}
+
+QMimeData* ROMBuilderTableModel::mimeData(const QModelIndexList& indexes) const
+{
+    QMimeData* mimeData = new QMimeData;
+    QStringList paths;
+
+    for (const QModelIndex& index : indexes) {
+        if (index.isValid()) {
+            paths.append(QString("file://%1").arg(_paths[index.row()]));
+        }
+    }
+    QString pathsString = paths.join("\r\n");
+
+    mimeData->setData("text/uri-list", pathsString.toUtf8());
+    return mimeData;
 }

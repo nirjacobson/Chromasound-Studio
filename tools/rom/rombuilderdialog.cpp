@@ -8,9 +8,12 @@ ROMBuilderDialog::ROMBuilderDialog(QWidget *parent)
 {
     ui->setupUi(this);
 
+    setAcceptDrops(true);
+
     ui->tableView->setModel(&_tableModel);
     ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->tableView->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
+    ui->tableView->setDragEnabled(true);
 
     connect(ui->moveUpButton, &QPushButton::clicked, this, &ROMBuilderDialog::moveUp);
     connect(ui->moveDownButton, &QPushButton::clicked, this, &ROMBuilderDialog::moveDown);
@@ -62,6 +65,13 @@ void ROMBuilderDialog::recalculateSize()
     ui->label->setText(QString("Size: %1 %2").arg(size).arg(suffix));
 }
 
+void ROMBuilderDialog::add_(const QString& path)
+{
+    _tableModel.insertRow(QFileInfo(path).baseName(), path);
+
+    recalculateSize();
+}
+
 void ROMBuilderDialog::moveUp()
 {
     _tableModel.moveUp(ui->tableView->selectionModel()->selectedIndexes().first().row());
@@ -83,9 +93,7 @@ void ROMBuilderDialog::add()
 {
     QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "PCM file (*.pcm)", nullptr, QFileDialog::DontUseNativeDialog);
 
-    _tableModel.insertRow("Sample", path);
-
-    recalculateSize();
+    add_(path);
 }
 
 void ROMBuilderDialog::save()
@@ -105,5 +113,35 @@ void ROMBuilderDialog::save()
         }
 
         romFile.close();
+    }
+}
+
+void ROMBuilderDialog::dragEnterEvent(QDragEnterEvent* event)
+{
+    if (event->mimeData()->hasFormat("text/uri-list")) {
+        event->acceptProposedAction();
+    }
+}
+
+void ROMBuilderDialog::dropEvent(QDropEvent* event)
+{
+    QByteArray data = event->mimeData()->data("text/uri-list");
+    QString pathsString(data);
+    QStringList paths = pathsString.split("\r\n");
+    paths.removeDuplicates();
+    paths.removeAll("");
+
+    for (QString& str : paths) {
+        str = str.mid(QString("file://").length());
+        str = str.replace("%20", " ");
+    }
+
+    for (auto it = paths.begin(); it != paths.end(); ++it) {
+        QFile file(*it);
+        QFileInfo fileInfo(file);
+
+        if (fileInfo.suffix() == "pcm") {
+            add_(*it);
+        }
     }
 }

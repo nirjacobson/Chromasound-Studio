@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QFileDialog>
+#include <QDragEnterEvent>
+#include <QMimeData>
 
 #include "rombuildertablemodel.h"
 
@@ -29,6 +31,8 @@ private:
 
     void recalculateSize();
 
+    void add_(const QString& path);
+
 private slots:
     void moveUp();
     void moveDown();
@@ -36,6 +40,11 @@ private slots:
     void add();
 
     void save();
+
+    // QWidget interface
+protected:
+    void dragEnterEvent(QDragEnterEvent* event);
+    void dropEvent(QDropEvent* event);
 };
 
 #endif // ROMBUILDERDIALOG_H

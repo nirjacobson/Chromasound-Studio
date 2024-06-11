@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QFileDialog>
+#include <QDragEnterEvent>
+#include <QMimeData>
 
 #include "application.h"
 #include "formats/rom.h"
@@ -32,12 +34,19 @@ private:
     ROM _rom;
     ROMTableModel _tableModel;
 
+    void load(const QString& path);
+
 private slots:
     void open();
 
     // QWidget interface
 protected:
     void closeEvent(QCloseEvent* event);
+
+    // QWidget interface
+protected:
+    void dragEnterEvent(QDragEnterEvent* event);
+    void dropEvent(QDropEvent* event);
 };
 
 #endif // ROMGLOBALSWIDGET_H
