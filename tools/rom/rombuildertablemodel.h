@@ -3,6 +3,7 @@
 
 #include <QAbstractTableModel>
 #include <QFileInfo>
+#include <QMimeData>
 
 class ROMBuilderTableModel : public QAbstractTableModel
 {
@@ -37,6 +38,11 @@ public:
 private:
     QList<QString>& _names;
     QList<QString>& _paths;
+
+    // QAbstractItemModel interface
+public:
+    QStringList mimeTypes() const override;
+    QMimeData* mimeData(const QModelIndexList& indexes) const override;
 };
 
 #endif // ROMBUILDERTABLEMODEL_H

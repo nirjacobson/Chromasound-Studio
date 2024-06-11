@@ -57,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     filters << "*.mid";
     filters << "*.pcm";
     filters << "*.vgm";
+    filters << "*.chr";
     _filesystemModel.setNameFilters(filters);
     _filesystemModel.setNameFilterDisables(false);
     _filesystemModel.setRootPath(QDir::currentPath());
@@ -1086,7 +1087,7 @@ void MainWindow::romGlobalsTriggered()
         window->setAttribute(Qt::WA_DeleteOnClose);
         window->setWidget(_romGlobalsWidget);
         window->resize(window->minimumSizeHint());
-        window->setWindowTitle("ROM Globals");
+        window->setWindowTitle("Project Sample ROM");
         _romGlobalsWindow = window;
         ui->mdiArea->addSubWindow(window);
         window->show();
