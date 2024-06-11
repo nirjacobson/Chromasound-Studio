@@ -8,9 +8,13 @@ ROMWidget::ROMWidget(QWidget *parent, Application* app)
 {
     ui->setupUi(this);
 
+    QStringList items;
     if (app) {
-        ui->sampleComboBox->addItems(ROM(app->project().romFile()).names());
+        items = ROM(app->project().romFile()).names();
+        ui->sampleComboBox->addItems(items);
     }
+
+    ui->stackedWidget->setCurrentIndex(!items.empty());
 
     connect(ui->sampleComboBox, &QComboBox::currentIndexChanged, this, &ROMWidget::selectionChanged);
 }
@@ -24,9 +28,12 @@ void ROMWidget::setApplication(Application* app)
 {
     _app = app;
 
+    QStringList items = ROM(app->project().romFile()).names();
     ui->sampleComboBox->blockSignals(true);
-    ui->sampleComboBox->addItems(ROM(app->project().romFile()).names());
+    ui->sampleComboBox->addItems(items);
     ui->sampleComboBox->blockSignals(false);
+
+    ui->stackedWidget->setCurrentIndex(!items.empty());
 }
 
 void ROMWidget::setSettings(ROMChannelSettings* settings)
@@ -40,12 +47,15 @@ void ROMWidget::setSettings(ROMChannelSettings* settings)
 
 void ROMWidget::doUpdate()
 {
+    QStringList items = ROM(_app->project().romFile()).names();
     ui->sampleComboBox->blockSignals(true);
     ui->sampleComboBox->clear();
-    ui->sampleComboBox->addItems(ROM(_app->project().romFile()).names());
+    ui->sampleComboBox->addItems(items);
     ui->sampleComboBox->blockSignals(false);
 
     if (_settings) setSettings(_settings);
+
+    ui->stackedWidget->setCurrentIndex(!items.empty());
 }
 
 void ROMWidget::selectionChanged(int index)

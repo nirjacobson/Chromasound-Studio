@@ -41,6 +41,8 @@ private slots:
 
     void save();
 
+    void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+
     // QWidget interface
 protected:
     void dragEnterEvent(QDragEnterEvent* event);
