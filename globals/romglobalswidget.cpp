@@ -5,7 +5,7 @@ ROMGlobalsWidget::ROMGlobalsWidget(QWidget *parent, Application* app)
     : QMainWindow(parent)
     , ui(new Ui::ROMGlobalsWidget)
     , _app(app)
-    , _rom(app->project().romFile())
+    , _rom(app->project().resolve(app->project().romFile()))
     , _tableModel(this, _rom)
 {
     ui->setupUi(this);
@@ -33,7 +33,7 @@ void ROMGlobalsWidget::doUpdate()
 
     ui->label->setText(QFileInfo(_app->project().romFile()).fileName());
 
-    _rom = ROM(_app->project().romFile());
+    _rom = ROM(_app->project().resolve(_app->project().romFile()));
     _tableModel.doUpdate();
 }
 

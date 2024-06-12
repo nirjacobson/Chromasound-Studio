@@ -159,7 +159,7 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
     setEqualizer();
 
     if (!project.romFile().isEmpty()) {
-        dynamic_cast<Vgm_Emu*>(_emu)->set_rom_file(project.romFile().toStdString().c_str());
+        dynamic_cast<Vgm_Emu*>(_emu)->set_rom_file(project.resolve(project.romFile()).toStdString().c_str());
     }
 
     _player->start();

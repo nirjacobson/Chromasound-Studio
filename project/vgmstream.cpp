@@ -117,7 +117,7 @@ void VGMStream::encode(const Project& project, QList<StreamItem*>& items, QByteA
         StreamEnvelopeShapeItem* sesi;
         StreamUserToneItem* suti;
         if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
-            encodeSettingsItem(ssi, data, ROM(project.romFile()));
+            encodeSettingsItem(ssi, data, ROM(project.resolve(project.romFile())));
         } else if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
             encodeNoteItem(project, sni, data);
         } else if ((sli = dynamic_cast<StreamLFOItem*>(items[i])) != nullptr) {
@@ -598,17 +598,18 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const Pattern& p
         StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(si);
         if (sni->type() == Channel::Type::PCM) {
             const PCMChannelSettings* pcmSettings = dynamic_cast<const PCMChannelSettings*>(sni->channelSettings());
-            if (!pcmData.contains(pcmSettings->path())) {
-                QFile file(pcmSettings->path());
+            QString resolvedPath = project.resolve(pcmSettings->path());
+            if (!pcmData.contains(resolvedPath)) {
+                QFile file(resolvedPath);
                 file.open(QIODevice::ReadOnly);
-                pcmData[pcmSettings->path()] = file.readAll();
+                pcmData[resolvedPath] = file.readAll();
                 file.close();
             }
         }
     });
 
     if (!project.romFile().isEmpty()) {
-        QFile romFile(project.romFile());
+        QFile romFile(project.resolve(project.romFile()));
         romFile.open(QIODevice::ReadOnly);
         romData = romFile.readAll();
         romFile.close();
@@ -616,7 +617,7 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const Pattern& p
 
     sortItems(items);
 
-    ROM rom(project.romFile());
+    ROM rom(project.resolve(project.romFile()));
 
     float lastTime = 0.0;
     quint32 pcmSize = 0;
@@ -687,10 +688,11 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const Pattern& p
             quint32 newPcmSize;
             if (sni->type() == Channel::Type::PCM) {
                 const PCMChannelSettings* channelSettings = dynamic_cast<const PCMChannelSettings*>(sni->channelSettings());
-                newPcmSize = qMin(QFileInfo(QFile(channelSettings->path())).size(), (qint64)(sni->note().duration() / project.tempo() * 60 * 44100));
+                QString resolvedPath = project.resolve(channelSettings->path());
+                newPcmSize = qMin(QFileInfo(QFile(resolvedPath)).size(), (qint64)(sni->note().duration() / project.tempo() * 60 * 44100));
 
                 pcmOffsetsByChannel[sni->channel()] = 0;
-                pcmPathsByChannel[sni->channel()] = channelSettings->path();
+                pcmPathsByChannel[sni->channel()] = resolvedPath;
                 pcmVolumeByChannel[sni->channel()] = channelSettings->volume() * sni->note().velocity() / 100.0f;
             } else {
                 const ROMChannelSettings* channelSettings = dynamic_cast<const ROMChannelSettings*>(sni->channelSettings());
@@ -759,17 +761,18 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const float loop
         StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(si);
         if (sni->type() == Channel::Type::PCM) {
             const PCMChannelSettings* pcmSettings = dynamic_cast<const PCMChannelSettings*>(sni->channelSettings());
-            if (!pcmData.contains(pcmSettings->path())) {
-                QFile file(pcmSettings->path());
+            QString resolvedPath = project.resolve(pcmSettings->path());
+            if (!pcmData.contains(resolvedPath)) {
+                QFile file(resolvedPath);
                 file.open(QIODevice::ReadOnly);
-                pcmData[pcmSettings->path()] = file.readAll();
+                pcmData[resolvedPath] = file.readAll();
                 file.close();
             }
         }
     });
 
     if (!project.romFile().isEmpty()) {
-        QFile romFile(project.romFile());
+        QFile romFile(project.resolve(project.romFile()));
         romFile.open(QIODevice::ReadOnly);
         romData = romFile.readAll();
         romFile.close();
@@ -777,7 +780,7 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const float loop
 
     sortItems(items);
 
-    ROM rom(project.romFile());
+    ROM rom(project.resolve(project.romFile()));
 
     float lastTime = 0.0;
     quint32 pcmSize = 0;
@@ -847,10 +850,11 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const float loop
             quint32 newPcmSize;
             if (sni->type() == Channel::Type::PCM) {
                 const PCMChannelSettings* channelSettings = dynamic_cast<const PCMChannelSettings*>(sni->channelSettings());
-                newPcmSize = qMin(QFileInfo(QFile(channelSettings->path())).size(), (qint64)(sni->note().duration() / project.tempo() * 60 * 44100));
+                QString resolvedPath = project.resolve(channelSettings->path());
+                newPcmSize = qMin(QFileInfo(QFile(resolvedPath)).size(), (qint64)(sni->note().duration() / project.tempo() * 60 * 44100));
 
                 pcmOffsetsByChannel[sni->channel()] = 0;
-                pcmPathsByChannel[sni->channel()] = channelSettings->path();
+                pcmPathsByChannel[sni->channel()] = resolvedPath;
                 pcmVolumeByChannel[sni->channel()] = channelSettings->volume() * sni->note().velocity() / 100.0f;
             } else {
                 const ROMChannelSettings* channelSettings = dynamic_cast<const ROMChannelSettings*>(sni->channelSettings());
@@ -947,7 +951,7 @@ int VGMStream::acquireFMChannel(const float time, const float duration, const FM
 int VGMStream::acquirePCMChannel(const Project& project, const float time, const float duration, const PCMChannelSettings* settings)
 {
     for (int i = 0; i < PCM_CHANNELS; i++) {
-        if (_pcmChannels[i].isLong() != requiresLongPCMChannel(project, settings->path())) {
+        if (_pcmChannels[i].isLong() != requiresLongPCMChannel(project, project.resolve(settings->path()))) {
             continue;
         }
 
@@ -1170,7 +1174,7 @@ void VGMStream::assignChannelsAndExpand(const Project& project, QList<StreamItem
         return a->time() < b->time();
     });
 
-    ROM rom(project.romFile());
+    ROM rom(project.resolve(project.romFile()));
 
     for (StreamItem* item : itemsCopy) {
         StreamNoteItem* noteItem = dynamic_cast<StreamNoteItem*>(item);
@@ -1183,7 +1187,7 @@ void VGMStream::assignChannelsAndExpand(const Project& project, QList<StreamItem
         float duration = noteItem->note().duration();
         if (noteItem->type() == Channel::Type::PCM) {
             const PCMChannelSettings* channelSettings = dynamic_cast<const PCMChannelSettings*>(noteItem->channelSettings());
-            quint32 size = QFileInfo(QFile(channelSettings->path())).size();
+            quint32 size = QFileInfo(project.resolve(channelSettings->path())).size();
             quint32 durationSamples = duration / tempo * 60 * 44100;
 
             if (size < durationSamples) {
@@ -1570,7 +1574,7 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
     quint32 pcmWritten = 0;
     StreamNoteItem* lastNoteItem = nullptr;
 
-    ROM rom(project.romFile());
+    ROM rom(project.resolve(project.romFile()));
     for (int i = 0; i < items.size(); i++) {
         quint32 fullDelaySamples = (quint32)((items[i]->time() - lastTime) / project.tempo() * 60 * 44100);
         lastTime = items[i]->time();
@@ -1614,7 +1618,7 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
         StreamEnvelopeShapeItem* sesi;
         StreamUserToneItem* suti;
         if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
-            encodeSettingsItem(ssi, data, ROM(project.romFile()));
+            encodeSettingsItem(ssi, data, ROM(project.resolve(project.romFile())));
             continue;
         }
 
@@ -1623,7 +1627,7 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
 
             if (sni->on() && sni->type() == Channel::Type::PCM) {
                 const PCMChannelSettings* channelSettings = dynamic_cast<const PCMChannelSettings*>(sni->channelSettings());
-                quint32 newPcmSize = qMin(QFileInfo(QFile(channelSettings->path())).size(), (qint64)(sni->note().duration() / project.tempo() * 60 * 44100));
+                quint32 newPcmSize = qMin(QFileInfo(project.resolve(channelSettings->path())).size(), (qint64)(sni->note().duration() / project.tempo() * 60 * 44100));
                 if (pcmWritten + newPcmSize > pcmSize) {
                     lastNoteItem = sni;
                     pcmSize = pcmWritten + newPcmSize;
@@ -1951,22 +1955,23 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
         if (_format == Format::CHROMASOUND) {
             if (item->on()) {
                 const PCMChannelSettings* pcmcs = dynamic_cast<const PCMChannelSettings*>(item->channelSettings());
+                QString resolvedPath = project.resolve(pcmcs->path());
                 int volume = pcmcs->volume() * item->note().velocity() / 100;
                 int att = MAX_PCM_ATTENUATION * (float)(100 - volume) / 100;
                 data.append(0xF0 | item->channel());
                 data.append(att);
 
                 if (_pcmChannels[item->channel()].isLong()) {
-                    quint32 offset = project.pcmOffset(pcmcs->path());
-                    quint32 size = QFileInfo(pcmcs->path()).size();
+                    quint32 offset = project.pcmOffset(resolvedPath);
+                    quint32 size = QFileInfo(resolvedPath).size();
 
                     data.append(0xD0 | item->channel());
                     data.append((char*)&size, sizeof(size));
                     data.append(0xE0 | item->channel());
                     data.append((char*)&offset, sizeof(offset));
                 } else {
-                    quint16 offset = project.pcmOffset(pcmcs->path());
-                    quint16 size = QFileInfo(pcmcs->path()).size();
+                    quint16 offset = project.pcmOffset(resolvedPath);
+                    quint16 size = QFileInfo(resolvedPath).size();
 
                     data.append(0xD0 | item->channel());
                     data.append((char*)&size, sizeof(size));
@@ -1988,7 +1993,7 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
             }
         }
     } else if (item->type() == Channel::Type::ROM) {
-        ROM rom(project.romFile());
+        ROM rom(project.resolve(project.romFile()));
 
         if (_format == Format::CHROMASOUND) {
             if (item->on()) {

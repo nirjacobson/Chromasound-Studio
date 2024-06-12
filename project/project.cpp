@@ -310,7 +310,7 @@ quint32 Project::pcmOffset(const QString& path) const
 
     for (const Channel& channel : _channels) {
         if (channel.type() == Channel::Type::PCM) {
-            paths.append(dynamic_cast<const PCMChannelSettings&>(channel.settings()).path());
+            paths.append(resolve(dynamic_cast<const PCMChannelSettings&>(channel.settings()).path()));
         }
     }
 
@@ -336,7 +336,7 @@ QByteArray Project::pcm() const
     QList<QString> paths;
     for (const Channel& channel : _channels) {
         if (channel.type() == Channel::Type::PCM) {
-            paths.append(dynamic_cast<const PCMChannelSettings&>(channel.settings()).path());
+            paths.append(resolve(dynamic_cast<const PCMChannelSettings&>(channel.settings()).path()));
         }
     }
 
@@ -366,6 +366,7 @@ bool Project::hasROM() const
 
 Project& Project::operator=(Project&& src)
 {
+    _path = src._path;
     _channels = src._channels;
     _patterns = src._patterns;
     _frontPattern = src._frontPattern;
@@ -393,6 +394,7 @@ Project& Project::operator=(Project&& src)
 
 Project::Project(Project&& o)
 {
+    _path = o._path;
     _channels = o._channels;
     _patterns = o._patterns;
     _frontPattern = o._frontPattern;
@@ -498,6 +500,26 @@ bool Project::usesRhythm() const
     }
 
     return false;
+}
+
+const QString& Project::path() const
+{
+    return _path;
+}
+
+QString Project::resolve(const QString& path) const
+{
+    if (path.isEmpty()) return path;
+
+    QFileInfo fileInfo(path);
+
+    if (fileInfo.isRelative()) {
+        QDir parent(QFileInfo(_path).absolutePath());
+
+        return parent.absoluteFilePath(path);
+    }
+
+    return path;
 }
 
 void Project::swapChannels(const int idxa, const int idxb)

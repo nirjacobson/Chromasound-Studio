@@ -64,7 +64,9 @@
     <addaction name="separator"/>
     <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
+    <addaction name="actionSaveAs"/>
     <addaction name="separator"/>
+    <addaction name="actionPublish"/>
     <addaction name="menuRender"/>
     <addaction name="separator"/>
     <addaction name="actionInfo"/>
@@ -130,6 +132,9 @@
    </property>
   </action>
   <action name="actionSave">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>&amp;Save</string>
    </property>
@@ -217,6 +222,16 @@
   <action name="actionROM">
    <property name="text">
     <string>&amp;ROM</string>
+   </property>
+  </action>
+  <action name="actionSaveAs">
+   <property name="text">
+    <string>Save &amp;as</string>
+   </property>
+  </action>
+  <action name="actionPublish">
+   <property name="text">
+    <string>&amp;Publish</string>
    </property>
   </action>
  </widget>

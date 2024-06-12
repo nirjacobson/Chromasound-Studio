@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     ui->actionNew->setShortcuts(QKeySequence::New);
     ui->actionOpen->setShortcuts(QKeySequence::Open);
     ui->actionSave->setShortcuts(QKeySequence::Save);
+    ui->actionSaveAs->setShortcuts(QKeySequence::SaveAs);
     ui->actionExit->setShortcuts(QKeySequence::Quit);
 
     QAction* menuEditFirstAction = ui->menuEdit->actions()[0];
@@ -85,6 +86,8 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(ui->actionNew, &QAction::triggered, this, &MainWindow::newTriggered);
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openTriggered);
     connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveTriggered);
+    connect(ui->actionSaveAs, &QAction::triggered, this, &MainWindow::saveAsTriggered);
+    connect(ui->actionPublish, &QAction::triggered, this, &MainWindow::publishTriggered);
     connect(ui->actionForChromasound, &QAction::triggered, this, &MainWindow::renderForChromasoundTriggered);
     connect(ui->actionFor3rdPartyPlayers, &QAction::triggered, this, &MainWindow::renderFor3rdPartyTriggered);
     connect(ui->actionInfo, &QAction::triggered, this, &MainWindow::projectInfoTriggered);
@@ -103,6 +106,8 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(_app, &Application::pcmUploadFinished, this, &MainWindow::pcmUploadFinished);
     connect(_app, &Application::compileStarted, this, &MainWindow::compileStarted);
     connect(_app, &Application::compileFinished, this, &MainWindow::compileFinished);
+
+    connect(&_app->undoStack(), &QUndoStack::cleanChanged, this, &MainWindow::undoStackCleanChanged);
 
     connect(ui->actionFM, &QAction::triggered, this, &MainWindow::fmGlobalsTriggered);
     connect(ui->actionSSG, &QAction::triggered, this, &MainWindow::ssgGlobalsTriggered);
@@ -689,6 +694,7 @@ void MainWindow::newTriggered()
         }
     }
 
+    _app->undoStack().clear();
     _app->project() = Project();
     _app->setupChromasound();
 
@@ -704,6 +710,7 @@ void MainWindow::openTriggered()
     const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "Chromasound Studio Projects (*.csp)", nullptr, QFileDialog::DontUseNativeDialog);
 
     if (!path.isNull()) {
+        _app->undoStack().clear();
         _app->project() = BSON::decode(path);
         _app->setupChromasound();
 
@@ -719,6 +726,22 @@ void MainWindow::openTriggered()
 
 void MainWindow::saveTriggered()
 {
+    if (_app->project().path().isEmpty()) {
+        saveAsTriggered();
+    } else {
+        QFile file(_app->project().path());
+        file.open(QIODevice::WriteOnly);
+        file.write(BSON::encode(_app->project()));
+        file.close();
+
+        _app->undoStack().setClean();
+
+        ui->topWidget->setStatusMessage(QString("Saved %1.").arg(QFileInfo(_app->project().path()).fileName()));
+    }
+}
+
+void MainWindow::saveAsTriggered()
+{
     const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "Chromasound Studio Projects (*.csp)", nullptr, QFileDialog::DontUseNativeDialog);
 
     if (!path.isNull()) {
@@ -727,7 +750,56 @@ void MainWindow::saveTriggered()
         file.write(BSON::encode(_app->project()));
         file.close();
 
+        _app->undoStack().setClean();
+
         ui->topWidget->setStatusMessage(QString("Saved %1.").arg(QFileInfo(path).fileName()));
+    }
+}
+
+void MainWindow::publishTriggered()
+{
+    const QString path = QFileDialog::getExistingDirectory(this, tr("Publish project"), "", QFileDialog::ShowDirsOnly | QFileDialog::DontUseNativeDialog);
+
+    if (!path.isNull()) {
+        QDir dir(path);
+
+        for (int i = 0; i < _app->project().channelCount(); i++) {
+            Channel& chan = _app->project().getChannel(i);
+            if (chan.type() == Channel::Type::PCM) {
+                PCMChannelSettings& pcmSettings = dynamic_cast<PCMChannelSettings&>(chan.settings());
+
+                if (pcmSettings.path().isEmpty()) {
+                    continue;
+                }
+
+                dir.mkdir("PCM");
+                QDir pcmDir(dir.absoluteFilePath("PCM"));
+
+                QString newPath = pcmDir.absoluteFilePath(QFileInfo(pcmSettings.path()).fileName());
+                QFile::copy(_app->project().resolve(pcmSettings.path()), newPath);
+
+                pcmSettings.setPath(dir.relativeFilePath(newPath));
+            }
+        }
+
+        if (!_app->project().romFile().isEmpty()) {
+            QString newPath = dir.absoluteFilePath(QFileInfo(_app->project().romFile()).fileName());
+            QFile::copy(_app->project().resolve(_app->project().romFile()), newPath);
+
+            _app->project().setROMFile(dir.relativeFilePath(newPath));
+        }
+
+        QString projectFileName("project.csp");
+        if (!_app->project().path().isEmpty()) {
+            projectFileName = QFileInfo(_app->project().path()).fileName();
+        }
+
+        QFile file(dir.absoluteFilePath(projectFileName));
+        file.open(QIODevice::WriteOnly);
+        file.write(BSON::encode(_app->project()));
+        file.close();
+
+        ui->topWidget->setStatusMessage(QString("Published %1.").arg(projectFileName));
     }
 }
 
@@ -1183,6 +1255,11 @@ void MainWindow::compileStarted()
 void MainWindow::compileFinished()
 {
     ui->topWidget->setStatusMessage("Ready.");
+}
+
+void MainWindow::undoStackCleanChanged(bool clean)
+{
+    ui->actionSave->setEnabled(!clean);
 }
 
 void MainWindow::windowClosed(MdiSubWindow* window)
