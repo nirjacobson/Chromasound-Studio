@@ -35,8 +35,10 @@ void PCMWidget::openTriggered()
     const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "PCM audio (*.pcm)", nullptr, QFileDialog::DontUseNativeDialog);
 
     if (!path.isNull()) {
-        _settings->setPath(path);
-        ui->pathLabel->setText(QFileInfo(path).fileName());
+        PCMChannelSettings settings;
+        settings.setPath(path);
+
+        _app->undoStack().push(new SetPCMChannelSettingsCommand(_app->window(), *_settings, settings));
     }
 }
 
@@ -61,11 +63,10 @@ void PCMWidget::dropEvent(QDropEvent* event)
     path = path.replace("%20", " ");
     path = path.replace("\r\n", "");
 
-    PCMChannelSettings* settings = new PCMChannelSettings;
-    settings->setPath(path);
+    PCMChannelSettings settings;
+    settings.setPath(path);
 
-    _app->undoStack().push(new SetPCMChannelSettingsCommand(_app->window(), *_settings, *settings));
-    delete settings;
+    _app->undoStack().push(new SetPCMChannelSettingsCommand(_app->window(), *_settings, settings));
 
     setSettings(_settings);
 
