@@ -10,7 +10,7 @@ ROMWidget::ROMWidget(QWidget *parent, Application* app)
 
     QStringList items;
     if (app) {
-        items = ROM(app->project().romFile()).names();
+        items = ROM(app->project().resolve(app->project().romFile())).names();
         ui->sampleComboBox->addItems(items);
     }
 
@@ -28,7 +28,7 @@ void ROMWidget::setApplication(Application* app)
 {
     _app = app;
 
-    QStringList items = ROM(app->project().romFile()).names();
+    QStringList items = ROM(app->project().resolve(app->project().romFile())).names();
     ui->sampleComboBox->blockSignals(true);
     ui->sampleComboBox->addItems(items);
     ui->sampleComboBox->blockSignals(false);
@@ -47,7 +47,7 @@ void ROMWidget::setSettings(ROMChannelSettings* settings)
 
 void ROMWidget::doUpdate()
 {
-    QStringList items = ROM(_app->project().romFile()).names();
+    QStringList items = ROM(_app->project().resolve(_app->project().romFile())).names();
     ui->sampleComboBox->blockSignals(true);
     ui->sampleComboBox->clear();
     ui->sampleComboBox->addItems(items);

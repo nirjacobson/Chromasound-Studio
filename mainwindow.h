@@ -100,6 +100,8 @@ class MainWindow : public QMainWindow
         void newTriggered();
         void openTriggered();
         void saveTriggered();
+        void saveAsTriggered();
+        void publishTriggered();
         void renderForChromasoundTriggered();
         void renderFor3rdPartyTriggered();
 
@@ -130,6 +132,8 @@ class MainWindow : public QMainWindow
         void pcmUploadFinished();
         void compileStarted();
         void compileFinished();
+
+        void undoStackCleanChanged(bool clean);
 
     private:
         Ui::MainWindow* ui;

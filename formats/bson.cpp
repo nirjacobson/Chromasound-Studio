@@ -27,13 +27,13 @@ QByteArray BSON::encode(const Project& project)
     return ret;
 }
 
-Project BSON::decode(const QString& file)
+Project BSON::decode(const QString& path)
 {
     bson_reader_t* reader;
     const bson_t* b;
     bson_error_t error;
 
-    if (!(reader = bson_reader_new_from_file(file.toStdString().c_str(), &error))) {
+    if (!(reader = bson_reader_new_from_file(path.toStdString().c_str(), &error))) {
         throw  "error decoding file";
     }
 
@@ -42,7 +42,10 @@ Project BSON::decode(const QString& file)
     bson_iter_t iter;
     bson_iter_init(&iter, b);
 
-    return toProject(iter);
+    Project project = toProject(iter);
+    project._path = path;
+
+    return project;
 }
 
 QByteArray BSON::encodePatch(const Settings* settings)

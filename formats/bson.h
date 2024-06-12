@@ -18,7 +18,7 @@ class BSON
         BSON();
 
         static QByteArray encode(const Project& project);
-        static Project decode(const QString& file);
+        static Project decode(const QString& path);
 
         static QByteArray encodePatch(const Settings* settings);
         static FMChannelSettings* decodeOPNPatch(const QString& file);

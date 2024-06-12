@@ -2,6 +2,7 @@
 #define PROJECT_H
 
 #include <QList>
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
 
@@ -127,7 +128,11 @@ class Project
         bool usesOPL() const;
         bool usesRhythm() const;
 
+        const QString& path() const;
+        QString resolve(const QString& path) const;
+
     private:
+        QString _path;
         QList<Channel> _channels;
         QList<Pattern*> _patterns;
         int _frontPattern;
