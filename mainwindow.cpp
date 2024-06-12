@@ -710,6 +710,13 @@ void MainWindow::openTriggered()
     const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "Chromasound Studio Projects (*.csp)", nullptr, QFileDialog::DontUseNativeDialog);
 
     if (!path.isNull()) {
+        for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
+            for (MdiSubWindow* window : *it) {
+                window->close();
+                delete window;
+            }
+        }
+
         _app->undoStack().clear();
         _app->project() = BSON::decode(path);
         _app->setupChromasound();
@@ -1407,6 +1414,14 @@ void MainWindow::dropEvent(QDropEvent* event)
     QFileInfo fileInfo(file);
 
     if (fileInfo.suffix() == "csp") {
+        for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
+            for (MdiSubWindow* window : *it) {
+                window->close();
+                delete window;
+            }
+        }
+
+        _app->undoStack().clear();
         _app->project() = BSON::decode(path);
         _app->setupChromasound();
 
