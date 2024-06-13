@@ -19,6 +19,7 @@ ROMGlobalsWidget::ROMGlobalsWidget(QWidget *parent, Application* app)
     ui->label->setText(QFileInfo(_app->project().romFile()).fileName());
 
     connect(ui->actionOpen, &QAction::triggered, this, &ROMGlobalsWidget::open);
+    connect(ui->actionReset, &QAction::triggered, this, &ROMGlobalsWidget::resetTriggered);
     connect(ui->actionClose, &QAction::triggered, this, &QMainWindow::close);
 }
 
@@ -29,6 +30,7 @@ ROMGlobalsWidget::~ROMGlobalsWidget()
 
 void ROMGlobalsWidget::doUpdate()
 {
+    ui->actionReset->setEnabled(!_app->project().romFile().isEmpty());
     ui->stackedWidget->setCurrentIndex(!_app->project().romFile().isEmpty());
 
     ui->label->setText(QFileInfo(_app->project().romFile()).fileName());
@@ -49,6 +51,11 @@ void ROMGlobalsWidget::open()
     QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "Chromasound ROM (*.rom)", nullptr, QFileDialog::DontUseNativeDialog);
 
     load(path);
+}
+
+void ROMGlobalsWidget::resetTriggered()
+{
+    _app->undoStack().push(new SetProjectROMFileCommand(_app->window(), _app->project(), ""));
 }
 
 void ROMGlobalsWidget::closeEvent(QCloseEvent* event)

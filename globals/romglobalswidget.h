@@ -38,6 +38,7 @@ private:
 
 private slots:
     void open();
+    void resetTriggered();
 
     // QWidget interface
 protected:
