@@ -15,7 +15,7 @@ class GanttEditorWidget : public QWidget
         Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
         Q_PROPERTY(QColor borderColor READ borderColor WRITE setBorderColor)
         Q_PROPERTY(QColor itemColor READ itemColor WRITE setItemColor)
-        Q_PROPERTY(QColor selectionColor READ selectionColor WRITE setSelectionColor)
+        Q_PROPERTY(QColor areaSelectionColor READ areaSelectionColor WRITE setAreaSelectionColor)
 
     public:
         explicit GanttEditorWidget(QWidget *parent = nullptr);
@@ -54,10 +54,10 @@ class GanttEditorWidget : public QWidget
         void setLoop(const float start, const float end);
 
         const QColor& cursorColor() const;
-        const QColor& loopColor() const;
+        const QColor& selectionColor() const;
 
         void setCursorColor(const QColor& color);
-        void setLoopColor(const QColor& color);
+        void setSelectionColor(const QColor& color);
 
     signals:
         void horizontalScroll(const int pixels);
@@ -79,18 +79,18 @@ class GanttEditorWidget : public QWidget
         QColor _borderColor;
         QColor _itemColor;
         QColor _cursorColor;
+        QColor _areaSelectionColor;
         QColor _selectionColor;
-        QColor _loopColor;
 
         const QColor& backgroundColor() const;
         const QColor& borderColor() const;
         const QColor& itemColor() const;
-        const QColor& selectionColor() const;
+        const QColor& areaSelectionColor() const;
 
         void setBackgroundColor(const QColor& color);
         void setBorderColor(const QColor& color);
         void setItemColor(const QColor& color);
-        void setSelectionColor(const QColor& color);
+        void setAreaSelectionColor(const QColor& color);
 
         Application* _app;
 

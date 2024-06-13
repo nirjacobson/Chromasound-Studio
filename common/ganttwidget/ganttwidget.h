@@ -17,7 +17,7 @@ class GanttWidget : public QWidget
 {
         Q_OBJECT
         Q_PROPERTY(QColor cursorColor READ cursorColor WRITE setCursorColor)
-        Q_PROPERTY(QColor loopColor READ loopColor WRITE setLoopColor)
+        Q_PROPERTY(QColor selectionColor READ selectionColor WRITE setSelectionColor)
 
     public:
         explicit GanttWidget(QWidget *parent = nullptr, Application* app = nullptr);
@@ -75,10 +75,10 @@ class GanttWidget : public QWidget
         int _defaultCellWidth;
 
         const QColor& cursorColor() const;
-        const QColor& loopColor() const;
+        const QColor& selectionColor() const;
 
         void setCursorColor(const QColor& color);
-        void setLoopColor(const QColor& color);
+        void setSelectionColor(const QColor& color);
 
         void rebuildMarkersMap();
 

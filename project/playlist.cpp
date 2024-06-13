@@ -3,7 +3,7 @@
 
 QColor Playlist::LFOChange::COLOR(255, 255, 64);
 QColor Playlist::NoiseFrequencyChange::COLOR(224, 224, 224);
-QColor Playlist::EnvelopeFrequencyChange::COLOR(64, 255, 54);
+QColor Playlist::EnvelopeFrequencyChange::COLOR(64, 255, 64);
 QColor Playlist::EnvelopeShapeChange::COLOR(128, 128, 255);
 QColor Playlist::UserToneChange::COLOR(255, 128, 0);
 

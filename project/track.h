@@ -55,6 +55,7 @@ class Track
                 friend class BSON;
 
             public:
+                static QColor COLOR;
                 SettingsChange(const float time, ChannelSettings* settings);
                 ~SettingsChange();
 
@@ -66,7 +67,6 @@ class Track
                 ChannelSettings& settings();
 
             private:
-                static QColor COLOR;
                 SettingsChange();
 
                 float _time;

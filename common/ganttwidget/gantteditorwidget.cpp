@@ -25,8 +25,8 @@ GanttEditorWidget::GanttEditorWidget(QWidget *parent)
 , _borderColor(Qt::gray)
 , _itemColor(QColor(128, 128, 255))
 , _cursorColor(QColor(64, 192, 64))
-, _selectionColor(QColor(192, 192, 255))
-, _loopColor(QColor(255, 192, 0))
+, _areaSelectionColor(QColor(192, 192, 255))
+, _selectionColor(QColor(255, 192, 0))
 , _selecting(false)
 , _cellMajors({ 4 })
 {
@@ -205,7 +205,7 @@ void GanttEditorWidget::paintEvent(QPaintEvent*)
             }
 
             QRect rect(QPoint(startPixelX - _left, startPixelY - _top), QPoint(endPixelX - _left, endPixelY - _top));
-            QColor color = _selectedItems.contains(item) ? _selectionColor : _itemColor;
+            QColor color = _selectedItems.contains(item) ? _areaSelectionColor : _itemColor;
 
             painter.setPen(color.darker());
             painter.setBrush(color.darker(150));
@@ -250,7 +250,7 @@ void GanttEditorWidget::paintEvent(QPaintEvent*)
 
     if (_selecting) {
         QRect rect(_fromPoint, QSize(_toPoint.x() - _fromPoint.x(), _toPoint.y() - _fromPoint.y()));
-        QColor selectionColorWithAlpha = _selectionColor;
+        QColor selectionColorWithAlpha = _areaSelectionColor;
         selectionColorWithAlpha.setAlpha(128);
         painter.setPen(selectionColorWithAlpha.darker());
         painter.setBrush(selectionColorWithAlpha);
@@ -264,7 +264,7 @@ void GanttEditorWidget::paintEvent(QPaintEvent*)
             int width = (_loopEnd - _loopStart) / beatsPerPixel;
 
 
-            QColor loopColorWithAlpha = _loopColor;
+            QColor loopColorWithAlpha = _selectionColor;
             loopColorWithAlpha.setAlpha(128);
             painter.setPen(loopColorWithAlpha.darker());
             painter.setBrush(loopColorWithAlpha);
@@ -542,14 +542,14 @@ const QColor& GanttEditorWidget::cursorColor() const
     return _cursorColor;
 }
 
+const QColor& GanttEditorWidget::areaSelectionColor() const
+{
+    return _areaSelectionColor;
+}
+
 const QColor& GanttEditorWidget::selectionColor() const
 {
     return _selectionColor;
-}
-
-const QColor& GanttEditorWidget::loopColor() const
-{
-    return _loopColor;
 }
 
 void GanttEditorWidget::setBackgroundColor(const QColor& color)
@@ -572,14 +572,14 @@ void GanttEditorWidget::setCursorColor(const QColor& color)
     _cursorColor = color;
 }
 
+void GanttEditorWidget::setAreaSelectionColor(const QColor& color)
+{
+    _areaSelectionColor = color;
+}
+
 void GanttEditorWidget::setSelectionColor(const QColor& color)
 {
     _selectionColor = color;
-}
-
-void GanttEditorWidget::setLoopColor(const QColor& color)
-{
-    _loopColor = color;
 }
 
 const QList<GanttItem*>& GanttEditorWidget::selectedItems() const

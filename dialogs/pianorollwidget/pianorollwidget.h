@@ -32,6 +32,7 @@ namespace Ui {
 class PianoRollWidget : public QMainWindow
 {
         Q_OBJECT
+        Q_PROPERTY(QColor settingsChangeColor READ settingsChangeColor WRITE setSettingsChangeColor)
 
     public:
         explicit PianoRollWidget(QWidget *parent = nullptr, Application* app = nullptr);
@@ -81,6 +82,9 @@ class PianoRollWidget : public QMainWindow
         Track::SettingsChange* _editingSettingsChange;
 
         void loadMIDI(const MIDIFile& file);
+
+        const QColor& settingsChangeColor() const;
+        void setSettingsChangeColor(const QColor& color);
 
     private slots:
         void ganttMarkerClicked(GanttMarker* marker);
