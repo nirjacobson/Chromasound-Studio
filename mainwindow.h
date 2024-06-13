@@ -7,6 +7,8 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QStandardPaths>
+#include <QTreeView>
+#include <QSplitter>
 
 #include "application.h"
 #include "formats/bson.h"
@@ -134,9 +136,13 @@ class MainWindow : public QMainWindow
         void compileFinished();
 
         void undoStackCleanChanged(bool clean);
+        void splitterMoved(int,int);
 
     private:
         Ui::MainWindow* ui;
+        QTreeView* _treeView;
+        MdiArea* _mdiArea;
+        QSplitter* _splitter;
 
         Application* _app;
 

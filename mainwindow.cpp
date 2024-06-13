@@ -20,10 +20,20 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _ssgGlobalsWindow(nullptr)
     , _melodyGlobalsWindow(nullptr)
     , _romGlobalsWindow(nullptr)
+    , _treeView(new QTreeView(this))
+    , _mdiArea(new MdiArea(this))
+    , _splitter(new QSplitter(this))
 {
     _midiInput->init();
 
     ui->setupUi(this);
+    ui->centralwidget->layout()->replaceWidget(ui->centerWidget, _splitter);
+
+    _splitter->addWidget(_treeView);
+    _splitter->addWidget(_mdiArea);
+    _splitter->setHandleWidth(8);
+
+    _treeView->setMinimumWidth(320);
 
     setAcceptDrops(true);
 
@@ -65,14 +75,14 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
 
     _proxyModel.setSourceModel(&_filesystemModel);
 
-    ui->treeView->setModel(&_proxyModel);
-    ui->treeView->setRootIndex(_proxyModel.mapFromSource(_filesystemModel.index(QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first())));
-    ui->treeView->setColumnHidden(2, true);
-    ui->treeView->setColumnHidden(3, true);
-    ui->treeView->setSortingEnabled(true);
-    ui->treeView->setSelectionMode(QAbstractItemView::SelectionMode::ExtendedSelection);
-    ui->treeView->setDragEnabled(true);
-    ui->treeView->setColumnWidth(0, 192);
+    _treeView->setModel(&_proxyModel);
+    _treeView->setRootIndex(_proxyModel.mapFromSource(_filesystemModel.index(QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first())));
+    _treeView->setColumnHidden(2, true);
+    _treeView->setColumnHidden(3, true);
+    _treeView->setSortingEnabled(true);
+    _treeView->setSelectionMode(QAbstractItemView::SelectionMode::ExtendedSelection);
+    _treeView->setDragEnabled(true);
+    _treeView->setColumnWidth(0, 192);
 
     connect(ui->topWidget, &TopWidget::play, this, &MainWindow::play);
     connect(ui->topWidget, &TopWidget::pause, this, &MainWindow::pause);
@@ -81,7 +91,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(ui->topWidget, &TopWidget::beatsPerBarChanged, this, &MainWindow::beatsPerBarChanged);
     connect(ui->topWidget, &TopWidget::midiDeviceSet, this, &MainWindow::setMIDIDevice);
 
-    connect(ui->mdiArea, &MdiArea::viewModeChanged, this, &MainWindow::mdiViewModeChanged);
+    connect(_mdiArea, &MdiArea::viewModeChanged, this, &MainWindow::mdiViewModeChanged);
 
     connect(ui->actionNew, &QAction::triggered, this, &MainWindow::newTriggered);
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openTriggered);
@@ -113,6 +123,8 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(ui->actionSSG, &QAction::triggered, this, &MainWindow::ssgGlobalsTriggered);
     connect(ui->actionMelody, &QAction::triggered, this, &MainWindow::melodyGlobalsTriggered);
     connect(ui->actionROM, &QAction::triggered, this, &MainWindow::romGlobalsTriggered);
+
+    connect(_splitter, &QSplitter::splitterMoved, this, &MainWindow::splitterMoved);
 
     showChannelsWindow();
     showPlaylistWindow();
@@ -192,6 +204,10 @@ MainWindow::~MainWindow()
         _melodyGlobalsWindow->close();
         delete _melodyGlobalsWindow;
     }
+
+    delete _treeView;
+    delete _mdiArea;
+    delete _splitter;
 
     delete ui;
 }
@@ -351,12 +367,12 @@ void MainWindow::play()
     if (!_app->paused()) {
         PianoRollWidget* prw;
         PlaylistWidget* pw;
-        if ((prw = dynamic_cast<PianoRollWidget*>(ui->mdiArea->activeSubWindow()->widget()))) {
+        if ((prw = dynamic_cast<PianoRollWidget*>(_mdiArea->activeSubWindow()->widget()))) {
             if (prw->hasLoop()) {
                 _app->play(prw->pattern(), prw->loopStart(), prw->loopEnd());
                 return;
             }
-        } else if ((pw = dynamic_cast<PlaylistWidget*>(ui->mdiArea->activeSubWindow()->widget()))) {
+        } else if ((pw = dynamic_cast<PlaylistWidget*>(_mdiArea->activeSubWindow()->widget()))) {
             if (_app->project().playMode() == Project::PlayMode::SONG) {
                 if (pw->hasLoop()) {
                     _app->play(pw->loopStart(), pw->loopEnd());
@@ -439,7 +455,7 @@ void MainWindow::pianoRollTriggered(const int index, const bool on)
     });
     if (it != _channelWindows[index].end()) {
         if (on) {
-            ui->mdiArea->setActiveSubWindow(*it);
+            _mdiArea->setActiveSubWindow(*it);
         } else {
             (*it)->close();
             _channelWindows[index].removeAll(*it);
@@ -452,24 +468,24 @@ void MainWindow::pianoRollTriggered(const int index, const bool on)
 
         pianoRollWidget->setTrack(_app->project().frontPattern(), index);
 
-        MdiSubWindow* pianoRollWindow = new MdiSubWindow(ui->mdiArea);
+        MdiSubWindow* pianoRollWindow = new MdiSubWindow(_mdiArea);
         pianoRollWindow->setWidget(pianoRollWidget);
 
         pianoRollWindow->resize(pianoRollWidget->size());
 
         pianoRollWindow->setAttribute(Qt::WA_DeleteOnClose);
-        ui->mdiArea->addSubWindow(pianoRollWindow);
+        _mdiArea->addSubWindow(pianoRollWindow);
 
         connect(pianoRollWindow, &MdiSubWindow::closed, this, [=]() {
             windowClosed(pianoRollWindow);
         });
 
-        if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
+        if (_mdiArea->viewMode() == QMdiArea::SubWindowView) {
             pianoRollWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
         }
 
         pianoRollWindow->show();
-        ui->mdiArea->setActiveSubWindow(pianoRollWindow);
+        _mdiArea->setActiveSubWindow(pianoRollWindow);
 
         _channelWindows[index].append(pianoRollWindow);
     }
@@ -485,7 +501,7 @@ void MainWindow::channelSelected(const int index)
         return;
     }
 
-    channelWindow = new MdiSubWindow(ui->mdiArea);
+    channelWindow = new MdiSubWindow(_mdiArea);
     channelWindow->setAttribute(Qt::WA_DeleteOnClose);
 
     NoiseWidget* noiseWidget;
@@ -507,14 +523,14 @@ void MainWindow::channelSelected(const int index)
                 return dynamic_cast<NoiseWidget*>(window->widget());
             });
             if (it != _channelWindows[index].end()) {
-                ui->mdiArea->setActiveSubWindow(*it);
+                _mdiArea->setActiveSubWindow(*it);
             } else {
                 noiseWidget = new NoiseWidget(this, _app);
                 noiseWidget->setSettings(dynamic_cast<NoiseChannelSettings*>(&_app->project().getChannel(index).settings()));
                 noiseWidget->setWindowTitle(QString("%1: Noise").arg(_app->project().getChannel(index).name()));
 
                 channelWindow->setWidget(noiseWidget);
-                if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
+                if (_mdiArea->viewMode() == QMdiArea::SubWindowView) {
                     channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
                 }
                 _channelWindows[index].append(channelWindow);
@@ -528,7 +544,7 @@ void MainWindow::channelSelected(const int index)
                 return dynamic_cast<FMWidgetWindow*>(window->widget());
             });
             if (it != _channelWindows[index].end()) {
-                ui->mdiArea->setActiveSubWindow(*it);
+                _mdiArea->setActiveSubWindow(*it);
             } else {
                 fmWidget = new FMWidgetWindow(this, _app);
                 connect(fmWidget, &FMWidgetWindow::keyPressed, this, &MainWindow::keyOn);
@@ -537,7 +553,7 @@ void MainWindow::channelSelected(const int index)
                 fmWidget->setWindowTitle(QString("%1: FM").arg(_app->project().getChannel(index).name()));
 
                 channelWindow->setWidget(fmWidget);
-                if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
+                if (_mdiArea->viewMode() == QMdiArea::SubWindowView) {
                     channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
                 }
                 _channelWindows[index].append(channelWindow);
@@ -553,14 +569,14 @@ void MainWindow::channelSelected(const int index)
                 return dynamic_cast<PCMWidget*>(window->widget());
             });
             if (it != _channelWindows[index].end()) {
-                ui->mdiArea->setActiveSubWindow(*it);
+                _mdiArea->setActiveSubWindow(*it);
             } else {
                 pcmWidget = new PCMWidget(this, _app);
                 pcmWidget->setSettings(dynamic_cast<PCMChannelSettings*>(&_app->project().getChannel(index).settings()));
                 pcmWidget->setWindowTitle(QString("%1: PCM").arg(_app->project().getChannel(index).name()));
 
                 channelWindow->setWidget(pcmWidget);
-                if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
+                if (_mdiArea->viewMode() == QMdiArea::SubWindowView) {
                     channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
                 }
                 _channelWindows[index].append(channelWindow);
@@ -574,7 +590,7 @@ void MainWindow::channelSelected(const int index)
                 return dynamic_cast<ROMWidget*>(window->widget());
             });
             if (it != _channelWindows[index].end()) {
-                ui->mdiArea->setActiveSubWindow(*it);
+                _mdiArea->setActiveSubWindow(*it);
             } else {
                 romWidget = new ROMWidget(this, _app);
                 romWidget->setSettings(dynamic_cast<ROMChannelSettings*>(&_app->project().getChannel(index).settings()));
@@ -582,7 +598,7 @@ void MainWindow::channelSelected(const int index)
 
                 channelWindow->setWidget(romWidget);
                 channelWindow->resize(channelWindow->minimumSizeHint());
-                if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
+                if (_mdiArea->viewMode() == QMdiArea::SubWindowView) {
                     channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
                 }
                 _channelWindows[index].append(channelWindow);
@@ -596,14 +612,14 @@ void MainWindow::channelSelected(const int index)
                 return dynamic_cast<SSGWidget*>(window->widget());
             });
             if (it != _channelWindows[index].end()) {
-                ui->mdiArea->setActiveSubWindow(*it);
+                _mdiArea->setActiveSubWindow(*it);
             } else {
                 ssgWidget = new SSGWidget(this, _app);
                 ssgWidget->setSettings(dynamic_cast<SSGChannelSettings*>(&_app->project().getChannel(index).settings()));
                 ssgWidget->setWindowTitle(QString("%1: SSG").arg(_app->project().getChannel(index).name()));
 
                 channelWindow->setWidget(ssgWidget);
-                if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
+                if (_mdiArea->viewMode() == QMdiArea::SubWindowView) {
                     channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
                 }
                 _channelWindows[index].append(channelWindow);
@@ -617,7 +633,7 @@ void MainWindow::channelSelected(const int index)
                 return dynamic_cast<MelodyWidget*>(window->widget());
             });
             if (it != _channelWindows[index].end()) {
-                ui->mdiArea->setActiveSubWindow(*it);
+                _mdiArea->setActiveSubWindow(*it);
             } else {
                 melodyWidget = new MelodyWidget(this, _app);
                 melodyWidget->setSettings(dynamic_cast<MelodyChannelSettings*>(&_app->project().getChannel(index).settings()));
@@ -625,7 +641,7 @@ void MainWindow::channelSelected(const int index)
 
                 channelWindow->setWidget(melodyWidget);
                 channelWindow->resize(channelWindow->minimumSizeHint());
-                if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
+                if (_mdiArea->viewMode() == QMdiArea::SubWindowView) {
                     channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
                 }
                 _channelWindows[index].append(channelWindow);
@@ -639,7 +655,7 @@ void MainWindow::channelSelected(const int index)
                 return dynamic_cast<RhythmWidget*>(window->widget());
             });
             if (it != _channelWindows[index].end()) {
-                ui->mdiArea->setActiveSubWindow(*it);
+                _mdiArea->setActiveSubWindow(*it);
             } else {
                 rhythmWidget = new RhythmWidget(this, _app);
                 rhythmWidget->setSettings(dynamic_cast<RhythmChannelSettings*>(&_app->project().getChannel(index).settings()));
@@ -647,7 +663,7 @@ void MainWindow::channelSelected(const int index)
 
                 channelWindow->setWidget(rhythmWidget);
                 channelWindow->resize(channelWindow->minimumSizeHint());
-                if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
+                if (_mdiArea->viewMode() == QMdiArea::SubWindowView) {
                     channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
                 }
                 _channelWindows[index].append(channelWindow);
@@ -658,9 +674,9 @@ void MainWindow::channelSelected(const int index)
             break;
     }
 
-    ui->mdiArea->addSubWindow(channelWindow);
+    _mdiArea->addSubWindow(channelWindow);
     channelWindow->show();
-    ui->mdiArea->setActiveSubWindow(channelWindow);
+    _mdiArea->setActiveSubWindow(channelWindow);
 }
 
 void MainWindow::channelNameChanged(const int index)
@@ -870,7 +886,7 @@ void MainWindow::keyOn(const int key, const int velocity)
 {
     int activeChannel;
     PianoRollWidget* prw;
-    if ((prw = dynamic_cast<PianoRollWidget*>(ui->mdiArea->activeSubWindow()->widget()))) {
+    if ((prw = dynamic_cast<PianoRollWidget*>(_mdiArea->activeSubWindow()->widget()))) {
         activeChannel = prw->channel();
     } else {
         activeChannel = qMax(0, _channelsWidget->activeChannel());
@@ -879,12 +895,12 @@ void MainWindow::keyOn(const int key, const int velocity)
     Channel& channel = _app->project().getChannel(activeChannel);
 
     FMWidgetWindow* fmw;
-    if (_channelWindows[activeChannel].contains(ui->mdiArea->activeSubWindow())) {
+    if (_channelWindows[activeChannel].contains(_mdiArea->activeSubWindow())) {
         if (prw) {
             prw->pressKey(key);
             _app->keyOn(channel.type(), prw->currentSettings(), key, velocity);
             return;
-        } else if ((fmw = dynamic_cast<FMWidgetWindow*>(ui->mdiArea->activeSubWindow()->widget()))) {
+        } else if ((fmw = dynamic_cast<FMWidgetWindow*>(_mdiArea->activeSubWindow()->widget()))) {
             fmw->pressKey(key);
         }
     }
@@ -935,7 +951,7 @@ void MainWindow::projectInfoTriggered()
     if (_infoDialogWindow == nullptr) {
         _infoDialog = new ProjectInfoDialog(this, _app);
 
-        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        MdiSubWindow* window = new MdiSubWindow(_mdiArea);
         connect(_infoDialog, &QDialog::finished, window, &MdiSubWindow::close);
         connect(window, &MdiSubWindow::closed, this, [&]() {
             _infoDialogWindow = nullptr;
@@ -943,10 +959,10 @@ void MainWindow::projectInfoTriggered()
         window->setAttribute(Qt::WA_DeleteOnClose);
         window->setWidget(_infoDialog);
         _infoDialogWindow = window;
-        ui->mdiArea->addSubWindow(window);
+        _mdiArea->addSubWindow(window);
         window->show();
     } else {
-        ui->mdiArea->setActiveSubWindow(_infoDialogWindow);
+        _mdiArea->setActiveSubWindow(_infoDialogWindow);
     }
 }
 
@@ -955,7 +971,7 @@ void MainWindow::settingsTriggered()
     if (_settingsDialogWindow == nullptr) {
         _settingsDialog = new SettingsDialog(this);
 
-        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        MdiSubWindow* window = new MdiSubWindow(_mdiArea);
         connect(_settingsDialog, &QDialog::finished, window, &MdiSubWindow::close);
         connect(window, &MdiSubWindow::closed, this, [&]() {
             _settingsDialogWindow = nullptr;
@@ -966,10 +982,10 @@ void MainWindow::settingsTriggered()
         window->setAttribute(Qt::WA_DeleteOnClose);
         window->setWidget(_settingsDialog);
         _settingsDialogWindow = window;
-        ui->mdiArea->addSubWindow(window);
+        _mdiArea->addSubWindow(window);
         window->show();
     } else {
-        ui->mdiArea->setActiveSubWindow(_settingsDialogWindow);
+        _mdiArea->setActiveSubWindow(_settingsDialogWindow);
     }
 }
 
@@ -979,17 +995,17 @@ void MainWindow::stylesTriggered()
         _styleDialog = new StyleDialog(this);
         _styleDialog->setApplication(_app);
 
-        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        MdiSubWindow* window = new MdiSubWindow(_mdiArea);
         connect(window, &MdiSubWindow::closed, this, [&]() {
             _styleDialogWindow = nullptr;
         });
         window->setAttribute(Qt::WA_DeleteOnClose);
         window->setWidget(_styleDialog);
         _styleDialogWindow = window;
-        ui->mdiArea->addSubWindow(window);
+        _mdiArea->addSubWindow(window);
         window->show();
     } else {
-        ui->mdiArea->setActiveSubWindow(_styleDialogWindow);
+        _mdiArea->setActiveSubWindow(_styleDialogWindow);
     }
 }
 
@@ -998,17 +1014,17 @@ void MainWindow::pcmUsageTriggered()
     if (_pcmUsageDialogWindow == nullptr) {
         _pcmUsageDialog = new PCMUsageDialog(this, _app);
 
-        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        MdiSubWindow* window = new MdiSubWindow(_mdiArea);
         connect(window, &MdiSubWindow::closed, this, [&]() {
             _pcmUsageDialogWindow = nullptr;
         });
         window->setAttribute(Qt::WA_DeleteOnClose);
         window->setWidget(_pcmUsageDialog);
         _pcmUsageDialogWindow = window;
-        ui->mdiArea->addSubWindow(window);
+        _mdiArea->addSubWindow(window);
         window->show();
     } else {
-        ui->mdiArea->setActiveSubWindow(_pcmUsageDialogWindow);
+        _mdiArea->setActiveSubWindow(_pcmUsageDialogWindow);
     }
 }
 
@@ -1018,17 +1034,17 @@ void MainWindow::opnImportTriggered()
         _opnImportDialog = new OPNImportDialog(this);
         _opnImportDialog->setApplication(_app);
 
-        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        MdiSubWindow* window = new MdiSubWindow(_mdiArea);
         connect(window, &MdiSubWindow::closed, this, [&]() {
             _opnImportDialogWindow = nullptr;
         });
         window->setAttribute(Qt::WA_DeleteOnClose);
         window->setWidget(_opnImportDialog);
         _opnImportDialogWindow = window;
-        ui->mdiArea->addSubWindow(window);
+        _mdiArea->addSubWindow(window);
         window->show();
     } else {
-        ui->mdiArea->setActiveSubWindow(_opnImportDialogWindow);
+        _mdiArea->setActiveSubWindow(_opnImportDialogWindow);
     }
 }
 
@@ -1038,17 +1054,17 @@ void MainWindow::oplImportTriggered()
         _oplImportDialog = new OPLImportDialog(this);
         _oplImportDialog->setApplication(_app);
 
-        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        MdiSubWindow* window = new MdiSubWindow(_mdiArea);
         connect(window, &MdiSubWindow::closed, this, [&]() {
             _oplImportDialogWindow = nullptr;
         });
         window->setAttribute(Qt::WA_DeleteOnClose);
         window->setWidget(_oplImportDialog);
         _oplImportDialogWindow = window;
-        ui->mdiArea->addSubWindow(window);
+        _mdiArea->addSubWindow(window);
         window->show();
     } else {
-        ui->mdiArea->setActiveSubWindow(_oplImportDialogWindow);
+        _mdiArea->setActiveSubWindow(_oplImportDialogWindow);
     }
 }
 
@@ -1057,17 +1073,17 @@ void MainWindow::playerTriggered()
     if (_playerDialogWindow == nullptr) {
         _player = new Player(this, _app);
 
-        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        MdiSubWindow* window = new MdiSubWindow(_mdiArea);
         connect(window, &MdiSubWindow::closed, this, [&]() {
             _playerDialogWindow = nullptr;
         });
         window->setAttribute(Qt::WA_DeleteOnClose);
         window->setWidget(_player);
         _playerDialogWindow = window;
-        ui->mdiArea->addSubWindow(window);
+        _mdiArea->addSubWindow(window);
         window->show();
     } else {
-        ui->mdiArea->setActiveSubWindow(_playerDialogWindow);
+        _mdiArea->setActiveSubWindow(_playerDialogWindow);
     }
 }
 
@@ -1076,17 +1092,17 @@ void MainWindow::romBuilderTriggered()
     if (_romBuilderDialogWindow == nullptr) {
         _romBuilderDialog = new ROMBuilderDialog(this);
 
-        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        MdiSubWindow* window = new MdiSubWindow(_mdiArea);
         connect(window, &MdiSubWindow::closed, this, [&](){
             _romBuilderDialogWindow = nullptr;
         });
         window->setAttribute(Qt::WA_DeleteOnClose);
         window->setWidget(_romBuilderDialog);
         _romBuilderDialogWindow = window;
-        ui->mdiArea->addSubWindow(window);
+        _mdiArea->addSubWindow(window);
         window->show();
     } else {
-        ui->mdiArea->setActiveSubWindow(_romBuilderDialogWindow);
+        _mdiArea->setActiveSubWindow(_romBuilderDialogWindow);
     }
 }
 
@@ -1095,7 +1111,7 @@ void MainWindow::fmGlobalsTriggered()
     if (_fmGlobalsWindow == nullptr) {
         _fmGlobalsWidget = new FMGlobalsWidget(this, _app);
 
-        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        MdiSubWindow* window = new MdiSubWindow(_mdiArea);
         connect(window, &MdiSubWindow::closed, this, [&]() {
             _fmGlobalsWindow = nullptr;
         });
@@ -1104,10 +1120,10 @@ void MainWindow::fmGlobalsTriggered()
         window->resize(window->minimumSizeHint());
         window->setWindowTitle("FM Globals");
         _fmGlobalsWindow = window;
-        ui->mdiArea->addSubWindow(window);
+        _mdiArea->addSubWindow(window);
         window->show();
     } else {
-        ui->mdiArea->setActiveSubWindow(_fmGlobalsWindow);
+        _mdiArea->setActiveSubWindow(_fmGlobalsWindow);
     }
 }
 
@@ -1116,7 +1132,7 @@ void MainWindow::ssgGlobalsTriggered()
     if (_ssgGlobalsWindow == nullptr) {
         _ssgGlobalsWidget = new SSGGlobalsWidget(this, _app);
 
-        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        MdiSubWindow* window = new MdiSubWindow(_mdiArea);
         connect(window, &MdiSubWindow::closed, this, [&]() {
             _ssgGlobalsWindow = nullptr;
         });
@@ -1125,10 +1141,10 @@ void MainWindow::ssgGlobalsTriggered()
         window->resize(window->minimumSizeHint());
         window->setWindowTitle("SSG Globals");
         _ssgGlobalsWindow = window;
-        ui->mdiArea->addSubWindow(window);
+        _mdiArea->addSubWindow(window);
         window->show();
     } else {
-        ui->mdiArea->setActiveSubWindow(_ssgGlobalsWindow);
+        _mdiArea->setActiveSubWindow(_ssgGlobalsWindow);
     }
 }
 
@@ -1138,7 +1154,7 @@ void MainWindow::melodyGlobalsTriggered()
         _melodyGlobalsWidget = new MelodyGlobalsWidget(this, _app);
         _melodyGlobalsWidget->setSettings(&_app->project().userTone());
 
-        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        MdiSubWindow* window = new MdiSubWindow(_mdiArea);
         connect(window, &MdiSubWindow::closed, this, [&]() {
             _melodyGlobalsWindow = nullptr;
         });
@@ -1147,10 +1163,10 @@ void MainWindow::melodyGlobalsTriggered()
         window->resize(window->minimumSizeHint());
         window->setWindowTitle("Melody Globals");
         _melodyGlobalsWindow = window;
-        ui->mdiArea->addSubWindow(window);
+        _mdiArea->addSubWindow(window);
         window->show();
     } else {
-        ui->mdiArea->setActiveSubWindow(_melodyGlobalsWindow);
+        _mdiArea->setActiveSubWindow(_melodyGlobalsWindow);
     }
 }
 
@@ -1159,7 +1175,7 @@ void MainWindow::romGlobalsTriggered()
     if (_romGlobalsWindow == nullptr) {
         _romGlobalsWidget = new ROMGlobalsWidget(this, _app);
 
-        MdiSubWindow* window = new MdiSubWindow(ui->mdiArea);
+        MdiSubWindow* window = new MdiSubWindow(_mdiArea);
         connect(window, &MdiSubWindow::closed, this, [&]() {
             _romGlobalsWindow = nullptr;
         });
@@ -1168,10 +1184,10 @@ void MainWindow::romGlobalsTriggered()
         window->resize(window->minimumSizeHint());
         window->setWindowTitle("Project Sample ROM");
         _romGlobalsWindow = window;
-        ui->mdiArea->addSubWindow(window);
+        _mdiArea->addSubWindow(window);
         window->show();
     } else {
-        ui->mdiArea->setActiveSubWindow(_romGlobalsWindow);
+        _mdiArea->setActiveSubWindow(_romGlobalsWindow);
     }
 }
 
@@ -1184,20 +1200,20 @@ void MainWindow::showChannelsWindow()
         connect(_channelsWidget, &ChannelsWidget::channelSelected, this, &MainWindow::channelSelected);
         connect(_channelsWidget, &ChannelsWidget::nameChanged, this, &MainWindow::channelNameChanged);
 
-        MdiSubWindow* channelsWindow = new MdiSubWindow(ui->mdiArea);
+        MdiSubWindow* channelsWindow = new MdiSubWindow(_mdiArea);
         connect(channelsWindow, &MdiSubWindow::closed, this, [&]() {
             _channelsWindow = nullptr;
         });
         channelsWindow->setAttribute(Qt::WA_DeleteOnClose);
         channelsWindow->setWidget(_channelsWidget);
-        if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
+        if (_mdiArea->viewMode() == QMdiArea::SubWindowView) {
             channelsWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
         }
-        ui->mdiArea->addSubWindow(channelsWindow);
+        _mdiArea->addSubWindow(channelsWindow);
         channelsWindow->show();
         _channelsWindow = channelsWindow;
     } else {
-        ui->mdiArea->setActiveSubWindow(_channelsWindow);
+        _mdiArea->setActiveSubWindow(_channelsWindow);
     }
 }
 
@@ -1207,37 +1223,37 @@ void MainWindow::showPlaylistWindow()
         _playlistWidget = new PlaylistWidget(this, _app);
         connect(_playlistWidget, &PlaylistWidget::patternClicked, this, &MainWindow::patternChanged);
 
-        MdiSubWindow* playlistWindow = new MdiSubWindow(ui->mdiArea);
+        MdiSubWindow* playlistWindow = new MdiSubWindow(_mdiArea);
         connect(playlistWindow, &MdiSubWindow::closed, this, [&]() {
             _playlistWindow = nullptr;
         });
         playlistWindow->setAttribute(Qt::WA_DeleteOnClose);
         playlistWindow->setWidget(_playlistWidget);
 
-        if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
-            int width = ui->mdiArea->frameGeometry().width()/2;
-            int height = ui->mdiArea->frameGeometry().height();
+        if (_mdiArea->viewMode() == QMdiArea::SubWindowView) {
+            int width = _mdiArea->frameGeometry().width()/2;
+            int height = _mdiArea->frameGeometry().height();
 
             playlistWindow->resize(width, height);
             playlistWindow->move(width, 0);
         }
 
-        ui->mdiArea->addSubWindow(playlistWindow);
+        _mdiArea->addSubWindow(playlistWindow);
         playlistWindow->show();
         _playlistWindow = playlistWindow;
     } else {
-        ui->mdiArea->setActiveSubWindow(_playlistWindow);
+        _mdiArea->setActiveSubWindow(_playlistWindow);
     }
 }
 
 void MainWindow::mdiViewModeChanged(const QString& viewMode)
 {
-    ui->mdiArea->closeAllSubWindows();
+    _mdiArea->closeAllSubWindows();
 
     if (viewMode == "windows") {
         MdiArea* mdiArea = new MdiArea(this);
-        delete ui->centralwidget->layout()->replaceWidget(ui->mdiArea, mdiArea);
-        ui->mdiArea = mdiArea;
+        delete ui->centralwidget->layout()->replaceWidget(_mdiArea, mdiArea);
+        _mdiArea = mdiArea;
     }
 
     showChannelsWindow();
@@ -1267,6 +1283,23 @@ void MainWindow::compileFinished()
 void MainWindow::undoStackCleanChanged(bool clean)
 {
     ui->actionSave->setEnabled(!clean);
+}
+
+void MainWindow::splitterMoved(int, int)
+{
+    if (_mdiArea->viewMode() == QMdiArea::SubWindowView) {
+        int width = _mdiArea->frameGeometry().width()/2;
+        int height = _mdiArea->frameGeometry().height();
+
+        if (_channelsWindow) {
+            _channelsWindow->move(0, 0);
+        }
+
+        if (_playlistWindow) {
+            _playlistWindow->resize(width, height);
+            _playlistWindow->move(width, 0);
+        }
+    }
 }
 
 void MainWindow::windowClosed(MdiSubWindow* window)
@@ -1365,9 +1398,9 @@ Application* MainWindow::app()
 
 void MainWindow::showEvent(QShowEvent*)
 {
-    if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
-        int width = ui->mdiArea->frameGeometry().width()/2;
-        int height = ui->mdiArea->frameGeometry().height();
+    if (_mdiArea->viewMode() == QMdiArea::SubWindowView) {
+        int width = _mdiArea->frameGeometry().width()/2;
+        int height = _mdiArea->frameGeometry().height();
 
         if (_channelsWindow) {
             _channelsWindow->move(0, 0);
@@ -1382,9 +1415,9 @@ void MainWindow::showEvent(QShowEvent*)
 
 void MainWindow::resizeEvent(QResizeEvent*)
 {
-    if (ui->mdiArea->viewMode() == QMdiArea::SubWindowView) {
-        int width = ui->mdiArea->frameGeometry().width()/2;
-        int height = ui->mdiArea->frameGeometry().height();
+    if (_mdiArea->viewMode() == QMdiArea::SubWindowView) {
+        int width = _mdiArea->frameGeometry().width()/2;
+        int height = _mdiArea->frameGeometry().height();
 
         if (_channelsWindow) {
             _channelsWindow->move(0, 0);
