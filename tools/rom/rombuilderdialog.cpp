@@ -112,7 +112,7 @@ void ROMBuilderDialog::add()
 
 void ROMBuilderDialog::save()
 {
-    QString path = QFileDialog::getSaveFileName(this, tr("Save ROM"), "rom.chr", "Chromasound ROM (*.chr)", nullptr, QFileDialog::DontUseNativeDialog);
+    QString path = QFileDialog::getSaveFileName(this, tr("Save ROM"), "chromasound.rom", "Chromasound ROM (*.rom)", nullptr, QFileDialog::DontUseNativeDialog);
 
     if (!path.isNull()) {
         QFile romFile(path);

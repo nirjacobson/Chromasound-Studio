@@ -58,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     filters << "*.mid";
     filters << "*.pcm";
     filters << "*.vgm";
-    filters << "*.chr";
+    filters << "*.rom";
     _filesystemModel.setNameFilters(filters);
     _filesystemModel.setNameFilterDisables(false);
     _filesystemModel.setRootPath(QDir::currentPath());
