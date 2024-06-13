@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _ssgGlobalsWindow(nullptr)
     , _melodyGlobalsWindow(nullptr)
     , _romGlobalsWindow(nullptr)
-    , _treeView(new QTreeView(this))
+    , _treeView(new FilesystemTreeView(this))
     , _mdiArea(new MdiArea(this))
     , _splitter(new QSplitter(this))
 {

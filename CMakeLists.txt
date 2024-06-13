@@ -496,6 +496,8 @@ set(PROJECT_SOURCES
     rom/romwidget.ui
     commands/editromchannelsettingscommand.h
     commands/editromchannelsettingscommand.cpp
+    toplevel/browser/filesystemtreeview.h
+    toplevel/browser/filesystemtreeview.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

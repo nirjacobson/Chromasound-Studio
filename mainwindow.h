@@ -15,6 +15,7 @@
 #include "toplevel/channelswidget/channelswidget.h"
 #include "psg/noisewidget.h"
 #include "toplevel/playlistwidget/playlistwidget.h"
+#include "toplevel/browser/filesystemtreeview.h"
 #include "dialogs/pianorollwidget/pianorollwidget.h"
 #include "opn/opnwidgetwindow.h"
 #include "opn/pcmwidget.h"
