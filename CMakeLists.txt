@@ -476,11 +476,11 @@ set(PROJECT_SOURCES
     commands/insertpatterncommand.cpp
     commands/duplicatepatterncommand.h
     commands/duplicatepatterncommand.cpp
-    tools/rom/rombuilderdialog.h
-    tools/rom/rombuilderdialog.cpp
-    tools/rom/rombuilderdialog.ui
-    tools/rom/rombuildertablemodel.h
-    tools/rom/rombuildertablemodel.cpp
+    tools/rombuilder/rombuilderdialog.h
+    tools/rombuilder/rombuilderdialog.cpp
+    tools/rombuilder/rombuilderdialog.ui
+    tools/rombuilder/rombuildertablemodel.h
+    tools/rombuilder/rombuildertablemodel.cpp
     formats/rom.h formats/rom.cpp
     globals/romglobalswidget.h
     globals/romglobalswidget.cpp

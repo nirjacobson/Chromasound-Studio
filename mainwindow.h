@@ -26,7 +26,7 @@
 #include "tools/fmimport/opnimportdialog.h"
 #include "tools/fmimport/oplimportdialog.h"
 #include "tools/pcmusage/pcmusagedialog.h"
-#include "tools/rom/rombuilderdialog.h"
+#include "tools/rombuilder/rombuilderdialog.h"
 #include "dialogs/info/projectinfodialog.h"
 #include "dialogs/settings/settingsdialog.h"
 #include "tools/player/player.h"
