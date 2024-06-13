@@ -46,7 +46,7 @@ void ROMGlobalsWidget::load(const QString& path)
 
 void ROMGlobalsWidget::open()
 {
-    QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "Chromasound ROM (*.chr)", nullptr, QFileDialog::DontUseNativeDialog);
+    QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "Chromasound ROM (*.rom)", nullptr, QFileDialog::DontUseNativeDialog);
 
     load(path);
 }
@@ -80,7 +80,7 @@ void ROMGlobalsWidget::dropEvent(QDropEvent* event)
     QFile file(paths.first());
     QFileInfo fileInfo(file);
 
-    if (fileInfo.suffix() == "chr") {
+    if (fileInfo.suffix() == "rom") {
         load(paths.first());
     }
 }
