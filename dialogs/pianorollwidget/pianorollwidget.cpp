@@ -180,6 +180,16 @@ void PianoRollWidget::loadMIDI(const MIDIFile& file)
     }
 }
 
+const QColor& PianoRollWidget::settingsChangeColor() const
+{
+    return Track::SettingsChange::COLOR;
+}
+
+void PianoRollWidget::setSettingsChangeColor(const QColor& color)
+{
+    Track::SettingsChange::COLOR = color;
+}
+
 void PianoRollWidget::ganttMarkerClicked(GanttMarker* marker)
 {
     Track::SettingsChange* settingsChange = dynamic_cast<Track::SettingsChange*>(marker);

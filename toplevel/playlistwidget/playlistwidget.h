@@ -35,6 +35,11 @@ class PlaylistWidget : public QMainWindow
 {
         Q_OBJECT
         Q_PROPERTY(QColor loopColor READ loopColor WRITE setLoopColor)
+        Q_PROPERTY(QColor lfoChangeColor READ lfoChangeColor WRITE setLFOChangeColor)
+        Q_PROPERTY(QColor noiseFreqChangeColor READ noiseFreqChangeColor WRITE setNoiseFreqChangeColor)
+        Q_PROPERTY(QColor envelopeFreqChangeColor READ envFreqChangeColor WRITE setEnvFreqChangeColor)
+        Q_PROPERTY(QColor envelopeShapeChangeColor READ envShapeChangeColor WRITE setEnvShapeChangeColor)
+        Q_PROPERTY(QColor userToneChangeColor READ userToneChangeColor WRITE setUserToneChangeColor)
 
     public:
         explicit PlaylistWidget(QWidget *parent = nullptr, Application* app = nullptr);
@@ -58,6 +63,17 @@ class PlaylistWidget : public QMainWindow
 
         const QColor& loopColor() const;
         void setLoopColor(const QColor& color);
+
+        const QColor& lfoChangeColor() const;
+        void setLFOChangeColor(const QColor& color);
+        const QColor& noiseFreqChangeColor() const;
+        void setNoiseFreqChangeColor(const QColor& color);
+        const QColor& envFreqChangeColor() const;
+        void setEnvFreqChangeColor(const QColor& color);
+        const QColor& envShapeChangeColor() const;
+        void setEnvShapeChangeColor(const QColor& color);
+        const QColor& userToneChangeColor() const;
+        void setUserToneChangeColor(const QColor& color);
 
         Application* _app;
         float _appPosition;

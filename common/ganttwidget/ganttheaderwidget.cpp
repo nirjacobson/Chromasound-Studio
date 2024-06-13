@@ -19,7 +19,7 @@ GanttHeaderWidget::GanttHeaderWidget(QWidget *parent)
 , _activeForegroundColor(Qt::gray)
 , _inactiveForegroundColor(Qt::gray)
 , _cursorColor(QColor(64, 192, 64))
-, _loopColor(QColor(255, 192, 0))
+, _selectionColor(QColor(255, 192, 0))
 {
 
 }
@@ -204,7 +204,7 @@ void GanttHeaderWidget::paintEvent(QPaintEvent*)
                     painter.setBrush(marker->color());
                     br = QRectF(QPoint(markerPixel, height() - (24 * (i + 1))), QSize(br.width() + 8, 24));
                     painter.drawRect(br);
-                    painter.setPen(Qt::black);
+                    painter.setPen(marker->color().lightness() < 96 ? Qt::white : Qt::black);
                     painter.drawText(br.adjusted(4, 0, 0, -4), Qt::AlignLeft | Qt::AlignBottom, marker->name());
                 }
             }
@@ -216,7 +216,7 @@ void GanttHeaderWidget::paintEvent(QPaintEvent*)
                 int width = (_loopEnd - _loopStart) / beatsPerPixel;
 
 
-                QColor loopColorWithAlpha = _loopColor;
+                QColor loopColorWithAlpha = _selectionColor;
                 loopColorWithAlpha.setAlpha(128);
                 painter.setPen(loopColorWithAlpha.darker());
                 painter.setBrush(loopColorWithAlpha);
@@ -307,9 +307,9 @@ const QColor& GanttHeaderWidget::cursorColor() const
     return _cursorColor;
 }
 
-const QColor& GanttHeaderWidget::loopColor() const
+const QColor& GanttHeaderWidget::selectionColor() const
 {
-    return _loopColor;
+    return _selectionColor;
 }
 
 void GanttHeaderWidget::setActiveColor(const QColor& color)
@@ -337,9 +337,9 @@ void GanttHeaderWidget::setCursorColor(const QColor& color)
     _cursorColor = color;
 }
 
-void GanttHeaderWidget::setLoopColor(const QColor& color)
+void GanttHeaderWidget::setSelectionColor(const QColor& color)
 {
-    _loopColor = color;
+    _selectionColor = color;
 }
 
 int GanttHeaderWidget::length() const

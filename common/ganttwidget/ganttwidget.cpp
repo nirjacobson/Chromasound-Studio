@@ -204,9 +204,9 @@ const QColor& GanttWidget::cursorColor() const
     return ui->headerWidget->cursorColor();
 }
 
-const QColor& GanttWidget::loopColor() const
+const QColor& GanttWidget::selectionColor() const
 {
-    return ui->headerWidget->loopColor();
+    return ui->headerWidget->selectionColor();
 }
 
 void GanttWidget::setCursorColor(const QColor& color)
@@ -215,10 +215,10 @@ void GanttWidget::setCursorColor(const QColor& color)
     ui->editorWidget->setCursorColor(color);
 }
 
-void GanttWidget::setLoopColor(const QColor& color)
+void GanttWidget::setSelectionColor(const QColor& color)
 {
-    ui->headerWidget->setLoopColor(color);
-    ui->editorWidget->setLoopColor(color);
+    ui->headerWidget->setSelectionColor(color);
+    ui->editorWidget->setSelectionColor(color);
 }
 
 void GanttWidget::rebuildMarkersMap()

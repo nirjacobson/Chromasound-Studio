@@ -53,6 +53,7 @@ class Playlist
                 friend class BSON;
 
             public:
+                static QColor COLOR;
                 LFOChange(const float time, const int mode);
 
                 float time() const;
@@ -63,7 +64,6 @@ class Playlist
                 void setMode(const int mode);
 
             private:
-                static QColor COLOR;
                 LFOChange();
 
                 float _time;
@@ -74,6 +74,7 @@ class Playlist
                 friend class BSON;
 
             public:
+                static QColor COLOR;
                 NoiseFrequencyChange(const float time, const int freq);
 
                 float time() const;
@@ -84,7 +85,6 @@ class Playlist
                 void setFrequency(const int freq);
 
             private:
-                static QColor COLOR;
                 NoiseFrequencyChange();
 
                 float _time;
@@ -95,6 +95,7 @@ class Playlist
                 friend class BSON;
 
             public:
+                static QColor COLOR;
                 EnvelopeFrequencyChange(const float time, const int freq);
 
                 float time() const;
@@ -105,7 +106,6 @@ class Playlist
                 void setFrequency(const int freq);
 
             private:
-                static QColor COLOR;
                 EnvelopeFrequencyChange();
 
                 float _time;
@@ -116,6 +116,7 @@ class Playlist
                 friend class BSON;
 
             public:
+                static QColor COLOR;
                 EnvelopeShapeChange(const float time, const SSGEnvelopeSettings& shape);
 
                 float time() const;
@@ -127,7 +128,6 @@ class Playlist
                 void setShape(const SSGEnvelopeSettings& shape);
 
             private:
-                static QColor COLOR;
                 EnvelopeShapeChange();
 
                 float _time;
@@ -138,6 +138,7 @@ class Playlist
                 friend class BSON;
 
             public:
+                static QColor COLOR;
                 UserToneChange(const float time, const OPLSettings& tone);
 
                 float time() const;
@@ -149,7 +150,6 @@ class Playlist
                 void setUserTone(const OPLSettings& tone);
 
             private:
-                static QColor COLOR;
                 UserToneChange();
 
                 float _time;

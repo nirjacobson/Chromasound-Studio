@@ -83,3 +83,33 @@ QList<QPointF> SSGEnvelopeDisplayWidget::getPoints() const
 
     return points;
 }
+
+const QColor& SSGEnvelopeDisplayWidget::backgroundColor() const
+{
+    return _backgroundColor;
+}
+
+void SSGEnvelopeDisplayWidget::setBackgroundColor(const QColor& color)
+{
+    _backgroundColor = color;
+}
+
+const QColor& SSGEnvelopeDisplayWidget::borderColor() const
+{
+    return _borderColor;
+}
+
+void SSGEnvelopeDisplayWidget::setBorderColor(const QColor& color)
+{
+    _borderColor = color;
+}
+
+const QColor& SSGEnvelopeDisplayWidget::envelopeColor() const
+{
+    return _envelopeColor;
+}
+
+void SSGEnvelopeDisplayWidget::setEnvelopeColor(const QColor& color)
+{
+    _envelopeColor = color;
+}

@@ -124,14 +124,14 @@ void PlaylistPatternsWidget::paintEvent(QPaintEvent*)
         QPoint thisTopLeft = topLeft + QPoint(0, i * _rowHeight);
 
         QRect rect(thisTopLeft, thisTopLeft + QPoint(_rowHeight, _rowHeight));
-        painter.setPen(color.lightness() <= 128 ? color.lighter() : color.darker());
+        painter.setPen(color.lightness() <= 96 ? color.lighter() : color.darker());
         painter.setBrush(color);
         painter.fillRect(rect, painter.brush());
         painter.drawRect(rect);
         painter.drawText(rect.adjusted(4, 4, -6, -4), Qt::AlignRight, QString("%1").arg(pattern + 1));
 
         rect = QRect(rect.topRight(), thisTopLeft + QPoint(width() - 2, _rowHeight));
-        painter.setPen(color.lightness() <= 128 ? color.lighter() : color.darker());
+        painter.setPen(color.lightness() <= 96 ? color.lighter() : color.darker());
         painter.setBrush(color);
         painter.fillRect(rect, painter.brush());
         painter.drawRect(rect);

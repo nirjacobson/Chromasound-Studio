@@ -44,10 +44,10 @@ class GanttHeaderWidget : public ScrollableWidget
         float loopEnd() const;
 
         const QColor& cursorColor() const;
-        const QColor& loopColor() const;
+        const QColor& selectionColor() const;
 
         void setCursorColor(const QColor& color);
-        void setLoopColor(const QColor& color);
+        void setSelectionColor(const QColor& color);
 
     signals:
         void markerClicked(GanttMarker* marker);
@@ -81,7 +81,7 @@ class GanttHeaderWidget : public ScrollableWidget
         QColor _activeForegroundColor;
         QColor _inactiveForegroundColor;
         QColor _cursorColor;
-        QColor _loopColor;
+        QColor _selectionColor;
 
         const QColor& activeColor() const;
         const QColor& inactiveColor() const;

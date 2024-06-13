@@ -135,6 +135,56 @@ void PlaylistWidget::setLoopColor(const QColor& color)
     _loopColor = color;
 }
 
+const QColor& PlaylistWidget::lfoChangeColor() const
+{
+    return Playlist::LFOChange::COLOR;
+}
+
+void PlaylistWidget::setLFOChangeColor(const QColor& color)
+{
+    Playlist::LFOChange::COLOR = color;
+}
+
+const QColor& PlaylistWidget::noiseFreqChangeColor() const
+{
+    return Playlist::NoiseFrequencyChange::COLOR;
+}
+
+void PlaylistWidget::setNoiseFreqChangeColor(const QColor& color)
+{
+    Playlist::NoiseFrequencyChange::COLOR = color;
+}
+
+const QColor& PlaylistWidget::envFreqChangeColor() const
+{
+    return Playlist::EnvelopeFrequencyChange::COLOR;
+}
+
+void PlaylistWidget::setEnvFreqChangeColor(const QColor& color)
+{
+    Playlist::EnvelopeFrequencyChange::COLOR = color;
+}
+
+const QColor& PlaylistWidget::envShapeChangeColor() const
+{
+    return Playlist::EnvelopeShapeChange::COLOR;
+}
+
+void PlaylistWidget::setEnvShapeChangeColor(const QColor& color)
+{
+    Playlist::EnvelopeShapeChange::COLOR = color;
+}
+
+const QColor& PlaylistWidget::userToneChangeColor() const
+{
+    return Playlist::UserToneChange::COLOR;
+}
+
+void PlaylistWidget::setUserToneChangeColor(const QColor& color)
+{
+    Playlist::UserToneChange::COLOR = color;
+}
+
 void PlaylistWidget::ganttMarkerClicked(GanttMarker* marker)
 {
     Playlist::LFOChange* lfoChange;
