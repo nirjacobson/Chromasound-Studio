@@ -14,29 +14,12 @@
    <string>Chromasound Studio</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0" colspan="2">
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">
+    <item>
      <widget class="TopWidget" name="topWidget" native="true"/>
     </item>
-    <item row="1" column="0">
-     <widget class="QTreeView" name="treeView">
-      <property name="maximumSize">
-       <size>
-        <width>320</width>
-        <height>16777215</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="MdiArea" name="mdiArea" native="true">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-     </widget>
+    <item>
+     <widget class="QWidget" name="centerWidget" native="true"/>
     </item>
    </layout>
   </widget>
@@ -240,12 +223,6 @@
    <class>TopWidget</class>
    <extends>QWidget</extends>
    <header>toplevel/topwidget/topwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>MdiArea</class>
-   <extends>QWidget</extends>
-   <header>common/mdiarea/mdiarea.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
