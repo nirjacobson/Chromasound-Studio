@@ -23,6 +23,12 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _treeView(new FilesystemTreeView(this))
     , _mdiArea(new MdiArea(this))
     , _splitter(new QSplitter(this))
+    , _actionPSG(tr("PSG (Tone + Noise)"))
+    , _actionFM4(tr("FM"))
+    , _actionFM4PSG(tr("FM + PSG"))
+    , _actionSSG(tr("SSG (Tone + Noise)"))
+    , _actionFM2(tr("FM"))
+    , _actionFM2SSG(tr("FM + SSG"))
 {
     _midiInput->init();
 
@@ -37,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
 
     setAcceptDrops(true);
 
-    ui->actionPSG->setShortcuts(QKeySequence::New);
+    _actionPSG.setShortcuts(QKeySequence::New);
     ui->actionOpen->setShortcuts(QKeySequence::Open);
     ui->actionSave->setShortcuts(QKeySequence::Save);
     ui->actionSaveAs->setShortcuts(QKeySequence::SaveAs);
@@ -84,6 +90,15 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     _treeView->setDragEnabled(true);
     _treeView->setColumnWidth(0, 192);
 
+    ui->menuFromTemplate->addSection("OPN (Chromasound Pro, Prodigy)");
+    ui->menuFromTemplate->addAction(&_actionPSG);
+    ui->menuFromTemplate->addAction(&_actionFM4);
+    ui->menuFromTemplate->addAction(&_actionFM4PSG);
+    ui->menuFromTemplate->addSection("OPL (Chromasound Nova)");
+    ui->menuFromTemplate->addAction(&_actionSSG);
+    ui->menuFromTemplate->addAction(&_actionFM2);
+    ui->menuFromTemplate->addAction(&_actionFM2SSG);
+
     connect(ui->topWidget, &TopWidget::play, this, &MainWindow::play);
     connect(ui->topWidget, &TopWidget::pause, this, &MainWindow::pause);
     connect(ui->topWidget, &TopWidget::stop, this, &MainWindow::stop);
@@ -94,12 +109,12 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(_mdiArea, &MdiArea::viewModeChanged, this, &MainWindow::mdiViewModeChanged);
 
     connect(ui->actionEmptyProject, &QAction::triggered, this, &MainWindow::loadEmptyTemplate);
-    connect(ui->actionPSG, &QAction::triggered, this, &MainWindow::loadPSGTemplate);
-    connect(ui->actionFM4, &QAction::triggered, this, &MainWindow::loadFM4Template);
-    connect(ui->actionFM4PSG, &QAction::triggered, this, &MainWindow::loadFM4PSGTemplate);
-    connect(ui->actionSSG, &QAction::triggered, this, &MainWindow::loadSSGTemplate);
-    connect(ui->actionFM2, &QAction::triggered, this, &MainWindow::loadFM2Template);
-    connect(ui->actionFM2SSG, &QAction::triggered, this, &MainWindow::loadFM2SSGTemplate);
+    connect(&_actionPSG, &QAction::triggered, this, &MainWindow::loadPSGTemplate);
+    connect(&_actionFM4, &QAction::triggered, this, &MainWindow::loadFM4Template);
+    connect(&_actionFM4PSG, &QAction::triggered, this, &MainWindow::loadFM4PSGTemplate);
+    connect(&_actionSSG, &QAction::triggered, this, &MainWindow::loadSSGTemplate);
+    connect(&_actionFM2, &QAction::triggered, this, &MainWindow::loadFM2Template);
+    connect(&_actionFM2SSG, &QAction::triggered, this, &MainWindow::loadFM2SSGTemplate);
 
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openTriggered);
     connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveTriggered);

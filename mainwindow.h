@@ -197,6 +197,13 @@ class MainWindow : public QMainWindow
 
         int _selectedChannel;
 
+        QAction _actionPSG;
+        QAction _actionFM4;
+        QAction _actionFM4PSG;
+        QAction _actionSSG;
+        QAction _actionFM2;
+        QAction _actionFM2SSG;
+
         QTimer _timer;
 
         void windowClosed(MdiSubWindow* window);
