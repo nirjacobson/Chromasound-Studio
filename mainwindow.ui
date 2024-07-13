@@ -43,7 +43,37 @@
      <addaction name="actionForChromasound"/>
      <addaction name="actionFor3rdPartyPlayers"/>
     </widget>
-    <addaction name="actionNew"/>
+    <widget class="QMenu" name="menuNew">
+     <property name="title">
+      <string>&amp;New</string>
+     </property>
+     <widget class="QMenu" name="menuFromTemplate">
+      <property name="title">
+       <string>From &amp;template</string>
+      </property>
+      <widget class="QMenu" name="menuOPN">
+       <property name="title">
+        <string>OP&amp;N</string>
+       </property>
+       <addaction name="actionPSG"/>
+       <addaction name="actionFM4"/>
+       <addaction name="actionFM4PSG"/>
+      </widget>
+      <widget class="QMenu" name="menuOPL">
+       <property name="title">
+        <string>OP&amp;L</string>
+       </property>
+       <addaction name="actionSSG"/>
+       <addaction name="actionFM2"/>
+       <addaction name="actionFM2SSG"/>
+      </widget>
+      <addaction name="menuOPN"/>
+      <addaction name="menuOPL"/>
+     </widget>
+     <addaction name="actionEmptyProject"/>
+     <addaction name="menuFromTemplate"/>
+    </widget>
+    <addaction name="menuNew"/>
     <addaction name="separator"/>
     <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
@@ -64,10 +94,10 @@
      <property name="title">
       <string>&amp;Globals</string>
      </property>
-     <addaction name="actionFM"/>
-     <addaction name="actionSSG"/>
-     <addaction name="actionMelody"/>
-     <addaction name="actionROM"/>
+     <addaction name="actionFMGlobals"/>
+     <addaction name="actionSSGGlobals"/>
+     <addaction name="actionMelodyGlobals"/>
+     <addaction name="actionROMGlobals"/>
     </widget>
     <addaction name="separator"/>
     <addaction name="menuGlobals"/>
@@ -104,11 +134,6 @@
    <addaction name="menuTools"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionNew">
-   <property name="text">
-    <string>&amp;New</string>
-   </property>
-  </action>
   <action name="actionOpen">
    <property name="text">
     <string>&amp;Open</string>
@@ -116,7 +141,7 @@
   </action>
   <action name="actionSave">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>&amp;Save</string>
@@ -182,17 +207,17 @@
     <string>S&amp;tyles</string>
    </property>
   </action>
-  <action name="actionFM">
+  <action name="actionFMGlobals">
    <property name="text">
     <string>&amp;FM</string>
    </property>
   </action>
-  <action name="actionSSG">
+  <action name="actionSSGGlobals">
    <property name="text">
     <string>&amp;SSG</string>
    </property>
   </action>
-  <action name="actionMelody">
+  <action name="actionMelodyGlobals">
    <property name="text">
     <string>&amp;Melody</string>
    </property>
@@ -202,7 +227,7 @@
     <string>&amp;ROM Builder</string>
    </property>
   </action>
-  <action name="actionROM">
+  <action name="actionROMGlobals">
    <property name="text">
     <string>&amp;ROM</string>
    </property>
@@ -215,6 +240,41 @@
   <action name="actionPublish">
    <property name="text">
     <string>&amp;Publish</string>
+   </property>
+  </action>
+  <action name="actionEmptyProject">
+   <property name="text">
+    <string>&amp;Empty project</string>
+   </property>
+  </action>
+  <action name="actionPSG">
+   <property name="text">
+    <string>PSG (Tone + Noise)</string>
+   </property>
+  </action>
+  <action name="actionFM4">
+   <property name="text">
+    <string>FM</string>
+   </property>
+  </action>
+  <action name="actionSSG">
+   <property name="text">
+    <string>SSG (Tone + Noise)</string>
+   </property>
+  </action>
+  <action name="actionFM4PSG">
+   <property name="text">
+    <string>FM + PSG</string>
+   </property>
+  </action>
+  <action name="actionFM2">
+   <property name="text">
+    <string>FM</string>
+   </property>
+  </action>
+  <action name="actionFM2SSG">
+   <property name="text">
+    <string>FM + SSG</string>
    </property>
   </action>
  </widget>

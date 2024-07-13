@@ -78,6 +78,8 @@ void ChannelsWidget::rebuild()
         widget->layout()->addItem(new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Fixed));
         widget->layout()->addWidget(_stepCursorWidget);
         ui->verticalLayout->addWidget(widget);
+    } else {
+        _stepCursorWidget = nullptr;
     }
 
     _activeChannelWidget = nullptr;

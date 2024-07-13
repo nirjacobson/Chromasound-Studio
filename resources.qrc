@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>templates/empty.csp</file>
+        <file>templates/opl-fm.csp</file>
+        <file>templates/opl-full.csp</file>
+        <file>templates/opl-ssg.csp</file>
+        <file>templates/opn-fm.csp</file>
+        <file>templates/opn-full.csp</file>
+        <file>templates/opn-psg.csp</file>
+    </qresource>
+</RCC>

@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
 
     setAcceptDrops(true);
 
-    ui->actionNew->setShortcuts(QKeySequence::New);
+    ui->actionPSG->setShortcuts(QKeySequence::New);
     ui->actionOpen->setShortcuts(QKeySequence::Open);
     ui->actionSave->setShortcuts(QKeySequence::Save);
     ui->actionSaveAs->setShortcuts(QKeySequence::SaveAs);
@@ -93,7 +93,14 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
 
     connect(_mdiArea, &MdiArea::viewModeChanged, this, &MainWindow::mdiViewModeChanged);
 
-    connect(ui->actionNew, &QAction::triggered, this, &MainWindow::newTriggered);
+    connect(ui->actionEmptyProject, &QAction::triggered, this, &MainWindow::loadEmptyTemplate);
+    connect(ui->actionPSG, &QAction::triggered, this, &MainWindow::loadPSGTemplate);
+    connect(ui->actionFM4, &QAction::triggered, this, &MainWindow::loadFM4Template);
+    connect(ui->actionFM4PSG, &QAction::triggered, this, &MainWindow::loadFM4PSGTemplate);
+    connect(ui->actionSSG, &QAction::triggered, this, &MainWindow::loadSSGTemplate);
+    connect(ui->actionFM2, &QAction::triggered, this, &MainWindow::loadFM2Template);
+    connect(ui->actionFM2SSG, &QAction::triggered, this, &MainWindow::loadFM2SSGTemplate);
+
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openTriggered);
     connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveTriggered);
     connect(ui->actionSaveAs, &QAction::triggered, this, &MainWindow::saveAsTriggered);
@@ -117,17 +124,18 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(_app, &Application::compileStarted, this, &MainWindow::compileStarted);
     connect(_app, &Application::compileFinished, this, &MainWindow::compileFinished);
 
-    connect(&_app->undoStack(), &QUndoStack::cleanChanged, this, &MainWindow::undoStackCleanChanged);
 
-    connect(ui->actionFM, &QAction::triggered, this, &MainWindow::fmGlobalsTriggered);
-    connect(ui->actionSSG, &QAction::triggered, this, &MainWindow::ssgGlobalsTriggered);
-    connect(ui->actionMelody, &QAction::triggered, this, &MainWindow::melodyGlobalsTriggered);
-    connect(ui->actionROM, &QAction::triggered, this, &MainWindow::romGlobalsTriggered);
+    connect(ui->actionFMGlobals, &QAction::triggered, this, &MainWindow::fmGlobalsTriggered);
+    connect(ui->actionSSGGlobals, &QAction::triggered, this, &MainWindow::ssgGlobalsTriggered);
+    connect(ui->actionMelodyGlobals, &QAction::triggered, this, &MainWindow::melodyGlobalsTriggered);
+    connect(ui->actionROMGlobals, &QAction::triggered, this, &MainWindow::romGlobalsTriggered);
 
     connect(_splitter, &QSplitter::splitterMoved, this, &MainWindow::splitterMoved);
 
     showChannelsWindow();
     showPlaylistWindow();
+
+    loadPSGTemplate();
 }
 
 MainWindow::~MainWindow()
@@ -1280,11 +1288,6 @@ void MainWindow::compileFinished()
     ui->topWidget->setStatusMessage("Ready.");
 }
 
-void MainWindow::undoStackCleanChanged(bool clean)
-{
-    ui->actionSave->setEnabled(!clean);
-}
-
 void MainWindow::splitterMoved(int, int)
 {
     if (_mdiArea->viewMode() == QMdiArea::SubWindowView) {
@@ -1302,11 +1305,106 @@ void MainWindow::splitterMoved(int, int)
     }
 }
 
+void MainWindow::loadEmptyTemplate()
+{
+    preLoad();
+    QFile file(":/templates/empty.csp");
+    file.copy(".tmpfile");
+    _app->project() = BSON::decode(".tmpfile");
+    QFile(".tmpfile").remove();
+    postLoad();
+}
+
+void MainWindow::loadPSGTemplate()
+{
+    preLoad();
+    QFile file(":/templates/opn-psg.csp");
+    file.copy(".tmpfile");
+    _app->project() = BSON::decode(".tmpfile");
+    QFile(".tmpfile").remove();
+    postLoad();
+}
+
+void MainWindow::loadFM4Template()
+{
+    preLoad();
+    QFile file(":/templates/opn-fm.csp");
+    file.copy(".tmpfile");
+    _app->project() = BSON::decode(".tmpfile");
+    QFile(".tmpfile").remove();
+    postLoad();
+}
+
+void MainWindow::loadFM4PSGTemplate()
+{
+    preLoad();
+    QFile file(":/templates/opn-full.csp");
+    file.copy(".tmpfile");
+    _app->project() = BSON::decode(".tmpfile");
+    QFile(".tmpfile").remove();
+    postLoad();
+}
+
+void MainWindow::loadSSGTemplate()
+{
+    preLoad();
+    QFile file(":/templates/opl-ssg.csp");
+    file.copy(".tmpfile");
+    _app->project() = BSON::decode(".tmpfile");
+    QFile(".tmpfile").remove();
+    postLoad();
+}
+
+void MainWindow::loadFM2Template()
+{
+    preLoad();
+    QFile file(":/templates/opl-fm.csp");
+    file.copy(".tmpfile");
+    _app->project() = BSON::decode(".tmpfile");
+    QFile(".tmpfile").remove();
+    postLoad();
+}
+
+void MainWindow::loadFM2SSGTemplate()
+{
+    preLoad();
+    QFile file(":/templates/opl-full.csp");
+    file.copy(".tmpfile");
+    _app->project() = BSON::decode(".tmpfile");
+    QFile(".tmpfile").remove();
+    postLoad();
+}
+
 void MainWindow::windowClosed(MdiSubWindow* window)
 {
     for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
         (*it).removeAll(window);
     }
+}
+
+void MainWindow::preLoad()
+{
+    for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
+        for (MdiSubWindow* window : *it) {
+            window->close();
+            delete window;
+        }
+    }
+
+    _app->undoStack().clear();
+}
+
+void MainWindow::postLoad()
+{
+    _app->setupChromasound();
+
+    ui->topWidget->updateFromProject(_app->project());
+
+    _channelsWidget->rebuild();
+
+    _playlistWidget->update();
+
+    ui->topWidget->setStatusMessage("Template loaded.");
 }
 
 void MainWindow::doUpdate()
@@ -1469,6 +1567,10 @@ void MainWindow::dropEvent(QDropEvent* event)
         ui->topWidget->setStatusMessage(QString("Opened %1.").arg(fileInfo.fileName()));
     } else if (fileInfo.suffix() == "mid") {
         _app->undoStack().push(new LoadMultiTrackMIDICommand(this, path));
+
+        if (_channelsWindow) _channelsWidget->rebuild();
+        doUpdate();
+
         ui->topWidget->setStatusMessage(QString("Opened %1.").arg(fileInfo.fileName()));
     }
 }

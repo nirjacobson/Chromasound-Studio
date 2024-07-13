@@ -43,7 +43,9 @@ Project BSON::decode(const QString& path)
     bson_iter_init(&iter, b);
 
     Project project = toProject(iter);
-    project._path = path;
+    if (!path.startsWith(".")) {
+        project._path = path;
+    }
 
     return project;
 }

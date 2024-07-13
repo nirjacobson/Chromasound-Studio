@@ -21,11 +21,7 @@ Project::Project()
     , _ssgNoiseFreq(0)
     , _opllType(OPLL::Type::STANDARD)
 {
-    addChannel();
-    addChannel();
-    addChannel();
-    addChannel();
-    _channels.last().setType(Channel::Type::NOISE);
+
 }
 
 Project::~Project()
