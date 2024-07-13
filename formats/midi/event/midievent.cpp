@@ -21,7 +21,8 @@ MIDIEvent& MIDIEvent::operator<<(QDataStream& stream)
         stream >> _data1;
     }
 
-    stream >> _data2;
+    if (!(((_status & 0xF0) == 0xC0) || ((_status & 0xF0) == 0xD0)))
+        stream >> _data2;
 
     return *this;
 }
