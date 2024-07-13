@@ -51,24 +51,6 @@
       <property name="title">
        <string>From &amp;template</string>
       </property>
-      <widget class="QMenu" name="menuOPN">
-       <property name="title">
-        <string>OP&amp;N</string>
-       </property>
-       <addaction name="actionPSG"/>
-       <addaction name="actionFM4"/>
-       <addaction name="actionFM4PSG"/>
-      </widget>
-      <widget class="QMenu" name="menuOPL">
-       <property name="title">
-        <string>OP&amp;L</string>
-       </property>
-       <addaction name="actionSSG"/>
-       <addaction name="actionFM2"/>
-       <addaction name="actionFM2SSG"/>
-      </widget>
-      <addaction name="menuOPN"/>
-      <addaction name="menuOPL"/>
      </widget>
      <addaction name="actionEmptyProject"/>
      <addaction name="menuFromTemplate"/>
@@ -245,36 +227,6 @@
   <action name="actionEmptyProject">
    <property name="text">
     <string>&amp;Empty project</string>
-   </property>
-  </action>
-  <action name="actionPSG">
-   <property name="text">
-    <string>PSG (Tone + Noise)</string>
-   </property>
-  </action>
-  <action name="actionFM4">
-   <property name="text">
-    <string>FM</string>
-   </property>
-  </action>
-  <action name="actionSSG">
-   <property name="text">
-    <string>SSG (Tone + Noise)</string>
-   </property>
-  </action>
-  <action name="actionFM4PSG">
-   <property name="text">
-    <string>FM + PSG</string>
-   </property>
-  </action>
-  <action name="actionFM2">
-   <property name="text">
-    <string>FM</string>
-   </property>
-  </action>
-  <action name="actionFM2SSG">
-   <property name="text">
-    <string>FM + SSG</string>
    </property>
   </action>
  </widget>
