@@ -1467,6 +1467,9 @@ void MainWindow::dropEvent(QDropEvent* event)
         _playlistWidget->update();
 
         ui->topWidget->setStatusMessage(QString("Opened %1.").arg(fileInfo.fileName()));
+    } else if (fileInfo.suffix() == "mid") {
+        _app->undoStack().push(new LoadMultiTrackMIDICommand(this, path));
+        ui->topWidget->setStatusMessage(QString("Opened %1.").arg(fileInfo.fileName()));
     }
 }
 

@@ -498,6 +498,8 @@ set(PROJECT_SOURCES
     commands/editromchannelsettingscommand.cpp
     toplevel/browser/filesystemtreeview.h
     toplevel/browser/filesystemtreeview.cpp
+    commands/composite/loadmultitrackmidicommand.h
+    commands/composite/loadmultitrackmidicommand.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

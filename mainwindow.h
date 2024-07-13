@@ -46,6 +46,7 @@
 #include "commands/deletechannelcommand.h"
 #include "commands/addchannelcommand.h"
 #include "commands/setchanneltypecommand.h"
+#include "commands/composite/loadmultitrackmidicommand.h"
 
 #include "toplevel/browser/filesystemmodel.h"
 #include "toplevel/browser/sortfilterproxymodel.h"
