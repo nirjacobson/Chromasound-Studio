@@ -22,7 +22,7 @@ void SeekWidget::doUpdate(const float position)
 void SeekWidget::paintEvent(QPaintEvent* event)
 {
     if (_app->project().playMode() == Project::PlayMode::PATTERN) {
-        float patternLength = _app->project().getPatternBarLength(_app->project().frontPattern());
+        float patternLength = _app->project().patterns().empty() ? _app->project().beatsPerBar() : _app->project().getPatternBarLength(_app->project().frontPattern());
         float percentage = _appPosition / (float)patternLength;
 
         setValue(percentage * maximum());

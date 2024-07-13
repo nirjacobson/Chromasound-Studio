@@ -137,8 +137,15 @@ class MainWindow : public QMainWindow
         void compileStarted();
         void compileFinished();
 
-        void undoStackCleanChanged(bool clean);
         void splitterMoved(int,int);
+
+        void loadEmptyTemplate();
+        void loadPSGTemplate();
+        void loadFM4Template();
+        void loadFM4PSGTemplate();
+        void loadSSGTemplate();
+        void loadFM2Template();
+        void loadFM2SSGTemplate();
 
     private:
         Ui::MainWindow* ui;
@@ -193,6 +200,9 @@ class MainWindow : public QMainWindow
         QTimer _timer;
 
         void windowClosed(MdiSubWindow* window);
+
+        void preLoad();
+        void postLoad();
 
         // QWidget interface
     protected:

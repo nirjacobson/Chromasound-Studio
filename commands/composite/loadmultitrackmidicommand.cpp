@@ -53,6 +53,5 @@ void LoadMultiTrackMIDICommand::redo()
         }
 
         _mainWindow->app()->project().setTempo(midiFile.tempo());
-        _mainWindow->doUpdate();
     }
 }
