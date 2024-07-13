@@ -36,6 +36,38 @@ QByteArray MIDIFile::encode() const
     return data;
 }
 
+int MIDIFile::tempo() const
+{
+    for (const MIDIChunk* chunk : _chunks) {
+        const MIDITrack* track;
+        if ((track = dynamic_cast<const MIDITrack*>(chunk))) {
+            for (int i = 0; i < track->events(); i++) {
+                const MIDITrackEvent& trackEvent = track->event(i);
+
+                try {
+                    const MetaEvent& metaEvent = dynamic_cast<const MetaEvent&>(trackEvent.event());
+
+                    if (metaEvent.type() == 0x51) {
+                        QByteArray padded = metaEvent.data().constData();
+                        padded.prepend((quint8)0x00);
+
+                        QDataStream ds(padded);
+                        ds.setByteOrder(QDataStream::BigEndian);
+                        quint32 usPerBeat;
+                        ds >> usPerBeat;
+
+                        return (float)(1e6f / usPerBeat) * 60;
+                    }
+                } catch (std::exception& e) {}
+
+            }
+            break;
+        }
+    }
+
+    return 0;
+}
+
 void MIDIFile::readFile(QIODevice& device)
 {
     device.open(QIODevice::ReadOnly);

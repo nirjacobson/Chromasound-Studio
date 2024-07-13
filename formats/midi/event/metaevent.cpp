@@ -18,6 +18,21 @@ MetaEvent& MetaEvent::operator<<(QDataStream& stream)
     return *this;
 }
 
+quint8 MetaEvent::type() const
+{
+    return _type;
+}
+
+quint32 MetaEvent::length() const
+{
+    return _length;
+}
+
+const QByteArray& MetaEvent::data() const
+{
+    return _data;
+}
+
 QByteArray MetaEvent::encode() const
 {
     QByteArray data;

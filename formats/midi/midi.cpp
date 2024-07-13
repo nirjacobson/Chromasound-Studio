@@ -20,13 +20,13 @@ QList<Track::Item*> MIDI::toTrackItems(const MIDITrack& midiTrack, const int div
         try {
             const MIDIEvent& midiEvent = dynamic_cast<const MIDIEvent&>(trackEvent.event());
 
-            if (midiEvent.isKeyOn()) {
+            if (midiEvent.isKeyOn() && midiEvent.data2() != 0) {
                 if (!notes.contains(midiEvent.data1())) {
                     notes[midiEvent.data1()].setKey(midiEvent.data1());
                     notes[midiEvent.data1()].setVelocity(midiEvent.data2()/127.0f * 100.0f);
                     starts[midiEvent.data1()] = runningTime;
                 }
-            } else if (midiEvent.isKeyOff()) {
+            } else if (midiEvent.isKeyOff() || (midiEvent.isKeyOn() && midiEvent.data2() == 0)) {
                 if (notes.contains(midiEvent.data1())) {
                     notes[midiEvent.data1()].setDuration((float)(runningTime - starts[midiEvent.data1()]) / division);
 

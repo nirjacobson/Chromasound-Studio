@@ -21,11 +21,9 @@ AddTrackCommand::~AddTrackCommand()
 
 void AddTrackCommand::undo()
 {
-    _addTrackItemsCommand->undo();
     delete _addTrackItemsCommand;
     _addTrackItemsCommand = nullptr;
 
-    _setChannelNameCommand->undo();
     delete _setChannelNameCommand;
     _setChannelNameCommand = nullptr;
 

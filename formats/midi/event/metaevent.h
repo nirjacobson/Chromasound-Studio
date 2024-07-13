@@ -18,6 +18,10 @@ class MetaEvent : public Event
 
         MetaEvent& operator<<(QDataStream& stream);
 
+        quint8 type() const;
+        quint32 length() const;
+        const QByteArray& data() const;
+
     private:
         quint8 _type;
         quint32 _length;

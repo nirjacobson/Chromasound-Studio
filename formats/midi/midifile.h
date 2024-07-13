@@ -21,6 +21,8 @@ class MIDIFile
 
         QByteArray encode() const;
 
+        int tempo() const;
+
     private:
         QList<MIDIChunk*> _chunks;
 
