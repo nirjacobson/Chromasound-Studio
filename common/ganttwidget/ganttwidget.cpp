@@ -243,6 +243,9 @@ void GanttWidget::horizontalScroll(int amount)
     float hscroll = (float)amount / ui->horizontalScrollBar->maximum();
     ui->headerWidget->setScrollPercentage(hscroll);
     ui->editorWidget->setHorizontalScrollPercentage(hscroll);
+
+    if (_bottomWidget)
+        dynamic_cast<GanttBottomWidget*>(_bottomWidget)->setScrollPercentage(hscroll);
 }
 
 void GanttWidget::snapClicked()
