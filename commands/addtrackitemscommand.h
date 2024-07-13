@@ -10,7 +10,7 @@ class MainWindow;
 class AddTrackItemsCommand : public QUndoCommand
 {
     public:
-        AddTrackItemsCommand(MainWindow* window, Track& track, const float time, const QList<Track::Item*>& items);
+        AddTrackItemsCommand(MainWindow* window, Track& track, const float time, const QList<Track::Item*>& items, bool ignoreLeadingSilence = true);
 
     private:
         MainWindow* _mainWindow;
@@ -18,6 +18,7 @@ class AddTrackItemsCommand : public QUndoCommand
         Track& _track;
         float _time;
         QList<Track::Item*> _items;
+        bool _ignoreLeadingSilence;
 
         // QUndoCommand interface
     public:

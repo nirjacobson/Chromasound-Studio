@@ -50,6 +50,23 @@ const MIDITrackEvent& MIDITrack::event(const int idx) const
     return *_events[idx];
 }
 
+QString MIDITrack::name() const
+{
+    for (int i = 0; i < _events.size(); i++) {
+        MIDITrackEvent* trackEvent = _events[i];
+
+        try {
+            const MetaEvent& metaEvent = dynamic_cast<const MetaEvent&>(trackEvent->event());
+
+            if (metaEvent.type() == 3) {
+                return QString(metaEvent.data());
+            }
+        } catch (std::exception& e) { }
+    }
+
+    return "";
+}
+
 QByteArray MIDITrack::encode() const
 {
     QByteArray data;

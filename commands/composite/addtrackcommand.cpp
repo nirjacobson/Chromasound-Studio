@@ -45,7 +45,8 @@ void AddTrackCommand::redo()
     _addTrackItemsCommand = new AddTrackItemsCommand(_mainWindow,
             track,
             0,
-            _items);
+            _items,
+            false);
     _addTrackItemsCommand->redo();
 
     track.usePianoRoll();

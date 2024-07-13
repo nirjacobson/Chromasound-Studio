@@ -44,7 +44,8 @@ void LoadMultiTrackMIDICommand::redo()
                 QList<Track::Item*> items = MIDI::toTrackItems(*track, header->division());
 
                 if (!items.empty()) {
-                    AddTrackCommand* atc = new AddTrackCommand(_mainWindow, items, QString("Track #%1").arg(i++));
+                    QString trackName = track->name();
+                    AddTrackCommand* atc = new AddTrackCommand(_mainWindow, items, trackName.isEmpty() ? QString("Track #%1").arg(i++) : trackName);
                     _addTrackCommands.append(atc);
                     atc->redo();
                 }

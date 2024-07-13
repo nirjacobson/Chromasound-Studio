@@ -1,11 +1,12 @@
 #include "addtrackitemscommand.h"
 #include "mainwindow.h"
 
-AddTrackItemsCommand::AddTrackItemsCommand(MainWindow* window, Track& track, const float time, const QList<Track::Item*>& items)
+AddTrackItemsCommand::AddTrackItemsCommand(MainWindow* window, Track& track, const float time, const QList<Track::Item*>& items, bool ignoreLeadingSilence)
     : _mainWindow(window)
     , _track(track)
     , _time(time)
     , _items(items)
+    , _ignoreLeadingSilence(ignoreLeadingSilence)
 {
     setText("paste notes");
 }
@@ -19,11 +20,14 @@ void AddTrackItemsCommand::undo()
 
 void AddTrackItemsCommand::redo()
 {
+    float earliestTime = 0;
 
-    float earliestTime = _items[0]->time();
-    for (Track::Item* item : _items) {
-        if (item->time() < earliestTime) {
-            earliestTime = item->time();
+    if (_ignoreLeadingSilence) {
+        earliestTime = _items[0]->time();
+        for (Track::Item* item : _items) {
+            if (item->time() < earliestTime) {
+                earliestTime = item->time();
+            }
         }
     }
 
