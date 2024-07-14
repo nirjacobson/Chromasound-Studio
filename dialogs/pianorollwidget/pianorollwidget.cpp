@@ -5,7 +5,7 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
     : QMainWindow(parent)
     , _app(app)
     , ui(new Ui::PianoRollWidget)
-    , _keysWidget(new PianoRollKeysWidget(this))
+    , _keysWidget(new PianoRollKeysWidget(this, app))
     , _velocitiesWidget(new PianoRollVelocitiesWidget(this))
     , _itemLastClicked(nullptr)
     , _noteMenu(tr("Context menu"), this)
@@ -96,6 +96,15 @@ void PianoRollWidget::setTrack(const int pattern, const int track)
 
         return -1.0f;
     });
+
+    try {
+        const ROMChannelSettings& settings = dynamic_cast<const ROMChannelSettings&>(_app->project().getChannel(_channel).settings());
+
+        _keysWidget->setROMChannelSettings(&settings);
+    } catch (std::exception& e) {
+        _keysWidget->setROMChannelSettings(nullptr);
+    }
+
     update();
 }
 

@@ -696,11 +696,14 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const Pattern& p
                 pcmVolumeByChannel[sni->channel()] = channelSettings->volume() * sni->note().velocity() / 100.0f;
             } else {
                 const ROMChannelSettings* channelSettings = dynamic_cast<const ROMChannelSettings*>(sni->channelSettings());
-                newPcmSize = qMin(rom.size(channelSettings->patch()), (qint64)(sni->note().duration() / project.tempo() * 60 * 44100));
+                newPcmSize = 0;
 
-                romOffsetsByChannel[sni->channel()] = rom.offsets()[channelSettings->patch()];
-                romPatchByChannel[sni->channel()] = channelSettings->patch();
-                romVolumeByChannel[sni->channel()] = channelSettings->volume() * sni->note().velocity() / 100.0f;
+                if (channelSettings->keySampleMappings().contains(sni->note().key())) {
+                    newPcmSize = qMin(rom.size(channelSettings->keySampleMappings()[sni->note().key()]), (qint64)(sni->note().duration() / project.tempo() * 60 * 44100));
+                    romOffsetsByChannel[sni->channel()] = rom.offsets()[channelSettings->keySampleMappings()[sni->note().key()]];
+                    romPatchByChannel[sni->channel()] = channelSettings->keySampleMappings()[sni->note().key()];
+                    romVolumeByChannel[sni->channel()] = channelSettings->volume() * sni->note().velocity() / 100.0f;
+                }
             }
             if (pcmWritten + newPcmSize > pcmSize) {
                 lastNoteItem = sni;
@@ -858,11 +861,14 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const float loop
                 pcmVolumeByChannel[sni->channel()] = channelSettings->volume() * sni->note().velocity() / 100.0f;
             } else {
                 const ROMChannelSettings* channelSettings = dynamic_cast<const ROMChannelSettings*>(sni->channelSettings());
-                newPcmSize = qMin(rom.size(channelSettings->patch()), (qint64)(sni->note().duration() / project.tempo() * 60 * 44100));
+                newPcmSize = 0;
 
-                romOffsetsByChannel[sni->channel()] = rom.offsets()[channelSettings->patch()];
-                romPatchByChannel[sni->channel()] = channelSettings->patch();
-                romVolumeByChannel[sni->channel()] = channelSettings->volume() * sni->note().velocity() / 100.0f;
+                if (channelSettings->keySampleMappings().contains(sni->note().key())) {
+                    newPcmSize = qMin(rom.size(channelSettings->keySampleMappings()[sni->note().key()]), (qint64)(sni->note().duration() / project.tempo() * 60 * 44100));
+                    romOffsetsByChannel[sni->channel()] = rom.offsets()[channelSettings->keySampleMappings()[sni->note().key()]];
+                    romPatchByChannel[sni->channel()] = channelSettings->keySampleMappings()[sni->note().key()];
+                    romVolumeByChannel[sni->channel()] = channelSettings->volume() * sni->note().velocity() / 100.0f;
+                }
             }
             if (pcmWritten + newPcmSize > pcmSize) {
                 lastNoteItem = sni;
@@ -1045,18 +1051,6 @@ int VGMStream::acquireRhythmChannel(const float time, const float duration, cons
 int VGMStream::acquireROMChannel(const float time, const float duration, const ROMChannelSettings* settings, QList<StreamItem*>& items)
 {
     for (int i = 0; i < ROM_CHANNELS; i++) {
-        if (_romChannels[i].settings() == *settings) {
-            bool first;
-            if (_romChannels[i].acquire(time, duration, first)) {
-                if (first) {
-                    items.append(new StreamSettingsItem(time, i, settings));
-                }
-                return i;
-            }
-        }
-    }
-
-    for (int i = 0; i < ROM_CHANNELS; i++) {
         bool first;
         if (_romChannels[i].acquire(time, duration, first)) {
             _romChannels[i].settings() = *settings;
@@ -1196,8 +1190,12 @@ void VGMStream::assignChannelsAndExpand(const Project& project, QList<StreamItem
         }
         if (noteItem->type() == Channel::Type::ROM) {
             const ROMChannelSettings* channelSettings = dynamic_cast<const ROMChannelSettings*>(noteItem->channelSettings());
-            quint32 size = rom.size(channelSettings->patch());
+            quint32 size = 0;
             quint32 durationSamples = duration / tempo * 60 * 44100;
+
+            if (channelSettings->keySampleMappings().contains(noteItem->note().key())) {
+                size = rom.size(channelSettings->keySampleMappings()[noteItem->note().key()]);
+            }
 
             if (size < durationSamples) {
                 duration = size / 44100.0f / 60 * tempo;
@@ -1635,7 +1633,11 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
             }
             if (sni->on() && sni->type() == Channel::Type::ROM) {
                 const ROMChannelSettings* channelSettings = dynamic_cast<const ROMChannelSettings*>(sni->channelSettings());
-                quint32 newPcmSize = qMin(rom.size(channelSettings->patch()), (qint64)(sni->note().duration() / project.tempo() * 60 * 44100));
+                quint32 newPcmSize = 0;
+
+                if (channelSettings->keySampleMappings().contains(sni->note().key())) {
+                    newPcmSize = qMin(rom.size(channelSettings->keySampleMappings()[sni->note().key()]), (qint64)(sni->note().duration() / project.tempo() * 60 * 44100));
+                }
 
                 if (pcmWritten + newPcmSize > pcmSize) {
                     lastNoteItem = sni;
@@ -1998,18 +2000,21 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
         if (_format == Format::CHROMASOUND) {
             if (item->on()) {
                 const ROMChannelSettings* rcs = dynamic_cast<const ROMChannelSettings*>(item->channelSettings());
-                int volume = rcs->volume() * item->note().velocity() / 100;
-                int att = MAX_PCM_ATTENUATION * (float)(100 - volume) / 100;
-                data.append(0xF0 | item->channel() + PCM_CHANNELS);
-                data.append(att);
 
-                quint16 offset = rom.offsets()[rcs->patch()];
-                quint16 size = rom.size(rcs->patch());
+                if (rcs->keySampleMappings().contains(item->note().key())) {
+                    int volume = rcs->volume() * item->note().velocity() / 100;
+                    int att = MAX_PCM_ATTENUATION * (float)(100 - volume) / 100;
+                    data.append(0xF0 | item->channel() + PCM_CHANNELS);
+                    data.append(att);
 
-                data.append(0xD0 | item->channel() + PCM_CHANNELS);
-                data.append((char*)&size, sizeof(size));
-                data.append(0xE0 | item->channel() + PCM_CHANNELS);
-                data.append((char*)&offset, sizeof(offset));
+                    quint16 offset = rom.offsets()[rcs->keySampleMappings()[item->note().key()]];
+                    quint16 size = rom.size(rcs->keySampleMappings()[item->note().key()]);
+
+                    data.append(0xD0 | item->channel() + PCM_CHANNELS);
+                    data.append((char*)&size, sizeof(size));
+                    data.append(0xE0 | item->channel() + PCM_CHANNELS);
+                    data.append((char*)&offset, sizeof(offset));
+                }
             } else {
                 quint16 offset = -1;
 
