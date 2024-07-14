@@ -1,10 +1,12 @@
 #ifndef PIANOROLLKEYSWIDGET_H
 #define PIANOROLLKEYSWIDGET_H
 
-#include "common/ganttwidget/ganttleftwidget.h"
 #include <QtMath>
 #include <QPainter>
 #include <QMouseEvent>
+
+#include "application.h"
+#include "common/ganttwidget/ganttleftwidget.h"
 
 class PianoRollKeysWidget : public GanttLeftWidget
 {
@@ -15,7 +17,7 @@ class PianoRollKeysWidget : public GanttLeftWidget
         Q_PROPERTY(QColor activeKeyColor READ activeKeyColor WRITE setActiveKeyColor)
 
     public:
-        explicit PianoRollKeysWidget(QWidget *parent = nullptr);
+        explicit PianoRollKeysWidget(QWidget *parent = nullptr, Application* app = nullptr);
 
         float getScrollPercentage();
         void setScrollPercentage(const float percent);
@@ -26,6 +28,8 @@ class PianoRollKeysWidget : public GanttLeftWidget
 
         void pressKey(const int key);
         void releaseKey(const int key);
+
+        void setROMChannelSettings(const ROMChannelSettings* settings);
 
     signals:
         void keyOn(const int key, const int velocity);
@@ -41,6 +45,10 @@ class PianoRollKeysWidget : public GanttLeftWidget
         static constexpr int KEYS_PER_OCTAVE = 12;
         static constexpr int WHITE_KEYS_PER_OCTAVE = 7;
         static constexpr int BLACK_KEYS_PER_OCTAVE = 5;
+
+        Application* _app;
+
+        const ROMChannelSettings* _romChannelSettings;
 
         int _rows;
         int _top;

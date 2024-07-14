@@ -500,6 +500,8 @@ set(PROJECT_SOURCES
     toplevel/browser/filesystemtreeview.cpp
     commands/composite/loadmultitrackmidicommand.h
     commands/composite/loadmultitrackmidicommand.cpp
+    rom/romwidgettablemodel.h
+    rom/romwidgettablemodel.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

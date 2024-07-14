@@ -1,6 +1,8 @@
 #ifndef ROMCHANNELSETTINGS_H
 #define ROMCHANNELSETTINGS_H
 
+#include <QMap>
+
 #include "channelsettings.h"
 
 class ROMChannelSettings : public ChannelSettings
@@ -8,13 +10,13 @@ class ROMChannelSettings : public ChannelSettings
 public:
     ROMChannelSettings();
 
-    int patch() const;
-    void setPatch(const int patch);
+    const QMap<int, int>& keySampleMappings() const;
+    void setSample(const int key, const int patch);
 
     bool operator==(const ROMChannelSettings& o) const;
 
 private:
-    int _patch;
+    QMap<int, int> _keySampleMappings;
 
     // Settings interface
 public:

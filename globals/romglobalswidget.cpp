@@ -21,6 +21,8 @@ ROMGlobalsWidget::ROMGlobalsWidget(QWidget *parent, Application* app)
     connect(ui->actionOpen, &QAction::triggered, this, &ROMGlobalsWidget::open);
     connect(ui->actionReset, &QAction::triggered, this, &ROMGlobalsWidget::resetTriggered);
     connect(ui->actionClose, &QAction::triggered, this, &QMainWindow::close);
+
+    ui->stackedWidget->setCurrentIndex(!_app->project().romFile().isEmpty());
 }
 
 ROMGlobalsWidget::~ROMGlobalsWidget()

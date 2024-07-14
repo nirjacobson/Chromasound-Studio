@@ -1,7 +1,8 @@
 #include "pianorollkeyswidget.h"
 
-PianoRollKeysWidget::PianoRollKeysWidget(QWidget* parent)
+PianoRollKeysWidget::PianoRollKeysWidget(QWidget* parent, Application* app)
     : GanttLeftWidget(parent)
+    , _app(app)
     , _rows(0)
     , _top(0)
     , _rowHeight(16)
@@ -9,6 +10,7 @@ PianoRollKeysWidget::PianoRollKeysWidget(QWidget* parent)
     , _whiteKeyColor(QColor(Qt::white))
     , _blackKeyColor(QColor(Qt::black))
     , _activeKeyColor(QColor(255, 192, 192))
+    , _romChannelSettings(nullptr)
 {
     setMinimumWidth(128);
     setMaximumWidth(128);
@@ -56,6 +58,11 @@ void PianoRollKeysWidget::releaseKey(const int key)
     update();
 }
 
+void PianoRollKeysWidget::setROMChannelSettings(const ROMChannelSettings* settings)
+{
+    _romChannelSettings = settings;
+}
+
 int PianoRollKeysWidget::length() const
 {
     return _rowHeight * _rows;
@@ -100,6 +107,7 @@ void PianoRollKeysWidget::paintEvent(QPaintEvent*)
             QRect rect(thisTopLeft, thisTopLeft + QPoint(width() - 2, whiteKeyWidth));
             painter.fillRect(rect, painter.brush());
             painter.drawRect(rect);
+
             if (j == 0) {
                 QTextOption textOption;
                 textOption.setAlignment(Qt::AlignRight);
@@ -133,6 +141,41 @@ void PianoRollKeysWidget::paintEvent(QPaintEvent*)
             QRect rect(thisTopLeft, thisTopLeft + QPoint(width()/2, _rowHeight));
             painter.fillRect(rect, painter.brush());
             painter.drawRect(rect);
+        }
+
+        topLeft -= QPoint(0, octaveHeight);
+    }
+
+    painter.setPen(_outlineColor);
+
+    topLeft = QPoint(0, octaveStart - _rowHeight);
+
+    for (int i = 0; i < numOctavesAcrossHeight; i++) {
+        for (int j = 0; j < 12; j++) {
+            int octave = bottomOctave + i;
+            int key = octave * 12 + j;
+
+            QPoint thisTopLeft = topLeft - QPoint(0, j * _rowHeight);
+            QRect rect(thisTopLeft, thisTopLeft + QPoint(width()/2, _rowHeight));
+
+            ROM rom(_app->project().resolve(_app->project().romFile()));
+
+            QFont font = painter.font();
+
+            if (_romChannelSettings
+                && !rom.names().empty()
+                && _romChannelSettings->keySampleMappings().contains(key)) {
+
+                QFont newFont = font;
+                font.setPointSize(8);
+
+                painter.setFont(newFont);
+
+                QString sampleName = rom.names()[_romChannelSettings->keySampleMappings()[key]];
+                painter.drawText(rect.adjusted(4, 0, 0, 0), sampleName);
+
+                painter.setFont(font);
+            }
         }
 
         topLeft -= QPoint(0, octaveHeight);
