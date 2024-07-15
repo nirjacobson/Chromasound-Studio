@@ -845,12 +845,8 @@ void BSON::fromProject(bson_t* dst,const Project& project)
     BSON_APPEND_DOCUMENT(dst, "userTone", &userTone);
 
     // ROM
-    if (!project.spcmFile().isEmpty()) {
-        BSON_APPEND_UTF8(dst, "spcmFile", project.spcmFile().toStdString().c_str());
-    }
-    if (!project.dpcmFile().isEmpty()) {
-        BSON_APPEND_UTF8(dst, "dpcmFile", project.dpcmFile().toStdString().c_str());
-    }
+    BSON_APPEND_UTF8(dst, "spcmFile", project.spcmFile().toStdString().c_str());
+    BSON_APPEND_UTF8(dst, "dpcmFile", project.dpcmFile().toStdString().c_str());
 
     // Info
     bson_t b_info;
