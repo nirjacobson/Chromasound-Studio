@@ -22,7 +22,7 @@
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
-        <string>Static</string>
+        <string>Static PCM</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
@@ -32,7 +32,7 @@
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
-        <string>Dynamic</string>
+        <string>Dynamic PCM</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="0">
@@ -57,25 +57,25 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <addaction name="action_Open"/>
-    <addaction name="action_Reset"/>
+    <addaction name="actionOpen"/>
+    <addaction name="actionReset"/>
     <addaction name="separator"/>
-    <addaction name="action_Close"/>
+    <addaction name="actionClose"/>
    </widget>
    <addaction name="menu_File"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="action_Open">
+  <action name="actionOpen">
    <property name="text">
     <string>&amp;Open</string>
    </property>
   </action>
-  <action name="action_Reset">
+  <action name="actionReset">
    <property name="text">
     <string>&amp;Reset</string>
    </property>
   </action>
-  <action name="action_Close">
+  <action name="actionClose">
    <property name="text">
     <string>&amp;Close</string>
    </property>

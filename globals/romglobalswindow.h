@@ -30,6 +30,9 @@ private slots:
     void staticUpdated();
     void dynamicUpdated();
 
+    void open();
+    void reset();
+
     // QWidget interface
 protected:
     void closeEvent(QCloseEvent* event);

@@ -28,6 +28,9 @@ public:
     void setROMFile(const QString& path);
     const QString& romFile() const;
 
+    void open();
+    void reset();
+
     void doUpdate();
 
 signals:
@@ -40,10 +43,6 @@ private:
     QString _romPath;
     ROM _rom;
     ROMTableModel _tableModel;
-
-private slots:
-    void open();
-    void resetTriggered();
 
     // QWidget interface
 protected:
