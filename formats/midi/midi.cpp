@@ -1,8 +1,9 @@
 #include "midi.h"
+#include "programs.h"
 
-MIDI::MIDI()
+QString MIDI::programName(const int programNumber)
 {
-
+    return MIDI_PROGRAMS[programNumber];
 }
 
 QList<Track::Item*> MIDI::toTrackItems(const MIDITrack& midiTrack, const int division)

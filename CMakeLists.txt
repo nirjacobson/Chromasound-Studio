@@ -496,6 +496,7 @@ set(PROJECT_SOURCES
     dialogs/info/projectinfoscreendialog.h
     dialogs/info/projectinfoscreendialog.cpp
     dialogs/info/projectinfoscreendialog.ui
+    formats/midi/programs.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
