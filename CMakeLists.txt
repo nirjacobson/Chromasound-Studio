@@ -493,6 +493,9 @@ set(PROJECT_SOURCES
     globals/romglobalswindow.ui
     commands/setprojectdpcmfilecommand.h
     commands/setprojectdpcmfilecommand.cpp
+    dialogs/info/projectinfoscreendialog.h
+    dialogs/info/projectinfoscreendialog.cpp
+    dialogs/info/projectinfoscreendialog.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

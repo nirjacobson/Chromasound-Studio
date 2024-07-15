@@ -29,6 +29,7 @@
 #include "tools/fmimport/oplimportdialog.h"
 #include "tools/rombuilder/rombuilderdialog.h"
 #include "dialogs/info/projectinfodialog.h"
+#include "dialogs/info/projectinfoscreendialog.h"
 #include "dialogs/settings/settingsdialog.h"
 #include "tools/player/player.h"
 #include "globals/melodyglobalswidget.h"
@@ -177,6 +178,7 @@ class MainWindow : public QMainWindow
 
         MdiSubWindow* _settingsDialogWindow;
         MdiSubWindow* _infoDialogWindow;
+        MdiSubWindow* _infoScreenDialogWindow;
         MdiSubWindow* _styleDialogWindow;
         MdiSubWindow* _opnImportDialogWindow;
         MdiSubWindow* _oplImportDialogWindow;
@@ -204,6 +206,7 @@ class MainWindow : public QMainWindow
         void windowClosed(MdiSubWindow* window);
 
         void preLoad();
+        void load(const QString& path);
         void postLoad();
 
         // QWidget interface
