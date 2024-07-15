@@ -47,8 +47,8 @@ void Channel::setType(const Type type)
         case FM:
             _settings = new FMChannelSettings;
             break;
-        case PCM:
-            _settings = new PCMChannelSettings;
+        case DPCM:
+            _settings = new ROMChannelSettings;
             break;
         case SSG:
             _settings = new SSGChannelSettings;
@@ -59,7 +59,7 @@ void Channel::setType(const Type type)
         case RHYTHM:
             _settings = new RhythmChannelSettings;
             break;
-        case ROM:
+        case SPCM:
             _settings = new ROMChannelSettings;
             break;
     }
@@ -99,7 +99,7 @@ QString Channel::channelTypeToString(const Type type)
             return "NOISE";
         case FM:
             return "FM";
-        case PCM:
+        case DPCM:
             return "PCM";
         case SSG:
             return "SSG";
@@ -107,7 +107,7 @@ QString Channel::channelTypeToString(const Type type)
             return "MELODY";
         case RHYTHM:
             return "RHYTHM";
-        case ROM:
+        case SPCM:
             return "ROM";
     }
 
@@ -129,7 +129,7 @@ Channel::Type Channel::channelTypeFromString(const QString& str)
     }
 
     if (str == "PCM") {
-        return Channel::Type::PCM;
+        return Channel::Type::DPCM;
     }
 
     if (str == "SSG") {
@@ -145,7 +145,7 @@ Channel::Type Channel::channelTypeFromString(const QString& str)
     }
 
     if (str == "ROM") {
-        return Channel::Type::ROM;
+        return Channel::Type::SPCM;
     }
 
     return Channel::Type::TONE;

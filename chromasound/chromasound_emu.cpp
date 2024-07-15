@@ -44,10 +44,10 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
             VGMStream::StreamNoteItem* sni;
             if ((sni = dynamic_cast<VGMStream::StreamNoteItem*>(item))) {
                 if (sni->on()) {
-                    if (sni->type() == Channel::Type::PCM) {
+                    if (sni->type() == Channel::Type::DPCM) {
                         havePCM = true;
                     }
-                    if (sni->type() == Channel::Type::ROM) {
+                    if (sni->type() == Channel::Type::SPCM) {
                         haveROM = true;
                     }
                     continue;
@@ -92,7 +92,10 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
             data.prepend(enableRhythm);
         }
 
-        QByteArray dataBlock = project.pcm();
+        QFile romFile(project.resolve(project.dpcmFile()));
+        romFile.open(QIODevice::ReadOnly);
+        QByteArray dataBlock = romFile.readAll();
+        romFile.close();
         quint32 dataBlockSize = dataBlock.size();
 
         if (havePCM && dataBlockSize > 0) {
@@ -158,8 +161,8 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
     setBufferSizes();
     setEqualizer();
 
-    if (!project.romFile().isEmpty()) {
-        dynamic_cast<Vgm_Emu*>(_emu)->set_rom_file(project.resolve(project.romFile()).toStdString().c_str());
+    if (!project.spcmFile().isEmpty()) {
+        dynamic_cast<Vgm_Emu*>(_emu)->set_rom_file(project.resolve(project.spcmFile()).toStdString().c_str());
     }
 
     _player->start();
@@ -393,7 +396,7 @@ void Chromasound_Emu::keyOff(int key)
 
     bool havePCM = false;
     for (auto it = _keys.begin(); it != _keys.end(); ++it) {
-        if (it.value()->type() == Channel::Type::PCM || it.value()->type() == Channel::Type::ROM) {
+        if (it.value()->type() == Channel::Type::DPCM || it.value()->type() == Channel::Type::SPCM) {
             havePCM = true;
             break;
         }

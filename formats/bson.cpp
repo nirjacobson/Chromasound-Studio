@@ -160,11 +160,11 @@ Channel BSON::toChannel(bson_iter_t& b)
             c._settings = new FMChannelSettings;
             c._settings->fromBSON(settingsInner);
         }
-        if (c._type == Channel::Type::PCM) {
-            c._settings = new PCMChannelSettings;
+        if (c._type == Channel::Type::DPCM) {
+            c._settings = new ROMChannelSettings;
             c._settings->fromBSON(settingsInner);
         }
-        if (c._type == Channel::Type::ROM) {
+        if (c._type == Channel::Type::SPCM) {
             c._settings = new ROMChannelSettings;
             c._settings->fromBSON(settingsInner);
         }
@@ -427,11 +427,11 @@ Track::SettingsChange BSON::toTrackSettingsChange(bson_iter_t& b)
                         sc._settings = new FMChannelSettings;
                         sc._settings->fromBSON(settingsInner);
                         break;
-                    case Channel::PCM:
-                        sc._settings = new PCMChannelSettings;
+                    case Channel::DPCM:
+                        sc._settings = new ROMChannelSettings;
                         sc._settings->fromBSON(settingsInner);
                         break;
-                    case Channel::ROM:
+                    case Channel::SPCM:
                         sc._settings = new ROMChannelSettings;
                         sc._settings->fromBSON(settingsInner);
                         break;
@@ -845,8 +845,11 @@ void BSON::fromProject(bson_t* dst,const Project& project)
     BSON_APPEND_DOCUMENT(dst, "userTone", &userTone);
 
     // ROM
-    if (!project.romFile().isEmpty()) {
-        BSON_APPEND_UTF8(dst, "romFile", project.romFile().toStdString().c_str());
+    if (!project.spcmFile().isEmpty()) {
+        BSON_APPEND_UTF8(dst, "spcmFile", project.spcmFile().toStdString().c_str());
+    }
+    if (!project.dpcmFile().isEmpty()) {
+        BSON_APPEND_UTF8(dst, "dpcmFile", project.dpcmFile().toStdString().c_str());
     }
 
     // Info
@@ -966,8 +969,12 @@ Project BSON::toProject(bson_iter_t& b)
 
     bson_iter_t romFile;
 
-    if (bson_iter_find_descendant(&b, "romFile", &romFile) && BSON_ITER_HOLDS_UTF8(&romFile)) {
-        p._romFile = bson_iter_utf8(&romFile, NULL);
+    if (bson_iter_find_descendant(&b, "spcmFile", &romFile) && BSON_ITER_HOLDS_UTF8(&romFile)) {
+        p._spcmFile = bson_iter_utf8(&romFile, NULL);
+    }
+
+    if (bson_iter_find_descendant(&b, "dpcmFile", &romFile) && BSON_ITER_HOLDS_UTF8(&romFile)) {
+        p._dpcmFile = bson_iter_utf8(&romFile, NULL);
     }
 
     // Info

@@ -21,7 +21,7 @@
        <item row="0" column="0">
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please load a ROM using &lt;span style=&quot; font-weight:700;&quot;&gt;Edit &amp;gt; Globals &amp;gt; ROM&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;You can build a ROM using &lt;span style=&quot; font-weight:700;&quot;&gt;Tools &amp;gt; ROM Builder&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please load a ROM using &lt;span style=&quot; font-weight:700;&quot;&gt;Edit &amp;gt; Globals &amp;gt; PCM&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;You can build a ROM using &lt;span style=&quot; font-weight:700;&quot;&gt;Tools &amp;gt; ROM Builder&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignmentFlag::AlignCenter</set>

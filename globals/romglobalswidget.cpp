@@ -1,11 +1,11 @@
 #include "romglobalswidget.h"
 #include "ui_romglobalswidget.h"
 
-ROMGlobalsWidget::ROMGlobalsWidget(QWidget *parent, Application* app)
-    : QMainWindow(parent)
+ROMGlobalsWidget::ROMGlobalsWidget(QWidget *parent, Application* app, const QString& romFilePath)
+    : QWidget(parent)
     , ui(new Ui::ROMGlobalsWidget)
     , _app(app)
-    , _rom(app->project().resolve(app->project().romFile()))
+    , _rom(romFilePath)
     , _tableModel(this, _rom)
 {
     ui->setupUi(this);
@@ -14,15 +14,8 @@ ROMGlobalsWidget::ROMGlobalsWidget(QWidget *parent, Application* app)
 
     ui->tableView->setModel(&_tableModel);
     ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
     ui->tableView->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
-
-    ui->label->setText(QFileInfo(_app->project().romFile()).fileName());
-
-    connect(ui->actionOpen, &QAction::triggered, this, &ROMGlobalsWidget::open);
-    connect(ui->actionReset, &QAction::triggered, this, &ROMGlobalsWidget::resetTriggered);
-    connect(ui->actionClose, &QAction::triggered, this, &QMainWindow::close);
-
-    ui->stackedWidget->setCurrentIndex(!_app->project().romFile().isEmpty());
 }
 
 ROMGlobalsWidget::~ROMGlobalsWidget()
@@ -30,41 +23,47 @@ ROMGlobalsWidget::~ROMGlobalsWidget()
     delete ui;
 }
 
-void ROMGlobalsWidget::doUpdate()
+void ROMGlobalsWidget::setApplication(Application* app)
 {
-    ui->actionReset->setEnabled(!_app->project().romFile().isEmpty());
-    ui->stackedWidget->setCurrentIndex(!_app->project().romFile().isEmpty());
-
-    ui->label->setText(QFileInfo(_app->project().romFile()).fileName());
-
-    _rom = ROM(_app->project().resolve(_app->project().romFile()));
-    _tableModel.doUpdate();
+    _app = app;
 }
 
-void ROMGlobalsWidget::load(const QString& path)
+void ROMGlobalsWidget::setROMFile(const QString& path)
 {
-    if (!path.isNull()) {
-        _app->undoStack().push(new SetProjectROMFileCommand(_app->window(), _app->project(), path));
-    }
+    _romPath = path;
+
+    doUpdate();
+
+    emit updated();
+}
+
+const QString& ROMGlobalsWidget::romFile() const
+{
+    return _romPath;
+}
+
+void ROMGlobalsWidget::doUpdate()
+{
+    ui->stackedWidget->setCurrentIndex(!_romPath.isEmpty());
+
+    ui->label->setText(QFileInfo(_app->project().resolve(_romPath)).fileName());
+
+    _rom = ROM(_app->project().resolve(_romPath));
+    _tableModel.doUpdate();
 }
 
 void ROMGlobalsWidget::open()
 {
     QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "Chromasound ROM (*.rom)", nullptr, QFileDialog::DontUseNativeDialog);
 
-    load(path);
+    setROMFile(path);
 }
 
 void ROMGlobalsWidget::resetTriggered()
 {
-    _app->undoStack().push(new SetProjectROMFileCommand(_app->window(), _app->project(), ""));
+    setROMFile("");
 }
 
-void ROMGlobalsWidget::closeEvent(QCloseEvent* event)
-{
-    MdiSubWindow* subwindow = dynamic_cast<MdiSubWindow*>(parent());
-    subwindow->close();
-}
 
 void ROMGlobalsWidget::dragEnterEvent(QDragEnterEvent* event)
 {
@@ -90,6 +89,6 @@ void ROMGlobalsWidget::dropEvent(QDropEvent* event)
     QFileInfo fileInfo(file);
 
     if (fileInfo.suffix() == "rom") {
-        load(paths.first());
+        setROMFile(paths.first());
     }
 }

@@ -133,7 +133,7 @@ void OPLWidget::dropEvent(QDropEvent* event)
     QString path(data);
     path = path.mid(QString("file://").length());
     path = path.replace("%20", " ");
-    path = path.replace("\r\n", "");
+    path = path.split("\r\n").at(0);
 
     QFile file(path);
     QFileInfo fileInfo(file);

@@ -12,7 +12,6 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _styleDialogWindow(nullptr)
     , _opnImportDialogWindow(nullptr)
     , _oplImportDialogWindow(nullptr)
-    , _pcmUsageDialogWindow(nullptr)
     , _infoDialogWindow(nullptr)
     , _playerDialogWindow(nullptr)
     , _romBuilderDialogWindow(nullptr)
@@ -130,7 +129,6 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(ui->actionPlaylist, &QAction::triggered, this, &MainWindow::showPlaylistWindow);
     connect(ui->actionOPN, &QAction::triggered, this, &MainWindow::opnImportTriggered);
     connect(ui->actionOPL, &QAction::triggered, this, &MainWindow::oplImportTriggered);
-    connect(ui->actionPCMUsage, &QAction::triggered, this, &MainWindow::pcmUsageTriggered);
     connect(ui->actionMediaPlayer, &QAction::triggered, this, &MainWindow::playerTriggered);
     connect(ui->actionROMBuilder, &QAction::triggered, this, &MainWindow::romBuilderTriggered);
 
@@ -143,7 +141,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(ui->actionFMGlobals, &QAction::triggered, this, &MainWindow::fmGlobalsTriggered);
     connect(ui->actionSSGGlobals, &QAction::triggered, this, &MainWindow::ssgGlobalsTriggered);
     connect(ui->actionMelodyGlobals, &QAction::triggered, this, &MainWindow::melodyGlobalsTriggered);
-    connect(ui->actionROMGlobals, &QAction::triggered, this, &MainWindow::romGlobalsTriggered);
+    connect(ui->actionPCMGlobals, &QAction::triggered, this, &MainWindow::romGlobalsTriggered);
 
     connect(_splitter, &QSplitter::splitterMoved, this, &MainWindow::splitterMoved);
 
@@ -201,11 +199,6 @@ MainWindow::~MainWindow()
     if (_oplImportDialogWindow) {
         _oplImportDialogWindow->close();
         delete _oplImportDialogWindow;
-    }
-
-    if (_pcmUsageDialogWindow) {
-        _pcmUsageDialogWindow->close();
-        delete _pcmUsageDialogWindow;
     }
 
     if (_playerDialogWindow) {
@@ -426,7 +419,6 @@ void MainWindow::patternChanged(int num)
 {
     _app->project().setFrontPattern(num - 1);
     if (_channelsWindow) _channelsWidget->update();
-    if (_pcmUsageDialogWindow) _pcmUsageDialog->doUpdate();
     ui->topWidget->updateFromProject(_app->project());
 }
 
@@ -529,7 +521,6 @@ void MainWindow::channelSelected(const int index)
 
     NoiseWidget* noiseWidget;
     FMWidgetWindow* fmWidget;
-    PCMWidget* pcmWidget;
     SSGWidget* ssgWidget;
     MelodyWidget* melodyWidget;
     RhythmWidget* rhythmWidget;
@@ -587,18 +578,19 @@ void MainWindow::channelSelected(const int index)
             break;
         case Channel::TONE:
             break;
-        case Channel::PCM:
+        case Channel::DPCM:
             it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window) {
-                return dynamic_cast<PCMWidget*>(window->widget());
+                return dynamic_cast<ROMWidget*>(window->widget());
             });
             if (it != _channelWindows[index].end()) {
                 _mdiArea->setActiveSubWindow(*it);
             } else {
-                pcmWidget = new PCMWidget(this, _app);
-                pcmWidget->setSettings(dynamic_cast<PCMChannelSettings*>(&_app->project().getChannel(index).settings()));
-                pcmWidget->setWindowTitle(QString("%1: PCM").arg(_app->project().getChannel(index).name()));
+                romWidget = new ROMWidget(this, _app, Channel::Type::DPCM);
+                romWidget->setSettings(dynamic_cast<ROMChannelSettings*>(&_app->project().getChannel(index).settings()));
+                romWidget->setWindowTitle(QString("%1: DPCM").arg(_app->project().getChannel(index).name()));
 
-                channelWindow->setWidget(pcmWidget);
+                channelWindow->setWidget(romWidget);
+                channelWindow->resize(channelWindow->minimumSizeHint());
                 if (_mdiArea->viewMode() == QMdiArea::SubWindowView) {
                     channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
                 }
@@ -608,7 +600,7 @@ void MainWindow::channelSelected(const int index)
                 });
             }
             break;
-        case Channel::ROM:
+        case Channel::SPCM:
             it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window) {
                 return dynamic_cast<ROMWidget*>(window->widget());
             });
@@ -617,7 +609,7 @@ void MainWindow::channelSelected(const int index)
             } else {
                 romWidget = new ROMWidget(this, _app);
                 romWidget->setSettings(dynamic_cast<ROMChannelSettings*>(&_app->project().getChannel(index).settings()));
-                romWidget->setWindowTitle(QString("%1: ROM").arg(_app->project().getChannel(index).name()));
+                romWidget->setWindowTitle(QString("%1: SPCM").arg(_app->project().getChannel(index).name()));
 
                 channelWindow->setWidget(romWidget);
                 channelWindow->resize(channelWindow->minimumSizeHint());
@@ -741,7 +733,6 @@ void MainWindow::newTriggered()
 
     if (_channelsWindow) _channelsWidget->rebuild();
     if (_playlistWindow) _playlistWidget->update();
-    if (_pcmUsageDialogWindow) _pcmUsageDialog->doUpdate();
 }
 
 void MainWindow::openTriggered()
@@ -809,30 +800,18 @@ void MainWindow::publishTriggered()
     if (!path.isNull()) {
         QDir dir(path);
 
-        for (int i = 0; i < _app->project().channelCount(); i++) {
-            Channel& chan = _app->project().getChannel(i);
-            if (chan.type() == Channel::Type::PCM) {
-                PCMChannelSettings& pcmSettings = dynamic_cast<PCMChannelSettings&>(chan.settings());
+        if (!_app->project().dpcmFile().isEmpty()) {
+            QString newPath = dir.absoluteFilePath(QFileInfo(_app->project().dpcmFile()).fileName());
+            QFile::copy(_app->project().resolve(_app->project().dpcmFile()), newPath);
 
-                if (pcmSettings.path().isEmpty()) {
-                    continue;
-                }
-
-                dir.mkdir("PCM");
-                QDir pcmDir(dir.absoluteFilePath("PCM"));
-
-                QString newPath = pcmDir.absoluteFilePath(QFileInfo(pcmSettings.path()).fileName());
-                QFile::copy(_app->project().resolve(pcmSettings.path()), newPath);
-
-                pcmSettings.setPath(dir.relativeFilePath(newPath));
-            }
+            _app->project().setDPCMFile(dir.relativeFilePath(newPath));
         }
 
-        if (!_app->project().romFile().isEmpty()) {
-            QString newPath = dir.absoluteFilePath(QFileInfo(_app->project().romFile()).fileName());
-            QFile::copy(_app->project().resolve(_app->project().romFile()), newPath);
+        if (!_app->project().spcmFile().isEmpty()) {
+            QString newPath = dir.absoluteFilePath(QFileInfo(_app->project().spcmFile()).fileName());
+            QFile::copy(_app->project().resolve(_app->project().spcmFile()), newPath);
 
-            _app->project().setROMFile(dir.relativeFilePath(newPath));
+            _app->project().setSPCMFile(dir.relativeFilePath(newPath));
         }
 
         QString projectFileName("project.csp");
@@ -1032,25 +1011,6 @@ void MainWindow::stylesTriggered()
     }
 }
 
-void MainWindow::pcmUsageTriggered()
-{
-    if (_pcmUsageDialogWindow == nullptr) {
-        _pcmUsageDialog = new PCMUsageDialog(this, _app);
-
-        MdiSubWindow* window = new MdiSubWindow(_mdiArea);
-        connect(window, &MdiSubWindow::closed, this, [&]() {
-            _pcmUsageDialogWindow = nullptr;
-        });
-        window->setAttribute(Qt::WA_DeleteOnClose);
-        window->setWidget(_pcmUsageDialog);
-        _pcmUsageDialogWindow = window;
-        _mdiArea->addSubWindow(window);
-        window->show();
-    } else {
-        _mdiArea->setActiveSubWindow(_pcmUsageDialogWindow);
-    }
-}
-
 void MainWindow::opnImportTriggered()
 {
     if (_opnImportDialogWindow == nullptr) {
@@ -1196,21 +1156,21 @@ void MainWindow::melodyGlobalsTriggered()
 void MainWindow::romGlobalsTriggered()
 {
     if (_romGlobalsWindow == nullptr) {
-        _romGlobalsWidget = new ROMGlobalsWidget(this, _app);
+        _romGlobalsWindow = new ROMGlobalsWindow(this, _app);
 
         MdiSubWindow* window = new MdiSubWindow(_mdiArea);
         connect(window, &MdiSubWindow::closed, this, [&]() {
             _romGlobalsWindow = nullptr;
         });
         window->setAttribute(Qt::WA_DeleteOnClose);
-        window->setWidget(_romGlobalsWidget);
+        window->setWidget(_romGlobalsWindow);
         window->resize(window->minimumSizeHint());
-        window->setWindowTitle("Project Sample ROM");
-        _romGlobalsWindow = window;
+        window->setWindowTitle("PCM Sample ROM");
+        _romGlobalsWindowWindow = window;
         _mdiArea->addSubWindow(window);
         window->show();
     } else {
-        _mdiArea->setActiveSubWindow(_romGlobalsWindow);
+        _mdiArea->setActiveSubWindow(_romGlobalsWindowWindow);
     }
 }
 
@@ -1432,7 +1392,7 @@ void MainWindow::doUpdate()
     if (_fmGlobalsWindow) _fmGlobalsWidget->doUpdate();
     if (_ssgGlobalsWindow) _ssgGlobalsWidget->doUpdate();
     if (_melodyGlobalsWindow) _melodyGlobalsWidget->doUpdate();
-    if (_romGlobalsWindow) _romGlobalsWidget->doUpdate();
+    if (_romGlobalsWindow) _romGlobalsWindow->doUpdate();
 
     for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
         for (MdiSubWindow* window : (*it)) {
@@ -1458,18 +1418,18 @@ void MainWindow::channelSettingsUpdated()
         for (MdiSubWindow* window : (*it)) {
             NoiseWidget* nw;
             FMWidgetWindow* fmw;
-            PCMWidget* pw;
             SSGWidget* sw;
             PianoRollWidget* prw;
             MelodyWidget* mw;
             RhythmWidget* rw;
+            ROMWidget* romw;
 
             if ((nw = dynamic_cast<NoiseWidget*>(window->widget()))) {
                 nw->doUpdate();
             } else if ((fmw = dynamic_cast<FMWidgetWindow*>(window->widget()))) {
                 fmw->doUpdate();
-            } else if ((pw = dynamic_cast<PCMWidget*>(window->widget()))) {
-                pw->doUpdate();
+            } else if ((romw = dynamic_cast<ROMWidget*>(window->widget()))) {
+                romw->doUpdate();
             } else if ((sw = dynamic_cast<SSGWidget*>(window->widget()))) {
                 sw->doUpdate();
             } else if ((mw = dynamic_cast<MelodyWidget*>(window->widget()))) {
@@ -1575,7 +1535,6 @@ void MainWindow::dropEvent(QDropEvent* event)
 
         if (_channelsWindow) _channelsWidget->rebuild();
         if (_playlistWindow) _playlistWidget->update();
-        if (_pcmUsageDialogWindow) _pcmUsageDialog->doUpdate();
 
         _playlistWidget->update();
 

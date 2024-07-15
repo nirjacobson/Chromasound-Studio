@@ -29,7 +29,7 @@ class PianoRollKeysWidget : public GanttLeftWidget
         void pressKey(const int key);
         void releaseKey(const int key);
 
-        void setROMChannelSettings(const ROMChannelSettings* settings);
+        void setROMChannelSettings(const ROMChannelSettings* settings, Channel::Type type);
 
     signals:
         void keyOn(const int key, const int velocity);
@@ -60,6 +60,8 @@ class PianoRollKeysWidget : public GanttLeftWidget
         QColor _whiteKeyColor;
         QColor _blackKeyColor;
         QColor _activeKeyColor;
+
+        Channel::Type _romType;
 
         const QColor& outlineColor() const;
         const QColor& whiteKeyColor() const;

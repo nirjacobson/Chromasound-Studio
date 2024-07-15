@@ -18,7 +18,7 @@
 #include "commands/composite/setfmchannelcommand.h"
 #include "commands/composite/setpcmchannelcommand.h"
 #include "commands/composite/replacetrackitemscommand.h"
-#include "commands/setpcmchannelsettingscommand.h"
+#include "commands/setromchannelsettingscommand.h"
 #include "commands/removetrackitemscommand.h"
 #include "commands/addtrackitemscommand.h"
 #include "commands/setchanneltypecommand.h"
@@ -85,11 +85,11 @@ class ChannelWidget : public QWidget
         QAction _toneAction;
         QAction _noiseAction;
         QAction _fmAction;
-        QAction _pcmAction;
+        QAction _dpcmAction;
         QAction _ssgAction;
         QAction _melodyAction;
         QAction _rhythmAction;
-        QAction _romAction;
+        QAction _spcmAction;
 
         QAction _fillEvery2StepsAction;
         QAction _fillEvery4StepsAction;

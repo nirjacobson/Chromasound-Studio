@@ -9,12 +9,12 @@
 class AddPCMChannelCommand : public QUndoCommand
 {
     public:
-        AddPCMChannelCommand(MainWindow* window, const PCMChannelSettings& settingsAfter, const QString& name);
+        AddPCMChannelCommand(MainWindow* window, const ROMChannelSettings& settingsAfter, const QString& name);
         ~AddPCMChannelCommand();
 
     private:
         MainWindow* _mainWindow;
-        PCMChannelSettings _settingsAfter;
+        ROMChannelSettings _settingsAfter;
         QString _name;
 
         AddChannelCommand* _addChannelCommand;

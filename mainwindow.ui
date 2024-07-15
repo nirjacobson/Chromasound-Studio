@@ -79,7 +79,7 @@
      <addaction name="actionFMGlobals"/>
      <addaction name="actionSSGGlobals"/>
      <addaction name="actionMelodyGlobals"/>
-     <addaction name="actionROMGlobals"/>
+     <addaction name="actionPCMGlobals"/>
     </widget>
     <addaction name="separator"/>
     <addaction name="menuGlobals"/>
@@ -106,7 +106,6 @@
      <addaction name="actionOPL"/>
     </widget>
     <addaction name="menuImportFMPatches"/>
-    <addaction name="actionPCMUsage"/>
     <addaction name="actionMediaPlayer"/>
     <addaction name="actionROMBuilder"/>
    </widget>
@@ -147,11 +146,6 @@
   <action name="actionFor3rdPartyPlayers">
    <property name="text">
     <string>For 3rd party players</string>
-   </property>
-  </action>
-  <action name="actionPCMUsage">
-   <property name="text">
-    <string>&amp;PCM Usage</string>
    </property>
   </action>
   <action name="actionInfo">
@@ -209,9 +203,9 @@
     <string>&amp;ROM Builder</string>
    </property>
   </action>
-  <action name="actionROMGlobals">
+  <action name="actionPCMGlobals">
    <property name="text">
-    <string>&amp;ROM</string>
+    <string>&amp;PCM</string>
    </property>
   </action>
   <action name="actionSaveAs">

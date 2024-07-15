@@ -1,5 +1,5 @@
-#ifndef SETPROJECTROMFILECOMMAND_H
-#define SETPROJECTROMFILECOMMAND_H
+#ifndef SETPROJECTDPCMFILECOMMAND_H
+#define SETPROJECTDPCMFILECOMMAND_H
 
 #include <QUndoCommand>
 
@@ -7,10 +7,10 @@
 
 class MainWindow;
 
-class SetProjectROMFileCommand : public QUndoCommand
+class SetProjectDPCMFileCommand : public QUndoCommand
 {
 public:
-    SetProjectROMFileCommand(MainWindow* window, Project& project, const QString& path);
+    SetProjectDPCMFileCommand(MainWindow* window, Project& project, const QString& path);
 
 private:
     MainWindow* _mainWindow;
@@ -24,4 +24,4 @@ public:
     void redo();
 };
 
-#endif // SETPROJECTROMFILECOMMAND_H
+#endif // SETPROJECTDPCMFILECOMMAND_H

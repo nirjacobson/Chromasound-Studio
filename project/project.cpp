@@ -290,70 +290,20 @@ int Project::indexOfChannel(const Channel& channel)
     return -1;
 }
 
-bool Project::hasPCM() const
+bool Project::hasDPCM() const
 {
     for (const Channel& channel : _channels) {
-        if (channel.type() == Channel::Type::PCM) {
+        if (channel.type() == Channel::Type::DPCM) {
             return true;
         }
     }
     return false;
 }
 
-quint32 Project::pcmOffset(const QString& path) const
-{
-    QList<QString> paths;
-
-    for (const Channel& channel : _channels) {
-        if (channel.type() == Channel::Type::PCM) {
-            paths.append(resolve(dynamic_cast<const PCMChannelSettings&>(channel.settings()).path()));
-        }
-    }
-
-    std::sort(paths.begin(), paths.end(), [](const QString& a, const QString& b) {
-        return QFileInfo(QFile(a)).size() < QFileInfo(QFile(b)).size();
-    });
-
-    quint32 offset = 0;
-    for (const QString& pcmPath : paths) {
-        if (pcmPath == path) {
-            return offset;
-        }
-        offset += QFileInfo(QFile(pcmPath)).size();
-    }
-
-    return offset;
-}
-
-QByteArray Project::pcm() const
-{
-    QByteArray result;
-
-    QList<QString> paths;
-    for (const Channel& channel : _channels) {
-        if (channel.type() == Channel::Type::PCM) {
-            paths.append(resolve(dynamic_cast<const PCMChannelSettings&>(channel.settings()).path()));
-        }
-    }
-
-    std::sort(paths.begin(), paths.end(), [](const QString& a, const QString& b) {
-        return QFileInfo(QFile(a)).size() < QFileInfo(QFile(b)).size();
-    });
-
-    for (const QString& pcmPath : paths) {
-        QFile pcmFile(pcmPath);
-        pcmFile.open(QIODevice::ReadOnly);
-        result.append(pcmFile.readAll());
-        pcmFile.close();
-    }
-
-    return result;
-}
-
-bool Project::hasROM() const
+bool Project::hasSPCM() const
 {
     for (const Channel& channel : _channels) {
-        if (channel.type() == Channel::Type::ROM) {
+        if (channel.type() == Channel::Type::SPCM) {
             return true;
         }
     }
@@ -381,7 +331,8 @@ Project& Project::operator=(Project&& src)
     _ssgEnvelopeFreq = src._ssgEnvelopeFreq;
     _ssgNoiseFreq = src._ssgNoiseFreq;
     _userTone = src._userTone;
-    _romFile = src._romFile;
+    _spcmFile = src._spcmFile;
+    _dpcmFile = src._dpcmFile;
 
     _info = src._info;
 
@@ -409,7 +360,8 @@ Project::Project(Project&& o)
     _ssgEnvelopeFreq = o._ssgEnvelopeFreq;
     _ssgNoiseFreq = o._ssgNoiseFreq;
     _userTone = o._userTone;
-    _romFile = o._romFile;
+    _spcmFile = o._spcmFile;
+    _dpcmFile = o._dpcmFile;
 
     _info = o._info;
 }
@@ -444,20 +396,30 @@ void Project::setOpllType(const OPLL::Type type)
     _opllType = type;
 }
 
-const QString& Project::romFile() const
+const QString& Project::spcmFile() const
 {
-    return _romFile;
+    return _spcmFile;
 }
 
-void Project::setROMFile(const QString& path)
+void Project::setSPCMFile(const QString& path)
 {
-    _romFile = path;
+    _spcmFile = path;
+}
+
+const QString& Project::dpcmFile() const
+{
+    return _dpcmFile;
+}
+
+void Project::setDPCMFile(const QString& path)
+{
+    _dpcmFile = path;
 }
 
 bool Project::usesOPN() const
 {
     for (int i = 0; i < _channels.size(); i++) {
-        if (_channels[i].type() == Channel::Type::FM || _channels[i].type() == Channel::Type::PCM) {
+        if (_channels[i].type() == Channel::Type::FM || _channels[i].type() == Channel::Type::DPCM) {
             return true;
         }
     }

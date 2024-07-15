@@ -5,21 +5,21 @@
 
 #include "commands/setchanneltypecommand.h"
 #include "commands/setchannelnamecommand.h"
-#include "commands/setpcmchannelsettingscommand.h"
+#include "commands/setromchannelsettingscommand.h"
 
 class SetPCMChannelCommand : public QUndoCommand
 {
     public:
-        SetPCMChannelCommand(MainWindow* window, Channel& channel, PCMChannelSettings settingsAfter, const QString& name = "");
+        SetPCMChannelCommand(MainWindow* window, Channel& channel, ROMChannelSettings settingsAfter, const QString& name = "");
         ~SetPCMChannelCommand();
 
     private:
         MainWindow* _mainWindow;
         Channel& _channel;
-        PCMChannelSettings _settingsAfter;
+        ROMChannelSettings _settingsAfter;
 
         SetChannelTypeCommand* _setChannelTypeCommand;
-        SetPCMChannelSettingsCommand* _setPCMChannelSettingsCommand;
+        SetROMChannelSettingsCommand* _setROMChannelSettingsCommand;
         SetChannelNameCommand* _setChannelNameCommand;
 
         QString _name;

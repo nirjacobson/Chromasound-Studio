@@ -368,12 +368,6 @@ void ChannelsWidget::dropEvent(QDropEvent* event)
             _app->undoStack().push(new AddFMChannelCommand(_app->window(), *settings, QFileInfo(QFile(path)).baseName()));
 
             delete settings;
-        } else if (fileInfo.suffix() == "pcm") {
-            PCMChannelSettings* settings = new PCMChannelSettings;
-            settings->setPath(path);
-            _app->undoStack().push(new AddPCMChannelCommand(_app->window(), *settings, QFileInfo(QFile(path)).baseName()));
-
-            delete settings;
         } else if (fileInfo.suffix() == "mid") {
             MIDIFile mfile(file);
 

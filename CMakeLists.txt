@@ -203,15 +203,10 @@ set(PROJECT_SOURCES
     formats/midi/util.h
     formats/midi/midi.h
     formats/midi/midi.cpp
-    project/channel/pcmchannelsettings.h
-    project/channel/pcmchannelsettings.cpp
-    opn/pcmwidget.h
-    opn/pcmwidget.cpp
-    opn/pcmwidget.ui
     commands/setchanneltypecommand.h
     commands/setchanneltypecommand.cpp
-    commands/setpcmchannelsettingscommand.h
-    commands/setpcmchannelsettingscommand.cpp
+    commands/setromchannelsettingscommand.h
+    commands/setromchannelsettingscommand.cpp
     tools/fmimport/opnimportdialog.h
     tools/fmimport/opnimportdialog.cpp
     tools/fmimport/opnimportdialog.ui
@@ -267,15 +262,6 @@ set(PROJECT_SOURCES
     dialogs/pianorollwidget/settingschangewidget.h
     dialogs/pianorollwidget/settingschangewidget.cpp
     dialogs/pianorollwidget/settingschangewidget.ui
-    tools/pcmusage/pcmusagedialog.h
-    tools/pcmusage/pcmusagedialog.cpp
-    tools/pcmusage/pcmusagedialog.ui
-    tools/pcmusage/pcmusagedisplaywidget.h
-    tools/pcmusage/pcmusagedisplaywidget.cpp
-    tools/pcmusage/pcmusagedisplayitem.h
-    tools/pcmusage/pcmusagedisplayitem.cpp
-    tools/pcmusage/pcmusagelegendwidget.h
-    tools/pcmusage/pcmusagelegendwidget.cpp
     chromasound/emu/audio_output.h
     chromasound/emu/blargg_common.h
     chromasound/emu/blargg_endian.h
@@ -482,13 +468,10 @@ set(PROJECT_SOURCES
     tools/rombuilder/rombuildertablemodel.h
     tools/rombuilder/rombuildertablemodel.cpp
     formats/rom.h formats/rom.cpp
-    globals/romglobalswidget.h
-    globals/romglobalswidget.cpp
-    globals/romglobalswidget.ui
     globals/romtablemodel.h
     globals/romtablemodel.cpp
-    commands/setprojectromfilecommand.h
-    commands/setprojectromfilecommand.cpp
+    commands/setprojectspcmfilecommand.h
+    commands/setprojectspcmfilecommand.cpp
     project/channel/romchannelsettings.h
     project/channel/romchannelsettings.cpp
     rom/romwidget.h
@@ -502,6 +485,14 @@ set(PROJECT_SOURCES
     commands/composite/loadmultitrackmidicommand.cpp
     rom/romwidgettablemodel.h
     rom/romwidgettablemodel.cpp
+    globals/romglobalswidget.h
+    globals/romglobalswidget.cpp
+    globals/romglobalswidget.ui
+    globals/romglobalswindow.h
+    globals/romglobalswindow.cpp
+    globals/romglobalswindow.ui
+    commands/setprojectdpcmfilecommand.h
+    commands/setprojectdpcmfilecommand.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
