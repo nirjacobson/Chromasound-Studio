@@ -1,4 +1,5 @@
 #include "miditrack.h"
+#include "formats/midi/midi.h"
 
 MIDITrack::MIDITrack(const QString& chunkType, quint32 length, const std::function<qint64 ()>& posFunc)
     : MIDIChunk(chunkType, length)
@@ -52,6 +53,9 @@ const MIDITrackEvent& MIDITrack::event(const int idx) const
 
 QString MIDITrack::name() const
 {
+
+    const MIDIEvent* lastPCEvent = nullptr;
+
     for (int i = 0; i < _events.size(); i++) {
         MIDITrackEvent* trackEvent = _events[i];
 
@@ -62,6 +66,26 @@ QString MIDITrack::name() const
                 return QString(metaEvent.data());
             }
         } catch (std::exception& e) { }
+
+        try {
+            const MIDIEvent& midiEvent = dynamic_cast<const MIDIEvent&>(trackEvent->event());
+
+            if ((midiEvent.status() & 0xF0) == 0xC0) {
+                lastPCEvent = &midiEvent;
+            }
+
+            if ((midiEvent.status() & 0xF0) == 0x90) {
+                if (lastPCEvent) {
+                    return MIDI::programName(lastPCEvent->data1());
+                }
+            }
+        } catch (std::exception& e) {
+
+        }
+    }
+
+    if (lastPCEvent) {
+        return MIDI::programName(lastPCEvent->data1());
     }
 
     return "";
