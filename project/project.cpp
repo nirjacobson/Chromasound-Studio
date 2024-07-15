@@ -335,6 +335,7 @@ Project& Project::operator=(Project&& src)
     _dpcmFile = src._dpcmFile;
 
     _info = src._info;
+    _showInfoOnOpen = src._showInfoOnOpen;
 
     return *this;
 }
@@ -364,11 +365,22 @@ Project::Project(Project&& o)
     _dpcmFile = o._dpcmFile;
 
     _info = o._info;
+    _showInfoOnOpen = o._showInfoOnOpen;
 }
 
 Project::Info& Project::info()
 {
     return _info;
+}
+
+bool Project::showInfoOnOpen() const
+{
+    return _showInfoOnOpen;
+}
+
+void Project::showInfoOnOpen(const bool on)
+{
+    _showInfoOnOpen = on;
 }
 
 const Project::Info& Project::info() const

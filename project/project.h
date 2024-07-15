@@ -111,6 +111,8 @@ class Project
 
         Info& info();
         const Info& info() const;
+        bool showInfoOnOpen() const;
+        void showInfoOnOpen(const bool on);
 
         OPLSettings& userTone();
         const OPLSettings& userTone() const;
@@ -141,6 +143,7 @@ class Project
 
         Playlist _playlist;
         Info _info;
+        bool _showInfoOnOpen;
 
         int _tempo;
         int _beatsPerBar;

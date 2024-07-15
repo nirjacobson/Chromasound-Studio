@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _opnImportDialogWindow(nullptr)
     , _oplImportDialogWindow(nullptr)
     , _infoDialogWindow(nullptr)
+    , _infoScreenDialogWindow(nullptr)
     , _playerDialogWindow(nullptr)
     , _romBuilderDialogWindow(nullptr)
     , _fmGlobalsWindow(nullptr)
@@ -747,11 +748,9 @@ void MainWindow::openTriggered()
             }
         }
 
-        _app->undoStack().clear();
-        _app->project() = BSON::decode(path);
-        _app->setupChromasound();
-
-        ui->topWidget->updateFromProject(_app->project());
+        preLoad();
+        load(path);
+        postLoad();
 
         _channelsWidget->rebuild();
 
@@ -1285,7 +1284,7 @@ void MainWindow::loadEmptyTemplate()
     preLoad();
     QFile file(":/templates/empty.csp");
     file.copy(".tmpfile");
-    _app->project() = BSON::decode(".tmpfile");
+    load(".tmpfile");
     QFile(".tmpfile").remove();
     postLoad();
 }
@@ -1295,7 +1294,7 @@ void MainWindow::loadPSGTemplate()
     preLoad();
     QFile file(":/templates/opn-psg.csp");
     file.copy(".tmpfile");
-    _app->project() = BSON::decode(".tmpfile");
+    load(".tmpfile");
     QFile(".tmpfile").remove();
     postLoad();
 }
@@ -1305,7 +1304,7 @@ void MainWindow::loadFM4Template()
     preLoad();
     QFile file(":/templates/opn-fm.csp");
     file.copy(".tmpfile");
-    _app->project() = BSON::decode(".tmpfile");
+    load(".tmpfile");
     QFile(".tmpfile").remove();
     postLoad();
 }
@@ -1315,7 +1314,7 @@ void MainWindow::loadFM4PSGTemplate()
     preLoad();
     QFile file(":/templates/opn-full.csp");
     file.copy(".tmpfile");
-    _app->project() = BSON::decode(".tmpfile");
+    load(".tmpfile");
     QFile(".tmpfile").remove();
     postLoad();
 }
@@ -1325,7 +1324,7 @@ void MainWindow::loadSSGTemplate()
     preLoad();
     QFile file(":/templates/opl-ssg.csp");
     file.copy(".tmpfile");
-    _app->project() = BSON::decode(".tmpfile");
+    load(".tmpfile");
     QFile(".tmpfile").remove();
     postLoad();
 }
@@ -1335,7 +1334,7 @@ void MainWindow::loadFM2Template()
     preLoad();
     QFile file(":/templates/opl-fm.csp");
     file.copy(".tmpfile");
-    _app->project() = BSON::decode(".tmpfile");
+    load(".tmpfile");
     QFile(".tmpfile").remove();
     postLoad();
 }
@@ -1345,7 +1344,7 @@ void MainWindow::loadFM2SSGTemplate()
     preLoad();
     QFile file(":/templates/opl-full.csp");
     file.copy(".tmpfile");
-    _app->project() = BSON::decode(".tmpfile");
+    load(".tmpfile");
     QFile(".tmpfile").remove();
     postLoad();
 }
@@ -1359,6 +1358,11 @@ void MainWindow::windowClosed(MdiSubWindow* window)
 
 void MainWindow::preLoad()
 {
+    if (_infoScreenDialogWindow) {
+        _infoScreenDialogWindow->close();
+        _infoScreenDialogWindow = nullptr;
+    }
+
     for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
         for (MdiSubWindow* window : *it) {
             window->close();
@@ -1367,6 +1371,28 @@ void MainWindow::preLoad()
     }
 
     _app->undoStack().clear();
+}
+
+void MainWindow::load(const QString& path)
+{
+    _app->project() = BSON::decode(path);
+
+    if (_app->project().showInfoOnOpen()) {
+        MdiSubWindow* window = new MdiSubWindow(_mdiArea);
+        window->setWidget(new ProjectInfoScreenDialog(this, _app->project().info()));
+        window->resize(window->minimumSizeHint());
+        if (_mdiArea->viewMode() == QMdiArea::SubWindowView) {
+            window->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
+        }
+        window->setAttribute(Qt::WA_DeleteOnClose);
+        window->show();
+        window->move(_mdiArea->mapFromGlobal(rect().center()));
+        connect(window, &MdiSubWindow::closed, this, [&]() {
+            _infoScreenDialogWindow = nullptr;
+        });
+
+        _infoScreenDialogWindow = window;
+    }
 }
 
 void MainWindow::postLoad()
@@ -1527,16 +1553,12 @@ void MainWindow::dropEvent(QDropEvent* event)
             }
         }
 
-        _app->undoStack().clear();
-        _app->project() = BSON::decode(path);
-        _app->setupChromasound();
-
-        ui->topWidget->updateFromProject(_app->project());
+        preLoad();
+        load(path);
+        postLoad();
 
         if (_channelsWindow) _channelsWidget->rebuild();
         if (_playlistWindow) _playlistWidget->update();
-
-        _playlistWidget->update();
 
         ui->topWidget->setStatusMessage(QString("Opened %1.").arg(fileInfo.fileName()));
     } else if (fileInfo.suffix() == "mid") {

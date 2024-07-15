@@ -852,6 +852,7 @@ void BSON::fromProject(bson_t* dst,const Project& project)
     bson_t b_info;
     bson_init(&b_info);
     fromProjectInfo(&b_info, project._info);
+    BSON_APPEND_BOOL(dst, "showInfo", project.showInfoOnOpen());
 
     BSON_APPEND_DOCUMENT(dst, "info", &b_info);
 }
@@ -974,6 +975,12 @@ Project BSON::toProject(bson_iter_t& b)
     }
 
     // Info
+
+    bson_iter_t showInfo;
+
+    if (bson_iter_find_descendant(&b, "showInfo", &showInfo) && BSON_ITER_HOLDS_BOOL(&showInfo)) {
+        p._showInfoOnOpen = bson_iter_bool(&showInfo);
+    }
 
     bson_iter_t info;
 
