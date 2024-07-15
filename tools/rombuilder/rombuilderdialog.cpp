@@ -12,6 +12,7 @@ ROMBuilderDialog::ROMBuilderDialog(QWidget *parent)
 
     ui->tableView->setModel(&_tableModel);
     ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
     ui->tableView->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
     ui->tableView->setDragEnabled(true);
 

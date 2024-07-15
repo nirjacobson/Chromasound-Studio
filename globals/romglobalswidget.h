@@ -1,7 +1,7 @@
 #ifndef ROMGLOBALSWIDGET_H
 #define ROMGLOBALSWIDGET_H
 
-#include <QMainWindow>
+#include <QWidget>
 #include <QFileDialog>
 #include <QDragEnterEvent>
 #include <QMimeData>
@@ -10,39 +10,40 @@
 #include "formats/rom.h"
 #include "romtablemodel.h"
 
-#include "common/mdiarea/mdisubwindow.h"
-#include "commands/setprojectromfilecommand.h"
 
 namespace Ui {
 class ROMGlobalsWidget;
 }
 
-class ROMGlobalsWidget : public QMainWindow
+class ROMGlobalsWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit ROMGlobalsWidget(QWidget *parent = nullptr, Application* app = nullptr);
+    explicit ROMGlobalsWidget(QWidget *parent = nullptr, Application* app = nullptr, const QString& romFilePath = "");
     ~ROMGlobalsWidget();
 
+    void setApplication(Application* app);
+
+    void setROMFile(const QString& path);
+    const QString& romFile() const;
+
     void doUpdate();
+
+signals:
+    void updated();
 
 private:
     Ui::ROMGlobalsWidget *ui;
     Application* _app;
 
+    QString _romPath;
     ROM _rom;
     ROMTableModel _tableModel;
-
-    void load(const QString& path);
 
 private slots:
     void open();
     void resetTriggered();
-
-    // QWidget interface
-protected:
-    void closeEvent(QCloseEvent* event);
 
     // QWidget interface
 protected:

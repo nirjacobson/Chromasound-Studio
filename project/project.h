@@ -102,11 +102,9 @@ class Project
         void addChannel(const int index, const Channel& channel);
         int indexOfChannel(const Channel& channel);
 
-        bool hasPCM() const;
-        quint32 pcmOffset(const QString& path) const;
-        QByteArray pcm() const;
+        bool hasDPCM() const;
 
-        bool hasROM() const;
+        bool hasSPCM() const;
 
         Project& operator=(Project&& src);
         Project(Project&& o);
@@ -120,8 +118,11 @@ class Project
         OPLL::Type opllType() const;
         void setOpllType(const OPLL::Type type);
 
-        const QString& romFile() const;
-        void setROMFile(const QString& path);
+        const QString& spcmFile() const;
+        void setSPCMFile(const QString& path);
+
+        const QString& dpcmFile() const;
+        void setDPCMFile(const QString& path);
 
         bool usesOPN() const;
         bool usesSSG() const;
@@ -151,7 +152,8 @@ class Project
         OPLSettings _userTone;
         OPLL::Type _opllType;
 
-        QString _romFile;
+        QString _spcmFile;
+        QString _dpcmFile;
 
         void swapChannels(const int idxa, const int idxb);
         void swapPatterns(const int idxa, const int idxb);

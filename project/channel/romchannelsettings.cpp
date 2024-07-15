@@ -59,7 +59,7 @@ void ROMChannelSettings::fromBSON(bson_iter_t& bson)
 
 QString ROMChannelSettings::type() const
 {
-    return Channel::channelTypeToString(Channel::Type::ROM);
+    return Channel::channelTypeToString(Channel::Type::SPCM);
 }
 
 ChannelSettings* ROMChannelSettings::copy() const

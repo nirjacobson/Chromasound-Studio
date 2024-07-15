@@ -1,7 +1,7 @@
 #include "mainwindow.h"
-#include "setpcmchannelsettingscommand.h"
+#include "setromchannelsettingscommand.h"
 
-SetPCMChannelSettingsCommand::SetPCMChannelSettingsCommand(MainWindow* window, PCMChannelSettings& settings, const PCMChannelSettings& settingsAfter)
+SetROMChannelSettingsCommand::SetROMChannelSettingsCommand(MainWindow* window, ROMChannelSettings& settings, const ROMChannelSettings& settingsAfter)
     : _mainWindow(window)
     , _settings(settings)
     , _settingsBefore(settings)
@@ -10,14 +10,14 @@ SetPCMChannelSettingsCommand::SetPCMChannelSettingsCommand(MainWindow* window, P
     setText("set channel settings");
 }
 
-void SetPCMChannelSettingsCommand::undo()
+void SetROMChannelSettingsCommand::undo()
 {
     _settings = _settingsBefore;
 
     _mainWindow->channelSettingsUpdated();
 }
 
-void SetPCMChannelSettingsCommand::redo()
+void SetROMChannelSettingsCommand::redo()
 {
     _settings = _settingsAfter;
 

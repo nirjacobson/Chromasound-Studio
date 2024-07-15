@@ -11,7 +11,7 @@ class ROMWidgetTableModel : public QAbstractTableModel
     Q_OBJECT
 
 public:
-    explicit ROMWidgetTableModel(QObject *parent, Application* app, QList<QString>& keys, QList<int>& samples);
+    explicit ROMWidgetTableModel(QObject *parent, Application* app, QList<QString>& keys, QList<int>& samples, Channel::Type romType);
 
     // Header:
     QVariant headerData(int section,
@@ -33,6 +33,7 @@ public:
 
 private:
     Application* _app;
+    Channel::Type _romType;
     QList<QString>& _keys;
     QList<int>& _samples;
 

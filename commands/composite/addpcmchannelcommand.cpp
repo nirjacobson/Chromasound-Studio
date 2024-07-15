@@ -1,7 +1,7 @@
 #include "addpcmchannelcommand.h"
 #include "mainwindow.h"
 
-AddPCMChannelCommand::AddPCMChannelCommand(MainWindow* window, const PCMChannelSettings& settingsAfter, const QString& name)
+AddPCMChannelCommand::AddPCMChannelCommand(MainWindow* window, const ROMChannelSettings& settingsAfter, const QString& name)
     : _mainWindow(window)
     , _settingsAfter(settingsAfter)
     , _name(name)

@@ -100,9 +100,9 @@ void PianoRollWidget::setTrack(const int pattern, const int track)
     try {
         const ROMChannelSettings& settings = dynamic_cast<const ROMChannelSettings&>(_app->project().getChannel(_channel).settings());
 
-        _keysWidget->setROMChannelSettings(&settings);
+        _keysWidget->setROMChannelSettings(&settings, _app->project().getChannel(_channel).type());
     } catch (std::exception& e) {
-        _keysWidget->setROMChannelSettings(nullptr);
+        _keysWidget->setROMChannelSettings(nullptr, _app->project().getChannel(_channel).type());
     }
 
     update();
@@ -432,7 +432,7 @@ void PianoRollWidget::dropEvent(QDropEvent* event)
     QString path(data);
     path = path.mid(QString("file://").length());
     path = path.replace("%20", " ");
-    path = path.replace("\r\n", "");
+    path = path.split("\r\n").at(0);
 
     QFile file(path);
     QFileInfo fileInfo(file);
