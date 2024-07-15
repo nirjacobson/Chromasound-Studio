@@ -59,7 +59,7 @@ void ROMGlobalsWidget::open()
     setROMFile(path);
 }
 
-void ROMGlobalsWidget::resetTriggered()
+void ROMGlobalsWidget::reset()
 {
     setROMFile("");
 }
