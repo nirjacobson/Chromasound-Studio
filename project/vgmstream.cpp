@@ -2226,7 +2226,11 @@ bool VGMStream::requiresLongDPCMChannel(const Project& project, const ROM& rom, 
         return true;
     }
 
-    return (rom.offsets()[sample] + rom.size(sample)) > 0xFFFF;
+    if (rom.names().size() > sample) {
+        return (rom.offsets()[sample] + rom.size(sample)) > 0xFFFF;
+    }
+
+    return false;
 }
 
 QByteArray VGMStream::generateHeader(const Project& project, const QByteArray& data, const int totalSamples, const int loopOffsetData, const int gd3size, const bool selectionLoop)
