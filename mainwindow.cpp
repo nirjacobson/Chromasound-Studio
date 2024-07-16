@@ -71,6 +71,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     filters << "*.csp";
     filters << "*.opn";
     filters << "*.opl";
+    filters << "*.opm";
     filters << "*.mid";
     filters << "*.pcm";
     filters << "*.vgm";

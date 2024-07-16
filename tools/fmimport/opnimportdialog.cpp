@@ -35,7 +35,15 @@ void OPNImportDialog::setApplication(Application* app)
     _app = app;
 }
 
-void OPNImportDialog::load(const QString& path)
+void OPNImportDialog::load(const QString& path) {
+    if (path.endsWith("vgm")) {
+        loadVGM(path);
+    } else if (path.endsWith("opm")) {
+        loadOPM(path);
+    }
+}
+
+void OPNImportDialog::loadVGM(const QString& path)
 {
     clear();
 
@@ -57,7 +65,7 @@ void OPNImportDialog::load(const QString& path)
     if (relativeDataOffset == 0) {
         relativeDataOffset = 0x0C;
     }
-    quint32 dataOffset = VGM_HEADER_DATA_OFFSET + relativeDataOffset;
+
     in.readRawData(header + VGM_HEADER_DATA_OFFSET + 4, relativeDataOffset - 4);
 
     quint8 command = 0x00;
@@ -187,13 +195,63 @@ void OPNImportDialog::load(const QString& path)
 
 }
 
+void OPNImportDialog::loadOPM(const QString& path)
+{
+    clear();
+
+    QFile file(path);
+    file.open(QIODevice::ReadOnly);
+
+    while (!file.atEnd()) {
+        QString line = file.readLine().trimmed();
+
+        if (line.isEmpty() || line.startsWith("//")) {
+            continue;
+        }
+
+        FMChannelSettings settings;
+
+        QString name = line.mid(line.indexOf(QRegularExpression("\\s+")));
+
+        file.readLine();
+
+        line = file.readLine().trimmed();
+
+        QStringList lineParts = line.split(QRegularExpression("\\s+"));
+
+        settings.algorithm().setFeedback(lineParts[2].toInt());
+        settings.algorithm().setAlgorithm(lineParts[3].toInt());
+        settings.lfo().setAMS(lineParts[4].toInt());
+        settings.lfo().setFMS(lineParts[5].toInt());
+
+        for (int i = 0; i < 4; i++) {
+            line = file.readLine().trimmed();
+
+            lineParts = line.split(QRegularExpression("\\s+"));
+
+            settings.operators()[i].envelopeSettings().setAr(lineParts[1].toInt());
+            settings.operators()[i].envelopeSettings().setD1r(lineParts[2].toInt());
+            settings.operators()[i].envelopeSettings().setD2r(lineParts[3].toInt());
+            settings.operators()[i].envelopeSettings().setRr(lineParts[4].toInt());
+            settings.operators()[i].envelopeSettings().setT2l(lineParts[5].toInt());
+            settings.operators()[i].envelopeSettings().setT1l(lineParts[6].toInt());
+            settings.operators()[i].setMul(lineParts[8].toInt());
+            settings.operators()[i].setAm(lineParts[11].toInt() != 0);
+        }
+
+        ensurePatch(settings, name);
+    }
+
+    file.close();
+}
+
 void OPNImportDialog::clear()
 {
     _patchSettings.clear();
     _tableModel.clear();
 }
 
-int OPNImportDialog::ensurePatch(const FMChannelSettings& settings)
+int OPNImportDialog::ensurePatch(const FMChannelSettings& settings, const QString& name)
 {
     for (int i = 0; i < _patchSettings.size(); i++) {
         if (_patchSettings[i] == settings) {
@@ -202,14 +260,14 @@ int OPNImportDialog::ensurePatch(const FMChannelSettings& settings)
     }
 
     _patchSettings.append(settings);
-    _tableModel.insertRow(QString("Patch %1").arg(_patchSettings.size(), 3, 10, QLatin1Char('0')), QList<int>());
+    _tableModel.insertRow(name.isEmpty() ? QString("Patch %1").arg(_patchSettings.size(), 3, 10, QLatin1Char('0')) : name, QList<int>());
 
     return _patchSettings.size() - 1;
 }
 
 void OPNImportDialog::openTriggered()
 {
-    QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "VGM file (*.vgm)", nullptr, QFileDialog::DontUseNativeDialog);
+    QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "VGM files (*.vgm);;OPM files (*.opm)", nullptr, QFileDialog::DontUseNativeDialog);
 
     if (!path.isNull()) {
         load(path);
@@ -327,7 +385,7 @@ void OPNImportDialog::dropEvent(QDropEvent* event)
     QFile file(paths.first());
     QFileInfo fileInfo(file);
 
-    if (fileInfo.suffix() == "vgm") {
+    if (fileInfo.suffix() == "vgm" || fileInfo.suffix() == "opm") {
         load(paths.first());
     }
 }
