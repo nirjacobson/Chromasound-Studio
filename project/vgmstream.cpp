@@ -696,7 +696,7 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const Pattern& p
                 newPcmSize = 0;
 
                 if (channelSettings->keySampleMappings().contains(sni->note().key())) {
-                    newPcmSize = qMin(spcmROM.size(channelSettings->keySampleMappings()[sni->note().key()]), (qint64)(sni->note().duration() / project.tempo() * 60 * 44100));
+                    newPcmSize = qMin(dpcmROM.size(channelSettings->keySampleMappings()[sni->note().key()]), (qint64)(sni->note().duration() / project.tempo() * 60 * 44100));
                     dpcmOffsetsByChannel[sni->channel()] = dpcmROM.offsets()[channelSettings->keySampleMappings()[sni->note().key()]];
                     dpcmSampleByChannel[sni->channel()] = channelSettings->keySampleMappings()[sni->note().key()];
                     dpcmVolumeByChannel[sni->channel()] = channelSettings->volume() * sni->note().velocity() / 100.0f;
