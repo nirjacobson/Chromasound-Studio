@@ -7,6 +7,7 @@
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QMessageBox>
+#include <QRegularExpression>
 
 #include "application.h"
 #include "patchtablemodel.h"
@@ -45,8 +46,10 @@ class OPNImportDialog : public QMainWindow
         QList<QList<int>> _patchOctaves;
 
         void load(const QString& path);
+        void loadVGM(const QString& path);
+        void loadOPM(const QString& path);
         void clear();
-        int ensurePatch(const FMChannelSettings& settings);
+        int ensurePatch(const FMChannelSettings& settings, const QString& name = QString());
 
     private slots:
         void openTriggered();
