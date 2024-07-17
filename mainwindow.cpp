@@ -787,6 +787,8 @@ void MainWindow::saveAsTriggered()
         file.write(BSON::encode(_app->project()));
         file.close();
 
+        _app->project().setPath(path);
+
         _app->undoStack().setClean();
 
         ui->topWidget->setStatusMessage(QString("Saved %1.").arg(QFileInfo(path).fileName()));

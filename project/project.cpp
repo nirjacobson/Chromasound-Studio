@@ -477,6 +477,11 @@ const QString& Project::path() const
     return _path;
 }
 
+void Project::setPath(const QString& path)
+{
+    _path = path;
+}
+
 QString Project::resolve(const QString& path) const
 {
     if (path.isEmpty()) return path;
