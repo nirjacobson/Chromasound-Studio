@@ -11,6 +11,7 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
     , _noteMenu(tr("Context menu"), this)
     , _velocityAction("Velocity", this)
     , _editingSettingsChange(nullptr)
+    , _velocityDialog(new PianoRollVelocityDialog(this))
 {
     _velocitiesWidget->setApplication(app);
 
@@ -64,12 +65,15 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
     connect(ui->settingsChangeWidget, &SettingsChangeWidget::keyOff, this, &PianoRollWidget::keyOff);
     connect(ui->settingsChangeWidget, &SettingsChangeWidget::removeClicked, this, &PianoRollWidget::removeButtonClicked);
     connect(ui->settingsChangeWidget, &SettingsChangeWidget::doneClicked, this, &PianoRollWidget::doneButtonClicked);
+
+    connect(_velocityDialog, &QDialog::accepted, this, &PianoRollWidget::velocityDialogAccepted);
 }
 
 PianoRollWidget::~PianoRollWidget()
 {
     delete ui;
 
+    delete _velocityDialog;
     delete _velocitiesWidget;
     delete _keysWidget;
 }
@@ -248,16 +252,9 @@ void PianoRollWidget::contextMenuRequested(GanttItem* item, const QPoint& locati
 
 void PianoRollWidget::velocityTriggered()
 {
-    int velocity = QInputDialog::getInt(this, "Edit velocity", "Velocity", _contextItem->velocity(), 0, 100);
-
-    const QList<Track::Item*>& selectedItems = reinterpret_cast<const QList<Track::Item*>&>(ui->ganttWidget->selectedItems());
-
-    for (Track::Item* item : selectedItems) {
-        Note n = item->note();
-        n.setVelocity(velocity);
-
-        _app->undoStack().push(new EditNoteCommand(_app->window(), item, item->time(), n, selectedItems));
-    }
+    _velocityDialog->setOperation(PianoRollVelocityDialog::Set);
+    _velocityDialog->setValue(_contextItem->velocity());
+    _velocityDialog->exec();
 }
 
 void PianoRollWidget::newTriggered()
@@ -403,6 +400,36 @@ void PianoRollWidget::removeButtonClicked()
     _app->undoStack().push(new RemoveTrackSettingsChangeCommand(_app->window(), *_track, _editingSettingsChange));
     ui->stackedWidget->setCurrentIndex(0);
     _editingSettingsChange = nullptr;
+}
+
+void PianoRollWidget::velocityDialogAccepted()
+{
+    QList<Track::Item*> selectedItems = reinterpret_cast<const QList<Track::Item*>&>(ui->ganttWidget->selectedItems());
+
+    if (!selectedItems.contains(_contextItem)) {
+        selectedItems.append(_contextItem);
+    }
+
+    for (Track::Item* item : selectedItems) {
+        Note n = item->note();
+
+        switch (_velocityDialog->operation()) {
+        case PianoRollVelocityDialog::Set:
+            n.setVelocity(_velocityDialog->value());
+            break;
+        case PianoRollVelocityDialog::Scale:
+            n.setVelocity(_velocityDialog->doubleValue() * n.velocity());
+            break;
+        case PianoRollVelocityDialog::Add:
+            n.setVelocity(_velocityDialog->value() + n.velocity());
+            break;
+        }
+
+        n.setVelocity(qMax(0, n.velocity()));
+        n.setVelocity(qMin(100, n.velocity()));
+
+        _app->undoStack().push(new EditNoteCommand(_app->window(), item, item->time(), n, selectedItems));
+    }
 }
 
 void PianoRollWidget::paintEvent(QPaintEvent* event)

@@ -62,6 +62,14 @@ bool EditNoteCommand::mergeWith(const QUndoCommand* other)
                 _note = enc->_note;
                 return true;
             }
+
+            n = _note;
+            n.setVelocity(enc->_note.velocity());
+            if (enc->_note == n) {
+                _toTime = enc->_toTime;
+                _note = enc->_note;
+                return true;
+            }
         } else {
             if (_group.contains(enc->_item)) {
                 if (_groupCommands.contains(enc->_item)) {

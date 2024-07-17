@@ -4,7 +4,8 @@
 MelodyWidget::MelodyWidget(QWidget *parent, Application* app) :
     QWidget(parent),
     ui(new Ui::MelodyWidget),
-    _app(app)
+    _app(app),
+    _settings(nullptr)
 {
     ui->setupUi(this);
 
