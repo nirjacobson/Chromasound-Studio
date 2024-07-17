@@ -497,6 +497,9 @@ set(PROJECT_SOURCES
     dialogs/info/projectinfoscreendialog.cpp
     dialogs/info/projectinfoscreendialog.ui
     formats/midi/programs.h
+    dialogs/pianorollwidget/pianorollvelocitydialog.h
+    dialogs/pianorollwidget/pianorollvelocitydialog.cpp
+    dialogs/pianorollwidget/pianorollvelocitydialog.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
