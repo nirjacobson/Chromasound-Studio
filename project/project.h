@@ -132,6 +132,8 @@ class Project
         bool usesRhythm() const;
 
         const QString& path() const;
+        void setPath(const QString& path);
+
         QString resolve(const QString& path) const;
 
     private:
