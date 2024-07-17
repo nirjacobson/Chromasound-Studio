@@ -1387,7 +1387,7 @@ void MainWindow::load(const QString& path)
         }
         window->setAttribute(Qt::WA_DeleteOnClose);
         window->show();
-        window->move(_mdiArea->mapFromGlobal(rect().center()));
+        window->move(_mdiArea->rect().center() - window->rect().center());
         connect(window, &MdiSubWindow::closed, this, [&]() {
             _infoScreenDialogWindow = nullptr;
         });
