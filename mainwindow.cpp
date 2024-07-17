@@ -497,10 +497,6 @@ void MainWindow::pianoRollTriggered(const int index, const bool on)
             windowClosed(pianoRollWindow);
         });
 
-        if (_mdiArea->viewMode() == QMdiArea::SubWindowView) {
-            pianoRollWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
-        }
-
         pianoRollWindow->show();
         _mdiArea->setActiveSubWindow(pianoRollWindow);
 
