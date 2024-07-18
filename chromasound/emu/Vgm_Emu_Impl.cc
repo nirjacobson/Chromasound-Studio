@@ -116,11 +116,6 @@ void Vgm_Emu_Impl::write_pcm( vgm_time_t vgm_time, int amp )
         dac_amp |= dac_disabled;
 }
 
-bool Vgm_Emu_Impl::is_pcm_long(int channel)
-{
-    return channel == 0;
-}
-
 void Vgm_Emu_Impl::set_opll_patchset(int patchset)
 {
     ym2413.reset_patch( patchset );
@@ -296,13 +291,8 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
                     case cmd_pcm_size:
                         channel = (cmd & 0x0F);
                         if (channel < PCM_CHANNELS) {
-                            if (is_pcm_long(channel)) {
-                                pcm_size[channel] = *(uint32_t*)pos;
-                                pos += 4;
-                            } else {
-                                pcm_size[channel] = *(uint16_t*)pos;
-                                pos += 2;
-                            }
+                            pcm_size[channel] = *(uint32_t*)pos;
+                            pos += 4;
                         } else {
                             channel -= PCM_CHANNELS;
 
@@ -313,23 +303,13 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
                     case cmd_pcm_seek:
                         channel = (cmd & 0x0F);
                         if (channel < PCM_CHANNELS) {
-                            if (is_pcm_long(channel)) {
-                                offset = *(uint32_t*)pos;
-                                if (offset == -1) {
-                                    pcm_pos[channel] = 0;
-                                } else {
-                                    pcm_start[channel] = pcm_pos[channel] = pcm_data + offset;
-                                }
-                                pos += 4;
+                            offset = *(uint32_t*)pos;
+                            if (offset == -1) {
+                                pcm_pos[channel] = 0;
                             } else {
-                                offset = *(uint16_t*)pos;
-                                if (offset == (uint16_t)-1) {
-                                    pcm_pos[channel] = 0;
-                                } else {
-                                    pcm_start[channel] = pcm_pos[channel] = pcm_data + offset;
-                                }
-                                pos += 2;
+                                pcm_start[channel] = pcm_pos[channel] = pcm_data + offset;
                             }
+                            pos += 4;
                         } else {
                             channel -= PCM_CHANNELS;
 
