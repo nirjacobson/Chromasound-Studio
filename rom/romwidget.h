@@ -7,9 +7,13 @@
 #include <QItemSelection>
 #include <QLineEdit>
 #include <QRegularExpressionValidator>
+#include <QFileDialog>
+#include <QDropEvent>
+#include <QMimeData>
 
 #include "application.h"
 #include "formats/rom.h"
+#include "formats/bson.h"
 #include "commands/editromchannelsettingscommand.h"
 #include "romwidgettablemodel.h"
 
@@ -36,6 +40,7 @@ class ROMWidget : public QWidget
         QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const;
 
         void setApplication(Application* app);
+        void setROMType(const Channel::Type romType);
     private:
         Application* _app;
         Channel::Type _romType;
@@ -54,6 +59,8 @@ public:
 
     void setSettings(ROMChannelSettings* settings);
     void doUpdate();
+
+    void setROMType(const Channel::Type romType);
 
 private:
     Ui::ROMWidget *ui;
@@ -78,7 +85,16 @@ private slots:
     void removeClicked();
     void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 
+public slots:
+    void saveTriggered();
+    void openTriggered();
+
 private slots:
+
+    // QWidget interface
+protected:
+    void dragEnterEvent(QDragEnterEvent* event);
+    void dropEvent(QDropEvent* event);
 };
 
 #endif // ROMWIDGET_H

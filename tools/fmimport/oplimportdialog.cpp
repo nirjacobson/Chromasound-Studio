@@ -194,7 +194,7 @@ void OPLImportDialog::saveTriggered()
     if (!path.isNull()) {
         QFile patchFile(path);
         patchFile.open(QIODevice::WriteOnly);
-        patchFile.write(BSON::encodePatch(&_patchSettings[index]));
+        patchFile.write(BSON::encodeSettings(&_patchSettings[index]));
         patchFile.close();
     }
 }
@@ -212,7 +212,7 @@ void OPLImportDialog::saveAllTriggered()
             QString patchFilename = QString("%1.opl").arg(_patchNames[i]);
             QFile patchFile(path + QDir::separator() + patchFilename);
             patchFile.open(QIODevice::WriteOnly);
-            patchFile.write(BSON::encodePatch(&_patchSettings[i]));
+            patchFile.write(BSON::encodeSettings(&_patchSettings[i]));
             patchFile.close();
 
             manifestStream << patchFilename << "\t";

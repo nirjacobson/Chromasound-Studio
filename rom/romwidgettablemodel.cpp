@@ -105,6 +105,11 @@ void ROMWidgetTableModel::setApplication(Application* app)
     _app = app;
 }
 
+void ROMWidgetTableModel::setROMType(const Channel::Type romType)
+{
+    _romType = romType;
+}
+
 Qt::ItemFlags ROMWidgetTableModel::flags(const QModelIndex& index) const
 {
     return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;

@@ -20,9 +20,11 @@ class BSON
         static QByteArray encode(const Project& project);
         static Project decode(const QString& path);
 
-        static QByteArray encodePatch(const Settings* settings);
+        static QByteArray encodeSettings(const Settings* settings);
         static FMChannelSettings* decodeOPNPatch(const QString& file);
         static OPLSettings* decodeOPLPatch(const QString& file);
+
+        static ROMChannelSettings* decodePCMLayout(const QString& file);
 
         static void fromTrackItem(bson_t* dst, const Track::Item* const item);
         static Track::Item toTrackItem(bson_iter_t& b);

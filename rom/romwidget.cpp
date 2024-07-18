@@ -12,6 +12,8 @@ ROMWidget::ROMWidget(QWidget *parent, Application* app, Channel::Type romType)
 {
     ui->setupUi(this);
 
+    setAcceptDrops(true);
+
     ui->tableView->setModel(&_tableModel);
     ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->tableView->setItemDelegateForColumn(0, &_keyDelegate);
@@ -63,6 +65,15 @@ void ROMWidget::doUpdate()
     ui->stackedWidget->setCurrentIndex(!items.empty());
 }
 
+void ROMWidget::setROMType(const Channel::Type romType)
+{
+    _romType = romType;
+    _sampleDelegate.setROMType(romType);
+    _tableModel.setROMType(romType);
+
+    doUpdate();
+}
+
 ROMWidget::SampleItemDelegate::SampleItemDelegate(QObject* parent, Application* app, Channel::Type romType)
     : QStyledItemDelegate(parent)
     , _app(app)
@@ -86,6 +97,11 @@ void ROMWidget::SampleItemDelegate::setApplication(Application* app)
     _app = app;
 }
 
+void ROMWidget::SampleItemDelegate::setROMType(const Channel::Type romType)
+{
+    _romType = romType;
+}
+
 void ROMWidget::SampleItemDelegate::setEditorData(QWidget* editor, const QModelIndex& index) const
 {
     int sample = index.model()->data(index, Qt::EditRole).toInt();
@@ -101,6 +117,12 @@ void ROMWidget::SampleItemDelegate::setModelData(QWidget* editor, QAbstractItemM
 
 int ROMWidget::stringToKey(const QString& str)
 {
+    bool ok = true;
+
+    int result = str.toInt(&ok);
+
+    if (ok) return result;
+
     QMap<QChar, int> intervals = {
         {'C', 0},
         {'D', 2},
@@ -190,10 +212,62 @@ void ROMWidget::selectionChanged(const QItemSelection& selected, const QItemSele
     ui->removeButton->setEnabled(!selected.indexes().empty() && selected.indexes().first().row() >= 0);
 }
 
+void ROMWidget::saveTriggered()
+{
+    const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "PCM Layout (*.lay)", nullptr, QFileDialog::DontUseNativeDialog);
+
+    if (!path.isNull()) {
+        QFile file(path);
+        file.open(QIODevice::WriteOnly);
+        file.write(BSON::encodeSettings(_settings));
+        file.close();
+    }
+}
+
+void ROMWidget::openTriggered()
+{
+    const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "PCM Layout (*.lay)", nullptr, QFileDialog::DontUseNativeDialog);
+
+    if (!path.isNull()) {
+        ROMChannelSettings* settings = BSON::decodePCMLayout(path);
+        *_settings = *settings;
+        setSettings(_settings);
+        delete settings;
+    }
+}
+
+void ROMWidget::dragEnterEvent(QDragEnterEvent* event)
+{
+    if (event->mimeData()->hasFormat("text/uri-list")) {
+        event->acceptProposedAction();
+    }
+}
+
+void ROMWidget::dropEvent(QDropEvent* event)
+{
+    QByteArray data = event->mimeData()->data("text/uri-list");
+    QString path(data);
+    path = path.mid(QString("file://").length());
+    path = path.replace("%20", " ");
+    path = path.split("\r\n").at(0);
+
+    QFile file(path);
+    QFileInfo fileInfo(file);
+
+    if (fileInfo.suffix() == "lay") {
+        ROMChannelSettings* settings = BSON::decodePCMLayout(path);
+        *_settings = *settings;
+        setSettings(_settings);
+        delete settings;
+
+        event->acceptProposedAction();
+    }
+}
+
 QWidget* ROMWidget::KeyItemDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
     QLineEdit* lineEdit = new QLineEdit(parent);
-    QValidator* validator = new QRegularExpressionValidator(QRegularExpression("^[A-Ga-g][b|#]?\\d$"), parent);
+    QValidator* validator = new QRegularExpressionValidator(QRegularExpression("^([A-Ga-g][b|#]?\\d)|\\d+$"), parent);
 
     lineEdit->setValidator(validator);
 
