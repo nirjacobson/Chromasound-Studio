@@ -30,6 +30,7 @@ public:
     void clear();
 
     void setApplication(Application* app);
+    void setROMType(const Channel::Type romType);
 
 private:
     Application* _app;

@@ -107,7 +107,7 @@ void OPLWidget::saveTriggered()
     if (!path.isNull()) {
         QFile file(path);
         file.open(QIODevice::WriteOnly);
-        file.write(BSON::encodePatch(_settings));
+        file.write(BSON::encodeSettings(_settings));
         file.close();
     }
 }

@@ -50,7 +50,7 @@ Project BSON::decode(const QString& path)
     return project;
 }
 
-QByteArray BSON::encodePatch(const Settings* settings)
+QByteArray BSON::encodeSettings(const Settings* settings)
 {
     bson_writer_t* writer;
     uint8_t* buf = NULL;
@@ -111,6 +111,27 @@ OPLSettings* BSON::decodeOPLPatch(const QString& file)
     bson_iter_init(&iter, b);
 
     OPLSettings* settings = new OPLSettings;
+    settings->fromBSON(iter);
+
+    return settings;
+}
+
+ROMChannelSettings* BSON::decodePCMLayout(const QString& file)
+{
+    bson_reader_t* reader;
+    const bson_t* b;
+    bson_error_t error;
+
+    if (!(reader = bson_reader_new_from_file(file.toStdString().c_str(), &error))) {
+        throw  "error decoding file";
+    }
+
+    b = bson_reader_read(reader, NULL);
+
+    bson_iter_t iter;
+    bson_iter_init(&iter, b);
+
+    ROMChannelSettings* settings = new ROMChannelSettings;
     settings->fromBSON(iter);
 
     return settings;

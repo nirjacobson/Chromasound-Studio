@@ -500,6 +500,9 @@ set(PROJECT_SOURCES
     dialogs/pianorollwidget/pianorollvelocitydialog.h
     dialogs/pianorollwidget/pianorollvelocitydialog.cpp
     dialogs/pianorollwidget/pianorollvelocitydialog.ui
+    rom/romwidgetwindow.h
+    rom/romwidgetwindow.cpp
+    rom/romwidgetwindow.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

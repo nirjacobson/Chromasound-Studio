@@ -18,7 +18,7 @@
 #include "toplevel/browser/filesystemtreeview.h"
 #include "dialogs/pianorollwidget/pianorollwidget.h"
 #include "opn/opnwidgetwindow.h"
-#include "rom/romwidget.h"
+#include "rom/romwidgetwindow.h"
 #include "ssg/ssgwidget.h"
 #include "project/vgmstream.h"
 #include "formats/midi/midiinput.h"

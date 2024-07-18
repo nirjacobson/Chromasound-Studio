@@ -76,6 +76,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     filters << "*.pcm";
     filters << "*.vgm";
     filters << "*.rom";
+    filters << "*.lay";
     _filesystemModel.setNameFilters(filters);
     _filesystemModel.setNameFilterDisables(false);
     _filesystemModel.setRootPath(QDir::currentPath());
@@ -522,7 +523,7 @@ void MainWindow::channelSelected(const int index)
     SSGWidget* ssgWidget;
     MelodyWidget* melodyWidget;
     RhythmWidget* rhythmWidget;
-    ROMWidget* romWidget;
+    ROMWidgetWindow* romWidget;
     QList<MdiSubWindow*>::Iterator it;
 
     for (MdiSubWindow* window : _channelWindows[index]) {
@@ -578,12 +579,12 @@ void MainWindow::channelSelected(const int index)
             break;
         case Channel::DPCM:
             it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window) {
-                return dynamic_cast<ROMWidget*>(window->widget());
+                return dynamic_cast<ROMWidgetWindow*>(window->widget());
             });
             if (it != _channelWindows[index].end()) {
                 _mdiArea->setActiveSubWindow(*it);
             } else {
-                romWidget = new ROMWidget(this, _app, Channel::Type::DPCM);
+                romWidget = new ROMWidgetWindow(this, _app, Channel::Type::DPCM);
                 romWidget->setSettings(dynamic_cast<ROMChannelSettings*>(&_app->project().getChannel(index).settings()));
                 romWidget->setWindowTitle(QString("%1: DPCM").arg(_app->project().getChannel(index).name()));
 
@@ -600,12 +601,12 @@ void MainWindow::channelSelected(const int index)
             break;
         case Channel::SPCM:
             it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window) {
-                return dynamic_cast<ROMWidget*>(window->widget());
+                return dynamic_cast<ROMWidgetWindow*>(window->widget());
             });
             if (it != _channelWindows[index].end()) {
                 _mdiArea->setActiveSubWindow(*it);
             } else {
-                romWidget = new ROMWidget(this, _app);
+                romWidget = new ROMWidgetWindow(this, _app);
                 romWidget->setSettings(dynamic_cast<ROMChannelSettings*>(&_app->project().getChannel(index).settings()));
                 romWidget->setWindowTitle(QString("%1: SPCM").arg(_app->project().getChannel(index).name()));
 
@@ -1423,14 +1424,14 @@ void MainWindow::doUpdate()
         for (MdiSubWindow* window : (*it)) {
             PianoRollWidget* prw;
             MelodyWidget* mw;
-            ROMWidget* rw;
+            ROMWidgetWindow* rw;
             if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
                 prw->doUpdate(position);
             }
             if ((mw = dynamic_cast<MelodyWidget*>(window->widget()))) {
                 mw->doUpdate();
             }
-            if ((rw = dynamic_cast<ROMWidget*>(window->widget()))) {
+            if ((rw = dynamic_cast<ROMWidgetWindow*>(window->widget()))) {
                 rw->doUpdate();
             }
         }
@@ -1447,13 +1448,13 @@ void MainWindow::channelSettingsUpdated()
             PianoRollWidget* prw;
             MelodyWidget* mw;
             RhythmWidget* rw;
-            ROMWidget* romw;
+            ROMWidgetWindow* romw;
 
             if ((nw = dynamic_cast<NoiseWidget*>(window->widget()))) {
                 nw->doUpdate();
             } else if ((fmw = dynamic_cast<FMWidgetWindow*>(window->widget()))) {
                 fmw->doUpdate();
-            } else if ((romw = dynamic_cast<ROMWidget*>(window->widget()))) {
+            } else if ((romw = dynamic_cast<ROMWidgetWindow*>(window->widget()))) {
                 romw->doUpdate();
             } else if ((sw = dynamic_cast<SSGWidget*>(window->widget()))) {
                 sw->doUpdate();
