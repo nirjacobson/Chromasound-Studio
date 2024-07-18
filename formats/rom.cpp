@@ -9,7 +9,7 @@ ROM::ROM(const QString& path) {
     quint16 count;
     file.read((char*)&count, sizeof(count));
     for (int i = 0; i < count; i++) {
-        quint16 offset;
+        quint32 offset;
         file.read((char*)&offset, sizeof(offset));
 
         QString name;
@@ -30,7 +30,7 @@ ROM::ROM(const QString& path) {
     _size = QFileInfo(path).size();
 }
 
-const QList<quint16>& ROM::offsets() const
+const QList<quint32>& ROM::offsets() const
 {
     return _offsets;
 }
@@ -40,7 +40,7 @@ const QList<QString>& ROM::names() const
     return _names;
 }
 
-long ROM::size(const int index) const
+quint32 ROM::size(const int index) const
 {
     if (index < _names.size() - 1) {
         return _offsets[index + 1] - _offsets[index];

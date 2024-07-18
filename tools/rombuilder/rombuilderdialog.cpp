@@ -41,7 +41,7 @@ QByteArray ROMBuilderDialog::header() const
     result.append((char*)&count, sizeof(count));
 
     for (int i = 0; i < _names.size(); i++) {
-        quint16 offset = _tableModel.offsetOf(i);
+        quint32 offset = _tableModel.offsetOf(i);
 
         result.append((char*)&offset, sizeof(offset));
         result.append(_names[i].toStdString().c_str());

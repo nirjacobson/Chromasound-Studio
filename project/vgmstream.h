@@ -280,9 +280,6 @@ class VGMStream
         void encodeEnvelopeFrequencyItem(const StreamEnvelopeFrequencyItem* item, QByteArray& data);
         void encodeEnvelopeShapeItem(const StreamEnvelopeShapeItem* item, QByteArray& data);
         void encodeUserToneItem(const StreamUserToneItem* item, QByteArray& data);
-
-
-        bool requiresLongDPCMChannel(const Project& project, const ROM& rom, const int sample);
 };
 
 #endif // VGMSTREAM_H

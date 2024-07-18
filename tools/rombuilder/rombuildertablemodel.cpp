@@ -141,7 +141,7 @@ quint32 ROMBuilderTableModel::offsetOf(const int index) const
 
     for (int i = 0; i < _names.size(); i++) {
         // Offset
-        offset += sizeof(quint16);
+        offset += sizeof(quint32);
         // Name
         offset += _names[i].size() + 1;
     }

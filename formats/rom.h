@@ -11,15 +11,15 @@ class ROM
 public:
     ROM(const QString& path);
 
-    const QList<quint16>& offsets() const;
+    const QList<quint32>& offsets() const;
     const QList<QString>& names() const;
 
-    long size(const int index) const;
+    quint32 size(const int index) const;
 
 private:
-    QList<quint16> _offsets;
+    QList<quint32> _offsets;
     QList<QString> _names;
-    quint16 _size;
+    quint32 _size;
 };
 
 #endif // ROM_H
