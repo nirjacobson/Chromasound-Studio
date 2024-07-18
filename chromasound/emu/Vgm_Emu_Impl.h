@@ -35,6 +35,8 @@ class Ym_Emu : public Emu {
 class Vgm_Emu_Impl : public Classic_Emu, private Dual_Resampler {
     public:
         typedef Classic_Emu::sample_t sample_t;
+
+        void reset();
     protected:
         enum { stereo = 2 };
 

@@ -335,6 +335,9 @@ void Chromasound_Emu::stop()
 
     log_warning(_emu);
 
+    Vgm_Emu_Impl* impl = dynamic_cast<Vgm_Emu_Impl*>(_emu);
+    impl->reset();
+
     // start track
     if (log_err(_emu->start_track(0)))
         return;

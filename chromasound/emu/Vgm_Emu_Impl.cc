@@ -94,6 +94,23 @@ inline int Ym_Emu<Emu>::run_until( int time )
     return true;
 }
 
+void Vgm_Emu_Impl::reset()
+{
+    for (int i = 0; i < PCM_CHANNELS; i++) {
+        pcm_att[i] = 0;
+        pcm_pos[i] = 0;
+        pcm_size[i] = 0;
+        pcm_start[i] = 0;
+    }
+
+    for (int i = 0; i < PCM_CHANNELS; i++) {
+        rom_att[i] = 0;
+        rom_pos[i] = 0;
+        rom_size[i] = 0;
+        rom_start[i] = 0;
+    }
+}
+
 inline Vgm_Emu_Impl::fm_time_t Vgm_Emu_Impl::to_fm_time( vgm_time_t t ) const
 {
     return (t * fm_time_factor + fm_time_offset) >> fm_time_bits;
