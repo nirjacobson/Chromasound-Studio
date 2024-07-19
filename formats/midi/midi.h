@@ -10,6 +10,7 @@ class MIDI
     public:
         static QString programName(const int programNumber);
 
+        static QList<QList<Track::Item*>> toTracks(const MIDITrack& midiTrack, const int division);
         static QList<Track::Item*> toTrackItems(const MIDITrack& midiTrack, const int division);
         static void fromTrackItems(const Track& track, MIDITrack& midiTrack, const int division);
         static void fromTrack(const Track& track, MIDIFile& midiFile, const int division);

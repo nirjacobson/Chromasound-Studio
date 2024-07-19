@@ -51,7 +51,7 @@ const MIDITrackEvent& MIDITrack::event(const int idx) const
     return *_events[idx];
 }
 
-QString MIDITrack::name() const
+QString MIDITrack::name(const int channel) const
 {
 
     const MIDIEvent* lastPCEvent = nullptr;
@@ -70,11 +70,11 @@ QString MIDITrack::name() const
         try {
             const MIDIEvent& midiEvent = dynamic_cast<const MIDIEvent&>(trackEvent->event());
 
-            if ((midiEvent.status() & 0xF0) == 0xC0) {
+            if (midiEvent.status() == (0xC0 | channel)) {
                 lastPCEvent = &midiEvent;
             }
 
-            if ((midiEvent.status() & 0xF0) == 0x90) {
+            if (midiEvent.status() == (0x90 | channel)) {
                 if (lastPCEvent) {
                     return MIDI::programName(lastPCEvent->data1());
                 }
