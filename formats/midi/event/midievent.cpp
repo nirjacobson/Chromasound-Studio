@@ -52,6 +52,16 @@ bool MIDIEvent::isKeyOff() const
     return (_status >> 4) == 0x8;
 }
 
+bool MIDIEvent::isKeyOn(const int channel) const
+{
+    return _status == (0x90 | channel);
+}
+
+bool MIDIEvent::isKeyOff(const int channel) const
+{
+    return _status == (0x80 | channel);
+}
+
 QByteArray MIDIEvent::encode() const
 {
     QByteArray data;

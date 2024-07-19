@@ -24,6 +24,9 @@ class MIDIEvent : public Event
         bool isKeyOn() const;
         bool isKeyOff() const;
 
+        bool isKeyOn(const int channel) const;
+        bool isKeyOff(const int channel) const;
+
     private:
         quint8 _status;
         quint8 _data1;

@@ -20,7 +20,7 @@ class MIDITrack : public MIDIChunk
         int events() const;
         const MIDITrackEvent& event(const int idx) const;
 
-        QString name() const;
+        QString name(const int channel = 0) const;
 
         QByteArray encode() const;
 
