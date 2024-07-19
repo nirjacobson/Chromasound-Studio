@@ -313,7 +313,7 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
                         } else {
                             channel -= PCM_CHANNELS;
 
-                            rom_size[channel] = *(uint16_t*)pos;
+                            rom_size[channel] = *(uint32_t*)pos;
                             pos += 2;
                         }
                         break;
@@ -330,8 +330,8 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
                         } else {
                             channel -= PCM_CHANNELS;
 
-                            offset = *(uint16_t*)pos;
-                            if (offset == (uint16_t)-1) {
+                            offset = *(uint32_t*)pos;
+                            if (offset == (uint32_t)-1) {
                                 rom_pos[channel] = 0;
                             } else {
                                 rom_start[channel] = rom_pos[channel] = &rom_data[0] + offset;
