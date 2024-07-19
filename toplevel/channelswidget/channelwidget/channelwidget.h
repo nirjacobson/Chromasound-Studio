@@ -37,11 +37,11 @@ class ChannelWidget : public QWidget
         Q_PROPERTY(QColor fmColor READ fmColor WRITE setFMColor)
         Q_PROPERTY(QColor toneColor READ toneColor WRITE setToneColor)
         Q_PROPERTY(QColor noiseColor READ noiseColor WRITE setNoiseColor)
-        Q_PROPERTY(QColor pcmColor READ pcmColor WRITE setPCMColor)
+        Q_PROPERTY(QColor dpcmColor READ dpcmColor WRITE setDPCMColor)
         Q_PROPERTY(QColor ssgColor READ ssgColor WRITE setSSGColor)
         Q_PROPERTY(QColor melodyColor READ melodyColor WRITE setMelodyColor)
         Q_PROPERTY(QColor rhythmColor READ rhythmColor WRITE setRhythmColor)
-        Q_PROPERTY(QColor romColor READ romColor WRITE setROMColor)
+        Q_PROPERTY(QColor spcmColor READ spcmColor WRITE setSPCMColor)
 
     public:
         explicit ChannelWidget(QWidget *parent = nullptr, Application* app = nullptr, int index = 0);
@@ -97,29 +97,29 @@ class ChannelWidget : public QWidget
         QColor _fmColor;
         QColor _toneColor;
         QColor _noiseColor;
-        QColor _pcmColor;
+        QColor _dpcmColor;
         QColor _ssgColor;
         QColor _melodyColor;
         QColor _rhythmColor;
-        QColor _romColor;
+        QColor _spcmColor;
 
         const QColor& fmColor() const;
         const QColor& toneColor() const;
         const QColor& noiseColor() const;
-        const QColor& pcmColor() const;
+        const QColor& dpcmColor() const;
         const QColor& ssgColor() const;
         const QColor& melodyColor() const;
         const QColor& rhythmColor() const;
-        const QColor& romColor() const;
+        const QColor& spcmColor() const;
 
         void setFMColor(const QColor& color);
         void setToneColor(const QColor& color);
         void setNoiseColor(const QColor& color);
-        void setPCMColor(const QColor& color);
+        void setDPCMColor(const QColor& color);
         void setSSGColor(const QColor& color);
         void setMelodyColor(const QColor& color);
         void setRhythmColor(const QColor& color);
-        void setROMColor(const QColor& color);
+        void setSPCMColor(const QColor& color);
 
     signals:
         void pianoKeyClicked(const Qt::MouseButton button, const int step, const int key);
