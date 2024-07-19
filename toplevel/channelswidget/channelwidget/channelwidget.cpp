@@ -26,11 +26,11 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     , _toneColor(Qt::cyan)
     , _noiseColor(Qt::lightGray)
     , _fmColor(Qt::magenta)
-    , _pcmColor(QColor(128, 0, 255))
+    , _dpcmColor(QColor(128, 0, 255))
     , _ssgColor(Qt::green)
     , _melodyColor(Qt::yellow)
     , _rhythmColor(QColor(255, 128, 0))
-    , _romColor(QColor(0, 128, 255))
+    , _spcmColor(QColor(0, 128, 255))
     , _appPosition(0)
 {
     ui->setupUi(this);
@@ -48,7 +48,7 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
             ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_fmColor.name()));
             break;
         case Channel::DPCM:
-            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_pcmColor.name()));
+            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_dpcmColor.name()));
             break;
         case Channel::SSG:
             ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_ssgColor.name()));
@@ -60,7 +60,7 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
             ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_rhythmColor.name()));
             break;
         case Channel::SPCM:
-            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_romColor.name()));
+            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_spcmColor.name()));
             break;
     }
 
@@ -215,7 +215,7 @@ void ChannelWidget::setIndex(const int idx)
             ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_fmColor.name()));
             break;
         case Channel::DPCM:
-            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_pcmColor.name()));
+            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_dpcmColor.name()));
             break;
         case Channel::SSG:
             ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_ssgColor.name()));
@@ -227,7 +227,7 @@ void ChannelWidget::setIndex(const int idx)
             ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_rhythmColor.name()));
             break;
         case Channel::SPCM:
-            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_romColor.name()));
+            ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_spcmColor.name()));
             break;
     }
 
@@ -382,9 +382,9 @@ const QColor& ChannelWidget::noiseColor() const
     return _noiseColor;
 }
 
-const QColor& ChannelWidget::pcmColor() const
+const QColor& ChannelWidget::dpcmColor() const
 {
-    return _pcmColor;
+    return _dpcmColor;
 }
 
 const QColor& ChannelWidget::ssgColor() const
@@ -402,9 +402,9 @@ const QColor& ChannelWidget::rhythmColor() const
     return _rhythmColor;
 }
 
-const QColor& ChannelWidget::romColor() const
+const QColor& ChannelWidget::spcmColor() const
 {
-    return _romColor;
+    return _spcmColor;
 }
 
 void ChannelWidget::setFMColor(const QColor& color)
@@ -434,12 +434,12 @@ void ChannelWidget::setNoiseColor(const QColor& color)
     }
 }
 
-void ChannelWidget::setPCMColor(const QColor& color)
+void ChannelWidget::setDPCMColor(const QColor& color)
 {
-    _pcmColor = color;
+    _dpcmColor = color;
 
     if (_app->project().getChannel(_index).type() == Channel::DPCM) {
-        ui->pushButton->setStyleSheet(QString("background-color: %1; color: %2;").arg(_pcmColor.name()).arg(_pcmColor.lightness() <= 96 ? "white" : "default"));
+        ui->pushButton->setStyleSheet(QString("background-color: %1; color: %2;").arg(_dpcmColor.name()).arg(_dpcmColor.lightness() <= 96 ? "white" : "default"));
     }
 }
 
@@ -470,12 +470,12 @@ void ChannelWidget::setRhythmColor(const QColor& color)
     }
 }
 
-void ChannelWidget::setROMColor(const QColor& color)
+void ChannelWidget::setSPCMColor(const QColor& color)
 {
-    _romColor = color;
+    _spcmColor = color;
 
     if (_app->project().getChannel(_index).type() == Channel::SPCM) {
-        ui->pushButton->setStyleSheet(QString("background-color: %1; color: %2;").arg(_romColor.name()).arg(_romColor.lightness() <= 96 ? "white" : "default"));
+        ui->pushButton->setStyleSheet(QString("background-color: %1; color: %2;").arg(_spcmColor.name()).arg(_spcmColor.lightness() <= 96 ? "white" : "default"));
     }
 }
 
@@ -662,7 +662,7 @@ void ChannelWidget::paintEvent(QPaintEvent* event)
                 ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_fmColor.name()));
                 break;
             case Channel::DPCM:
-                ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_pcmColor.name()));
+                ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_dpcmColor.name()));
                 break;
             case Channel::SSG:
                 ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_ssgColor.name()));
@@ -674,7 +674,7 @@ void ChannelWidget::paintEvent(QPaintEvent* event)
                 ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_rhythmColor.name()));
                 break;
             case Channel::SPCM:
-                ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_romColor.name()));
+                ui->pushButton->setStyleSheet(QString("background-color: %1;").arg(_spcmColor.name()));
                 break;
         }
     }
