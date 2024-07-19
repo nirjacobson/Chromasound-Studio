@@ -92,3 +92,8 @@ void SettingsChangeWidget::setSettings(ChannelSettings& settings)
     ui->footerWidget->setSettings(settings);
 }
 
+void SettingsChangeWidget::setROMType(const Channel::Type type)
+{
+    ui->romWidget->setROMType(type);
+}
+
