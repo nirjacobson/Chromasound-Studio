@@ -26,6 +26,8 @@ class SettingsChangeWidget : public QWidget
 
         void setSettings(ChannelSettings& settings);
 
+        void setROMType(const Channel::Type type);
+
     signals:
         void removeClicked();
         void doneClicked();
