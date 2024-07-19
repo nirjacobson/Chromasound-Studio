@@ -4,7 +4,8 @@
 RhythmWidget::RhythmWidget(QWidget *parent, Application* app) :
     QWidget(parent),
     ui(new Ui::RhythmWidget),
-    _app(app)
+    _app(app),
+    _settings(nullptr)
 {
     ui->setupUi(this);
 
