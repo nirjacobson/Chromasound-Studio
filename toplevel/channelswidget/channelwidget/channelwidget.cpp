@@ -530,7 +530,6 @@ void ChannelWidget::pianoRollWasToggled()
 
 void ChannelWidget::pianoRollWasTriggered()
 {
-    emit toggled(true);
     emit pianoRollTriggered(true);
 }
 
