@@ -98,9 +98,7 @@ class MainWindow : public QMainWindow
 
         void pianoRollTriggered(const int index, const bool on);
         void channelSelected(const int index);
-        void channelNameChanged(const int index);
 
-        void newTriggered();
         void openTriggered();
         void saveTriggered();
         void saveAsTriggered();
@@ -208,6 +206,8 @@ class MainWindow : public QMainWindow
         void preLoad();
         void load(const QString& path);
         void postLoad();
+
+        void setWindowTitleCaption(const QString& caption);
 
         // QWidget interface
     protected:

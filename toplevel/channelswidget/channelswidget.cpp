@@ -64,9 +64,6 @@ void ChannelsWidget::rebuild()
         connect(channelWidget, &ChannelWidget::selected, this, [=]() {
             select(channelWidget->index());
         });
-        connect(channelWidget, &ChannelWidget::nameChanged, this, [=]() {
-            emit nameChanged(channelWidget->index());
-        });
         connect(channelWidget, &ChannelWidget::pianoKeyClicked, this, &ChannelsWidget::pianoKeyClicked);
         connect(channelWidget, &ChannelWidget::velocityClicked, this, &ChannelsWidget::velocityClicked);
     }
@@ -116,9 +113,6 @@ void ChannelsWidget::add(const int index)
     });
     connect(cw, &ChannelWidget::selected, this, [=]() {
         select(cw->index());
-    });
-    connect(cw, &ChannelWidget::nameChanged, this, [=]() {
-        emit nameChanged(cw->index());
     });
     connect(cw, &ChannelWidget::pianoKeyClicked, this, &ChannelsWidget::pianoKeyClicked);
     connect(cw, &ChannelWidget::velocityClicked, this, &ChannelsWidget::velocityClicked);

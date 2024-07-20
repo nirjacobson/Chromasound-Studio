@@ -498,7 +498,6 @@ void ChannelWidget::buttonPressed()
         const QString name = QInputDialog::getText(this, tr("Change Channel Name"), tr("Channel name:"), QLineEdit::Normal, _app->project().getChannel(_index).name(), &ok);
         if (ok && !name.isEmpty()) {
             _app->undoStack().push(new SetChannelNameCommand(_app->window(), _app->project().getChannel(_index), name));
-            emit nameChanged();
         }
     } else {
         bool state = !ui->pushButton->isChecked();
