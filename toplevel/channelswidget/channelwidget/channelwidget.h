@@ -134,8 +134,6 @@ class ChannelWidget : public QWidget
 
         void selected();
 
-        void nameChanged();
-
     private slots:
         void ledClicked(bool shift);
         void buttonPressed();

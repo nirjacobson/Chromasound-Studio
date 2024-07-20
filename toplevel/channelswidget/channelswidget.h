@@ -49,7 +49,6 @@ class ChannelsWidget : public QWidget
     signals:
         void pianoRollTriggered(const int index, const bool on);
         void channelSelected(const int index);
-        void nameChanged(const int index);
 
     private:
         Ui::ChannelsWidget *ui;

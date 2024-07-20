@@ -693,47 +693,6 @@ void MainWindow::channelSelected(const int index)
     _mdiArea->setActiveSubWindow(channelWindow);
 }
 
-void MainWindow::channelNameChanged(const int index)
-{
-    QString tail = "Window";
-    for (MdiSubWindow* window : _channelWindows[index]) {
-        if (dynamic_cast<PianoRollWidget*>(window->widget())) {
-            tail = "Piano Roll";
-        } else if (dynamic_cast<NoiseWidget*>(window->widget())) {
-            tail = "Noise";
-        } else if (dynamic_cast<FMWidgetWindow*>(window->widget())) {
-            tail = "FM";
-        } else if (dynamic_cast<SSGWidget*>(window->widget())) {
-            tail = "SSG";
-        } else if (dynamic_cast<MelodyWidget*>(window->widget())) {
-            tail = "Melody";
-        } else if (dynamic_cast<RhythmWidget*>(window->widget())) {
-            tail = "Rhythm";
-        }
-
-        window->setWindowTitle(QString("%1: %2").arg(_app->project().getChannel(index).name()).arg(tail));
-    }
-}
-
-void MainWindow::newTriggered()
-{
-    for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
-        for (MdiSubWindow* window : *it) {
-            window->close();
-            delete window;
-        }
-    }
-
-    _app->undoStack().clear();
-    _app->project() = Project();
-    _app->setupChromasound();
-
-    ui->topWidget->updateFromProject(_app->project());
-
-    if (_channelsWindow) _channelsWidget->rebuild();
-    if (_playlistWindow) _playlistWidget->update();
-}
-
 void MainWindow::openTriggered()
 {
     const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "Chromasound Studio Projects (*.csp)", nullptr, QFileDialog::DontUseNativeDialog);
@@ -789,6 +748,8 @@ void MainWindow::saveAsTriggered()
         _app->undoStack().setClean();
 
         ui->topWidget->setStatusMessage(QString("Saved %1.").arg(QFileInfo(path).fileName()));
+
+        setWindowTitleCaption(QFileInfo(path).fileName());
     }
 }
 
@@ -1180,7 +1141,6 @@ void MainWindow::showChannelsWindow()
 
         connect(_channelsWidget, &ChannelsWidget::pianoRollTriggered, this, &MainWindow::pianoRollTriggered);
         connect(_channelsWidget, &ChannelsWidget::channelSelected, this, &MainWindow::channelSelected);
-        connect(_channelsWidget, &ChannelsWidget::nameChanged, this, &MainWindow::channelNameChanged);
 
         MdiSubWindow* channelsWindow = new MdiSubWindow(_mdiArea);
         connect(channelsWindow, &MdiSubWindow::closed, this, [&]() {
@@ -1377,6 +1337,10 @@ void MainWindow::load(const QString& path)
 {
     _app->project() = BSON::decode(path);
 
+    QString fileName = QFileInfo(path).fileName();
+
+    setWindowTitleCaption(fileName.startsWith(".") ? "" : fileName);
+
     if (_app->project().showInfoOnOpen()) {
         MdiSubWindow* window = new MdiSubWindow(_mdiArea);
         window->setWidget(new ProjectInfoScreenDialog(this, _app->project().info()));
@@ -1408,6 +1372,15 @@ void MainWindow::postLoad()
     ui->topWidget->setStatusMessage("Template loaded.");
 }
 
+void MainWindow::setWindowTitleCaption(const QString& caption)
+{
+    if (caption.isEmpty()) {
+        setWindowTitle("Chromasound Studio");
+    } else {
+        setWindowTitle(QString("Chromasound Studio [%1]").arg(caption));
+    }
+}
+
 void MainWindow::doUpdate()
 {
     float position = _app->position();
@@ -1434,6 +1407,29 @@ void MainWindow::doUpdate()
             if ((rw = dynamic_cast<ROMWidgetWindow*>(window->widget()))) {
                 rw->doUpdate();
             }
+
+            QString tail = "Window";
+            if (dynamic_cast<PianoRollWidget*>(window->widget())) {
+                tail = "Piano Roll";
+            } else if (dynamic_cast<NoiseWidget*>(window->widget())) {
+                tail = "Noise";
+            } else if (dynamic_cast<FMWidgetWindow*>(window->widget())) {
+                tail = "FM";
+            } else if (dynamic_cast<SSGWidget*>(window->widget())) {
+                tail = "SSG";
+            } else if (dynamic_cast<MelodyWidget*>(window->widget())) {
+                tail = "Melody";
+            } else if (dynamic_cast<RhythmWidget*>(window->widget())) {
+                tail = "Rhythm";
+            } else if (dynamic_cast<ROMWidgetWindow*>(window->widget())) {
+                if (_app->project().getChannel(it.key()).type() == Channel::DPCM) {
+                    tail = "DPCM";
+                } else {
+                    tail = "SPCM";
+                }
+            }
+
+            window->setWindowTitle(QString("%1: %2").arg(_app->project().getChannel(it.key()).name()).arg(tail));
         }
     }
 }
