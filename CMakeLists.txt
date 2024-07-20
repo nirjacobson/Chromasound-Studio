@@ -503,6 +503,8 @@ set(PROJECT_SOURCES
     rom/romwidgetwindow.h
     rom/romwidgetwindow.cpp
     rom/romwidgetwindow.ui
+    commands/setchannelenabledcommand.h
+    commands/setchannelenabledcommand.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

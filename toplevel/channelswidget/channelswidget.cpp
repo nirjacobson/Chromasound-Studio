@@ -182,7 +182,11 @@ void ChannelsWidget::toggleSolo(ChannelWidget* channelWidget)
     bool on = channelWidget->on();
 
     for (ChannelWidget* cw : _channelWidgets) {
-        cw->setOn(cw == channelWidget ? on : !on);
+        if (cw == channelWidget) {
+            continue;
+        }
+
+        cw->setOn(!on);
     }
 }
 
