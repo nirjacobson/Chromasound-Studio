@@ -170,9 +170,8 @@ ChannelWidget::~ChannelWidget()
 void ChannelWidget::setOn(const bool on)
 {
     Channel& channel = _app->project().getChannel(_index);
-    channel.setEnabled(on);
 
-    ui->led->setOn(on);
+    _app->undoStack().push(new SetChannelEnabledCommand(_app->window(), channel, on, true));
 }
 
 void ChannelWidget::setChecked(const bool checked)
@@ -362,6 +361,7 @@ void ChannelWidget::fromPath(const QString& path)
 void ChannelWidget::doUpdate(const float position)
 {
     _appPosition = position;
+    ui->led->setOn(_app->project().getChannel(_index).enabled());
     ui->rectLed->update();
     ui->stepSequencer->doUpdate(position);
     ui->prDisplay->doUpdate(position);
@@ -482,9 +482,8 @@ void ChannelWidget::setSPCMColor(const QColor& color)
 void ChannelWidget::ledClicked(bool shift)
 {
     Channel& channel = _app->project().getChannel(_index);
-    channel.setEnabled(!channel.enabled());
 
-    ui->led->setOn(channel.enabled());
+    _app->undoStack().push(new SetChannelEnabledCommand(_app->window(), channel, !channel.enabled()));
 
     if (shift) {
         emit ledShiftClicked();

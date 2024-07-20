@@ -23,6 +23,7 @@
 #include "commands/addtrackitemscommand.h"
 #include "commands/setchanneltypecommand.h"
 #include "commands/setchannelnamecommand.h"
+#include "commands/setchannelenabledcommand.h"
 #include "formats/bson.h"
 #include "formats/midi/midi.h"
 #include "formats/midi/midifile.h"
