@@ -9,6 +9,7 @@
 #include <QStandardPaths>
 #include <QTreeView>
 #include <QSplitter>
+#include <QMessageBox>
 
 #include "application.h"
 #include "formats/bson.h"
@@ -215,5 +216,9 @@ class MainWindow : public QMainWindow
         void resizeEvent(QResizeEvent*);
         void dragEnterEvent(QDragEnterEvent* event);
         void dropEvent(QDropEvent* event);
+
+        // QWidget interface
+    protected:
+        void closeEvent(QCloseEvent* event);
 };
 #endif // MAINWINDOW_H

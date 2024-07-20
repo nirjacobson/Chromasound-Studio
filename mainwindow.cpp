@@ -1567,4 +1567,22 @@ void MainWindow::dropEvent(QDropEvent* event)
     }
 }
 
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    if (!_app->undoStack().isClean()) {
+        QString message;
+        if (_app->project().path().isNull() || _app->project().path().startsWith(".")) {
+            message = "Save your project?";
+        } else {
+            message = QString("Save changes to %1?").arg(QFileInfo(_app->project().path()).fileName());
+        }
+
+        QMessageBox::StandardButton reply = QMessageBox::question(this, "Save changes", message);
+
+        if (reply == QMessageBox::Yes) {
+            saveTriggered();
+        }
+    }
+}
+
 
