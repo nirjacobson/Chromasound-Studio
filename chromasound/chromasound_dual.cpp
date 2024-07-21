@@ -50,6 +50,11 @@ bool Chromasound_Dual::isPlaying() const
     return _chromasound1->isPlaying();
 }
 
+bool Chromasound_Dual::isPaused() const
+{
+    return _chromasound1->isPaused();
+}
+
 void Chromasound_Dual::keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity)
 {
     _chromasound2->keyOn(project, channelType, settings, key, velocity);

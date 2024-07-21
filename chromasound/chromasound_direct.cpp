@@ -173,6 +173,11 @@ bool Chromasound_Direct::isPlaying() const
     return _vgmPlayer->isPlaying();
 }
 
+bool Chromasound_Direct::isPaused() const
+{
+    return _vgmPlayer->isPaused();
+}
+
 void Chromasound_Direct::keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity)
 {
     VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(0, channelType, nullptr, Note(key, 0, velocity), &settings);

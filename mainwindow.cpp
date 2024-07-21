@@ -107,6 +107,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(ui->topWidget, &TopWidget::patternChanged, this, &MainWindow::patternChanged);
     connect(ui->topWidget, &TopWidget::beatsPerBarChanged, this, &MainWindow::beatsPerBarChanged);
     connect(ui->topWidget, &TopWidget::midiDeviceSet, this, &MainWindow::setMIDIDevice);
+    connect(ui->topWidget, &TopWidget::seekClicked, this, &MainWindow::seekClicked);
 
     connect(_mdiArea, &MdiArea::viewModeChanged, this, &MainWindow::mdiViewModeChanged);
 
@@ -1237,6 +1238,27 @@ void MainWindow::splitterMoved(int, int)
             _playlistWindow->move(width, 0);
         }
     }
+}
+
+void MainWindow::seekClicked(const float percent)
+{
+    if (_app->chromasound().isPlaying() || _app->chromasound().isPaused()) {
+        return;
+    }
+
+    if (_app->project().playMode() == Project::PlayMode::PATTERN) {
+        float patternLength = _app->project().patterns().empty() ? _app->project().beatsPerBar() : _app->project().getPatternBarLength(_app->project().frontPattern());
+        float newPos = percent * (float)patternLength;
+
+        _app->setPosition(newPos);
+    } else {
+        float songLength = qCeil(_app->project().getLength()/_app->project().beatsPerBar()) * _app->project().beatsPerBar();
+        float newPos = percent * (float)songLength;
+
+        _app->setPosition(newPos);
+    }
+
+    doUpdate();
 }
 
 void MainWindow::loadEmptyTemplate()

@@ -136,6 +136,8 @@ class MainWindow : public QMainWindow
 
         void splitterMoved(int,int);
 
+        void seekClicked(const float percent);
+
         void loadEmptyTemplate();
         void loadPSGTemplate();
         void loadFM4Template();

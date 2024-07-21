@@ -43,6 +43,11 @@ bool Chromasound_Standin::isPlaying() const
     return _playing;
 }
 
+bool Chromasound_Standin::isPaused() const
+{
+    return _paused;
+}
+
 void Chromasound_Standin::keyOn(const Project&, const Channel::Type, const ChannelSettings&, const int, const int)
 {
 
@@ -69,6 +74,7 @@ Chromasound_Standin::Chromasound_Standin(const Project& project)
     , _playing(false)
     , _loopOffsetSamples(-1)
     , _duration(-1)
+    , _paused(false)
 {
 
 }
@@ -87,6 +93,7 @@ void Chromasound_Standin::play(const QByteArray& vgm, const int, const int, cons
     _loopOffsetSamples = introLength;
     _duration = (float)length / 44100 / 60 * _project.tempo();
     _playing = true;
+    _paused = false;
     _timer.restart();
 }
 
@@ -98,6 +105,7 @@ void Chromasound_Standin::play()
     emit pcmUploadStarted();
 
     _playing = true;
+    _paused = false;
     _timer.restart();
 }
 
@@ -105,11 +113,13 @@ void Chromasound_Standin::pause()
 {
     _ref += _timer.nsecsElapsed();
     _playing = false;
+    _paused = true;
 }
 
 void Chromasound_Standin::stop()
 {
     _playing = false;
+    _paused = false;
     _ref = 0;
     _duration = -1;
 }

@@ -26,6 +26,7 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
     , _bufferIdx(0)
     , _player(new Player(*this))
     , _stopped(true)
+    , _paused(false)
     , _haveInfo(false)
     , _isSelection(false)
 {
@@ -298,6 +299,7 @@ void Chromasound_Emu::play(const QByteArray& vgm, const int currentOffsetSamples
     _loadLock.unlock();
 
     _stopped = false;
+    _paused = false;
     activate();
 }
 
@@ -307,18 +309,21 @@ void Chromasound_Emu::play()
     setEqualizer();
 
     _stopped = false;
+    _paused = false;
     activate();
 }
 
 void Chromasound_Emu::pause()
 {
     _stopped = true;
+    _paused = true;
     deactivate();
 }
 
 void Chromasound_Emu::stop()
 {
     _stopped = true;
+    _paused = false;
     _position = 0;
     _positionOffset = 0;
     _startedInteractive = false;
@@ -352,6 +357,11 @@ void Chromasound_Emu::stop()
 bool Chromasound_Emu::isPlaying() const
 {
     return !_stopped;
+}
+
+bool Chromasound_Emu::isPaused() const
+{
+    return _paused;
 }
 
 void Chromasound_Emu::keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity)
