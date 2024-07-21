@@ -14,7 +14,7 @@ public:
     const QList<quint32>& offsets() const;
     const QList<QString>& names() const;
 
-    quint32 size(const int index) const;
+    quint16 size(const int index) const;
 
 private:
     QList<quint32> _offsets;

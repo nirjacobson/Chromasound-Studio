@@ -65,13 +65,13 @@ class Vgm_Emu_Impl : public Classic_Emu, private Dual_Resampler {
         byte const* pcm_data;
         byte const* pcm_pos  [PCM_CHANNELS];
         byte        pcm_att  [PCM_CHANNELS];
-        uint32_t    pcm_size [PCM_CHANNELS];
+        uint16_t    pcm_size [PCM_CHANNELS];
         byte const* pcm_start[PCM_CHANNELS];
 
         blargg_vector<byte> rom_data;
         byte const* rom_pos  [ROM_CHANNELS];
         byte        rom_att  [ROM_CHANNELS];
-        uint32_t    rom_size [ROM_CHANNELS];
+        uint16_t    rom_size [ROM_CHANNELS];
         byte const* rom_start[ROM_CHANNELS];
         int dac_amp;
         int dac_disabled; // -1 if disabled

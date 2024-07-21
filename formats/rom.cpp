@@ -40,7 +40,7 @@ const QList<QString>& ROM::names() const
     return _names;
 }
 
-quint32 ROM::size(const int index) const
+quint16 ROM::size(const int index) const
 {
     if (index < _names.size() - 1) {
         return _offsets[index + 1] - _offsets[index];
