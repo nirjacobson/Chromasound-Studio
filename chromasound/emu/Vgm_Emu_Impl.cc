@@ -308,12 +308,12 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
                     case cmd_pcm_size:
                         channel = (cmd & 0x0F);
                         if (channel < PCM_CHANNELS) {
-                            pcm_size[channel] = *(uint32_t*)pos;
-                            pos += 4;
+                            pcm_size[channel] = *(uint16_t*)pos;
+                            pos += 2;
                         } else {
                             channel -= PCM_CHANNELS;
 
-                            rom_size[channel] = *(uint32_t*)pos;
+                            rom_size[channel] = *(uint16_t*)pos;
                             pos += 2;
                         }
                         break;

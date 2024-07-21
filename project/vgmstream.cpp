@@ -1973,7 +1973,7 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
                     data.append(att);
 
                     quint32 offset = rom.offsets()[rcs->keySampleMappings()[item->note().key()]];
-                    quint32 size = rom.size(rcs->keySampleMappings()[item->note().key()]);
+                    quint16 size = rom.size(rcs->keySampleMappings()[item->note().key()]);
 
                     data.append(0xD0 | item->channel());
                     data.append((char*)&size, sizeof(size));
@@ -2001,7 +2001,7 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
                     data.append(att);
 
                     quint32 offset = rom.offsets()[rcs->keySampleMappings()[item->note().key()]];
-                    quint32 size = rom.size(rcs->keySampleMappings()[item->note().key()]);
+                    quint16 size = rom.size(rcs->keySampleMappings()[item->note().key()]);
 
                     data.append(0xD0 | item->channel() + DPCM_CHANNELS);
                     data.append((char*)&size, sizeof(size));
