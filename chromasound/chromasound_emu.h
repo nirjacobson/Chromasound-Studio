@@ -36,6 +36,7 @@ class Chromasound_Emu : public Chromasound, public Producer<int16_t>
         quint32 _position;
         quint32 _positionOffset;
         bool _stopped;
+        bool _paused;
 
         track_info_t _info;
 
@@ -68,6 +69,7 @@ class Chromasound_Emu : public Chromasound, public Producer<int16_t>
         void pause();
         void stop();
         bool isPlaying() const;
+        bool isPaused() const;
         void keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity);
         void keyOff(int key);
 

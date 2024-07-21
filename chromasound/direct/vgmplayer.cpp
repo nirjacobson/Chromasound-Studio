@@ -78,6 +78,11 @@ bool VGMPlayer::isPlaying() const
     return _playing && isRunning();
 }
 
+bool VGMPlayer::isPaused() const
+{
+    return _paused;
+}
+
 void VGMPlayer::stop()
 {
     _stopLock.lock();

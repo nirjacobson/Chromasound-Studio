@@ -26,6 +26,7 @@ class Chromasound : public QObject
         virtual void stop() = 0;
 
         virtual bool isPlaying() const = 0;
+        virtual bool isPaused() const = 0;
 
         virtual void keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity) = 0;
         virtual void keyOff(int key) = 0;

@@ -23,6 +23,7 @@ class VGMPlayer : public QThread
         void setMode(const Mode mode);
 
         bool isPlaying() const;
+        bool isPaused() const;
 
         void stop();
         void pause();

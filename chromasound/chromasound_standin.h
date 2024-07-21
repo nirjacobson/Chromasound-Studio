@@ -19,6 +19,7 @@ class Chromasound_Standin : public Chromasound
         quint32 position();
         void setPosition(const float pos);
         bool isPlaying() const;
+        bool isPaused() const;
 
         void keyOn(const Project&, const Channel::Type, const ChannelSettings&, const int, const int);
         void keyOff(int);
@@ -32,6 +33,7 @@ class Chromasound_Standin : public Chromasound
         bool _playing;
         int _loopOffsetSamples;
         float _duration;
+        bool _paused;
 
         qint64 nanosecondsPerBeat() const;
 };

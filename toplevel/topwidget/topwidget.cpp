@@ -32,6 +32,7 @@ TopWidget::TopWidget(QWidget *parent, Application* app)
     connect(ui->tempoSpinBox, SIGNAL(valueChanged(int)), this, SLOT(tempoDidChange(int)));
     connect(ui->beatsPerBarSpinBox, SIGNAL(valueChanged(int)), this, SIGNAL(beatsPerBarChanged(int)));
     connect(ui->beatsPerBarSpinBox, SIGNAL(valueChanged(int)), this, SLOT(beatsPerBarDidChange(int)));
+    connect(ui->seekWidget, &SeekWidget::clicked, this, &TopWidget::seekClicked);
 }
 
 TopWidget::~TopWidget()

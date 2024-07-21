@@ -34,3 +34,10 @@ void SeekWidget::paintEvent(QPaintEvent* event)
     }
     QSlider::paintEvent(event);
 }
+
+void SeekWidget::mousePressEvent(QMouseEvent* event)
+{
+    if (event->button() == Qt::LeftButton) {
+        emit clicked((float)event->pos().x() / (float)width());
+    }
+}

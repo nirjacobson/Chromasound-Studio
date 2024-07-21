@@ -34,6 +34,7 @@ class TopWidget : public QWidget
         void beatsPerBarChanged(int);
         void midiDeviceSet(int);
         void userToneTriggered();
+        void seekClicked(const float pos);
 
     private:
         Ui::TopWidget *ui;

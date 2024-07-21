@@ -24,6 +24,7 @@ class Chromasound_Direct : public Chromasound
         void pause();
         void stop();
         bool isPlaying() const;
+        bool isPaused() const;
 
         void keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity);
         void keyOff(int key);
