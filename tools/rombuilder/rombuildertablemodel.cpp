@@ -147,7 +147,7 @@ quint32 ROMBuilderTableModel::offsetOf(const int index) const
     }
 
     for (int i = 0; i < index; i++) {
-        offset += QFileInfo(_paths[i]).size();
+        offset += qMin(65535, QFileInfo(_paths[i]).size());
     }
 
     return offset;

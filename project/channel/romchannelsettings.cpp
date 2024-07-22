@@ -6,6 +6,11 @@ ROMChannelSettings::ROMChannelSettings()
 
 }
 
+QMap<int, int>& ROMChannelSettings::keySampleMappings()
+{
+    return _keySampleMappings;
+}
+
 const QMap<int, int>& ROMChannelSettings::keySampleMappings() const
 {
     return _keySampleMappings;

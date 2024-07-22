@@ -57,7 +57,7 @@ void ROMBuilderDialog::recalculateSize()
     QString suffix = "B";
 
     for (int i = 0; i < _paths.size(); i++) {
-        size += QFileInfo(_paths[i]).size();
+        size += qMin(65535, QFileInfo(_paths[i]).size());
     }
 
     if (size >= 1024) {
@@ -124,7 +124,7 @@ void ROMBuilderDialog::save()
         for (int i = 0; i < _paths.size(); i++) {
             QFile pcmFile(_paths[i]);
             pcmFile.open(QIODevice::ReadOnly);
-            romFile.write(pcmFile.readAll());
+            romFile.write(pcmFile.readAll().mid(0, 65535));
         }
 
         romFile.close();
