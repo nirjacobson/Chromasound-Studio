@@ -15,11 +15,17 @@ public:
     const QList<QString>& names() const;
 
     quint16 size(const int index) const;
+    void remove(const int index);
+
+    void save(const QString& path);
 
 private:
+    QString _path;
     QList<quint32> _offsets;
     QList<QString> _names;
     quint32 _size;
+
+    QByteArray header() const;
 };
 
 #endif // ROM_H

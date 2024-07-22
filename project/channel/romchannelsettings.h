@@ -10,6 +10,7 @@ class ROMChannelSettings : public ChannelSettings
 public:
     ROMChannelSettings();
 
+    QMap<int, int>& keySampleMappings();
     const QMap<int, int>& keySampleMappings() const;
     void setSample(const int key, const int patch);
 

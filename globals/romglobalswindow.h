@@ -2,10 +2,12 @@
 #define ROMGLOBALSWINDOW_H
 
 #include <QMainWindow>
+#include <QMessageBox>
 
 #include "application.h"
 #include "commands/setprojectspcmfilecommand.h"
 #include "commands/setprojectdpcmfilecommand.h"
+#include "commands/setromchannelsettingscommand.h"
 #include "common/mdiarea/mdisubwindow.h"
 
 namespace Ui {
@@ -32,6 +34,11 @@ private slots:
 
     void open();
     void reset();
+
+    void optimizeDPCM();
+    void optimizeSPCM();
+
+    void tabIndexChanged(const int index);
 
     // QWidget interface
 protected:
