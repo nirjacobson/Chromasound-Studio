@@ -141,6 +141,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(_app, &Application::compileStarted, this, &MainWindow::compileStarted);
     connect(_app, &Application::compileFinished, this, &MainWindow::compileFinished);
 
+    connect(&_app->undoStack(), &QUndoStack::cleanChanged, this, &MainWindow::cleanChanged);
 
     connect(ui->actionFMGlobals, &QAction::triggered, this, &MainWindow::fmGlobalsTriggered);
     connect(ui->actionSSGGlobals, &QAction::triggered, this, &MainWindow::ssgGlobalsTriggered);
@@ -750,7 +751,7 @@ void MainWindow::saveAsTriggered()
 
         ui->topWidget->setStatusMessage(QString("Saved %1.").arg(QFileInfo(path).fileName()));
 
-        setWindowTitleCaption(QFileInfo(path).fileName());
+        updateWindowTitle();
     }
 }
 
@@ -1331,6 +1332,11 @@ void MainWindow::loadFM2SSGTemplate()
     postLoad();
 }
 
+void MainWindow::cleanChanged(bool clean)
+{
+    updateWindowTitle();
+}
+
 void MainWindow::windowClosed(MdiSubWindow* window)
 {
     for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
@@ -1361,7 +1367,7 @@ void MainWindow::load(const QString& path)
 
     QString fileName = QFileInfo(path).fileName();
 
-    setWindowTitleCaption(fileName.startsWith(".") ? "" : fileName);
+    updateWindowTitle();
 
     if (_app->project().showInfoOnOpen()) {
         MdiSubWindow* window = new MdiSubWindow(_mdiArea);
@@ -1394,13 +1400,11 @@ void MainWindow::postLoad()
     ui->topWidget->setStatusMessage("Template loaded.");
 }
 
-void MainWindow::setWindowTitleCaption(const QString& caption)
+void MainWindow::updateWindowTitle()
 {
-    if (caption.isEmpty()) {
-        setWindowTitle("Chromasound Studio");
-    } else {
-        setWindowTitle(QString("Chromasound Studio [%1]").arg(caption));
-    }
+    setWindowTitle(QString("Chromasound Studio [%1%2]")
+                       .arg((_app->project().path().isNull() || _app->project().path().startsWith(".")) ? "untitled" : QFileInfo(_app->project().path()).fileName())
+                       .arg(_app->undoStack().isClean() ? "" : "*"));
 }
 
 void MainWindow::doUpdate()

@@ -146,6 +146,8 @@ class MainWindow : public QMainWindow
         void loadFM2Template();
         void loadFM2SSGTemplate();
 
+        void cleanChanged(bool clean);
+
     private:
         Ui::MainWindow* ui;
         QTreeView* _treeView;
@@ -210,7 +212,7 @@ class MainWindow : public QMainWindow
         void load(const QString& path);
         void postLoad();
 
-        void setWindowTitleCaption(const QString& caption);
+        void updateWindowTitle();
 
         // QWidget interface
     protected:
