@@ -151,6 +151,32 @@ void ROMGlobalsWindow::optimizeDPCM()
                 }
 
                 _app->undoStack().push(new SetROMChannelSettingsCommand(_app->window(), dynamic_cast<ROMChannelSettings&>(channel->settings()), settings, true));
+
+                for (Pattern* pattern : _app->project().patterns()) {
+                    if (pattern->hasTrack(i)) {
+                        Track* track = pattern->tracks()[i];
+                        for (Track::SettingsChange* settingsChange : track->settingsChanges()) {
+                            ROMChannelSettings* origSettings = dynamic_cast<ROMChannelSettings*>(&settingsChange->settings());
+                            ROMChannelSettings settings = *origSettings;
+
+                            for (auto it = origSettings->keySampleMappings().begin(); it != origSettings->keySampleMappings().end(); ++it) {
+                                if (samplesToRemove.contains(it.value())) {
+                                    settings.keySampleMappings().remove(it.key());
+                                }
+                            }
+
+                            for (const int& sample : samplesToRemove) {
+                                for (auto it = settings.keySampleMappings().begin(); it != settings.keySampleMappings().end(); ++it) {
+                                    if (it.value() > sample) {
+                                        it.value()--;
+                                    }
+                                }
+                            }
+
+                            _app->undoStack().push(new SetROMChannelSettingsCommand(_app->window(), dynamic_cast<ROMChannelSettings&>(settingsChange->settings()), settings, true));
+                        }
+                    }
+                }
             }
         }
     }
@@ -228,6 +254,32 @@ void ROMGlobalsWindow::optimizeSPCM()
                 }
 
                 _app->undoStack().push(new SetROMChannelSettingsCommand(_app->window(), dynamic_cast<ROMChannelSettings&>(channel->settings()), settings, true));
+
+                for (Pattern* pattern : _app->project().patterns()) {
+                    if (pattern->hasTrack(i)) {
+                        Track* track = pattern->tracks()[i];
+                        for (Track::SettingsChange* settingsChange : track->settingsChanges()) {
+                            ROMChannelSettings* origSettings = dynamic_cast<ROMChannelSettings*>(&settingsChange->settings());
+                            ROMChannelSettings settings = *origSettings;
+
+                            for (auto it = origSettings->keySampleMappings().begin(); it != origSettings->keySampleMappings().end(); ++it) {
+                                if (samplesToRemove.contains(it.value())) {
+                                    settings.keySampleMappings().remove(it.key());
+                                }
+                            }
+
+                            for (const int& sample : samplesToRemove) {
+                                for (auto it = settings.keySampleMappings().begin(); it != settings.keySampleMappings().end(); ++it) {
+                                    if (it.value() > sample) {
+                                        it.value()--;
+                                    }
+                                }
+                            }
+
+                            _app->undoStack().push(new SetROMChannelSettingsCommand(_app->window(), dynamic_cast<ROMChannelSettings&>(settingsChange->settings()), settings, true));
+                        }
+                    }
+                }
             }
         }
     }
