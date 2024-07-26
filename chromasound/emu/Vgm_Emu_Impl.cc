@@ -330,13 +330,13 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
                         } else {
                             channel -= DPCM_CHANNELS;
 
-                            offset = *(uint16_t*)pos;
-                            if (offset == (uint16_t)-1) {
+                            offset = *(uint32_t*)pos;
+                            if (offset == (uint32_t)-1) {
                                 spcm_pos[channel] = 0;
                             } else {
                                 spcm_start[channel] = spcm_pos[channel] = &spcm_data[0] + offset;
                             }
-                            pos += 2;
+                            pos += 4;
                         }
                         break;
                     case cmd_pcm_attenuation:
