@@ -163,7 +163,7 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
     setEqualizer();
 
     if (!project.spcmFile().isEmpty()) {
-        dynamic_cast<Vgm_Emu*>(_emu)->set_rom_file(project.resolve(project.spcmFile()).toStdString().c_str());
+        dynamic_cast<Vgm_Emu*>(_emu)->set_spcm_rom(project.resolve(project.spcmFile()).toStdString().c_str());
     }
 
     _player->start();
