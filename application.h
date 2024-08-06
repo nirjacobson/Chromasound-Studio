@@ -10,10 +10,13 @@
 #include "project/vgmstream.h"
 #include "chromasound/chromasound.h"
 #include "chromasound/chromasound_standin.h"
-#include "chromasound/chromasound_direct.h"
 #include "chromasound/chromasound_emu.h"
 #include "chromasound/chromasound_dual.h"
 #include "Chromasound_Studio.h"
+
+#ifdef Q_OS_LINUX
+#include "chromasound/chromasound_direct.h"
+#endif
 
 class MainWindow;
 

@@ -20,6 +20,7 @@ Project::Project()
     , _ssgEnvelopeFreq(0)
     , _ssgNoiseFreq(0)
     , _opllType(OPLL::Type::STANDARD)
+    , _showInfoOnOpen(false)
 {
 
 }

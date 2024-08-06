@@ -18,7 +18,7 @@ SettingsDialog::~SettingsDialog()
 
 void SettingsDialog::accepted()
 {
-    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+    QSettings settings("settings.ini", QSettings::IniFormat);
 
     settings.setValue(Chromasound_Studio::EqualizerBass, ui->emulationSettingsWidget->bass());
     settings.setValue(Chromasound_Studio::EqualizerTreble, ui->emulationSettingsWidget->treble());

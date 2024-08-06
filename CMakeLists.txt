@@ -14,6 +14,13 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
+if (WIN32)
+    include_directories("C:/Program Files/mongo-c-driver/include/libbson-1.0"
+                        "C:/Program Files/portaudio/include"
+                        "C:/Program Files/portmidi/include"
+                        "C:/Program Files/zlib/include")
+endif()
+
 set(PROJECT_SOURCES
     toplevel/channelswidget/channelswidget.cpp
     toplevel/channelswidget/channelswidget.h
@@ -38,10 +45,6 @@ set(PROJECT_SOURCES
     chromasound/chromasound.h
     chromasound/chromasound_standin.cpp
     chromasound/chromasound_standin.h
-    chromasound/chromasound_direct.cpp
-    chromasound/chromasound_direct.h
-    chromasound/direct/vgmplayer.cpp
-    chromasound/direct/vgmplayer.h
     opn/algorithmdisplaywidget.cpp
     opn/algorithmdisplaywidget.h
     opn/algorithmgraph.cpp
@@ -435,10 +438,6 @@ set(PROJECT_SOURCES
     commands/editprojectoplltypecommand.cpp
     globals/unselectablestringlistmodel.h
     globals/unselectablestringlistmodel.cpp
-    chromasound/direct/gpio.h
-    chromasound/direct/gpio.cpp
-    chromasound/direct/spi.h
-    chromasound/direct/spi.cpp
     chromasound/chromasound_dual.h
     chromasound/chromasound_dual.cpp
     dialogs/settings/emulationsettingswidget.h
@@ -507,6 +506,20 @@ set(PROJECT_SOURCES
     commands/setchannelenabledcommand.cpp
 )
 
+if (LINUX)
+    set (PROJECT_SOURCES
+            ${PROJECT_SOURCES}
+            chromasound/chromasound_direct.cpp
+            chromasound/chromasound_direct.h
+            chromasound/direct/vgmplayer.cpp
+            chromasound/direct/vgmplayer.h
+            chromasound/direct/gpio.h
+            chromasound/direct/gpio.cpp
+            chromasound/direct/spi.h
+            chromasound/direct/spi.cpp
+    )
+endif()
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(Chromasound-Studio
         MANUAL_FINALIZATION
@@ -531,11 +544,20 @@ else()
     endif()
 endif()
 
-target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
-                                            /usr/lib64/libportmidi.so
-                                            /usr/lib64/libbson-1.0.so
-                                            /usr/lib64/libz.so
-                                            /usr/lib64/libportaudio.so)
+if (LINUX)
+    target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
+                                                /usr/lib64/libportmidi.so
+                                                /usr/lib64/libbson-1.0.so
+                                                /usr/lib64/libz.so
+                                                /usr/lib64/libportaudio.so)
+elseif (WIN32)
+    target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
+                                                "C:/Program Files/mongo-c-driver/lib/bson-1.0/lib"
+                                                "C:/Program Files/portaudio/lib/portaudio_x64.lib"
+                                                "C:/Program Files/portmidi/lib/portmidi.lib"
+                                                "C:/Program Files/zlib/lib/zlibd.lib")
+endif()
+
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an

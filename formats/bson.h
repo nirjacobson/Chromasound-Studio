@@ -3,7 +3,11 @@
 
 #include <QFile>
 
+#ifdef Q_OS_LINUX
 #include <libbson-1.0/bson/bson.h>
+#else
+#include <bson.h>
+#endif
 
 #include "project/channel/channel.h"
 #include "project/note.h"

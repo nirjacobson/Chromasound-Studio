@@ -7,7 +7,7 @@ ChromasoundLayoutWidget::ChromasoundLayoutWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+    QSettings settings("settings.ini", QSettings::IniFormat);
 
     int quantity = settings.value(Chromasound_Studio::NumberOfChromasounds, 1).toInt();
 

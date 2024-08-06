@@ -40,7 +40,7 @@ void StepSequencerWidget::paintEvent(QPaintEvent*)
     setMinimumSize(size);
     setMaximumSize(size);
 
-    bool steps[numSteps];
+    bool* steps = new bool[numSteps];
     if (pattern.hasTrack(_index)) {
         Track& track = pattern.getTrack(_index);
 
@@ -95,6 +95,8 @@ void StepSequencerWidget::paintEvent(QPaintEvent*)
         QPoint p2 = p1 + QPoint(StepWidth - 8, 0);
         painter.drawLine(p1, p2);
     }
+
+    delete [] steps;
 }
 
 void StepSequencerWidget::mousePressEvent(QMouseEvent* event)
