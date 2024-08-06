@@ -19,7 +19,12 @@ if (WIN32)
                         "C:/Program Files/portaudio/include"
                         "C:/Program Files/portmidi/include"
                         "C:/Program Files/zlib/include")
+elseif (APPLE)
+    include_directories("/System/Volumes/Data/usr/local/include"
+                        "/System/Volumes/Data/usr/local/include/libbson-1.0")
 endif()
+
+set(CMAKE_OSX_ARCHITECTURES x86_64 arm64)
 
 set(PROJECT_SOURCES
     toplevel/channelswidget/channelswidget.cpp
@@ -546,16 +551,22 @@ endif()
 
 if (LINUX)
     target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
-                                                /usr/lib64/libportmidi.so
                                                 /usr/lib64/libbson-1.0.so
-                                                /usr/lib64/libz.so
-                                                /usr/lib64/libportaudio.so)
+                                                /usr/lib64/libportaudio.so
+                                                /usr/lib64/libportmidi.so
+                                                /usr/lib64/libz.so)
 elseif (WIN32)
     target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
                                                 "C:/Program Files/mongo-c-driver/lib/bson-1.0.lib"
                                                 "C:/Program Files/portaudio/lib/portaudio_x64.lib"
                                                 "C:/Program Files/portmidi/lib/portmidi.lib"
                                                 "C:/Program Files/zlib/lib/zlibd.lib")
+elseif (APPLE)
+    target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
+                                                "/System/Volumes/Data/usr/local/lib/libbson-1.0.dylib"
+                                                "/System/Volumes/Data/usr/local/lib/libportaudio.dylib"
+                                                "/System/Volumes/Data/usr/local/lib/libportmidi.dylib"
+                                                "/System/Volumes/Data/usr/local/lib/libz.dylib")
 endif()
 
 

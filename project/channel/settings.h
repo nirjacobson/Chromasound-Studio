@@ -3,10 +3,10 @@
 
 #include <QApplication>
 
-#ifdef Q_OS_LINUX
-#include <libbson-1.0/bson/bson.h>
-#else
+#ifdef Q_OS_WINDOWS
 #include <bson.h>
+#else
+#include <libbson-1.0/bson/bson.h>
 #endif
 
 class Settings
