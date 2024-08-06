@@ -7,7 +7,7 @@ EmulationSettingsWidget::EmulationSettingsWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+    QSettings settings("settings.ini", QSettings::IniFormat);
     ui->bassSpinBox->setValue(settings.value(Chromasound_Studio::EqualizerBass, 0).toInt());
     ui->trebleSpinBox->setValue(settings.value(Chromasound_Studio::EqualizerTreble, 0).toInt());
     ui->audioBufferSizeSpinBox->setValue(settings.value(Chromasound_Studio::AudioBufferSize, 256).toInt());

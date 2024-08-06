@@ -45,7 +45,7 @@ void Application::play()
     if (_paused) {
         _chromasound->play();
     } else {
-        QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+        QSettings settings("settings.ini", QSettings::IniFormat);
         QString format = settings.value(Chromasound_Studio::Format, Chromasound_Studio::Chromasound).toString();
         VGMStream::Format vgmFormat =
             _chromasound->supportedFormats().contains(VGMStream::Format::CHROMASOUND) && format == Chromasound_Studio::Chromasound
@@ -55,7 +55,6 @@ void Application::play()
         if (vgmFormat == VGMStream::Format::CHROMASOUND) {
             if (_project.playMode() == Project::PlayMode::PATTERN) {
                 QThread* thread = QThread::create([&]() {
-                    int loopOffsetData;
                     int currentOffsetData;
                     int currentOffsetSamples = position() / _project.tempo() * 60 * 44100;
                     VGMStream vgmStream;
@@ -96,7 +95,6 @@ void Application::play()
         } else {
             if (_project.playMode() == Project::PlayMode::PATTERN) {
                 QThread* thread = QThread::create([&]() {
-                    int loopOffsetData;
                     int currentOffsetData;
                     int currentOffsetSamples = position() / _project.tempo() * 60 * 44100;
                     VGMStream vgmStream(VGMStream::Format::STANDARD);
@@ -143,7 +141,7 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
 {
     _ignoreCSTime = false;
 
-    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+    QSettings settings("settings.ini", QSettings::IniFormat);
     QString format = settings.value(Chromasound_Studio::Format, Chromasound_Studio::Chromasound).toString();
     VGMStream::Format vgmFormat =
         _chromasound->supportedFormats().contains(VGMStream::Format::CHROMASOUND) && format == Chromasound_Studio::Chromasound
@@ -201,7 +199,7 @@ void Application::play(const float loopStart, const float loopEnd)
 {
     _ignoreCSTime = false;
 
-    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+    QSettings settings("settings.ini", QSettings::IniFormat);
     QString format = settings.value(Chromasound_Studio::Format, Chromasound_Studio::Chromasound).toString();
     VGMStream::Format vgmFormat =
         _chromasound->supportedFormats().contains(VGMStream::Format::CHROMASOUND) && format == Chromasound_Studio::Chromasound
@@ -327,7 +325,7 @@ void Application::ignoreCSTime(const bool ignore)
 
 void Application::setupChromasound()
 {
-    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+    QSettings settings("settings.ini", QSettings::IniFormat);
 
     int audioBufferSize = settings.value(Chromasound_Studio::AudioBufferSize, 256).toInt();
     int readBufferSize = settings.value(Chromasound_Studio::ReadBufferSize, 1).toInt();
@@ -353,7 +351,9 @@ void Application::setupChromasound()
         chromasound1 = new Chromasound_Emu(_project);
         _output->producer(dynamic_cast<Chromasound_Emu*>(chromasound1));
     } else {
+#ifdef Q_OS_LINUX
         chromasound1 = new Chromasound_Direct(_project);
+#endif
     }
 
     if (numChromasounds == 2) {
@@ -361,7 +361,9 @@ void Application::setupChromasound()
             chromasound2 = new Chromasound_Emu(_project);
             _output->producer(dynamic_cast<Chromasound_Emu*>(chromasound2));
         } else {
+#ifdef Q_OS_LINUX
             chromasound2 = new Chromasound_Direct(_project);
+#endif
         }
     }
 

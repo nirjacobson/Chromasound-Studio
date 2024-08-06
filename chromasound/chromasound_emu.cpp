@@ -185,7 +185,7 @@ Chromasound_Emu::~Chromasound_Emu()
 
 void Chromasound_Emu::setEqualizer()
 {
-    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+    QSettings settings("settings.ini", QSettings::IniFormat);
 
     int _bass = settings.value(Chromasound_Studio::EqualizerBass, 0).toInt();
     int _treble = settings.value(Chromasound_Studio::EqualizerTreble, 0).toInt();
@@ -205,7 +205,7 @@ void Chromasound_Emu::setEqualizer()
 
 void Chromasound_Emu::setBufferSizes()
 {
-    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+    QSettings settings("settings.ini", QSettings::IniFormat);
 
     int audioBufferSize = settings.value(Chromasound_Studio::AudioBufferSize, 256).toInt();
     int readBufferSize = settings.value(Chromasound_Studio::ReadBufferSize, 1).toInt();

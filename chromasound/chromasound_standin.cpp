@@ -2,7 +2,7 @@
 
 quint32 Chromasound_Standin::position()
 {
-    float sampleNS = 1e9 / 44100;
+    float sampleNS = 1e9f / 44100;
 
     quint32 pos = (_ref + _timer.nsecsElapsed()) / sampleNS;
 

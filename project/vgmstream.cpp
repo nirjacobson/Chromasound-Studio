@@ -1,18 +1,18 @@
 #include "vgmstream.h"
 
 QList<float> VGMStream::frequencies = {
-    16.35,
-    17.32,
-    18.35,
-    19.45,
-    20.60,
-    21.83,
-    23.12,
-    24.50,
-    25.96,
-    27.50,
-    29.14,
-    30.87
+    16.35f,
+    17.32f,
+    18.35f,
+    19.45f,
+    20.60f,
+    21.83f,
+    23.12f,
+    24.50f,
+    25.96f,
+    27.50f,
+    29.14f,
+    30.87f
 };
 
 QList<QList<int>> VGMStream::slotsByAlg = {

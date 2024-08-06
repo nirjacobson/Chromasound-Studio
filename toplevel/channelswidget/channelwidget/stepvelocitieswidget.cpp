@@ -40,7 +40,7 @@ void StepVelocitiesWidget::paintEvent(QPaintEvent*)
 
     int width = StepSequencerWidget::StepWidth + StepSequencerWidget::StepSpacing;
 
-    int steps[numSteps];
+    int* steps = new int[numSteps];
     if (pattern.hasTrack(_index)) {
         Track& track = pattern.getTrack(_index);
 
@@ -76,6 +76,8 @@ void StepVelocitiesWidget::paintEvent(QPaintEvent*)
             painter.drawRect(rect);
         }
     }
+
+    delete [] steps;
 }
 
 void StepVelocitiesWidget::mousePressEvent(QMouseEvent* event)

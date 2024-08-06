@@ -54,7 +54,7 @@ void StepKeysWidget::paintEvent(QPaintEvent*)
 
     int numSteps = _app->project().beatsPerBar() * 4;
 
-    int steps[numSteps];
+    int* steps = new int[numSteps];
     if (pattern.hasTrack(_index)) {
         Track& track = pattern.getTrack(_index);
 
@@ -118,6 +118,7 @@ void StepKeysWidget::paintEvent(QPaintEvent*)
         }
     }
 
+    delete [] steps;
 }
 
 const QColor& StepKeysWidget::outlineColor() const
