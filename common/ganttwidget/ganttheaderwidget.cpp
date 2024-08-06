@@ -43,6 +43,7 @@ void GanttHeaderWidget::setScrollPercentage(const float percent)
     int scrollWidth = qMax(0, length() - width());
     _left = percent * scrollWidth;
 
+    setNeedsFullPaint();
     update();
 }
 
@@ -59,6 +60,7 @@ void GanttHeaderWidget::setItems(QList<GanttItem*>* items)
 void GanttHeaderWidget::setCellWidth(int width)
 {
     _cellWidth = width;
+    setNeedsFullPaint();
     update();
 }
 
@@ -80,6 +82,7 @@ void GanttHeaderWidget::setHeaderPaintFunction(std::function<void (QPainter&, QR
 void GanttHeaderWidget::scrollBy(const int pixels)
 {
     _left += pixels;
+    setNeedsFullPaint();
     update();
 }
 
@@ -118,7 +121,7 @@ float GanttHeaderWidget::playlength() const
     return end;
 }
 
-void GanttHeaderWidget::paintEvent(QPaintEvent*)
+void GanttHeaderWidget::paintFull(QPaintEvent* event)
 {
     int minHeight = 24;
     int max = 0;
@@ -164,32 +167,6 @@ void GanttHeaderWidget::paintEvent(QPaintEvent*)
 
     _headerPaintFunction(painter, rect(), leftPosition, rightPosition, beatsPerPixel);
 
-    float appPosition = _positionFunction();
-
-    if (leftPosition <= appPosition && appPosition <= rightPosition) {
-        int appPositionPixel = (appPosition - leftPosition) / beatsPerPixel;
-
-        QPainterPath path;
-
-        QPoint p1(appPositionPixel - 24 / 2, 0);
-        QPoint p2(appPositionPixel, 24 / 2);
-        QPoint p3(appPositionPixel + 24 / 2, 0);
-
-        path.moveTo(p1);
-        path.lineTo(p2);
-        path.lineTo(p3);
-        path.lineTo(p1);
-
-        painter.setPen(Qt::NoPen);
-        painter.fillPath(path, _cursorColor);
-
-        QPoint p4(appPositionPixel, 0);
-        QPoint p5(appPositionPixel, height());
-
-        painter.setPen(_cursorColor);
-        painter.drawLine(p4, p5);
-    }
-
     if (_markers) {
         for (auto it = _markers->begin(); it != _markers->end(); ++it) {
             for (int i = 0; i < it->size(); i++) {
@@ -224,6 +201,67 @@ void GanttHeaderWidget::paintEvent(QPaintEvent*)
             }
         }
     }
+
+    float appPosition = _positionFunction();
+
+    if (leftPosition <= appPosition && appPosition <= rightPosition) {
+        int appPositionPixel = (appPosition - leftPosition) / beatsPerPixel;
+
+        QPainterPath path;
+
+        QPoint p1(appPositionPixel - 24 / 2, 0);
+        QPoint p2(appPositionPixel, 24 / 2);
+        QPoint p3(appPositionPixel + 24 / 2, 0);
+
+        path.moveTo(p1);
+        path.lineTo(p2);
+        path.lineTo(p3);
+        path.lineTo(p1);
+
+        painter.setPen(Qt::NoPen);
+        painter.fillPath(path, _cursorColor);
+
+        QPoint p4(appPositionPixel, 0);
+        QPoint p5(appPositionPixel, height());
+
+        painter.setPen(_cursorColor);
+        painter.drawLine(p4, p5);
+    }
+}
+
+void GanttHeaderWidget::paintPartial(QPaintEvent* event)
+{
+    QPainter painter(this);
+
+    float beatsPerPixel = _cellBeats / _cellWidth;
+    float leftPosition = _left * beatsPerPixel;
+    float rightPosition = leftPosition + (width() * beatsPerPixel);
+
+    float appPosition = _positionFunction();
+
+    if (leftPosition <= appPosition && appPosition <= rightPosition) {
+        int appPositionPixel = (appPosition - leftPosition) / beatsPerPixel;
+
+        QPainterPath path;
+
+        QPoint p1(appPositionPixel - 24 / 2, 0);
+        QPoint p2(appPositionPixel, 24 / 2);
+        QPoint p3(appPositionPixel + 24 / 2, 0);
+
+        path.moveTo(p1);
+        path.lineTo(p2);
+        path.lineTo(p3);
+        path.lineTo(p1);
+
+        painter.setPen(Qt::NoPen);
+        painter.fillPath(path, _cursorColor);
+
+        QPoint p4(appPositionPixel, 0);
+        QPoint p5(appPositionPixel, height());
+
+        painter.setPen(_cursorColor);
+        painter.drawLine(p4, p5);
+    }
 }
 
 void GanttHeaderWidget::mousePressEvent(QMouseEvent* event)
@@ -236,6 +274,7 @@ void GanttHeaderWidget::mousePressEvent(QMouseEvent* event)
     _loopStart = _snap ? mousePositionSnapped : mousePosition;
     _loopEnd = -1;
 
+    setNeedsFullPaint();
     update();
     emit loopChanged();
 
@@ -276,6 +315,7 @@ void GanttHeaderWidget::mouseMoveEvent(QMouseEvent* event)
         float mousePositionSnapped = (int)(mousePosition / _cellBeats) * _cellBeats;
 
         _loopEnd = _snap ? mousePositionSnapped : mousePosition;
+        setNeedsFullPaint();
         update();
 
         emit loopChanged();

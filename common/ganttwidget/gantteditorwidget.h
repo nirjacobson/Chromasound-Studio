@@ -3,13 +3,14 @@
 
 #include "application.h"
 #include "common/ganttwidget/ganttitem.h"
+#include "common/damagewidget/damagewidget.h"
 #include <QtMath>
 #include <QWidget>
 #include <QPainter>
 #include <QMouseEvent>
 #include <QMenu>
 
-class GanttEditorWidget : public QWidget
+class GanttEditorWidget : public DamageWidget
 {
         Q_OBJECT
         Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
@@ -68,7 +69,6 @@ class GanttEditorWidget : public QWidget
         void contextMenuRequested(GanttItem* item, const QPoint& location);
 
     protected:
-        void paintEvent(QPaintEvent*);
         void mousePressEvent(QMouseEvent* event);
         void mouseReleaseEvent(QMouseEvent*event);
         void mouseMoveEvent(QMouseEvent* event);
@@ -132,6 +132,15 @@ class GanttEditorWidget : public QWidget
 
         float length() const;
         float visibleLength() const;
+
+        // DamageWidget interface
+    private:
+        void paintFull(QPaintEvent* event);
+        void paintPartial(QPaintEvent* event);
+
+        // QWidget interface
+    protected:
+        void showEvent(QShowEvent* event);
 };
 
 #endif // GANTTEDITORWIDGET_H

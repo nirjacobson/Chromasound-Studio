@@ -56,7 +56,6 @@ class GanttHeaderWidget : public ScrollableWidget
 
     protected:
         int length() const;
-        void paintEvent(QPaintEvent*);
         void mousePressEvent(QMouseEvent* event);
         void mouseReleaseEvent(QMouseEvent* event);
         void mouseMoveEvent(QMouseEvent* event);
@@ -96,6 +95,11 @@ class GanttHeaderWidget : public ScrollableWidget
 
         std::function<float(void)> _positionFunction;
         std::function<void(QPainter& painter, QRect rect, float left, float right, float bpp)> _headerPaintFunction;
+
+        // DamageWidget interface
+    private:
+        void paintFull(QPaintEvent* event);
+        void paintPartial(QPaintEvent* event);
 };
 
 #endif // GANTTHEADERWIDGET_H

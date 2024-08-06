@@ -1,7 +1,7 @@
 #include "gantteditorwidget.h"
 
 GanttEditorWidget::GanttEditorWidget(QWidget *parent)
-    : QWidget{parent}
+    : DamageWidget{parent}
     , _top(0)
     , _left(0)
     , _loopStart(-1)
@@ -39,6 +39,7 @@ void GanttEditorWidget::setVerticalScrollPercentage(const float percent)
     int scrollHeight = qMax(0, totalHeight - height());
     _top = percent * scrollHeight;
 
+    setNeedsFullPaint();
     update();
 }
 
@@ -48,6 +49,7 @@ void GanttEditorWidget::setHorizontalScrollPercentage(const float percent)
     int scrollWidth = qMax(0, totalWidth - width());
     _left = percent * scrollWidth;
 
+    setNeedsFullPaint();
     update();
 }
 
@@ -117,27 +119,7 @@ float GanttEditorWidget::visibleLength() const
     return ((int)(length() / _app->project().beatsPerBar()) + 1) * _app->project().beatsPerBar();
 }
 
-void GanttEditorWidget::setItemsResizable(const bool resizable)
-{
-    _itemsResizable = resizable;
-}
-
-void GanttEditorWidget::setItemsMovableX(const bool movable)
-{
-    _itemsMovableX = movable;
-}
-
-void GanttEditorWidget::setItemsMovableY(const bool movable)
-{
-    _itemsMovableY = movable;
-}
-
-void GanttEditorWidget::setPositionFunction(std::function<float ()> func)
-{
-    _positionFunction = func;
-}
-
-void GanttEditorWidget::paintEvent(QPaintEvent*)
+void GanttEditorWidget::paintFull(QPaintEvent* event)
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -222,18 +204,6 @@ void GanttEditorWidget::paintEvent(QPaintEvent*)
     float leftPosition = _left * beatsPerPixel;
     float rightPosition = leftPosition + (width() * beatsPerPixel);
 
-    float appPosition = _positionFunction();
-
-    if (leftPosition <= appPosition && appPosition <= rightPosition) {
-        int appPositionPixel = (appPosition - leftPosition) / beatsPerPixel;
-
-        QPoint p1(appPositionPixel, 0);
-        QPoint p2(appPositionPixel, height());
-
-        painter.setPen(_cursorColor);
-        painter.drawLine(p1, p2);
-    }
-
     if (_markers) {
         for (auto it = _markers->begin(); it != _markers->end(); it++) {
             for (int i = 0; i < it->size(); i++) {
@@ -271,6 +241,64 @@ void GanttEditorWidget::paintEvent(QPaintEvent*)
             painter.drawRect(QRect(QPoint(loopFromPixel, 0), QSize(width, height() - 1)));
         }
     }
+
+    float appPosition = _positionFunction();
+
+    if (leftPosition <= appPosition && appPosition <= rightPosition) {
+        int appPositionPixel = (appPosition - leftPosition) / beatsPerPixel;
+
+        QPoint p1(appPositionPixel, 0);
+        QPoint p2(appPositionPixel, height());
+
+        painter.setPen(_cursorColor);
+        painter.drawLine(p1, p2);
+    }
+}
+
+void GanttEditorWidget::paintPartial(QPaintEvent* event)
+{
+    float beatsPerPixel = _cellBeats / _cellWidth;
+    float leftPosition = _left * beatsPerPixel;
+    float rightPosition = leftPosition + (width() * beatsPerPixel);
+    float appPosition = _positionFunction();
+
+    if (leftPosition <= appPosition && appPosition <= rightPosition) {
+        int appPositionPixel = (appPosition - leftPosition) / beatsPerPixel;
+
+        QPoint p1(appPositionPixel, 0);
+        QPoint p2(appPositionPixel, height());
+
+        QPainter painter(this);
+
+        painter.setPen(_cursorColor);
+        painter.drawLine(p1, p2);
+    }
+}
+
+void GanttEditorWidget::showEvent(QShowEvent* event)
+{
+    setNeedsFullPaint();
+    QWidget::showEvent(event);
+}
+
+void GanttEditorWidget::setItemsResizable(const bool resizable)
+{
+    _itemsResizable = resizable;
+}
+
+void GanttEditorWidget::setItemsMovableX(const bool movable)
+{
+    _itemsMovableX = movable;
+}
+
+void GanttEditorWidget::setItemsMovableY(const bool movable)
+{
+    _itemsMovableY = movable;
+}
+
+void GanttEditorWidget::setPositionFunction(std::function<float ()> func)
+{
+    _positionFunction = func;
 }
 
 void GanttEditorWidget::mousePressEvent(QMouseEvent* event)
@@ -365,6 +393,7 @@ void GanttEditorWidget::mouseReleaseEvent(QMouseEvent* event)
         _itemUnderCursor = nullptr;
     }
 
+    setNeedsFullPaint();
     update();
 }
 

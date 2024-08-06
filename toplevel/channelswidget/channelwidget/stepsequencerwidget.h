@@ -9,8 +9,9 @@
 #include "application.h"
 #include "commands/addnotecommand.h"
 #include "commands/removenotecommand.h"
+#include "common/damagewidget/damagewidget.h"
 
-class StepSequencerWidget : public QWidget
+class StepSequencerWidget : public DamageWidget
 {
         Q_OBJECT
         Q_PROPERTY(QColor stepColor READ stepColor WRITE setStepColor)
@@ -20,6 +21,7 @@ class StepSequencerWidget : public QWidget
 
     public:
         explicit StepSequencerWidget(QWidget *parent = nullptr, Application* app = nullptr, int index = 0);
+        ~StepSequencerWidget();
 
         static constexpr int StepWidth = 16;
         static constexpr int StepSpacing = 6;
@@ -30,7 +32,6 @@ class StepSequencerWidget : public QWidget
         void doUpdate(const float position);
 
     protected:
-        void paintEvent(QPaintEvent*);
         void mousePressEvent(QMouseEvent* event);
 
     private:
@@ -43,6 +44,8 @@ class StepSequencerWidget : public QWidget
         QColor _otherStepColor;
         QColor _activeStepLightColor;
         int _stepRadius;
+
+        bool* _steps;
 
         const QColor& stepColor() const;
         const QColor& otherStepColor() const;
@@ -57,6 +60,11 @@ class StepSequencerWidget : public QWidget
         // QWidget interface
     protected:
         void resizeEvent(QResizeEvent*);
+
+        // DamageWidget interface
+    private:
+        void paintFull(QPaintEvent* event);
+        void paintPartial(QPaintEvent* event);
 };
 
 #endif // STEPSEQUENCERWIDGET_H

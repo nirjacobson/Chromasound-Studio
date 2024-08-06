@@ -39,7 +39,6 @@ class PlaylistPatternsWidget : public GanttLeftWidget
 
     protected:
         int length() const;
-        void paintEvent(QPaintEvent*);
         void mousePressEvent(QMouseEvent* event);
 
     private slots:
@@ -73,6 +72,11 @@ class PlaylistPatternsWidget : public GanttLeftWidget
         QAction _duplicateAction;
         QAction _insertAction;
         QAction _deleteAction;
+
+        // DamageWidget interface
+    private:
+        void paintFull(QPaintEvent* event);
+        void paintPartial(QPaintEvent* event);
 };
 
 #endif // PLAYLISTPATTERNSWIDGET_H

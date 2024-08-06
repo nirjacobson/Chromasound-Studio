@@ -509,6 +509,8 @@ set(PROJECT_SOURCES
     rom/romwidgetwindow.ui
     commands/setchannelenabledcommand.h
     commands/setchannelenabledcommand.cpp
+    common/damagewidget/damagewidget.h
+    common/damagewidget/damagewidget.cpp
 )
 
 if (LINUX)
