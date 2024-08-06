@@ -552,7 +552,7 @@ if (LINUX)
                                                 /usr/lib64/libportaudio.so)
 elseif (WIN32)
     target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
-                                                "C:/Program Files/mongo-c-driver/lib/bson-1.0/lib"
+                                                "C:/Program Files/mongo-c-driver/lib/bson-1.0.lib"
                                                 "C:/Program Files/portaudio/lib/portaudio_x64.lib"
                                                 "C:/Program Files/portmidi/lib/portmidi.lib"
                                                 "C:/Program Files/zlib/lib/zlibd.lib")
