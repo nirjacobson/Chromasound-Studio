@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _actionSSG(tr("SSG (Tone + Noise)"))
     , _actionFM2(tr("FM"))
     , _actionFM2SSG(tr("FM + SSG"))
+    , _shownEver(false)
 {
     _midiInput->init();
 
@@ -150,10 +151,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
 
     connect(_splitter, &QSplitter::splitterMoved, this, &MainWindow::splitterMoved);
 
-    showChannelsWindow();
-    showPlaylistWindow();
-
-    loadPSGTemplate();
+    ui->menubar->setNativeMenuBar(false);
 }
 
 MainWindow::~MainWindow()
@@ -888,9 +886,9 @@ void MainWindow::keyOff(const int key)
 
 void MainWindow::handleMIDIMessage(const long message)
 {
-    const char status = ((message >> 0) & 0xFF);
-    const char data1 = ((message >> 8) & 0xFF);
-    const char data2 = ((message >> 16) & 0xFF);
+    const quint8 status = ((message >> 0) & 0xFF);
+    const quint8 data1 = ((message >> 8) & 0xFF);
+    const quint8 data2 = ((message >> 16) & 0xFF);
 
     if (status == 0x90) {
         keyOn(data1, qMin((int)data2, 100));
@@ -924,6 +922,8 @@ void MainWindow::projectInfoTriggered()
         window->setWidget(_infoDialog);
         _infoDialogWindow = window;
         _mdiArea->addSubWindow(window);
+
+        window->layout()->setSizeConstraint(QLayout::SizeConstraint::SetMinimumSize);
         window->show();
     } else {
         _mdiArea->setActiveSubWindow(_infoDialogWindow);
@@ -947,6 +947,8 @@ void MainWindow::settingsTriggered()
         window->setWidget(_settingsDialog);
         _settingsDialogWindow = window;
         _mdiArea->addSubWindow(window);
+
+        window->layout()->setSizeConstraint(QLayout::SizeConstraint::SetMinimumSize);
         window->show();
     } else {
         _mdiArea->setActiveSubWindow(_settingsDialogWindow);
@@ -967,6 +969,8 @@ void MainWindow::stylesTriggered()
         window->setWidget(_styleDialog);
         _styleDialogWindow = window;
         _mdiArea->addSubWindow(window);
+
+        window->layout()->setSizeConstraint(QLayout::SizeConstraint::SetMinimumSize);
         window->show();
     } else {
         _mdiArea->setActiveSubWindow(_styleDialogWindow);
@@ -987,6 +991,8 @@ void MainWindow::opnImportTriggered()
         window->setWidget(_opnImportDialog);
         _opnImportDialogWindow = window;
         _mdiArea->addSubWindow(window);
+
+        window->layout()->setSizeConstraint(QLayout::SizeConstraint::SetMinimumSize);
         window->show();
     } else {
         _mdiArea->setActiveSubWindow(_opnImportDialogWindow);
@@ -1007,6 +1013,8 @@ void MainWindow::oplImportTriggered()
         window->setWidget(_oplImportDialog);
         _oplImportDialogWindow = window;
         _mdiArea->addSubWindow(window);
+
+        window->layout()->setSizeConstraint(QLayout::SizeConstraint::SetMinimumSize);
         window->show();
     } else {
         _mdiArea->setActiveSubWindow(_oplImportDialogWindow);
@@ -1026,6 +1034,8 @@ void MainWindow::playerTriggered()
         window->setWidget(_player);
         _playerDialogWindow = window;
         _mdiArea->addSubWindow(window);
+
+        window->layout()->setSizeConstraint(QLayout::SizeConstraint::SetMinimumSize);
         window->show();
     } else {
         _mdiArea->setActiveSubWindow(_playerDialogWindow);
@@ -1045,6 +1055,8 @@ void MainWindow::romBuilderTriggered()
         window->setWidget(_romBuilderDialog);
         _romBuilderDialogWindow = window;
         _mdiArea->addSubWindow(window);
+
+        window->layout()->setSizeConstraint(QLayout::SizeConstraint::SetMinimumSize);
         window->show();
     } else {
         _mdiArea->setActiveSubWindow(_romBuilderDialogWindow);
@@ -1066,6 +1078,8 @@ void MainWindow::fmGlobalsTriggered()
         window->setWindowTitle("FM Globals");
         _fmGlobalsWindow = window;
         _mdiArea->addSubWindow(window);
+
+        window->layout()->setSizeConstraint(QLayout::SizeConstraint::SetMinimumSize);
         window->show();
     } else {
         _mdiArea->setActiveSubWindow(_fmGlobalsWindow);
@@ -1087,6 +1101,8 @@ void MainWindow::ssgGlobalsTriggered()
         window->setWindowTitle("SSG Globals");
         _ssgGlobalsWindow = window;
         _mdiArea->addSubWindow(window);
+
+        window->layout()->setSizeConstraint(QLayout::SizeConstraint::SetMinimumSize);
         window->show();
     } else {
         _mdiArea->setActiveSubWindow(_ssgGlobalsWindow);
@@ -1109,6 +1125,8 @@ void MainWindow::melodyGlobalsTriggered()
         window->setWindowTitle("Melody Globals");
         _melodyGlobalsWindow = window;
         _mdiArea->addSubWindow(window);
+
+        window->layout()->setSizeConstraint(QLayout::SizeConstraint::SetMinimumSize);
         window->show();
     } else {
         _mdiArea->setActiveSubWindow(_melodyGlobalsWindow);
@@ -1130,6 +1148,8 @@ void MainWindow::romGlobalsTriggered()
         window->setWindowTitle("PCM Sample ROM");
         _romGlobalsWindowWindow = window;
         _mdiArea->addSubWindow(window);
+
+        window->layout()->setSizeConstraint(QLayout::SizeConstraint::SetMinimumSize);
         window->show();
     } else {
         _mdiArea->setActiveSubWindow(_romGlobalsWindowWindow);
@@ -1519,6 +1539,15 @@ Application* MainWindow::app()
 
 void MainWindow::showEvent(QShowEvent*)
 {
+    if (!_shownEver) {
+        showChannelsWindow();
+        showPlaylistWindow();
+
+        loadPSGTemplate();
+
+        _shownEver = true;
+    }
+
     if (_mdiArea->viewMode() == QMdiArea::SubWindowView) {
         int width = _mdiArea->frameGeometry().width()/2;
         int height = _mdiArea->frameGeometry().height();

@@ -206,6 +206,8 @@ class MainWindow : public QMainWindow
 
         QTimer _timer;
 
+        bool _shownEver;
+
         void windowClosed(MdiSubWindow* window);
 
         void preLoad();
