@@ -37,7 +37,6 @@ class PianoRollKeysWidget : public GanttLeftWidget
 
     protected:
         int length() const;
-        void paintEvent(QPaintEvent*);
 
         void mousePressEvent(QMouseEvent* event);
         void mouseReleaseEvent(QMouseEvent*event);
@@ -72,6 +71,11 @@ class PianoRollKeysWidget : public GanttLeftWidget
         void setWhiteKeyColor(const QColor& color);
         void setBlackKeyColor(const QColor& color);
         void setActiveKeyColor(const QColor& color);
+
+        // DamageWidget interface
+    private:
+        void paintFull(QPaintEvent* event);
+        void paintPartial(QPaintEvent* event);
 };
 
 #endif // PIANOROLLKEYSWIDGET_H

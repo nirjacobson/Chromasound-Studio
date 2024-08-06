@@ -1,9 +1,9 @@
 #ifndef SCROLLABLEWIDGET_H
 #define SCROLLABLEWIDGET_H
 
-#include <QWidget>
+#include "common/damagewidget/damagewidget.h"
 
-class ScrollableWidget : public QWidget
+class ScrollableWidget : public DamageWidget
 {
         Q_OBJECT
     public:
@@ -15,7 +15,6 @@ class ScrollableWidget : public QWidget
     protected:
         virtual int length() const = 0;
     signals:
-
 };
 
 #endif // SCROLLABLEWIDGET_H

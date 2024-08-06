@@ -30,7 +30,6 @@ class PianoRollVelocitiesWidget : public GanttBottomWidget
 
     protected:
         int length() const;
-        void paintEvent(QPaintEvent*);
         void mousePressEvent(QMouseEvent* event);
 
     private:
@@ -48,6 +47,11 @@ class PianoRollVelocitiesWidget : public GanttBottomWidget
         float _cellBeats;
 
         float playlength() const;
+
+        // DamageWidget interface
+    private:
+        void paintFull(QPaintEvent* event);
+        void paintPartial(QPaintEvent* event);
 };
 
 #endif // PIANOROLLVELOCITIESWIDGET_H

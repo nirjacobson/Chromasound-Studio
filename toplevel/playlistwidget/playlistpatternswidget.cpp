@@ -49,12 +49,14 @@ void PlaylistPatternsWidget::setScrollPercentage(const float percent)
     int scrollHeight = qMax(0, length() - height());
     _top = percent * scrollHeight;
 
+    setNeedsFullPaint();
     update();
 }
 
 void PlaylistPatternsWidget::scrollBy(const int pixels)
 {
     _top += pixels;
+    setNeedsFullPaint();
     update();
 }
 
@@ -77,79 +79,6 @@ void PlaylistPatternsWidget::doUpdate(const float position)
 int PlaylistPatternsWidget::length() const
 {
     return _rowHeight * _rows;
-}
-
-void PlaylistPatternsWidget::paintEvent(QPaintEvent*)
-{
-    int firstPattern = _top / _rowHeight;
-    int firstPatternStart = firstPattern * _rowHeight - _top;
-
-    int numPatternsAcrossHeight = qCeil((float)height()/_rowHeight) + 1;
-
-    QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing);
-
-    QPoint topLeft(0, firstPatternStart);
-
-    QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(_appPosition);
-
-
-    for (int i = 0; i < numPatternsAcrossHeight && (firstPattern + i) < _rows; i++) {
-        int pattern = firstPattern + i;
-
-        bool on = false;
-        if (_app->project().playMode() == Project::PlayMode::SONG && activePatterns.contains(pattern)) {
-            Pattern& pat = _app->project().getPattern(pattern);
-            QList<int> activeTracks = pat.activeTracksAtTime(_appPosition - activePatterns[pattern]);
-            for (int t : activeTracks) {
-                if (!_app->project().getChannel(t).enabled()) {
-                    continue;
-                }
-
-                Track& track = pat.getTrack(t);
-                bool noneAreInDelta = std::find_if(track.items().begin(), track.items().end(),
-                [&](const Track::Item* item) {
-                    float delta = item->time() - (_appPosition - activePatterns[pattern]);
-                    return qAbs(delta)<= 0.0625;
-                }) == track.items().end();
-                if (noneAreInDelta) {
-                    on = true;
-                    break;
-                }
-            }
-        }
-
-        QColor color = QWidget::palette().color(QWidget::backgroundRole());
-
-        QPoint thisTopLeft = topLeft + QPoint(0, i * _rowHeight);
-
-        QRect rect(thisTopLeft, thisTopLeft + QPoint(_rowHeight, _rowHeight));
-        painter.setPen(color.lightness() <= 96 ? color.lighter() : color.darker());
-        painter.setBrush(color);
-        painter.fillRect(rect, painter.brush());
-        painter.drawRect(rect);
-        painter.drawText(rect.adjusted(4, 4, -6, -4), Qt::AlignRight, QString("%1").arg(pattern + 1));
-
-        rect = QRect(rect.topRight(), thisTopLeft + QPoint(width() - 2, _rowHeight));
-        painter.setPen(color.lightness() <= 96 ? color.lighter() : color.darker());
-        painter.setBrush(color);
-        painter.fillRect(rect, painter.brush());
-        painter.drawRect(rect);
-
-        QString name = _app->project().getPattern(pattern).name();
-        painter.drawText(rect.adjusted(4, 4, 0, 0), name.isEmpty()
-                                                        ? QString("Pattern %1").arg(pattern + 1)
-                                                        : name);
-
-        rect.setTopLeft(QPoint(width() - 2 - LED_WIDTH, thisTopLeft.y()));
-
-        QColor ledColor = on ? _ledColor : _ledColor.darker();
-
-        painter.setPen(ledColor.darker());
-        painter.setBrush(ledColor);
-        painter.fillRect(rect, painter.brush());
-        painter.drawRect(rect);
-    }
 }
 
 void PlaylistPatternsWidget::mousePressEvent(QMouseEvent* event)
@@ -213,4 +142,132 @@ const QColor& PlaylistPatternsWidget::ledColor() const
 void PlaylistPatternsWidget::setLEDColor(const QColor& color)
 {
     _ledColor = color;
+}
+
+void PlaylistPatternsWidget::paintFull(QPaintEvent* event)
+{
+    int firstPattern = _top / _rowHeight;
+    int firstPatternStart = firstPattern * _rowHeight - _top;
+
+    int numPatternsAcrossHeight = qCeil((float)height()/_rowHeight) + 1;
+
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    QPoint topLeft(0, firstPatternStart);
+
+    QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(_appPosition);
+
+
+    for (int i = 0; i < numPatternsAcrossHeight && (firstPattern + i) < _rows; i++) {
+        int pattern = firstPattern + i;
+
+        bool on = false;
+        if (_app->project().playMode() == Project::PlayMode::SONG && activePatterns.contains(pattern)) {
+            Pattern& pat = _app->project().getPattern(pattern);
+            QList<int> activeTracks = pat.activeTracksAtTime(_appPosition - activePatterns[pattern]);
+            for (int t : activeTracks) {
+                if (!_app->project().getChannel(t).enabled()) {
+                    continue;
+                }
+
+                Track& track = pat.getTrack(t);
+                bool noneAreInDelta = std::find_if(track.items().begin(), track.items().end(),
+                                                   [&](const Track::Item* item) {
+                                                       float delta = item->time() - (_appPosition - activePatterns[pattern]);
+                                                       return qAbs(delta)<= 0.0625;
+                                                   }) == track.items().end();
+                if (noneAreInDelta) {
+                    on = true;
+                    break;
+                }
+            }
+        }
+
+        QColor color = QWidget::palette().color(QWidget::backgroundRole());
+
+        QPoint thisTopLeft = topLeft + QPoint(0, i * _rowHeight);
+
+        QRect rect(thisTopLeft, thisTopLeft + QPoint(_rowHeight, _rowHeight));
+        painter.setPen(color.lightness() <= 96 ? color.lighter() : color.darker());
+        painter.setBrush(color);
+        painter.fillRect(rect, painter.brush());
+        painter.drawRect(rect);
+        painter.drawText(rect.adjusted(4, 4, -6, -4), Qt::AlignRight, QString("%1").arg(pattern + 1));
+
+        rect = QRect(rect.topRight(), thisTopLeft + QPoint(width() - 2, _rowHeight));
+        painter.setPen(color.lightness() <= 96 ? color.lighter() : color.darker());
+        painter.setBrush(color);
+        painter.fillRect(rect, painter.brush());
+        painter.drawRect(rect);
+
+        QString name = _app->project().getPattern(pattern).name();
+        painter.drawText(rect.adjusted(4, 4, 0, 0), name.isEmpty()
+                                                        ? QString("Pattern %1").arg(pattern + 1)
+                                                        : name);
+
+        rect.setTopLeft(QPoint(width() - 2 - LED_WIDTH, thisTopLeft.y()));
+
+        QColor ledColor = on ? _ledColor : _ledColor.darker();
+
+        painter.setPen(ledColor.darker());
+        painter.setBrush(ledColor);
+        painter.fillRect(rect, painter.brush());
+        painter.drawRect(rect);
+    }
+}
+
+void PlaylistPatternsWidget::paintPartial(QPaintEvent* event)
+{
+    int firstPattern = _top / _rowHeight;
+    int firstPatternStart = firstPattern * _rowHeight - _top;
+
+    int numPatternsAcrossHeight = qCeil((float)height()/_rowHeight) + 1;
+
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    QPoint topLeft(0, firstPatternStart);
+
+    QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(_appPosition);
+
+
+    for (int i = 0; i < numPatternsAcrossHeight && (firstPattern + i) < _rows; i++) {
+        int pattern = firstPattern + i;
+
+        bool on = false;
+        if (_app->project().playMode() == Project::PlayMode::SONG && activePatterns.contains(pattern)) {
+            Pattern& pat = _app->project().getPattern(pattern);
+            QList<int> activeTracks = pat.activeTracksAtTime(_appPosition - activePatterns[pattern]);
+            for (int t : activeTracks) {
+                if (!_app->project().getChannel(t).enabled()) {
+                    continue;
+                }
+
+                Track& track = pat.getTrack(t);
+                bool noneAreInDelta = std::find_if(track.items().begin(), track.items().end(),
+                                                   [&](const Track::Item* item) {
+                                                       float delta = item->time() - (_appPosition - activePatterns[pattern]);
+                                                       return qAbs(delta)<= 0.0625;
+                                                   }) == track.items().end();
+                if (noneAreInDelta) {
+                    on = true;
+                    break;
+                }
+            }
+        }
+
+        QPoint thisTopLeft = topLeft + QPoint(0, i * _rowHeight);
+
+        QRect rect(thisTopLeft, thisTopLeft + QPoint(_rowHeight, _rowHeight));
+        rect = QRect(rect.topRight(), thisTopLeft + QPoint(width() - 2, _rowHeight));
+        rect.setTopLeft(QPoint(width() - 2 - LED_WIDTH, thisTopLeft.y()));
+
+        QColor ledColor = on ? _ledColor : _ledColor.darker();
+
+        painter.setPen(ledColor.darker());
+        painter.setBrush(ledColor);
+        painter.fillRect(rect, painter.brush());
+        painter.drawRect(rect);
+    }
 }
