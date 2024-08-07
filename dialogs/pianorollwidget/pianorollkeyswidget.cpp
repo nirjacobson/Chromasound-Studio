@@ -310,12 +310,11 @@ void PianoRollKeysWidget::paintPartial(QPaintEvent* event)
 
     int octaveStart = height() + bottomPositionIntoOctave;
 
-    QPoint topLeft = QPoint(0, octaveStart - whiteKeyWidth);
-
-    painter.setBrush(_activeKeyColor);
-    for (int onKey : _onKeys) {
+    auto drawKey = [&](int onKey){
         int octave = onKey / 12;
         int interval = onKey % 12;
+
+        QPoint topLeft;
 
         QPoint thisTopLeft;
         QRect rect;
@@ -329,6 +328,7 @@ void PianoRollKeysWidget::paintPartial(QPaintEvent* event)
             case 7:
             case 9:
             case 11:
+                topLeft = QPoint(0, octaveStart - whiteKeyWidth - (octave - bottomOctave) * octaveHeight);
                 whiteKey = interval;
                 if (whiteKey > 4) whiteKey++;
                 whiteKey /= 2;
@@ -341,7 +341,7 @@ void PianoRollKeysWidget::paintPartial(QPaintEvent* event)
                 if (onKey % 12 == 0) {
                     QTextOption textOption;
                     textOption.setAlignment(Qt::AlignRight);
-                    painter.drawText(rect.adjusted(0, 8, -4, 0), QString("C%1").arg(bottomOctave + octave), textOption);
+                    painter.drawText(rect.adjusted(0, 8, -4, 0), QString("C%1").arg(octave), textOption);
                 }
                 break;
             case 1:
@@ -349,6 +349,7 @@ void PianoRollKeysWidget::paintPartial(QPaintEvent* event)
             case 6:
             case 8:
             case 10:
+                topLeft = QPoint(0, octaveStart - (_rowHeight * 2) - (octave - bottomOctave) * octaveHeight);
                 blackKey = interval;
                 if (blackKey > 3) blackKey--;
                 blackKey /= 2;
@@ -358,6 +359,47 @@ void PianoRollKeysWidget::paintPartial(QPaintEvent* event)
                 QRect rect(thisTopLeft, thisTopLeft + QPoint(width()/2, _rowHeight));
                 painter.fillRect(rect, painter.brush());
                 painter.drawRect(rect);
+                break;
+        }
+    };
+
+    for (int onKey : _onKeys) {
+        int octave = onKey / 12;
+        int interval = onKey % 12;
+
+        QPoint topLeft;
+
+        QPoint thisTopLeft;
+        QRect rect;
+        int whiteKey;
+        int blackKey;
+        switch (interval) {
+            case 0:
+            case 5:
+                painter.setBrush(_activeKeyColor);
+                drawKey(onKey);
+                painter.setBrush(_blackKeyColor);
+                drawKey(onKey+1);
+                break;
+            case 2:
+            case 7:
+            case 9:
+                painter.setBrush(_activeKeyColor);
+                drawKey(onKey);
+                painter.setBrush(_blackKeyColor);
+                drawKey(onKey-1);
+                drawKey(onKey+1);
+                break;
+            case 4:
+            case 11:
+                painter.setBrush(_activeKeyColor);
+                drawKey(onKey);
+                painter.setBrush(_blackKeyColor);
+                drawKey(onKey-1);
+                break;
+            default:
+                painter.setBrush(_activeKeyColor);
+                drawKey(onKey);
                 break;
         }
     }
