@@ -111,12 +111,12 @@ float PlaylistWidget::loopEnd() const
     return ui->ganttWidget->loopEnd();
 }
 
-void PlaylistWidget::doUpdate(const float position)
+void PlaylistWidget::doUpdate(const float position, bool full)
 {
     _patternsWidget->doUpdate(position);
 
     _appPosition = position;
-    ui->ganttWidget->doUpdate();
+    ui->ganttWidget->doUpdate(full);
     ui->changeWidget->doUpdate();
 }
 

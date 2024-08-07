@@ -241,18 +241,6 @@ void GanttEditorWidget::paintFull(QPaintEvent* event)
             painter.drawRect(QRect(QPoint(loopFromPixel, 0), QSize(width, height() - 1)));
         }
     }
-
-    float appPosition = _positionFunction();
-
-    if (leftPosition <= appPosition && appPosition <= rightPosition) {
-        int appPositionPixel = (appPosition - leftPosition) / beatsPerPixel;
-
-        QPoint p1(appPositionPixel, 0);
-        QPoint p2(appPositionPixel, height());
-
-        painter.setPen(_cursorColor);
-        painter.drawLine(p1, p2);
-    }
 }
 
 void GanttEditorWidget::paintPartial(QPaintEvent* event)

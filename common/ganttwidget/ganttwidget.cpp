@@ -199,9 +199,12 @@ void GanttWidget::setDefaultCellWidth(int width)
     _defaultCellWidth = width;
 }
 
-void GanttWidget::doUpdate()
+void GanttWidget::doUpdate(bool full)
 {
-    ui->headerWidget->setNeedsFullPaint();
+    if (full) {
+        ui->headerWidget->setNeedsFullPaint();
+        ui->editorWidget->setNeedsFullPaint();
+    }
     update();
 }
 
