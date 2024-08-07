@@ -40,6 +40,7 @@ class ChannelsWidget : public QWidget
         void doUpdate(const float position);
         void update(const int index);
         void update();
+        void fullUpdate();
 
         void select(const int index);
         int selected() const;

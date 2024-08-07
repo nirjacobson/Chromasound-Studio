@@ -293,7 +293,6 @@ void PianoRollKeysWidget::paintFull(QPaintEvent* event)
 
 void PianoRollKeysWidget::paintPartial(QPaintEvent* event)
 {
-
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setPen(_outlineColor);

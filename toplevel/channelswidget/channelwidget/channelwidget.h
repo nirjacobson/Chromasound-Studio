@@ -59,6 +59,8 @@ class ChannelWidget : public QWidget
         void setIndex(const int idx);
         void setVolume(const int volume);
 
+        void fullUpdate();
+
         void showStepKeysWidget();
         void showStepVelsWidget();
         void hideStepWidgets();

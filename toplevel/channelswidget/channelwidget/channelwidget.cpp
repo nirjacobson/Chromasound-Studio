@@ -295,6 +295,12 @@ void ChannelWidget::setVolume(const int volume)
     ui->volumeDial->blockSignals(false);
 }
 
+void ChannelWidget::fullUpdate()
+{
+    ui->stepSequencer->setNeedsFullPaint();
+    update();
+}
+
 void ChannelWidget::showStepKeysWidget()
 {
     ui->stepsStackedWidget->setCurrentIndex(0);
