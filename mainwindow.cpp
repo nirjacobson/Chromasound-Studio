@@ -421,7 +421,7 @@ void MainWindow::stop()
 void MainWindow::patternChanged(int num)
 {
     _app->project().setFrontPattern(num - 1);
-    if (_channelsWindow) _channelsWidget->update();
+    if (_channelsWindow) _channelsWidget->fullUpdate();
     ui->topWidget->updateFromProject(_app->project());
 }
 

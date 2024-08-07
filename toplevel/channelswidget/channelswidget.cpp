@@ -150,6 +150,13 @@ void ChannelsWidget::update()
     QWidget::update();
 }
 
+void ChannelsWidget::fullUpdate()
+{
+    for (ChannelWidget* channelWidget : _channelWidgets) {
+        channelWidget->fullUpdate();
+    }
+}
+
 void ChannelsWidget::select(const int index)
 {
     _channelWidgets[index]->blockSignals(true);
