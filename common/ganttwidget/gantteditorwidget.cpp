@@ -536,6 +536,8 @@ void GanttEditorWidget::wheelEvent(QWheelEvent* event)
     if (oldLeft != _left) {
         emit horizontalScroll(_left - oldLeft);
     }
+
+    setNeedsFullPaint();
     update();
 }
 
