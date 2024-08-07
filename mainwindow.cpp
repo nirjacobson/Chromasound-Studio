@@ -449,7 +449,20 @@ void MainWindow::beatsPerBarChanged(int beatsPerBar)
 
 void MainWindow::frame()
 {
-    doUpdate();
+    float position = _app->position();
+
+    ui->topWidget->doUpdate(position);
+    if (_channelsWindow) _channelsWidget->doUpdate(position);
+    if (_playlistWindow) _playlistWidget->doUpdate(position);
+
+    for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
+        for (MdiSubWindow* window : (*it)) {
+            PianoRollWidget* prw;
+            if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
+                prw->doUpdate(position);
+            }
+        }
+    }
 }
 
 void MainWindow::pianoRollTriggered(const int index, const bool on)
@@ -1415,7 +1428,7 @@ void MainWindow::postLoad()
 
     _channelsWidget->rebuild();
 
-    _playlistWidget->update();
+    _playlistWidget->doUpdate(_app->position(), true);
 
     ui->topWidget->setStatusMessage("Template loaded.");
 }
@@ -1433,7 +1446,7 @@ void MainWindow::doUpdate()
 
     ui->topWidget->doUpdate(position);
     if (_channelsWindow) _channelsWidget->doUpdate(position);
-    if (_playlistWindow) _playlistWidget->doUpdate(position);
+    if (_playlistWindow) _playlistWidget->doUpdate(position, true);
     if (_fmGlobalsWindow) _fmGlobalsWidget->doUpdate();
     if (_ssgGlobalsWindow) _ssgGlobalsWidget->doUpdate();
     if (_melodyGlobalsWindow) _melodyGlobalsWidget->doUpdate();

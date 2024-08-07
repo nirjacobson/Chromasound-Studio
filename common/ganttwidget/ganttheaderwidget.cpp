@@ -201,32 +201,6 @@ void GanttHeaderWidget::paintFull(QPaintEvent* event)
             }
         }
     }
-
-    float appPosition = _positionFunction();
-
-    if (leftPosition <= appPosition && appPosition <= rightPosition) {
-        int appPositionPixel = (appPosition - leftPosition) / beatsPerPixel;
-
-        QPainterPath path;
-
-        QPoint p1(appPositionPixel - 24 / 2, 0);
-        QPoint p2(appPositionPixel, 24 / 2);
-        QPoint p3(appPositionPixel + 24 / 2, 0);
-
-        path.moveTo(p1);
-        path.lineTo(p2);
-        path.lineTo(p3);
-        path.lineTo(p1);
-
-        painter.setPen(Qt::NoPen);
-        painter.fillPath(path, _cursorColor);
-
-        QPoint p4(appPositionPixel, 0);
-        QPoint p5(appPositionPixel, height());
-
-        painter.setPen(_cursorColor);
-        painter.drawLine(p4, p5);
-    }
 }
 
 void GanttHeaderWidget::paintPartial(QPaintEvent* event)
