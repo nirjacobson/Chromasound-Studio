@@ -58,6 +58,8 @@ class GanttWidget : public QWidget
 
         void setDefaultCellWidth(int width);
 
+        void doUpdate();
+
     private:
         Ui::GanttWidget *ui;
         Application* _app;

@@ -199,6 +199,12 @@ void GanttWidget::setDefaultCellWidth(int width)
     _defaultCellWidth = width;
 }
 
+void GanttWidget::doUpdate()
+{
+    ui->headerWidget->setNeedsFullPaint();
+    update();
+}
+
 const QColor& GanttWidget::cursorColor() const
 {
     return ui->headerWidget->cursorColor();

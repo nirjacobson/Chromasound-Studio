@@ -116,7 +116,7 @@ void PlaylistWidget::doUpdate(const float position)
     _patternsWidget->doUpdate(position);
 
     _appPosition = position;
-    ui->ganttWidget->update();
+    ui->ganttWidget->doUpdate();
     ui->changeWidget->doUpdate();
 }
 
