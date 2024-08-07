@@ -1,12 +1,12 @@
 #ifndef PRDISPLAYWIDGET_H
 #define PRDISPLAYWIDGET_H
 
-#include <QWidget>
 #include <QPainter>
 
 #include "application.h"
+#include "common/damagewidget/damagewidget.h"
 
-class PRDisplayWidget : public QWidget
+class PRDisplayWidget : public DamageWidget
 {
         Q_OBJECT
         Q_PROPERTY(QColor borderColor READ borderColor WRITE setBorderColor)
@@ -26,7 +26,6 @@ class PRDisplayWidget : public QWidget
         void pianoRollTriggered();
 
     protected:
-        void paintEvent(QPaintEvent*);
         void mousePressEvent(QMouseEvent* event);
 
     private:
@@ -51,6 +50,11 @@ class PRDisplayWidget : public QWidget
         int _index;
 
         QPair<int, int> range() const;
+
+        // DamageWidget interface
+    private:
+        void paintFull(QPaintEvent* event);
+        void paintPartial(QPaintEvent* event);
 };
 
 #endif // PRDISPLAYWIDGET_H
