@@ -1458,7 +1458,7 @@ void MainWindow::doUpdate()
             MelodyWidget* mw;
             ROMWidgetWindow* rw;
             if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
-                prw->doUpdate(position);
+                prw->doUpdate(position, true);
             }
             if ((mw = dynamic_cast<MelodyWidget*>(window->widget()))) {
                 mw->doUpdate();

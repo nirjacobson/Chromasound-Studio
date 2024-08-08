@@ -149,10 +149,10 @@ float PianoRollWidget::loopEnd() const
     return ui->ganttWidget->loopEnd();
 }
 
-void PianoRollWidget::doUpdate(const float position)
+void PianoRollWidget::doUpdate(const float position, bool full)
 {
     _appPosition = position;
-    ui->ganttWidget->update();
+    ui->ganttWidget->doUpdate(full);
     ui->settingsChangeWidget->doUpdate();
 }
 

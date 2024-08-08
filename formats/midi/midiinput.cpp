@@ -28,9 +28,7 @@ void MIDIInput::init()
         fprintf(stderr, "[init] PortMIDI error: %s\n", Pm_GetErrorText(_pmError));
     }
 
-    if (devices().size() > 1) {
-        setDevice(1);
-    } else if (devices().size() > 0) {
+    if (devices().size() > 0) {
         setDevice(0);
     }
 }
