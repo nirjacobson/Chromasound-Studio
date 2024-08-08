@@ -462,6 +462,7 @@ void GanttEditorWidget::mouseMoveEvent(QMouseEvent* event)
         } else {
             _selecting = true;
             _toPoint = event->pos();
+            setNeedsFullPaint();
             update();
         }
     } else {
@@ -610,6 +611,7 @@ void GanttEditorWidget::selectItems(const QList<GanttItem*>& items)
 {
     _selectedItems = items;
 
+    setNeedsFullPaint();
     update();
 }
 
@@ -639,6 +641,8 @@ void GanttEditorWidget::setLoop(const float start, const float end)
 {
     _loopStart = start;
     _loopEnd = end;
+
+    setNeedsFullPaint();
     update();
 }
 
