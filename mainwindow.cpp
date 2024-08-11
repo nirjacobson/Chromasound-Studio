@@ -1297,72 +1297,37 @@ void MainWindow::seekClicked(const float percent)
 
 void MainWindow::loadEmptyTemplate()
 {
-    preLoad();
-    QFile file(":/templates/empty.csp");
-    file.copy(".tmpfile");
-    load(".tmpfile");
-    QFile(".tmpfile").remove();
-    postLoad();
+    loadTemplate(":/templates/empty.csp");
 }
 
 void MainWindow::loadPSGTemplate()
 {
-    preLoad();
-    QFile file(":/templates/opn-psg.csp");
-    file.copy(".tmpfile");
-    load(".tmpfile");
-    QFile(".tmpfile").remove();
-    postLoad();
+    loadTemplate(":/templates/opn-psg.csp");
 }
 
 void MainWindow::loadFM4Template()
 {
-    preLoad();
-    QFile file(":/templates/opn-fm.csp");
-    file.copy(".tmpfile");
-    load(".tmpfile");
-    QFile(".tmpfile").remove();
-    postLoad();
+    loadTemplate(":/templates/opn-fm.csp");
 }
 
 void MainWindow::loadFM4PSGTemplate()
 {
-    preLoad();
-    QFile file(":/templates/opn-full.csp");
-    file.copy(".tmpfile");
-    load(".tmpfile");
-    QFile(".tmpfile").remove();
-    postLoad();
+    loadTemplate(":/templates/opn-full.csp");
 }
 
 void MainWindow::loadSSGTemplate()
 {
-    preLoad();
-    QFile file(":/templates/opl-ssg.csp");
-    file.copy(".tmpfile");
-    load(".tmpfile");
-    QFile(".tmpfile").remove();
-    postLoad();
+    loadTemplate(":/templates/opl-ssg.csp");
 }
 
 void MainWindow::loadFM2Template()
 {
-    preLoad();
-    QFile file(":/templates/opl-fm.csp");
-    file.copy(".tmpfile");
-    load(".tmpfile");
-    QFile(".tmpfile").remove();
-    postLoad();
+    loadTemplate(":/templates/opl-fm.csp");
 }
 
 void MainWindow::loadFM2SSGTemplate()
 {
-    preLoad();
-    QFile file(":/templates/opl-full.csp");
-    file.copy(".tmpfile");
-    load(".tmpfile");
-    QFile(".tmpfile").remove();
-    postLoad();
+    loadTemplate(":/templates/opl-full.csp");
 }
 
 void MainWindow::cleanChanged(bool clean)
@@ -1418,6 +1383,18 @@ void MainWindow::load(const QString& path)
 
         _infoScreenDialogWindow = window;
     }
+}
+
+void MainWindow::loadTemplate(const QString& path)
+{
+    preLoad();
+
+    QTemporaryFile* tempFile = QTemporaryFile::createNativeFile(path);
+
+    load(tempFile->fileName());
+    postLoad();
+
+    delete tempFile;
 }
 
 void MainWindow::postLoad()

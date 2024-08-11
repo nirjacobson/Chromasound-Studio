@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <QRect>
 #include <QFile>
+#include <QTemporaryFile>
 #include <QFileDialog>
 #include <QStandardPaths>
 #include <QTreeView>
@@ -212,6 +213,7 @@ class MainWindow : public QMainWindow
 
         void preLoad();
         void load(const QString& path);
+        void loadTemplate(const QString& path);
         void postLoad();
 
         void updateWindowTitle();
