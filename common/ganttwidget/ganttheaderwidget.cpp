@@ -248,10 +248,6 @@ void GanttHeaderWidget::mousePressEvent(QMouseEvent* event)
     _loopStart = _snap ? mousePositionSnapped : mousePosition;
     _loopEnd = -1;
 
-    setNeedsFullPaint();
-    update();
-    emit loopChanged();
-
     if (Qt::ShiftModifier == QApplication::keyboardModifiers()) {
         if (_markers) {
             for (auto it = _markers->begin(); it != _markers->end(); ++it) {
@@ -268,6 +264,11 @@ void GanttHeaderWidget::mousePressEvent(QMouseEvent* event)
     }
 
     emit clicked(event->button(), _snap ? mousePositionSnapped : mousePosition, mapToGlobal(event->pos()));
+
+    setNeedsFullPaint();
+    repaint();
+    repaint();
+    emit loopChanged();
 }
 
 void GanttHeaderWidget::mouseReleaseEvent(QMouseEvent* event)
