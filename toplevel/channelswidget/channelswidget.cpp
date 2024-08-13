@@ -130,10 +130,10 @@ void ChannelsWidget::setVolume(const int index, const int volume)
     _channelWidgets[index]->setVolume(volume);
 }
 
-void ChannelsWidget::doUpdate(const float position)
+void ChannelsWidget::doUpdate(const float position, const bool full)
 {
     for (ChannelWidget* channelWidget : _channelWidgets) {
-        channelWidget->doUpdate(position);
+        channelWidget->doUpdate(position, full);
     }
     if (_stepCursorWidget) {
         _stepCursorWidget->doUpdate(position);
@@ -148,13 +148,6 @@ void ChannelsWidget::update(const int index)
 void ChannelsWidget::update()
 {
     QWidget::update();
-}
-
-void ChannelsWidget::fullUpdate()
-{
-    for (ChannelWidget* channelWidget : _channelWidgets) {
-        channelWidget->fullUpdate();
-    }
 }
 
 void ChannelsWidget::select(const int index)

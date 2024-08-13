@@ -29,9 +29,14 @@ void StepSequencerWidget::setIndex(const int i)
     _index = i;
 }
 
-void StepSequencerWidget::doUpdate(const float position)
+void StepSequencerWidget::doUpdate(const float position, const bool full)
 {
     _appPosition = position;
+
+    if (full) {
+        setNeedsFullPaint();
+    }
+
     update();
 }
 

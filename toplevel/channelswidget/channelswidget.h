@@ -37,10 +37,9 @@ class ChannelsWidget : public QWidget
         void add(const int index);
         void setVolume(const int index, const int volume);
 
-        void doUpdate(const float position);
+        void doUpdate(const float position, const bool full = false);
         void update(const int index);
         void update();
-        void fullUpdate();
 
         void select(const int index);
         int selected() const;

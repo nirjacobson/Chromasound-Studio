@@ -59,8 +59,6 @@ class ChannelWidget : public QWidget
         void setIndex(const int idx);
         void setVolume(const int volume);
 
-        void fullUpdate();
-
         void showStepKeysWidget();
         void showStepVelsWidget();
         void hideStepWidgets();
@@ -69,7 +67,7 @@ class ChannelWidget : public QWidget
 
         void fromPath(const QString& path);
 
-        void doUpdate(const float position);
+        void doUpdate(const float position, const bool full);
 
     private:
         Ui::ChannelWidget *ui;

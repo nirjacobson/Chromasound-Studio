@@ -20,7 +20,7 @@ class PRDisplayWidget : public DamageWidget
         void setApplication(Application* app);
         void setIndex(const int i);
 
-        void doUpdate(const float position);
+        void doUpdate(const float position, const bool full);
 
     signals:
         void pianoRollTriggered();

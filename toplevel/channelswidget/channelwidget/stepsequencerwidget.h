@@ -29,7 +29,7 @@ class StepSequencerWidget : public DamageWidget
         void setApplication(Application* app);
         void setIndex(const int i);
 
-        void doUpdate(const float position);
+        void doUpdate(const float position, const bool full);
 
     protected:
         void mousePressEvent(QMouseEvent* event);

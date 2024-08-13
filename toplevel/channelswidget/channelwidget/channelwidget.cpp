@@ -295,12 +295,6 @@ void ChannelWidget::setVolume(const int volume)
     ui->volumeDial->blockSignals(false);
 }
 
-void ChannelWidget::fullUpdate()
-{
-    ui->stepSequencer->setNeedsFullPaint();
-    update();
-}
-
 void ChannelWidget::showStepKeysWidget()
 {
     ui->stepsStackedWidget->setCurrentIndex(0);
@@ -364,13 +358,13 @@ void ChannelWidget::fromPath(const QString& path)
     }
 }
 
-void ChannelWidget::doUpdate(const float position)
+void ChannelWidget::doUpdate(const float position, const bool full)
 {
     _appPosition = position;
     ui->led->setOn(_app->project().getChannel(_index).enabled());
     ui->rectLed->update();
-    ui->stepSequencer->doUpdate(position);
-    ui->prDisplay->doUpdate(position);
+    ui->stepSequencer->doUpdate(position, full);
+    ui->prDisplay->doUpdate(position, full);
 }
 
 const QColor& ChannelWidget::fmColor() const

@@ -23,9 +23,14 @@ void PRDisplayWidget::setIndex(const int i)
     _index = i;
 }
 
-void PRDisplayWidget::doUpdate(const float position)
+void PRDisplayWidget::doUpdate(const float position, const bool full)
 {
     _appPosition = position;
+
+    if (full) {
+        setNeedsFullPaint();
+    }
+
     update();
 }
 
