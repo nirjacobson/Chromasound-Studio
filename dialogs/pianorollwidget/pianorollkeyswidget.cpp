@@ -57,6 +57,7 @@ void PianoRollKeysWidget::pressKey(const int key)
 void PianoRollKeysWidget::releaseKey(const int key)
 {
     _onKeys.removeAll(key);
+    setNeedsFullPaint();
     update();
 }
 
@@ -132,6 +133,7 @@ void PianoRollKeysWidget::mouseReleaseEvent(QMouseEvent* event)
 
     _onKeys.removeAll(key);
 
+    setNeedsFullPaint();
     update();
 
     emit keyOff(key);
