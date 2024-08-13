@@ -7,7 +7,11 @@ PlaybackSettingsWidget::PlaybackSettingsWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QSettings settings("settings.ini", QSettings::IniFormat);
+#ifdef Q_OS_WIN
+    QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
+#else
+    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+#endif
 
     if (settings.value(Chromasound_Studio::Format, Chromasound_Studio::Chromasound).toString() == Chromasound_Studio::Chromasound) {
         ui->chromasoundRadioButton->setChecked(true);

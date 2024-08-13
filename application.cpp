@@ -45,7 +45,11 @@ void Application::play()
     if (_paused) {
         _chromasound->play();
     } else {
-        QSettings settings("settings.ini", QSettings::IniFormat);
+#ifdef Q_OS_WIN
+        QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
+#else
+        QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+#endif
         QString format = settings.value(Chromasound_Studio::Format, Chromasound_Studio::Chromasound).toString();
         VGMStream::Format vgmFormat =
             _chromasound->supportedFormats().contains(VGMStream::Format::CHROMASOUND) && format == Chromasound_Studio::Chromasound
@@ -141,7 +145,11 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
 {
     _ignoreCSTime = false;
 
-    QSettings settings("settings.ini", QSettings::IniFormat);
+#ifdef Q_OS_WIN
+    QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
+#else
+    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+#endif
     QString format = settings.value(Chromasound_Studio::Format, Chromasound_Studio::Chromasound).toString();
     VGMStream::Format vgmFormat =
         _chromasound->supportedFormats().contains(VGMStream::Format::CHROMASOUND) && format == Chromasound_Studio::Chromasound
@@ -199,7 +207,11 @@ void Application::play(const float loopStart, const float loopEnd)
 {
     _ignoreCSTime = false;
 
-    QSettings settings("settings.ini", QSettings::IniFormat);
+#ifdef Q_OS_WIN
+    QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
+#else
+    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+#endif
     QString format = settings.value(Chromasound_Studio::Format, Chromasound_Studio::Chromasound).toString();
     VGMStream::Format vgmFormat =
         _chromasound->supportedFormats().contains(VGMStream::Format::CHROMASOUND) && format == Chromasound_Studio::Chromasound
@@ -325,7 +337,11 @@ void Application::ignoreCSTime(const bool ignore)
 
 void Application::setupChromasound()
 {
-    QSettings settings("settings.ini", QSettings::IniFormat);
+#ifdef Q_OS_WIN
+    QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
+#else
+    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+#endif
 
     int audioBufferSize = settings.value(Chromasound_Studio::AudioBufferSize, 256).toInt();
     int readBufferSize = settings.value(Chromasound_Studio::ReadBufferSize, 1).toInt();

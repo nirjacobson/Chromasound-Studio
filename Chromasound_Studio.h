@@ -8,6 +8,8 @@ class Chromasound_Studio {
         static const QString Organization;
         static const QString Application;
 
+        static const QString SettingsFile;
+
         static const QString EqualizerBass;
         static const QString EqualizerTreble;
         static const QString AudioBufferSize;
