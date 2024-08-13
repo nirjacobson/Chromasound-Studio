@@ -643,6 +643,7 @@ void GanttEditorWidget::setLoop(const float start, const float end)
     _loopEnd = end;
 
     setNeedsFullPaint();
-    update();
+    repaint();
+    repaint();
 }
 

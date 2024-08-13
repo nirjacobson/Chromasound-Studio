@@ -264,11 +264,6 @@ void GanttHeaderWidget::mousePressEvent(QMouseEvent* event)
     }
 
     emit clicked(event->button(), _snap ? mousePositionSnapped : mousePosition, mapToGlobal(event->pos()));
-
-    setNeedsFullPaint();
-    repaint();
-    repaint();
-    emit loopChanged();
 }
 
 void GanttHeaderWidget::mouseReleaseEvent(QMouseEvent* event)

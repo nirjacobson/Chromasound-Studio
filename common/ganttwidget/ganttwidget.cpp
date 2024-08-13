@@ -205,7 +205,8 @@ void GanttWidget::doUpdate(bool full)
         ui->headerWidget->setNeedsFullPaint();
         ui->editorWidget->setNeedsFullPaint();
     }
-    update();
+    repaint();
+    repaint();
 }
 
 const QColor& GanttWidget::cursorColor() const
