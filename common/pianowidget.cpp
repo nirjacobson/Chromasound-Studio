@@ -9,7 +9,7 @@ int PianoWidget::BLACK_KEY_INTERVALS[] = {
 };
 
 PianoWidget::PianoWidget(QWidget *parent)
-    : QWidget(parent)
+    : DamageWidget(parent)
     , _baseOctave(DEFAULT_BASE_OCTAVE)
     , _outlineColor(Qt::gray)
     , _whiteKeyColor(Qt::white)
@@ -43,14 +43,6 @@ void PianoWidget::releaseKey(const int key)
     update();
 }
 
-
-void PianoWidget::paintEvent(QPaintEvent* event)
-{
-    QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing);
-
-    drawOctaves(event, painter);
-}
 
 void PianoWidget::drawBlackKey(const int octave, const int key, QPaintEvent* event, QPainter& painter)
 {
@@ -120,11 +112,14 @@ void PianoWidget::drawOctaveHeader(const int octave, QPaintEvent* event, QPainte
     QRect rect = QRect(QPoint(), QSize(octaveWidth, HEADER_HEIGHT))
                  .translated(QPoint((octave - _baseOctave) * octaveWidth, 0));
 
+    QBrush brush = painter.brush();
+    painter.setBrush(_headerColor);
     painter.setPen(_headerColor.darker());
     painter.fillRect(rect, QBrush(_headerColor, Qt::SolidPattern));
     painter.drawRect(rect);
     painter.setPen(_headerTextColor);
     painter.drawText(rect, Qt::AlignHCenter | Qt::AlignVCenter, "C"+QString::number(octave));
+    painter.setBrush(brush);
 }
 
 void PianoWidget::drawOctave(const int octave, QPaintEvent* event, QPainter& painter)
@@ -251,6 +246,138 @@ void PianoWidget::setHeaderColor(const QColor& color)
 void PianoWidget::setHeaderTextColor(const QColor& color)
 {
     _headerTextColor = color;
+}
+
+void PianoWidget::paintFull(QPaintEvent* event)
+{
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    drawOctaves(event, painter);
+}
+
+void PianoWidget::paintPartial(QPaintEvent* event)
+{
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    int whiteWidth = height() * WHITE_WIDTH_RATIO;
+    int octaveWidth = whiteWidth * WHITE_KEYS_PER_OCTAVE;
+
+    int blackWidth = height() * BLACK_WIDTH_RATIO;
+    int blackHeight = height() * BLACK_HEIGHT_RATIO;
+
+    int octaves = qCeil((float)event->rect().width() / octaveWidth);
+
+    auto drawKey = [&](const int onKey) {
+        int octave = onKey / 12;
+        int interval = onKey % 12;
+
+        if (_baseOctave <= octave < (_baseOctave + octaves)) {
+            QPoint topLeft;
+
+            int whiteWidth;
+            int startX;
+            QRect keyRect;
+            QRect keyRectTranslated;
+            int x;
+            switch (interval) {
+            case 0:
+            case 2:
+            case 4:
+            case 5:
+            case 7:
+            case 9:
+            case 11:
+                whiteWidth = height() * WHITE_WIDTH_RATIO;
+                startX = (octave - _baseOctave) * (whiteWidth * WHITE_KEYS_PER_OCTAVE);
+                painter.setPen(_outlineColor);
+                keyRect = QRect(QPoint(startX + ((interval < 5) ? (interval/2) : (interval+1)/2) * whiteWidth, 0), QSize(whiteWidth, height()));
+                painter.fillRect(keyRect, painter.brush());
+                painter.drawRect(keyRect);
+                break;
+            case 1:
+            case 3:
+            case 6:
+            case 8:
+            case 10:
+                whiteWidth = height() * WHITE_WIDTH_RATIO;
+                startX = (octave - _baseOctave) * (whiteWidth * WHITE_KEYS_PER_OCTAVE);
+                keyRect = QRect(QPoint(0, 0), QSize(blackWidth, blackHeight));
+                switch ((interval - 1) / 2) {
+                case 0:
+                    x = whiteWidth * 1 - ((2.0f/3.0f) * blackWidth);
+                    break;
+                case 1:
+                    x = whiteWidth * 2 - ((1.0f/3.0f) * blackWidth);
+                    break;
+                case 2:
+                    x = whiteWidth * 4 - ((2.0f/3.0f) * blackWidth);
+                    break;
+                case 3:
+                    x = whiteWidth * 5 - ((1.0f/2.0f) * blackWidth);
+                    break;
+                case 4:
+                    x = whiteWidth * 6 - ((1.0f/3.0f) * blackWidth);
+                default:
+                    break;
+                }
+                keyRectTranslated = keyRect.translated(QPoint(startX + x, 0));
+                painter.fillRect(keyRectTranslated, painter.brush());
+                painter.setPen(_outlineColor);
+                painter.drawRect(keyRectTranslated);
+                break;
+            }
+        }
+    };
+
+    QSet<int> octavesWithPressed;
+
+    for (int onKey : _pressedKeys) {
+        octavesWithPressed.insert(onKey / 12);
+
+        int interval = onKey % 12;
+
+        QPoint topLeft;
+
+        QPoint thisTopLeft;
+        QRect rect;
+        int whiteKey;
+        int blackKey;
+        switch (interval) {
+        case 0:
+        case 5:
+            painter.setBrush(_activeKeyColor);
+            drawKey(onKey);
+            painter.setBrush(_blackKeyColor);
+            drawKey(onKey+1);
+            break;
+        case 2:
+        case 7:
+        case 9:
+            painter.setBrush(_activeKeyColor);
+            drawKey(onKey);
+            painter.setBrush(_blackKeyColor);
+            drawKey(onKey-1);
+            drawKey(onKey+1);
+            break;
+        case 4:
+        case 11:
+            painter.setBrush(_activeKeyColor);
+            drawKey(onKey);
+            painter.setBrush(_blackKeyColor);
+            drawKey(onKey-1);
+            break;
+        default:
+            painter.setBrush(_activeKeyColor);
+            drawKey(onKey);
+            break;
+        }
+    }
+
+    for (int pressedOctave : octavesWithPressed) {
+        drawOctaveHeader(pressedOctave, event, painter);
+    }
 }
 
 void PianoWidget::mousePressEvent(QMouseEvent* event)

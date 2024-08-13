@@ -365,7 +365,6 @@ void PianoRollKeysWidget::paintPartial(QPaintEvent* event)
     };
 
     for (int onKey : _onKeys) {
-        int octave = onKey / 12;
         int interval = onKey % 12;
 
         QPoint topLeft;

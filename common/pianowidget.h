@@ -5,7 +5,9 @@
 #include <QPainter>
 #include <QPaintEvent>
 
-class PianoWidget : public QWidget
+#include "damagewidget/damagewidget.h"
+
+class PianoWidget : public DamageWidget
 {
         Q_OBJECT
         Q_PROPERTY(QColor outlineColor READ outlineColor WRITE setOutlineColor)
@@ -26,7 +28,6 @@ class PianoWidget : public QWidget
         void keyReleased(const char key);
 
     protected:
-        void paintEvent(QPaintEvent* event);
         void mousePressEvent(QMouseEvent* event);
         void mouseReleaseEvent(QMouseEvent* event);
 
@@ -76,6 +77,11 @@ class PianoWidget : public QWidget
         void setActiveKeyColor(const QColor& color);
         void setHeaderColor(const QColor& color);
         void setHeaderTextColor(const QColor& color);
+
+        // DamageWidget interface
+    private:
+        void paintFull(QPaintEvent* event);
+        void paintPartial(QPaintEvent* event);
 };
 
 #endif // PIANOWIDGET_H
