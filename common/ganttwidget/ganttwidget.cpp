@@ -204,6 +204,17 @@ void GanttWidget::doUpdate(bool full)
     if (full) {
         ui->headerWidget->setNeedsFullPaint();
         ui->editorWidget->setNeedsFullPaint();
+
+        GanttLeftWidget* leftWidget;
+        GanttBottomWidget* bottomWidget;
+
+        if ((leftWidget = dynamic_cast<GanttLeftWidget*>(_leftWidget))) {
+            leftWidget->setNeedsFullPaint();
+        }
+
+        if ((bottomWidget = dynamic_cast<GanttBottomWidget*>(_bottomWidget))) {
+            bottomWidget->setNeedsFullPaint();
+        }
     }
     repaint();
     repaint();

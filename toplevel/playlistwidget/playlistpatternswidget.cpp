@@ -91,7 +91,7 @@ void PlaylistPatternsWidget::mousePressEvent(QMouseEvent* event)
     if (Qt::ShiftModifier == QApplication::keyboardModifiers()) {
         bool ok;
         const QString name = QInputDialog::getText(this, tr("Change Pattern Name"), tr("Pattern name:"), QLineEdit::Normal, _app->project().getPattern(pattern).name(), &ok);
-        if (ok && !name.isEmpty()) {
+        if (ok) {
             _app->undoStack().push(new SetPatternNameCommand(_app->window(), _app->project().getPattern(pattern), name));
         }
     } else {
