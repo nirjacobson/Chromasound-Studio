@@ -534,12 +534,24 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
             MANUAL_FINALIZATION
             ${PROJECT_SOURCES}
             resources.qrc
-            ${app_icon_resource_windows})
+            ${app_icon_resource_windows}
+        )
     elseif (LINUX)
         qt_add_executable(Chromasound-Studio
             MANUAL_FINALIZATION
             ${PROJECT_SOURCES}
             resources.qrc
+        )
+    elseif (APPLE)
+        set(MACOSX_BUNDLE_ICON_FILE chromasound-studio.icns)
+        set(app_icon_macos "${CMAKE_CURRENT_SOURCE_DIR}/resources/chromasound-studio.icns")
+        set_source_files_properties(${app_icon_macos} PROPERTIES
+                   MACOSX_PACKAGE_LOCATION "Resources")
+        qt_add_executable(Chromasound-Studio
+            MANUAL_FINALIZATION
+            ${PROJECT_SOURCES}
+            resources.qrc
+            ${app_icon_macos}
         )
     endif()
 # Define target properties for Android with Qt 6 as:
