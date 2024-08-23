@@ -27,6 +27,9 @@ void StepSequencerWidget::setApplication(Application* app)
 void StepSequencerWidget::setIndex(const int i)
 {
     _index = i;
+
+    setNeedsFullPaint();
+    update();
 }
 
 void StepSequencerWidget::doUpdate(const float position, const bool full)
@@ -56,9 +59,6 @@ void StepSequencerWidget::mousePressEvent(QMouseEvent* event)
     } else {
         _app->undoStack().push(new RemoveNoteCommand(_app->window(), track, time, Note(12 * 5, beatsPerStep)));
     }
-
-    setNeedsFullPaint();
-    update();
 }
 
 const QColor& StepSequencerWidget::stepColor() const

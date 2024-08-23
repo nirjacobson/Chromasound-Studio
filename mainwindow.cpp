@@ -1422,7 +1422,7 @@ void MainWindow::doUpdate()
     float position = _app->position();
 
     ui->topWidget->doUpdate(position);
-    if (_channelsWindow) _channelsWidget->doUpdate(position);
+    if (_channelsWindow) _channelsWidget->doUpdate(position, true);
     if (_playlistWindow) _playlistWidget->doUpdate(position, true);
     if (_fmGlobalsWindow) _fmGlobalsWidget->doUpdate();
     if (_ssgGlobalsWindow) _ssgGlobalsWidget->doUpdate();
