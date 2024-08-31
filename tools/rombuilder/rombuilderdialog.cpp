@@ -25,6 +25,8 @@ ROMBuilderDialog::ROMBuilderDialog(QWidget *parent)
     connect(ui->actionClose, &QAction::triggered, this, &QDialog::close);
 
     connect(ui->tableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ROMBuilderDialog::selectionChanged);
+
+    ui->menubar->setNativeMenuBar(false);
 }
 
 ROMBuilderDialog::~ROMBuilderDialog()

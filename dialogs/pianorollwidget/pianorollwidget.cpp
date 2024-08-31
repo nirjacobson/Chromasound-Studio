@@ -67,6 +67,8 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
     connect(ui->settingsChangeWidget, &SettingsChangeWidget::doneClicked, this, &PianoRollWidget::doneButtonClicked);
 
     connect(_velocityDialog, &QDialog::accepted, this, &PianoRollWidget::velocityDialogAccepted);
+
+    ui->menubar->setNativeMenuBar(false);
 }
 
 PianoRollWidget::~PianoRollWidget()

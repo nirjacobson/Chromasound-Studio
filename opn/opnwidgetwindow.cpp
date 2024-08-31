@@ -16,6 +16,8 @@ FMWidgetWindow::FMWidgetWindow(QWidget *parent, Application* app) :
     connect(ui->actionOpen, &QAction::triggered, ui->fmWidget, &OPNWidget::openTriggered);
     connect(ui->actionSave, &QAction::triggered, ui->fmWidget, &OPNWidget::saveTriggered);
     connect(ui->actionClose, &QAction::triggered, this, &QMainWindow::close);
+
+    ui->menubar->setNativeMenuBar(false);
 }
 
 FMWidgetWindow::~FMWidgetWindow()

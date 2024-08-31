@@ -26,6 +26,8 @@ ROMGlobalsWindow::ROMGlobalsWindow(QWidget *parent, Application* app)
 
     connect(ui->tabWidget, &QTabWidget::currentChanged, this, &ROMGlobalsWindow::tabIndexChanged);
     tabIndexChanged(ui->tabWidget->currentIndex());
+
+    ui->menubar->setNativeMenuBar(false);
 }
 
 ROMGlobalsWindow::~ROMGlobalsWindow()

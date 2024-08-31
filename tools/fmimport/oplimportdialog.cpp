@@ -22,6 +22,8 @@ OPLImportDialog::OPLImportDialog(QWidget *parent)
     connect(ui->patchTableView, &TableView::keyPressed, this, &OPLImportDialog::keyPressedOnTable);
 
     connect(ui->sendButton, &QPushButton::pressed, this, &OPLImportDialog::sendTriggered);
+
+    ui->menubar->setNativeMenuBar(false);
 }
 
 OPLImportDialog::~OPLImportDialog()

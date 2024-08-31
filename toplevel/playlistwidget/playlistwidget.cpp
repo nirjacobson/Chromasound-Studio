@@ -88,6 +88,8 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
     connect(&_envFreqChangeAction, &QAction::triggered, this, &PlaylistWidget::envFreqChangeTriggered);
     connect(&_envShapeChangeAction, &QAction::triggered, this, &PlaylistWidget::envShapeChangeTriggered);
     connect(&_userToneAction, &QAction::triggered, this, &PlaylistWidget::userToneChangeTriggered);
+
+    ui->menubar->setNativeMenuBar(false);
 }
 
 PlaylistWidget::~PlaylistWidget()

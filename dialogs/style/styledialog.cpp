@@ -14,6 +14,8 @@ StyleDialog::StyleDialog(QWidget *parent) :
 
     connect(ui->resetButton, &QPushButton::clicked, this, &StyleDialog::reset);
     connect(ui->applyButton, &QPushButton::clicked, this, &StyleDialog::apply);
+
+    ui->menubar->setNativeMenuBar(false);
 }
 
 StyleDialog::~StyleDialog()

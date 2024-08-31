@@ -46,6 +46,8 @@ Player::Player(QWidget *parent, Application* app)
 
     _timer.setInterval(1000 / 30);
     connect(&_timer, &QTimer::timeout, this, &Player::frame);
+
+    ui->menubar->setNativeMenuBar(false);
 }
 
 Player::~Player()

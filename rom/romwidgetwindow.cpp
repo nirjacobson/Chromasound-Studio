@@ -13,6 +13,8 @@ ROMWidgetWindow::ROMWidgetWindow(QWidget *parent, Application* app, Channel::Typ
     connect(ui->actionOpen, &QAction::triggered, ui->widget, &ROMWidget::openTriggered);
     connect(ui->actionSave, &QAction::triggered, ui->widget, &ROMWidget::saveTriggered);
     connect(ui->actionClose, &QAction::triggered, this, &QMainWindow::close);
+
+    ui->menubar->setNativeMenuBar(false);
 }
 
 ROMWidgetWindow::~ROMWidgetWindow()

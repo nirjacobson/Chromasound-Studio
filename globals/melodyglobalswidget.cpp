@@ -18,6 +18,8 @@ MelodyGlobalsWidget::MelodyGlobalsWidget(QWidget* parent, Application* app) :
     connect(ui->actionOpen, &QAction::triggered, ui->fmWidget, &OPLWidget::openTriggered);
     connect(ui->actionSave, &QAction::triggered, ui->fmWidget, &OPLWidget::saveTriggered);
     connect(ui->actionClose, &QAction::triggered, this, &QMainWindow::close);
+
+    ui->menubar->setNativeMenuBar(false);
 }
 
 MelodyGlobalsWidget::~MelodyGlobalsWidget()
