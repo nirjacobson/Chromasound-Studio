@@ -1389,12 +1389,21 @@ void MainWindow::loadTemplate(const QString& path)
 {
     preLoad();
 
-    QTemporaryFile* tempFile = QTemporaryFile::createNativeFile(path);
+    QFile file(path);
+    file.open(QIODevice::ReadOnly);
 
-    load(tempFile->fileName());
+    QByteArray bytes(file.readAll());
+
+    QFile tempFile(QDir::tempPath() + QDir::separator() + "file.tmp");
+    tempFile.open(QIODevice::WriteOnly);
+    tempFile.write(bytes);
+    tempFile.flush();
+    tempFile.close();
+
+    load(tempFile.fileName());
     postLoad();
 
-    delete tempFile;
+    tempFile.remove();
 }
 
 void MainWindow::postLoad()

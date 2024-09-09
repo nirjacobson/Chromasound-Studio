@@ -8,6 +8,8 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(LINUX_ARM OFF)
+set(WIN32_ARM OFF)
 
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
@@ -15,10 +17,17 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 if (WIN32)
-    include_directories("C:/Program Files/mongo-c-driver/include/libbson-1.0"
-                        "C:/Program Files/portaudio/include"
-                        "C:/Program Files/portmidi/include"
-                        "C:/Program Files/zlib/include")
+    if (WIN32_ARM)
+        include_directories("C:/Program Files (Arm)/mongo-c-driver/include/libbson-1.0"
+                            "C:/Program Files (Arm)/portaudio/include"
+                            "C:/Program Files (Arm)/portmidi/include"
+                            "C:/Program Files (Arm)/zlib/include")
+    else()
+        include_directories("C:/Program Files/mongo-c-driver/include/libbson-1.0"
+                            "C:/Program Files/portaudio/include"
+                            "C:/Program Files/portmidi/include"
+                            "C:/Program Files/zlib/include")
+    endif()
 elseif (APPLE)
     include_directories("/System/Volumes/Data/usr/local/include"
                         "/System/Volumes/Data/usr/local/include/libbson-1.0")
@@ -541,6 +550,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
             MANUAL_FINALIZATION
             ${PROJECT_SOURCES}
             resources.qrc
+
         )
     elseif (APPLE)
         set(MACOSX_BUNDLE_ICON_FILE chromasound-studio.icns)
@@ -573,17 +583,33 @@ else()
 endif()
 
 if (LINUX)
-    target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
-                                                /usr/lib64/libbson-1.0.so
-                                                /usr/lib64/libportaudio.so
-                                                /usr/lib64/libportmidi.so
-                                                /usr/lib64/libz.so)
+    if (LINUX_ARM)
+        target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
+                                                    /usr/lib64/libbson-1.0.so
+                                                    /usr/lib64/libportaudio.so
+                                                    /usr/lib64/libportmidi.so
+                                                    /usr/lib64/libz.so)
+    else()
+        target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
+                                                    /usr/x86_64-pc-linux-gnu/usr/lib64/libbson-1.0.so
+                                                    /usr/x86_64-pc-linux-gnu/usr/lib64/libportaudio.so
+                                                    /usr/x86_64-pc-linux-gnu/usr/lib64/libportmidi.so
+                                                    /usr/x86_64-pc-linux-gnu/usr/lib64/libz.so)
+    endif()
 elseif (WIN32)
-    target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
-                                                "C:/Program Files/mongo-c-driver/lib/bson-1.0.lib"
-                                                "C:/Program Files/portaudio/lib/portaudio_x64.lib"
-                                                "C:/Program Files/portmidi/lib/portmidi.lib"
-                                                "C:/Program Files/zlib/lib/zlib.lib")
+    if (WIN32_ARM)
+        target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
+                                                    "C:/Program Files (Arm)/mongo-c-driver/lib/bson-1.0.lib"
+                                                    "C:/Program Files (Arm)/portaudio/lib/portaudio_x64.lib"
+                                                    "C:/Program Files (Arm)/portmidi/lib/portmidi.lib"
+                                                    "C:/Program Files (Arm)/zlib/lib/zlib.lib")
+    else()
+        target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
+                                                    "C:/Program Files/mongo-c-driver/lib/bson-1.0.lib"
+                                                    "C:/Program Files/portaudio/lib/portaudio_x64.lib"
+                                                    "C:/Program Files/portmidi/lib/portmidi.lib"
+                                                    "C:/Program Files/zlib/lib/zlib.lib")
+    endif()
 elseif (APPLE)
     target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
                                                 "/System/Volumes/Data/usr/local/lib/libbson-1.0.dylib"
