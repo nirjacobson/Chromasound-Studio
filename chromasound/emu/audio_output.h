@@ -4,6 +4,9 @@
 #include <iostream>
 #include <portaudio.h>
 #include <stdint.h>
+#include <strings.h>
+#include <vector>
+#include <algorithm>
 
 #include "consumer.h"
 
@@ -12,8 +15,13 @@ class AudioOutput : public Consumer<T> {
     public:
         static AudioOutput* instance();
 
-        void init(int framesPerBuffer);
+        void init();
+        void open(const std::string& device, const int framesPerBuffer);
         void destroy();
+
+        std::vector<std::string> devices();
+        int defaultDeviceIndex();
+        std::string defaultDevice();
 
         void start();
         void stop();
@@ -55,16 +63,19 @@ AudioOutput<T>* AudioOutput<T>::instance() {
 }
 
 template <typename T>
-void AudioOutput<T>::init(int framesPerBuffer) {
-    _framesPerBuffer = framesPerBuffer;
-
-    _running = false;
-
+void AudioOutput<T>::init() {
     _paError = Pa_Initialize();
     if( _paError != paNoError ) {
         std::cerr << "PortAudio error: " << Pa_GetErrorText( _paError ) << std::endl;
         return;
     }
+}
+
+template <typename T>
+void AudioOutput<T>::open(const std::string& device, const int framesPerBuffer) {
+    _framesPerBuffer = framesPerBuffer;
+
+    _running = false;
 
     PaSampleFormat format;
     if (std::is_same<T, int16_t>::value)
@@ -73,25 +84,52 @@ void AudioOutput<T>::init(int framesPerBuffer) {
         format = paFloat32;
 
     /* Open an audio I/O stream. */
-    _paError = Pa_OpenDefaultStream( &_paStream,
-                                     0,          /* no input channels */
-                                     2,          /* stereo output */
-                                     format,
-                                     SAMPLE_RATE,
-                                     framesPerBuffer, /* frames per buffer, i.e. the number
-                                                  of sample frames that PortAudio will
-                                                  request from the callback. Many apps
-                                                  may want to use
-                                                  paFramesPerBufferUnspecified, which
-                                                  tells PortAudio to pick the best,
-                                                  possibly changing, buffer size.*/
-                                     &paCallback, /* this is your callback function */
-                                     nullptr); /*This is a pointer that will be passed to
-                                                  your callback*/
+    PaStreamParameters outputParams;
+
+    bzero(&outputParams, sizeof(outputParams));
+
+    std::vector<std::string> devs = devices();
+    outputParams.channelCount = 2;
+    outputParams.device = std::find(devs.begin(), devs.end(), device) - devs.begin();
+    outputParams.sampleFormat = format;
+
+    _paError = Pa_OpenStream(&_paStream,
+                             NULL,
+                             &outputParams,
+                             SAMPLE_RATE,
+                             framesPerBuffer,
+                             paNoFlag,
+                             &paCallback,
+                             nullptr);
+
     if( _paError != paNoError ) {
         std::cerr << "PortAudio error: " << Pa_GetErrorText( _paError ) << std::endl;
         return;
     }
+}
+
+template <typename T>
+std::vector<std::string> AudioOutput<T>::devices() {
+    std::vector<std::string> devices;
+
+    int count = Pa_GetDeviceCount();
+    for (int i = 0; i < count; i++) {
+        const PaDeviceInfo* info = Pa_GetDeviceInfo(i);
+        devices.push_back(info->name);
+    }
+
+    return devices;
+}
+
+template <typename T>
+int AudioOutput<T>::defaultDeviceIndex() {
+    return Pa_GetDefaultOutputDevice();
+}
+
+template <typename T>
+std::string AudioOutput<T>::defaultDevice() {
+    std::vector<std::string> devs = devices();
+    return devs[defaultDeviceIndex()];
 }
 
 template <typename T>

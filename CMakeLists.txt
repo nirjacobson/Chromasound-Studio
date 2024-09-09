@@ -8,7 +8,7 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(LINUX_ARM OFF)
+set(LINUX_ARM ON)
 set(WIN32_ARM OFF)
 
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
@@ -520,6 +520,9 @@ set(PROJECT_SOURCES
     commands/setchannelenabledcommand.cpp
     common/damagewidget/damagewidget.h
     common/damagewidget/damagewidget.cpp
+    dialogs/settings/emulatoroutputdevicesettingswidget.h
+    dialogs/settings/emulatoroutputdevicesettingswidget.cpp
+    dialogs/settings/emulatoroutputdevicesettingswidget.ui
 )
 
 if (LINUX)
@@ -550,7 +553,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
             MANUAL_FINALIZATION
             ${PROJECT_SOURCES}
             resources.qrc
-
         )
     elseif (APPLE)
         set(MACOSX_BUNDLE_ICON_FILE chromasound-studio.icns)

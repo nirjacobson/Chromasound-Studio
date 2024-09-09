@@ -9,6 +9,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::close);
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &SettingsDialog::accepted);
+    connect(ui->chromasoundLayoutWidget, &ChromasoundLayoutWidget::changed, this, &SettingsDialog::chromasoundLayoutChanged);
+
+    chromasoundLayoutChanged();
 }
 
 SettingsDialog::~SettingsDialog()
@@ -32,8 +35,16 @@ void SettingsDialog::accepted()
     settings.setValue(Chromasound_Studio::NumberOfChromasounds, ui->chromasoundLayoutWidget->quantity());
     settings.setValue(Chromasound_Studio::Chromasound1, ui->chromasoundLayoutWidget->chromasound1());
     settings.setValue(Chromasound_Studio::Chromasound2, ui->chromasoundLayoutWidget->chromasound2());
+    settings.setValue(Chromasound_Studio::OutputDevice, ui->emulatorOutputDeviceWidget->outputDevice());
 
     emit done();
 
     close();
+}
+
+void SettingsDialog::chromasoundLayoutChanged()
+{
+    bool showEmuSettings = (ui->chromasoundLayoutWidget->chromasound1() == Chromasound_Studio::Emulator || (ui->chromasoundLayoutWidget->chromasound2() == Chromasound_Studio::Emulator && ui->chromasoundLayoutWidget->quantity() == 2));
+    ui->outputDeviceGroupBox->setVisible(showEmuSettings);
+    ui->emuAdjustmentsGroupBox->setVisible(showEmuSettings);
 }

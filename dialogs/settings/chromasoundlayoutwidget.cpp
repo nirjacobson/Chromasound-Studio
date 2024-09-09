@@ -23,6 +23,7 @@ ChromasoundLayoutWidget::ChromasoundLayoutWidget(QWidget *parent) :
     connect(ui->numberOfComboBox, &QComboBox::currentIndexChanged, this, &ChromasoundLayoutWidget::quantityChanged);
     connect(ui->playbackComboBox, &QComboBox::currentIndexChanged, this, &ChromasoundLayoutWidget::playbackChanged);
     connect(ui->interactiveComboBox, &QComboBox::currentIndexChanged, this, &ChromasoundLayoutWidget::interactiveChanged);
+    connect(ui->implementationComboBox, &QComboBox::currentIndexChanged, this, &ChromasoundLayoutWidget::implementationChanged);
 
     quantityChanged(quantity - 1);
 }
@@ -73,6 +74,8 @@ void ChromasoundLayoutWidget::quantityChanged(int index)
     } else {
         ui->infoLabel->setText("<html><body><p>Choose which implementation to use for playback and for MIDI. No more than one Chromasound Direct is supported.</p><p>MIDI is active even when the song is playing.</p></body></html>");
     }
+
+    emit changed();
 }
 
 void ChromasoundLayoutWidget::playbackChanged(int index)
@@ -86,6 +89,8 @@ void ChromasoundLayoutWidget::playbackChanged(int index)
             ui->interactiveComboBox->addItem("Chromasound Direct");
         }
     }
+
+    emit changed();
 }
 
 void ChromasoundLayoutWidget::interactiveChanged(int index)
@@ -99,4 +104,11 @@ void ChromasoundLayoutWidget::interactiveChanged(int index)
             ui->playbackComboBox->addItem("Chromasound Direct");
         }
     }
+
+    emit changed();
+}
+
+void ChromasoundLayoutWidget::implementationChanged(int index)
+{
+    emit changed();
 }

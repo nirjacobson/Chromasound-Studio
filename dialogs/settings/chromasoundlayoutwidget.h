@@ -22,6 +22,9 @@ class ChromasoundLayoutWidget : public QWidget
         QString chromasound1() const;
         QString chromasound2() const;
 
+    signals:
+        void changed();
+
     private:
         Ui::ChromasoundLayoutWidget *ui;
 
@@ -29,6 +32,7 @@ class ChromasoundLayoutWidget : public QWidget
         void quantityChanged(int index);
         void playbackChanged(int index);
         void interactiveChanged(int index);
+        void implementationChanged(int index);
 };
 
 #endif // CHROMASOUNDLAYOUTWIDGET_H

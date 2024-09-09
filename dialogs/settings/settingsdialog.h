@@ -26,6 +26,7 @@ class SettingsDialog : public QDialog
 
     private slots:
         void accepted();
+        void chromasoundLayoutChanged();
 };
 
 #endif // SETTINGSDIALOG_H

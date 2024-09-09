@@ -3,6 +3,7 @@
 const QString Chromasound_Studio::Organization = "Nir Jacobson";
 const QString Chromasound_Studio::Application = "Chromasound Studio";
 const QString Chromasound_Studio::SettingsFile = "settings.ini";
+const QString Chromasound_Studio::OutputDevice = "outputDevice";
 const QString Chromasound_Studio::EqualizerBass = "equalizer/bass";
 const QString Chromasound_Studio::EqualizerTreble = "equalizer/treble";
 const QString Chromasound_Studio::AudioBufferSize = "buffserSize/audio";

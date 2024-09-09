@@ -961,7 +961,7 @@ void MainWindow::settingsTriggered()
         _settingsDialogWindow = window;
         _mdiArea->addSubWindow(window);
 
-        window->layout()->setSizeConstraint(QLayout::SizeConstraint::SetMinimumSize);
+        window->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
         window->show();
     } else {
         _mdiArea->setActiveSubWindow(_settingsDialogWindow);
