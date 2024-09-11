@@ -8,7 +8,7 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(LINUX_ARM ON)
+set(LINUX_ARM OFF)
 set(WIN32_ARM OFF)
 
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
@@ -31,7 +31,10 @@ if (WIN32)
 elseif (APPLE)
     include_directories("/System/Volumes/Data/usr/local/include"
                         "/System/Volumes/Data/usr/local/include/libbson-1.0")
+elseif (NOT LINUX_ARM)
+    include_directories("/usr/x86_64-pc-linux-gnu/usr/lib/gcc/x86_64-pc-linux-gnu/14/include/g++-v14/")
 endif()
+
 
 set(CMAKE_OSX_ARCHITECTURES x86_64 arm64)
 
