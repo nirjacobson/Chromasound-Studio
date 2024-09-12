@@ -4,7 +4,7 @@
 #include <iostream>
 #include <portaudio.h>
 #include <stdint.h>
-#include <strings.h>
+#include <string.h>
 #include <vector>
 #include <algorithm>
 
@@ -86,7 +86,7 @@ void AudioOutput<T>::open(const std::string& device, const int framesPerBuffer) 
     /* Open an audio I/O stream. */
     PaStreamParameters outputParams;
 
-    bzero(&outputParams, sizeof(outputParams));
+    memset(&outputParams, 0, sizeof(outputParams));
 
     std::vector<std::string> devs = devices();
     outputParams.channelCount = 2;
