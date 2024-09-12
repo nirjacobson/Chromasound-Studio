@@ -20,7 +20,7 @@ EmulatorOutputDeviceSettingsWidget::EmulatorOutputDeviceSettingsWidget(QWidget *
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
 
-    ui->outputDeviceComboBox->setCurrentText(settings.value(Chromasound_Studio::OutputDevice, AudioOutput<int16_t>::instance()->defaultDevice().c_str()).toString());
+    ui->outputDeviceComboBox->setCurrentIndex(settings.value(Chromasound_Studio::OutputDevice, AudioOutput<int16_t>::instance()->defaultDeviceIndex()).toInt());
 
 }
 
@@ -29,8 +29,7 @@ EmulatorOutputDeviceSettingsWidget::~EmulatorOutputDeviceSettingsWidget()
     delete ui;
 }
 
-
-QString EmulatorOutputDeviceSettingsWidget::outputDevice() const
+int EmulatorOutputDeviceSettingsWidget::outputDeviceIndex() const
 {
-    return ui->outputDeviceComboBox->currentText();
+    return ui->outputDeviceComboBox->currentIndex();
 }

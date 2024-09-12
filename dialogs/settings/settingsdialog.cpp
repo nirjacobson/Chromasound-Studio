@@ -35,7 +35,7 @@ void SettingsDialog::accepted()
     settings.setValue(Chromasound_Studio::NumberOfChromasounds, ui->chromasoundLayoutWidget->quantity());
     settings.setValue(Chromasound_Studio::Chromasound1, ui->chromasoundLayoutWidget->chromasound1());
     settings.setValue(Chromasound_Studio::Chromasound2, ui->chromasoundLayoutWidget->chromasound2());
-    settings.setValue(Chromasound_Studio::OutputDevice, ui->emulatorOutputDeviceWidget->outputDevice());
+    settings.setValue(Chromasound_Studio::OutputDevice, ui->emulatorOutputDeviceWidget->outputDeviceIndex());
 
     emit done();
 

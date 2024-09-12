@@ -16,12 +16,11 @@ class AudioOutput : public Consumer<T> {
         static AudioOutput* instance();
 
         void init();
-        void open(const std::string& device, const int framesPerBuffer);
+        void open(const int deviceIndex, const int framesPerBuffer);
         void destroy();
 
         std::vector<std::string> devices();
         int defaultDeviceIndex();
-        std::string defaultDevice();
 
         void start();
         void stop();
@@ -72,7 +71,7 @@ void AudioOutput<T>::init() {
 }
 
 template <typename T>
-void AudioOutput<T>::open(const std::string& device, const int framesPerBuffer) {
+void AudioOutput<T>::open(const int deviceIndex, const int framesPerBuffer) {
     _framesPerBuffer = framesPerBuffer;
 
     _running = false;
@@ -90,7 +89,7 @@ void AudioOutput<T>::open(const std::string& device, const int framesPerBuffer) 
 
     std::vector<std::string> devs = devices();
     outputParams.channelCount = 2;
-    outputParams.device = std::find(devs.begin(), devs.end(), device) - devs.begin();
+    outputParams.device = deviceIndex;
     outputParams.sampleFormat = format;
 
     _paError = Pa_OpenStream(&_paStream,
@@ -124,12 +123,6 @@ std::vector<std::string> AudioOutput<T>::devices() {
 template <typename T>
 int AudioOutput<T>::defaultDeviceIndex() {
     return Pa_GetDefaultOutputDevice();
-}
-
-template <typename T>
-std::string AudioOutput<T>::defaultDevice() {
-    std::vector<std::string> devs = devices();
-    return devs[defaultDeviceIndex()];
 }
 
 template <typename T>

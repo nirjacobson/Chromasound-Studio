@@ -362,8 +362,8 @@ void Application::setupChromasound()
         _output = AudioOutput<int16_t>::instance();
         _output->init();
 
-        QString outputDevice = settings.value(Chromasound_Studio::OutputDevice, AudioOutput<int16_t>::instance()->defaultDevice().c_str()).toString();
-        _output->open(outputDevice.toStdString(), audioBufferSize);
+        int outputDeviceIndex = settings.value(Chromasound_Studio::OutputDevice, AudioOutput<int16_t>::instance()->defaultDeviceIndex()).toInt();
+        _output->open(outputDeviceIndex, audioBufferSize);
     }
 
     if (chromasound1Type == Chromasound_Studio::Emulator) {
