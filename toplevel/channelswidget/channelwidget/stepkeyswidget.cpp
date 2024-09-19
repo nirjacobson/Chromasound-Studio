@@ -197,5 +197,6 @@ void StepKeysWidget::mousePressEvent(QMouseEvent* event)
         mouseKey = (octave * KEYS_PER_OCTAVE) + whiteKeys[whiteKey];
     }
 
+    update();
     emit clicked(event->button(), stepClicked, mouseKey);
 }

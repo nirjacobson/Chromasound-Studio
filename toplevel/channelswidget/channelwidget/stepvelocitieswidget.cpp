@@ -99,6 +99,7 @@ void StepVelocitiesWidget::mousePressEvent(QMouseEvent* event)
             return item->time() == beatsPerStep * stepClicked;
         });
         if (it != track.items().end()) {
+            update();
             emit clicked(stepClicked, velocityClicked);
         }
     }
