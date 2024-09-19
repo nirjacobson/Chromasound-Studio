@@ -68,6 +68,8 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
 
     connect(_velocityDialog, &QDialog::accepted, this, &PianoRollWidget::velocityDialogAccepted);
 
+    ui->settingsChangeWidget->setVisible(false);
+
     ui->menubar->setNativeMenuBar(false);
 }
 
@@ -210,9 +212,12 @@ void PianoRollWidget::ganttMarkerClicked(GanttMarker* marker)
     Track::SettingsChange* settingsChange = dynamic_cast<Track::SettingsChange*>(marker);
 
     ui->settingsChangeWidget->setSettings(settingsChange->settings());
+    ui->settingsChangeWidget->setVisible(true);
     ui->stackedWidget->setCurrentIndex(1);
 
     _editingSettingsChange = settingsChange;
+
+    emit sizeUpNeeded();
 }
 
 void PianoRollWidget::ganttHeaderClicked(Qt::MouseButton button, float time)
@@ -393,15 +398,21 @@ void PianoRollWidget::deleteTriggered()
 
 void PianoRollWidget::doneButtonClicked()
 {
+    ui->settingsChangeWidget->setVisible(false);
     ui->stackedWidget->setCurrentIndex(0);
     _editingSettingsChange = nullptr;
+
+    emit sizeDownNeeded();
 }
 
 void PianoRollWidget::removeButtonClicked()
 {
     _app->undoStack().push(new RemoveTrackSettingsChangeCommand(_app->window(), *_track, _editingSettingsChange));
+    ui->settingsChangeWidget->setVisible(false);
     ui->stackedWidget->setCurrentIndex(0);
     _editingSettingsChange = nullptr;
+
+    emit sizeDownNeeded();
 }
 
 void PianoRollWidget::velocityDialogAccepted()

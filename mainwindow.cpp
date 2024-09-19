@@ -511,6 +511,14 @@ void MainWindow::pianoRollTriggered(const int index, const bool on)
             windowClosed(pianoRollWindow);
         });
 
+        connect(pianoRollWidget, &PianoRollWidget::sizeUpNeeded, this, [=]() {
+            pianoRollWindow->resize(pianoRollWindow->minimumSizeHint());
+        });
+
+        connect(pianoRollWidget, &PianoRollWidget::sizeDownNeeded, this, [=]() {
+            pianoRollWindow->resize(QSize(600, 500));
+        });
+
         pianoRollWindow->show();
         _mdiArea->setActiveSubWindow(pianoRollWindow);
 

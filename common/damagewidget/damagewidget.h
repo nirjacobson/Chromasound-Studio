@@ -28,6 +28,7 @@ signals:
     // QWidget interface
 protected:
     void paintEvent(QPaintEvent* event);
+    void resizeEvent(QResizeEvent* event);
 };
 
 #endif // DAMAGEWIDGET_H

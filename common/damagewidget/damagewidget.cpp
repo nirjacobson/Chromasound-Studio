@@ -51,3 +51,8 @@ void DamageWidget::paintEvent(QPaintEvent* event)
         paintPartial(event);
     }
 }
+
+void DamageWidget::resizeEvent(QResizeEvent* event)
+{
+    _needsFullPaint = true;
+}

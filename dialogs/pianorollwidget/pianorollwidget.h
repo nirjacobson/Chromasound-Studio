@@ -62,6 +62,8 @@ class PianoRollWidget : public QMainWindow
     signals:
         void keyOn(const int key, const int velocity);
         void keyOff(const int key);
+        void sizeUpNeeded();
+        void sizeDownNeeded();
 
     private:
         Application* _app;
