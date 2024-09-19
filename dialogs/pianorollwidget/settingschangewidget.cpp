@@ -12,6 +12,8 @@ SettingsChangeWidget::SettingsChangeWidget(QWidget *parent) :
 
     connect(ui->footerWidget, &SettingsChangeFooterWidget::removeClicked, this, &SettingsChangeWidget::removeClicked);
     connect(ui->footerWidget, &SettingsChangeFooterWidget::doneClicked, this, &SettingsChangeWidget::doneClicked);
+
+    showAndHideOthers(0);
 }
 
 SettingsChangeWidget::~SettingsChangeWidget()
@@ -54,33 +56,40 @@ void SettingsChangeWidget::setSettings(ChannelSettings& settings)
     try {
         FMChannelSettings& fmcs = dynamic_cast<FMChannelSettings&>(settings);
         ui->fmWidget->setSettings(&fmcs);
+        showAndHideOthers(1);
         ui->stackedWidget->setCurrentIndex(1);
     } catch (std::bad_cast) {
         try {
             NoiseChannelSettings& ncs = dynamic_cast<NoiseChannelSettings&>(settings);
             ui->noiseWidget->setSettings(&ncs);
+            showAndHideOthers(2);
             ui->stackedWidget->setCurrentIndex(2);
         } catch (std::bad_cast) {
             try {
                 SSGChannelSettings& scs = dynamic_cast<SSGChannelSettings&>(settings);
                 ui->ssgWidget->setSettings(&scs);
+                showAndHideOthers(3);
                 ui->stackedWidget->setCurrentIndex(3);
             } catch (std::bad_cast) {
                 try {
                     MelodyChannelSettings& mcs = dynamic_cast<MelodyChannelSettings&>(settings);
                     ui->melodyWidget->setSettings(&mcs);
+                    showAndHideOthers(4);
                     ui->stackedWidget->setCurrentIndex(4);
                 } catch (std::bad_cast) {
                     try {
                         RhythmChannelSettings& rcs = dynamic_cast<RhythmChannelSettings&>(settings);
                         ui->rhythmWidget->setSettings(&rcs);
+                        showAndHideOthers(5);
                         ui->stackedWidget->setCurrentIndex(5);
                     } catch (std::bad_cast) {
                         try {
                             ROMChannelSettings& rcs = dynamic_cast<ROMChannelSettings&>(settings);
                             ui->romWidget->setSettings(&rcs);
+                            showAndHideOthers(6);
                             ui->stackedWidget->setCurrentIndex(6);
                         } catch (std::bad_cast) {
+                            showAndHideOthers(0);
                             ui->stackedWidget->setCurrentIndex(0);
                         }
                     }
@@ -95,5 +104,15 @@ void SettingsChangeWidget::setSettings(ChannelSettings& settings)
 void SettingsChangeWidget::setROMType(const Channel::Type type)
 {
     ui->romWidget->setROMType(type);
+}
+
+void SettingsChangeWidget::showAndHideOthers(const int index)
+{
+    ui->fmWidget->setVisible(index == 1);
+    ui->noiseWidget->setVisible(index == 2);
+    ui->ssgWidget->setVisible(index == 3);
+    ui->melodyWidget->setVisible(index == 4);
+    ui->rhythmWidget->setVisible(index == 5);
+    ui->romWidget->setVisible(index == 6);
 }
 

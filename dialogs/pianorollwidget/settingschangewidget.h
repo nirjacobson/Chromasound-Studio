@@ -37,6 +37,8 @@ class SettingsChangeWidget : public QWidget
 
     private:
         Ui::SettingsChangeWidget *ui;
+
+        void showAndHideOthers(const int index);
 };
 
 #endif // SETTINGSCHANGEWIDGET_H

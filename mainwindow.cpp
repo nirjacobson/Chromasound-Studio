@@ -512,11 +512,17 @@ void MainWindow::pianoRollTriggered(const int index, const bool on)
         });
 
         connect(pianoRollWidget, &PianoRollWidget::sizeUpNeeded, this, [=]() {
-            pianoRollWindow->resize(pianoRollWindow->minimumSizeHint());
+            QSize size;
+            size.setWidth(qMax(pianoRollWindow->size().width(), pianoRollWindow->minimumSizeHint().width()));
+            size.setHeight(qMax(pianoRollWindow->size().height(), pianoRollWindow->minimumSizeHint().height()));
+
+            _pianoRollSize = pianoRollWindow->size();
+
+            pianoRollWindow->resize(size);
         });
 
         connect(pianoRollWidget, &PianoRollWidget::sizeDownNeeded, this, [=]() {
-            pianoRollWindow->resize(QSize(600, 500));
+            pianoRollWindow->resize(_pianoRollSize);
         });
 
         pianoRollWindow->show();

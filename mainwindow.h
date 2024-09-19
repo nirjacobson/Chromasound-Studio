@@ -205,6 +205,8 @@ class MainWindow : public QMainWindow
         QAction _actionFM2;
         QAction _actionFM2SSG;
 
+        QSize _pianoRollSize;
+
         QTimer _timer;
 
         bool _shownEver;
