@@ -136,16 +136,6 @@ void PRDisplayWidget::paintFull(QPaintEvent* event)
             position = 0;
         }
     }
-
-    if (_app->isPlaying() && _app->project().getChannel(_index).enabled() && position <= visibleLength) {
-        int appPositionPixel = position / beatsPerPixel;
-
-        QPoint p1(appPositionPixel, 0);
-        QPoint p2(appPositionPixel, height());
-
-        painter.setPen(_cursorColor);
-        painter.drawLine(p1, p2);
-    }
 }
 
 void PRDisplayWidget::paintPartial(QPaintEvent* event)
@@ -154,7 +144,18 @@ void PRDisplayWidget::paintPartial(QPaintEvent* event)
 
     int visibleLength =  _app->project().getPatternBarLength(_app->project().frontPattern());
     float beatsPerPixel = (float)visibleLength / (float)width();
-    float position = _appPosition;
+    float position = -1;
+
+    if (_app->project().playMode() == Project::PlayMode::PATTERN) {
+        position = _appPosition;
+    } else {
+        QMap<int, float> activePatterns = _app->project().playlist().activePatternsAtTime(_appPosition);
+        int frontPatternIdx = _app->project().frontPattern();
+        if (activePatterns.contains(frontPatternIdx)) {
+            position = (_appPosition - activePatterns[frontPatternIdx]);
+        }
+    }
+
     if (_app->isPlaying() && _app->project().getChannel(_index).enabled() && position <= visibleLength) {
         int appPositionPixel = position / beatsPerPixel;
 
