@@ -39,7 +39,7 @@ class PianoRollWidget : public QMainWindow
         explicit PianoRollWidget(QWidget *parent = nullptr, Application* app = nullptr);
         ~PianoRollWidget();
 
-        static constexpr int Rows = 12 * 8;
+        static constexpr int Rows = 12 * 9;
         static constexpr int RowHeight = 14;
         static constexpr int CellWidth = 16;
 
