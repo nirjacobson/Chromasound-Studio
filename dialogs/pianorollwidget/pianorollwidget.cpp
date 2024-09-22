@@ -107,10 +107,7 @@ void PianoRollWidget::setTrack(const int pattern, const int track)
 
     try {
         const ROMChannelSettings& settings = dynamic_cast<const ROMChannelSettings&>(_app->project().getChannel(_channel).settings());
-        const Channel::Type type = _app->project().getChannel(_channel).type();
-
-        _keysWidget->setROMChannelSettings(&settings, type);
-        ui->settingsChangeWidget->setROMType(type);
+        _keysWidget->setROMChannelSettings(&settings);
     } catch (std::exception& e) { }
 
     update();

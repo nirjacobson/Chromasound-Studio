@@ -1,13 +1,12 @@
 #include "romwidget.h"
 #include "ui_romwidget.h"
 
-ROMWidget::ROMWidget(QWidget *parent, Application* app, Channel::Type romType)
+ROMWidget::ROMWidget(QWidget *parent, Application* app)
     : QWidget(parent)
     , ui(new Ui::ROMWidget)
     , _app(app)
-    , _tableModel(this, app, _keys, _samples, romType)
-    , _sampleDelegate(this, app, romType)
-    , _romType(romType)
+    , _tableModel(this, app, _keys, _samples)
+    , _sampleDelegate(this, app)
     , _settings(nullptr)
 {
     ui->setupUi(this);
@@ -21,7 +20,7 @@ ROMWidget::ROMWidget(QWidget *parent, Application* app, Channel::Type romType)
     ui->tableView->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectItems);
 
     if (app) {
-        QStringList items = ROM(app->project().resolve(_romType == Channel::Type::SPCM ? app->project().spcmFile() : app->project().dpcmFile())).names();
+        QStringList items = ROM(app->project().resolve(app->project().pcmFile())).names();
         ui->stackedWidget->setCurrentIndex(!items.empty());
     }
 
@@ -43,7 +42,7 @@ void ROMWidget::setApplication(Application* app)
     _sampleDelegate.setApplication(app);
     _tableModel.setApplication(app);
 
-    QStringList items = ROM(app->project().resolve(_romType == Channel::Type::SPCM ? app->project().spcmFile() : app->project().dpcmFile())).names();
+    QStringList items = ROM(app->project().resolve(app->project().pcmFile())).names();
     ui->stackedWidget->setCurrentIndex(!items.empty());
 }
 
@@ -61,23 +60,13 @@ void ROMWidget::doUpdate()
 {
     if (_settings) setSettings(_settings);
 
-    QStringList items = ROM(_app->project().resolve(_romType == Channel::Type::SPCM ? _app->project().spcmFile() : _app->project().dpcmFile())).names();
+    QStringList items = ROM(_app->project().resolve(_app->project().pcmFile())).names();
     ui->stackedWidget->setCurrentIndex(!items.empty());
 }
 
-void ROMWidget::setROMType(const Channel::Type romType)
-{
-    _romType = romType;
-    _sampleDelegate.setROMType(romType);
-    _tableModel.setROMType(romType);
-
-    doUpdate();
-}
-
-ROMWidget::SampleItemDelegate::SampleItemDelegate(QObject* parent, Application* app, Channel::Type romType)
+ROMWidget::SampleItemDelegate::SampleItemDelegate(QObject* parent, Application* app)
     : QStyledItemDelegate(parent)
     , _app(app)
-    , _romType(romType)
 {
 
 }
@@ -86,7 +75,7 @@ QWidget* ROMWidget::SampleItemDelegate::createEditor(QWidget* parent, const QSty
 {
     QComboBox* comboBox = new QComboBox(parent);
 
-    QStringList items = ROM(_app->project().resolve(_romType == Channel::Type::SPCM ? _app->project().spcmFile() : _app->project().dpcmFile())).names();
+    QStringList items = ROM(_app->project().resolve(_app->project().pcmFile())).names();
     comboBox->addItems(items);
 
     return comboBox;
@@ -95,11 +84,6 @@ QWidget* ROMWidget::SampleItemDelegate::createEditor(QWidget* parent, const QSty
 void ROMWidget::SampleItemDelegate::setApplication(Application* app)
 {
     _app = app;
-}
-
-void ROMWidget::SampleItemDelegate::setROMType(const Channel::Type romType)
-{
-    _romType = romType;
 }
 
 void ROMWidget::SampleItemDelegate::setEditorData(QWidget* editor, const QModelIndex& index) const

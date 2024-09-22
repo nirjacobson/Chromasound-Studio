@@ -102,9 +102,7 @@ class Project
         void addChannel(const int index, const Channel& channel);
         int indexOfChannel(const Channel& channel);
 
-        bool hasDPCM() const;
-
-        bool hasSPCM() const;
+        bool hasPCM() const;
 
         Project& operator=(Project&& src);
         Project(Project&& o);
@@ -120,11 +118,8 @@ class Project
         OPLL::Type opllType() const;
         void setOpllType(const OPLL::Type type);
 
-        const QString& spcmFile() const;
-        void setSPCMFile(const QString& path);
-
-        const QString& dpcmFile() const;
-        void setDPCMFile(const QString& path);
+        const QString& pcmFile() const;
+        void setPCMFile(const QString& path);
 
         bool usesOPN() const;
         bool usesSSG() const;
@@ -157,8 +152,7 @@ class Project
         OPLSettings _userTone;
         OPLL::Type _opllType;
 
-        QString _spcmFile;
-        QString _dpcmFile;
+        QString _pcmFile;
 
         void swapChannels(const int idxa, const int idxb);
         void swapPatterns(const int idxa, const int idxb);

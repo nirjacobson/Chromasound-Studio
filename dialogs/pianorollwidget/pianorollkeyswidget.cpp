@@ -61,10 +61,9 @@ void PianoRollKeysWidget::releaseKey(const int key)
     update();
 }
 
-void PianoRollKeysWidget::setROMChannelSettings(const ROMChannelSettings* settings, Channel::Type type)
+void PianoRollKeysWidget::setROMChannelSettings(const ROMChannelSettings* settings)
 {
     _romChannelSettings = settings;
-    _romType = type;
 }
 
 int PianoRollKeysWidget::length() const
@@ -269,7 +268,7 @@ void PianoRollKeysWidget::paintFull(QPaintEvent* event)
             QPoint thisTopLeft = topLeft - QPoint(0, j * _rowHeight);
             QRect rect(thisTopLeft, thisTopLeft + QPoint(width()/2, _rowHeight));
 
-            ROM rom(_app->project().resolve(_romType == Channel::Type::SPCM ? _app->project().spcmFile() : _app->project().dpcmFile()));
+            ROM rom(_app->project().resolve(_app->project().pcmFile()));
 
             QFont font = painter.font();
 

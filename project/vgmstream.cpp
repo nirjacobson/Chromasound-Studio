@@ -37,8 +37,6 @@ QList<int> VGMStream::ym2413_frequencies = {
 VGMStream::VGMStream(const Format format)
     : _format(format)
 {
-    _dpcmChannels[0].setIsLong(true);
-
     reset();
 }
 
@@ -62,10 +60,6 @@ void VGMStream::assignChannel(const Project& project, StreamNoteItem* noteItem, 
         const FMChannelSettings* fmcs = dynamic_cast<const FMChannelSettings*>(noteItem->channelSettings());
         int channel = acquireFMChannel(noteItem->time(), noteItem->note().duration(), fmcs, items);
         noteItem->setChannel(channel);
-    } else if (noteItem->type() == Channel::Type::DPCM) {
-        const ROMChannelSettings* dpcmcs = dynamic_cast<const ROMChannelSettings*>(noteItem->channelSettings());
-        int channel = acquireDPCMChannel(project, noteItem->time(), noteItem->note().duration(), dpcmcs, noteItem->note());
-        noteItem->setChannel(channel);
     } else if (noteItem->type() == Channel::Type::SSG) {
         const SSGChannelSettings* scs = dynamic_cast<const SSGChannelSettings*>(noteItem->channelSettings());
         int channel = acquireSSGChannel(noteItem->time(), noteItem->note().duration(), scs, items);
@@ -78,9 +72,9 @@ void VGMStream::assignChannel(const Project& project, StreamNoteItem* noteItem, 
         const RhythmChannelSettings* rcs = dynamic_cast<const RhythmChannelSettings*>(noteItem->channelSettings());
         int channel = acquireRhythmChannel(noteItem->time(), noteItem->note().duration(), rcs, items);
         noteItem->setChannel(channel);
-    } else if (noteItem->type() == Channel::Type::SPCM) {
+    } else if (noteItem->type() == Channel::Type::PCM) {
         const ROMChannelSettings* rcs = dynamic_cast<const ROMChannelSettings*>(noteItem->channelSettings());
-        int channel = acquireSPCMChannel(noteItem->time(), noteItem->note().duration(), rcs, items);
+        int channel = acquirePCMChannel(project, noteItem->time(), noteItem->note().duration(), rcs);
         noteItem->setChannel(channel);
     }
 }
@@ -93,16 +87,14 @@ void VGMStream::releaseChannel(const Channel::Type type, const int channel)
         _noiseChannels[channel].release();
     } else if (type == Channel::Type::FM) {
         _fmChannels[channel].release();
-    } else if (type == Channel::Type::DPCM) {
-        _dpcmChannels[channel].release();
     } else if (type == Channel::Type::SSG) {
         _ssgChannels[channel].release();
     } else if (type == Channel::Type::MELODY) {
         _melodyChannels[channel].release();
     } else if (type == Channel::Type::RHYTHM) {
         _rhythmChannels[channel].release();
-    } else if (type == Channel::Type::SPCM) {
-        _spcmChannels[channel].release();
+    } else if (type == Channel::Type::PCM) {
+        _pcmChannels[channel].release();
     }
 }
 
@@ -221,7 +213,7 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
         data.prepend(enableRhythm);
     }
 
-    if (project.hasDPCM() || project.hasSPCM()) {
+    if (project.hasPCM()) {
         QByteArray enableDac;
         enableDac.append(0x52);
         enableDac.append(0x2B);
@@ -233,42 +225,40 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
             _loopOffsetData += 3;
         }
 
-        if (project.hasDPCM() || _format == Format::STANDARD) {
-            QByteArray dataBlock;
-            quint32 dataBlockSize;
-            QByteArray pcmBlock;
-            if (_format == Format::CHROMASOUND) {
-                QFile romFile(project.resolve(project.dpcmFile()));
-                romFile.open(QIODevice::ReadOnly);
-                dataBlock = romFile.readAll();
-                romFile.close();
-            } else {
-                dataBlock = encodeStandardPCM(project, pattern, loopStart, loopEnd);
-            }
-            dataBlockSize = dataBlock.size();
-
-            pcmBlock.append(0x67);
-            pcmBlock.append(0x66);
-            pcmBlock.append((quint8)0x00);
-            pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
-            pcmBlock.append(dataBlock);
-
-            _loopOffsetData += 7 + dataBlockSize;
-            _currentOffsetData += 7 + dataBlockSize;
-
-            if (_format == Format::STANDARD) {
-                pcmBlock.append(0xE0);
-                pcmBlock.append((quint8)0x00);
-                pcmBlock.append((quint8)0x00);
-                pcmBlock.append((quint8)0x00);
-                pcmBlock.append((quint8)0x00);
-
-                _loopOffsetData += 5;
-                _currentOffsetData += 5;
-            }
-
-            data.prepend(pcmBlock);
+        QByteArray dataBlock;
+        quint32 dataBlockSize;
+        QByteArray pcmBlock;
+        if (_format == Format::CHROMASOUND) {
+            QFile romFile(project.resolve(project.pcmFile()));
+            romFile.open(QIODevice::ReadOnly);
+            dataBlock = romFile.readAll();
+            romFile.close();
+        } else {
+            dataBlock = encodeStandardPCM(project, pattern, loopStart, loopEnd);
         }
+        dataBlockSize = dataBlock.size();
+
+        pcmBlock.append(0x67);
+        pcmBlock.append(0x66);
+        pcmBlock.append((quint8)0x00);
+        pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
+        pcmBlock.append(dataBlock);
+
+        _loopOffsetData += 7 + dataBlockSize;
+        _currentOffsetData += 7 + dataBlockSize;
+
+        if (_format == Format::STANDARD) {
+            pcmBlock.append(0xE0);
+            pcmBlock.append((quint8)0x00);
+            pcmBlock.append((quint8)0x00);
+            pcmBlock.append((quint8)0x00);
+            pcmBlock.append((quint8)0x00);
+
+            _loopOffsetData += 5;
+            _currentOffsetData += 5;
+        }
+
+        data.prepend(pcmBlock);
     }
 
     QByteArray gd3Data;
@@ -450,7 +440,7 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
         data.prepend(enableRhythm);
     }
 
-    if (project.hasDPCM() || project.hasSPCM()) {
+    if (project.hasPCM()) {
         QByteArray enableDac;
         enableDac.append(0x52);
         enableDac.append(0x2B);
@@ -462,42 +452,40 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
             _loopOffsetData += 3;
         }
 
-        if (project.hasDPCM() || _format == Format::STANDARD) {
-            QByteArray dataBlock;
-            quint32 dataBlockSize;
-            QByteArray pcmBlock;
-            if (_format == Format::CHROMASOUND) {
-                QFile romFile(project.resolve(project.dpcmFile()));
-                romFile.open(QIODevice::ReadOnly);
-                dataBlock = romFile.readAll();
-                romFile.close();
-            } else {
-                dataBlock = encodeStandardPCM(project, loopStart, loopEnd);
-            }
-            dataBlockSize = dataBlock.size();
-
-            pcmBlock.append(0x67);
-            pcmBlock.append(0x66);
-            pcmBlock.append((quint8)0x00);
-            pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
-            pcmBlock.append(dataBlock);
-
-            _loopOffsetData += 7 + dataBlockSize;
-            _currentOffsetData += 7 + dataBlockSize;
-
-            if (_format == Format::STANDARD) {
-                pcmBlock.append(0xE0);
-                pcmBlock.append((quint8)0x00);
-                pcmBlock.append((quint8)0x00);
-                pcmBlock.append((quint8)0x00);
-                pcmBlock.append((quint8)0x00);
-
-                _loopOffsetData += 5;
-                _currentOffsetData += 5;
-            }
-
-            data.prepend(pcmBlock);
+        QByteArray dataBlock;
+        quint32 dataBlockSize;
+        QByteArray pcmBlock;
+        if (_format == Format::CHROMASOUND) {
+            QFile romFile(project.resolve(project.pcmFile()));
+            romFile.open(QIODevice::ReadOnly);
+            dataBlock = romFile.readAll();
+            romFile.close();
+        } else {
+            dataBlock = encodeStandardPCM(project, loopStart, loopEnd);
         }
+        dataBlockSize = dataBlock.size();
+
+        pcmBlock.append(0x67);
+        pcmBlock.append(0x66);
+        pcmBlock.append((quint8)0x00);
+        pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
+        pcmBlock.append(dataBlock);
+
+        _loopOffsetData += 7 + dataBlockSize;
+        _currentOffsetData += 7 + dataBlockSize;
+
+        if (_format == Format::STANDARD) {
+            pcmBlock.append(0xE0);
+            pcmBlock.append((quint8)0x00);
+            pcmBlock.append((quint8)0x00);
+            pcmBlock.append((quint8)0x00);
+            pcmBlock.append((quint8)0x00);
+
+            _loopOffsetData += 5;
+            _currentOffsetData += 5;
+        }
+
+        data.prepend(pcmBlock);
     }
 
     QByteArray gd3Data;
@@ -542,10 +530,6 @@ void VGMStream::reset()
         _fmChannels[i].reset();
     }
 
-    for (int i = 0; i < DPCM_CHANNELS; i++) {
-        _dpcmChannels[i].reset();
-    }
-
     _lastSSGMixer = 0;
 
     for (int i = 0; i < SSG_CHANNELS; i++) {
@@ -562,8 +546,8 @@ void VGMStream::reset()
         _rhythmChannels[i].reset();
     }
 
-    for (int i = 0; i < SPCM_CHANNELS; i++) {
-        _spcmChannels[i].reset();
+    for (int i = 0; i < PCM_CHANNELS; i++) {
+        _pcmChannels[i].reset();
     }
 
     _lastRhythm = 0;
@@ -584,44 +568,31 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const Pattern& p
     applySettingsChanges2(0, pattern, items);
     addSettingsAtCurrentOffset(items, qMax(0.0f, loopStart));
 
-    QByteArray dpcmData;
-    QMap<int, quint32> dpcmOffsetsByChannel;
-    QMap<int, int> dpcmSampleByChannel;
-    QMap<int, int> dpcmVolumeByChannel;
-
-    QByteArray spcmData;
-    QMap<int, quint32> spcmOffsetsByChannel;
-    QMap<int, int> spcmSampleByChannel;
-    QMap<int, int> spcmVolumeByChannel;
+    QByteArray pcmData;
+    QMap<int, quint32> pcmOffsetsByChannel;
+    QMap<int, int> pcmSampleByChannel;
+    QMap<int, int> pcmVolumeByChannel;
 
     items.erase(std::remove_if(items.begin(), items.end(), [](StreamItem* si) {
         StreamNoteItem* sni;
         if ((sni = dynamic_cast<StreamNoteItem*>(si))) {
-            if (sni->type() == Channel::Type::DPCM || sni->type() == Channel::Type::SPCM) {
+            if (sni->type() == Channel::Type::PCM) {
                 return false;
             }
         }
         return true;
     }), items.end());
 
-    if (!project.dpcmFile().isEmpty()) {
-        QFile romFile(project.resolve(project.dpcmFile()));
+    if (!project.pcmFile().isEmpty()) {
+        QFile romFile(project.resolve(project.pcmFile()));
         romFile.open(QIODevice::ReadOnly);
-        dpcmData = romFile.readAll();
-        romFile.close();
-    }
-
-    if (!project.spcmFile().isEmpty()) {
-        QFile romFile(project.resolve(project.spcmFile()));
-        romFile.open(QIODevice::ReadOnly);
-        spcmData = romFile.readAll();
+        pcmData = romFile.readAll();
         romFile.close();
     }
 
     sortItems(items);
 
-    ROM spcmROM(project.resolve(project.spcmFile()));
-    ROM dpcmROM(project.resolve(project.dpcmFile()));
+    ROM pcmROM(project.resolve(project.pcmFile()));
 
     float lastTime = 0.0;
     quint32 pcmSize = 0;
@@ -639,27 +610,13 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const Pattern& p
                 for (quint32 j = 0; j < pcmLength; j++) {
                     int result = 0x00;
 
-                    for (auto it = dpcmOffsetsByChannel.begin(); it != dpcmOffsetsByChannel.end();) {
-                        int sample = dpcmData[dpcmOffsetsByChannel[it.key()]++];
-                        int volume = dpcmVolumeByChannel[it.key()];
+                    for (auto it = pcmOffsetsByChannel.begin(); it != pcmOffsetsByChannel.end();) {
+                        int sample = pcmData[pcmOffsetsByChannel[it.key()]++];
+                        int volume = pcmVolumeByChannel[it.key()];
                         int att = MAX_PCM_ATTENUATION * (100 - volume) / 100.0f;
 
-                        if (dpcmROM.size(dpcmSampleByChannel[it.key()]) == dpcmOffsetsByChannel[it.key()] - dpcmROM.offsets()[dpcmSampleByChannel[it.key()]]) {
-                            it = dpcmOffsetsByChannel.erase(it);
-                        } else {
-                            ++it;
-                        }
-
-                        result += (sample - 0x80) >> att;
-                    }
-
-                    for (auto it = spcmOffsetsByChannel.begin(); it != spcmOffsetsByChannel.end();) {
-                        int sample = spcmData[spcmOffsetsByChannel[it.key()]++];
-                        int volume = spcmVolumeByChannel[it.key()];
-                        int att = MAX_PCM_ATTENUATION * (100 - volume) / 100.0f;
-
-                        if (spcmROM.size(spcmSampleByChannel[it.key()]) == spcmOffsetsByChannel[it.key()] - spcmROM.offsets()[spcmSampleByChannel[it.key()]]) {
-                            it = spcmOffsetsByChannel.erase(it);
+                        if (pcmROM.size(pcmSampleByChannel[it.key()]) == pcmOffsetsByChannel[it.key()] - pcmROM.offsets()[pcmSampleByChannel[it.key()]]) {
+                            it = pcmOffsetsByChannel.erase(it);
                         } else {
                             ++it;
                         }
@@ -690,26 +647,16 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const Pattern& p
         StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(items[i]);
         if (sni->on()) {
             quint32 newPcmSize;
-            if (sni->type() == Channel::Type::DPCM) {
+            if (sni->type() == Channel::Type::PCM) {
 
                 const ROMChannelSettings* channelSettings = dynamic_cast<const ROMChannelSettings*>(sni->channelSettings());
                 newPcmSize = 0;
 
                 if (channelSettings->keySampleMappings().contains(sni->note().key())) {
-                    newPcmSize = qMin(dpcmROM.size(channelSettings->keySampleMappings()[sni->note().key()]), (quint32)(sni->note().duration() / project.tempo() * 60 * 44100));
-                    dpcmOffsetsByChannel[sni->channel()] = dpcmROM.offsets()[channelSettings->keySampleMappings()[sni->note().key()]];
-                    dpcmSampleByChannel[sni->channel()] = channelSettings->keySampleMappings()[sni->note().key()];
-                    dpcmVolumeByChannel[sni->channel()] = channelSettings->volume() * sni->note().velocity() / 100.0f;
-                }
-            } else {
-                const ROMChannelSettings* channelSettings = dynamic_cast<const ROMChannelSettings*>(sni->channelSettings());
-                newPcmSize = 0;
-
-                if (channelSettings->keySampleMappings().contains(sni->note().key())) {
-                    newPcmSize = qMin(spcmROM.size(channelSettings->keySampleMappings()[sni->note().key()]), (quint32)(sni->note().duration() / project.tempo() * 60 * 44100));
-                    spcmOffsetsByChannel[sni->channel()] = spcmROM.offsets()[channelSettings->keySampleMappings()[sni->note().key()]];
-                    spcmSampleByChannel[sni->channel()] = channelSettings->keySampleMappings()[sni->note().key()];
-                    spcmVolumeByChannel[sni->channel()] = channelSettings->volume() * sni->note().velocity() / 100.0f;
+                    newPcmSize = qMin(pcmROM.size(channelSettings->keySampleMappings()[sni->note().key()]), (quint32)(sni->note().duration() / project.tempo() * 60 * 44100));
+                    pcmOffsetsByChannel[sni->channel()] = pcmROM.offsets()[channelSettings->keySampleMappings()[sni->note().key()]];
+                    pcmSampleByChannel[sni->channel()] = channelSettings->keySampleMappings()[sni->note().key()];
+                    pcmVolumeByChannel[sni->channel()] = channelSettings->volume() * sni->note().velocity() / 100.0f;
                 }
             }
             if (pcmWritten + newPcmSize > pcmSize) {
@@ -717,14 +664,10 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const Pattern& p
                 pcmSize = pcmWritten + newPcmSize;
             }
         } else {
-            if (sni->type() == Channel::Type::DPCM) {
-                dpcmOffsetsByChannel.remove(sni->channel());
-                dpcmSampleByChannel.remove(sni->channel());
-                dpcmVolumeByChannel.remove(sni->channel());
-            } else {
-                spcmOffsetsByChannel.remove(sni->channel());
-                spcmSampleByChannel.remove(sni->channel());
-                spcmVolumeByChannel.remove(sni->channel());
+            if (sni->type() == Channel::Type::PCM) {
+                pcmOffsetsByChannel.remove(sni->channel());
+                pcmSampleByChannel.remove(sni->channel());
+                pcmVolumeByChannel.remove(sni->channel());
             }
         }
     }
@@ -747,44 +690,31 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const float loop
     applySettingsChanges2(project, items);
     addSettingsAtCurrentOffset(items, qMax(0.0f, loopStart));
 
-    QByteArray dpcmData;
-    QMap<int, int> dpcmOffsetsByChannel;
-    QMap<int, int> dpcmSampleByChannel;
-    QMap<int, int> dpcmVolumeByChannel;
-
-    QByteArray spcmData;
-    QMap<int, int> spcmOffsetsByChannel;
-    QMap<int, int> spcmSampleByChannel;
-    QMap<int, int> spcmVolumeByChannel;
+    QByteArray pcmData;
+    QMap<int, int> pcmOffsetsByChannel;
+    QMap<int, int> pcmSampleByChannel;
+    QMap<int, int> pcmVolumeByChannel;
 
     items.erase(std::remove_if(items.begin(), items.end(), [](StreamItem* si) {
         StreamNoteItem* sni;
         if ((sni = dynamic_cast<StreamNoteItem*>(si))) {
-            if (sni->type() == Channel::Type::DPCM || sni->type() == Channel::Type::SPCM) {
+            if (sni->type() == Channel::Type::PCM) {
                 return false;
             }
         }
         return true;
     }), items.end());
 
-    if (!project.dpcmFile().isEmpty()) {
-        QFile romFile(project.resolve(project.dpcmFile()));
+    if (!project.pcmFile().isEmpty()) {
+        QFile romFile(project.resolve(project.pcmFile()));
         romFile.open(QIODevice::ReadOnly);
-        dpcmData = romFile.readAll();
-        romFile.close();
-    }
-
-    if (!project.spcmFile().isEmpty()) {
-        QFile romFile(project.resolve(project.spcmFile()));
-        romFile.open(QIODevice::ReadOnly);
-        spcmData = romFile.readAll();
+        pcmData = romFile.readAll();
         romFile.close();
     }
 
     sortItems(items);
 
-    ROM spcmROM(project.resolve(project.spcmFile()));
-    ROM dpcmROM(project.resolve(project.dpcmFile()));
+    ROM pcmROM(project.resolve(project.pcmFile()));
 
     float lastTime = 0.0;
     quint32 pcmSize = 0;
@@ -802,27 +732,13 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const float loop
                 for (quint32 j = 0; j < pcmLength; j++) {
                     int result = 0x00;
 
-                    for (auto it = dpcmOffsetsByChannel.begin(); it != dpcmOffsetsByChannel.end();) {
-                        int sample = dpcmData[dpcmOffsetsByChannel[it.key()]++];
-                        int volume = dpcmVolumeByChannel[it.key()];
+                    for (auto it = pcmOffsetsByChannel.begin(); it != pcmOffsetsByChannel.end();) {
+                        int sample = pcmData[pcmOffsetsByChannel[it.key()]++];
+                        int volume = pcmVolumeByChannel[it.key()];
                         int att = MAX_PCM_ATTENUATION * (100 - volume) / 100.0f;
 
-                        if (dpcmROM.size(dpcmSampleByChannel[it.key()]) == dpcmOffsetsByChannel[it.key()] - dpcmROM.offsets()[dpcmSampleByChannel[it.key()]]) {
-                            it = dpcmOffsetsByChannel.erase(it);
-                        } else {
-                            ++it;
-                        }
-
-                        result += (sample - 0x80) >> att;
-                    }
-
-                    for (auto it = spcmOffsetsByChannel.begin(); it != spcmOffsetsByChannel.end();) {
-                        int sample = spcmData[spcmOffsetsByChannel[it.key()]++];
-                        int volume = spcmVolumeByChannel[it.key()];
-                        int att = MAX_PCM_ATTENUATION * (100 - volume) / 100.0f;
-
-                        if (spcmROM.size(spcmSampleByChannel[it.key()]) == spcmOffsetsByChannel[it.key()] - spcmROM.offsets()[spcmSampleByChannel[it.key()]]) {
-                            it = spcmOffsetsByChannel.erase(it);
+                        if (pcmROM.size(pcmSampleByChannel[it.key()]) == pcmOffsetsByChannel[it.key()] - pcmROM.offsets()[pcmSampleByChannel[it.key()]]) {
+                            it = pcmOffsetsByChannel.erase(it);
                         } else {
                             ++it;
                         }
@@ -853,25 +769,15 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const float loop
         StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(items[i]);
         if (sni->on()) {
             quint32 newPcmSize;
-            if (sni->type() == Channel::Type::DPCM) {
+            if (sni->type() == Channel::Type::PCM) {
                 const ROMChannelSettings* channelSettings = dynamic_cast<const ROMChannelSettings*>(sni->channelSettings());
                 newPcmSize = 0;
 
                 if (channelSettings->keySampleMappings().contains(sni->note().key())) {
-                    newPcmSize = qMin(dpcmROM.size(channelSettings->keySampleMappings()[sni->note().key()]), (quint32)(sni->note().duration() / project.tempo() * 60 * 44100));
-                    dpcmOffsetsByChannel[sni->channel()] = dpcmROM.offsets()[channelSettings->keySampleMappings()[sni->note().key()]];
-                    dpcmSampleByChannel[sni->channel()] = channelSettings->keySampleMappings()[sni->note().key()];
-                    dpcmVolumeByChannel[sni->channel()] = channelSettings->volume() * sni->note().velocity() / 100.0f;
-                }
-            } else {
-                const ROMChannelSettings* channelSettings = dynamic_cast<const ROMChannelSettings*>(sni->channelSettings());
-                newPcmSize = 0;
-
-                if (channelSettings->keySampleMappings().contains(sni->note().key())) {
-                    newPcmSize = qMin(spcmROM.size(channelSettings->keySampleMappings()[sni->note().key()]), (quint32)(sni->note().duration() / project.tempo() * 60 * 44100));
-                    spcmOffsetsByChannel[sni->channel()] = spcmROM.offsets()[channelSettings->keySampleMappings()[sni->note().key()]];
-                    spcmSampleByChannel[sni->channel()] = channelSettings->keySampleMappings()[sni->note().key()];
-                    spcmVolumeByChannel[sni->channel()] = channelSettings->volume() * sni->note().velocity() / 100.0f;
+                    newPcmSize = qMin(pcmROM.size(channelSettings->keySampleMappings()[sni->note().key()]), (quint32)(sni->note().duration() / project.tempo() * 60 * 44100));
+                    pcmOffsetsByChannel[sni->channel()] = pcmROM.offsets()[channelSettings->keySampleMappings()[sni->note().key()]];
+                    pcmSampleByChannel[sni->channel()] = channelSettings->keySampleMappings()[sni->note().key()];
+                    pcmVolumeByChannel[sni->channel()] = channelSettings->volume() * sni->note().velocity() / 100.0f;
                 }
             }
             if (pcmWritten + newPcmSize > pcmSize) {
@@ -879,14 +785,10 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const float loop
                 pcmSize = pcmWritten + newPcmSize;
             }
         } else {
-            if (sni->type() == Channel::Type::DPCM) {
-                dpcmOffsetsByChannel.remove(sni->channel());
-                dpcmSampleByChannel.remove(sni->channel());
-                dpcmVolumeByChannel.remove(sni->channel());
-            } else {
-                spcmOffsetsByChannel.remove(sni->channel());
-                spcmSampleByChannel.remove(sni->channel());
-                spcmVolumeByChannel.remove(sni->channel());
+            if (sni->type() == Channel::Type::PCM) {
+                pcmOffsetsByChannel.remove(sni->channel());
+                pcmSampleByChannel.remove(sni->channel());
+                pcmVolumeByChannel.remove(sni->channel());
             }
         }
     }
@@ -951,20 +853,6 @@ int VGMStream::acquireFMChannel(const float time, const float duration, const FM
         if (_fmChannels[i].acquire(time, duration, first)) {
             _fmChannels[i].settings() = *settings;
             items.append(new StreamSettingsItem(time, i, settings));
-            return i;
-        }
-    }
-
-    return -1;
-}
-
-int VGMStream::acquireDPCMChannel(const Project& project, const float time, const float duration, const ROMChannelSettings* settings, const Note& note)
-{
-    ROM dpcmROM(project.resolve(project.dpcmFile()));
-
-    for (int i = 0; i < DPCM_CHANNELS; i++) {
-        bool first;
-        if (_dpcmChannels[i].acquire(time, duration, first)) {
             return i;
         }
     }
@@ -1050,13 +938,13 @@ int VGMStream::acquireRhythmChannel(const float time, const float duration, cons
     return -1;
 }
 
-int VGMStream::acquireSPCMChannel(const float time, const float duration, const ROMChannelSettings* settings, QList<StreamItem*>& items)
+int VGMStream::acquirePCMChannel(const Project& project, const float time, const float duration, const ROMChannelSettings* settings)
 {
-    for (int i = 0; i < SPCM_CHANNELS; i++) {
+    ROM pcmROM(project.resolve(project.pcmFile()));
+
+    for (int i = 0; i < PCM_CHANNELS; i++) {
         bool first;
-        if (_spcmChannels[i].acquire(time, duration, first)) {
-            _spcmChannels[i].settings() = *settings;
-            items.append(new StreamSettingsItem(time, i, settings));
+        if (_pcmChannels[i].acquire(time, duration, first)) {
             return i;
         }
     }
@@ -1170,8 +1058,7 @@ void VGMStream::assignChannelsAndExpand(const Project& project, QList<StreamItem
         return a->time() < b->time();
     });
 
-    ROM spcmROM(project.resolve(project.spcmFile()));
-    ROM dpcmROM(project.resolve(project.dpcmFile()));
+    ROM pcmROM(project.resolve(project.pcmFile()));
 
     for (StreamItem* item : itemsCopy) {
         StreamNoteItem* noteItem = dynamic_cast<StreamNoteItem*>(item);
@@ -1182,26 +1069,13 @@ void VGMStream::assignChannelsAndExpand(const Project& project, QList<StreamItem
         StreamNoteItem* noteOffItem = new StreamNoteItem(*noteItem);
 
         float duration = noteItem->note().duration();
-        if (noteItem->type() == Channel::Type::DPCM) {
+        if (noteItem->type() == Channel::Type::PCM) {
             const ROMChannelSettings* channelSettings = dynamic_cast<const ROMChannelSettings*>(noteItem->channelSettings());
             quint32 size = 0;
             quint32 durationSamples = duration / tempo * 60 * 44100;
 
             if (channelSettings->keySampleMappings().contains(noteItem->note().key())) {
-                size = dpcmROM.size(channelSettings->keySampleMappings()[noteItem->note().key()]);
-            }
-
-            if (size < durationSamples) {
-                duration = size / 44100.0f / 60 * tempo;
-            }
-        }
-        if (noteItem->type() == Channel::Type::SPCM) {
-            const ROMChannelSettings* channelSettings = dynamic_cast<const ROMChannelSettings*>(noteItem->channelSettings());
-            quint32 size = 0;
-            quint32 durationSamples = duration / tempo * 60 * 44100;
-
-            if (channelSettings->keySampleMappings().contains(noteItem->note().key())) {
-                size = spcmROM.size(channelSettings->keySampleMappings()[noteItem->note().key()]);
+                size = pcmROM.size(channelSettings->keySampleMappings()[noteItem->note().key()]);
             }
 
             if (size < durationSamples) {
@@ -1393,33 +1267,6 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
         }
     }
 
-    for (int i = 0; i < DPCM_CHANNELS; i++) {
-        auto it = std::find_if(items.rbegin(), items.rend(), [&](StreamItem* si) {
-            StreamNoteItem* sni;
-            return (sni = dynamic_cast<StreamNoteItem*>(si)) &&
-                   sni->type() == Channel::Type::DPCM &&
-                   sni->channel() == i && sni->time() <= currentTime;
-        });
-
-        if (it != items.rend()) {
-            StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(*it);
-            StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, sni->channelSettings(), sni->note().velocity());
-            items.append(ssi);
-        } else {
-            auto it2 = std::find_if(items.rbegin(), items.rend(), [&](StreamItem* si) {
-                StreamSettingsItem* ssi;
-                return (ssi = dynamic_cast<StreamSettingsItem*>(si)) &&
-                       dynamic_cast<const ROMChannelSettings*>(ssi->channelSettings()) &&
-                       ssi->channel() == i && ssi->time() <= currentTime;
-            });
-
-            if (it2 != items.rend()) {
-                StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamSettingsItem*>(*it2)->channelSettings());
-                items.append(ssi);
-            }
-        }
-    }
-
     for (int i = 0; i < SSG_CHANNELS; i++) {
         auto it = std::find_if(items.rbegin(), items.rend(), [&](StreamItem* si) {
             StreamNoteItem* sni;
@@ -1501,12 +1348,12 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
         }
     }
 
-    for (int i = 0; i < SPCM_CHANNELS; i++) {
+    for (int i = 0; i < PCM_CHANNELS; i++) {
         auto it = std::find_if(items.rbegin(), items.rend(), [&](StreamItem* si) {
             StreamNoteItem* sni;
             return (sni = dynamic_cast<StreamNoteItem*>(si)) &&
-                    sni->type() == Channel::Type::SPCM &&
-                    sni->channel() == i && sni->time() <= currentTime;
+                   sni->type() == Channel::Type::PCM &&
+                   sni->channel() == i && sni->time() <= currentTime;
         });
 
         if (it != items.rend()) {
@@ -1579,8 +1426,7 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
     quint32 pcmWritten = 0;
     StreamNoteItem* lastNoteItem = nullptr;
 
-    ROM spcmROM(project.resolve(project.spcmFile()));
-    ROM dpcmROM(project.resolve(project.dpcmFile()));
+    ROM pcmROM(project.resolve(project.pcmFile()));
 
     for (int i = 0; i < items.size(); i++) {
         quint32 fullDelaySamples = (quint32)((items[i]->time() - lastTime) / project.tempo() * 60 * 44100);
@@ -1632,25 +1478,12 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
         if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
             encodeNoteItem(project, sni, data);
 
-            if (sni->on() && sni->type() == Channel::Type::DPCM) {
+            if (sni->on() && sni->type() == Channel::Type::PCM) {
                 const ROMChannelSettings* channelSettings = dynamic_cast<const ROMChannelSettings*>(sni->channelSettings());
                 quint32 newPcmSize = 0;
 
                 if (channelSettings->keySampleMappings().contains(sni->note().key())) {
-                    newPcmSize = qMin(dpcmROM.size(channelSettings->keySampleMappings()[sni->note().key()]), (quint32)(sni->note().duration() / project.tempo() * 60 * 44100));
-                }
-
-                if (pcmWritten + newPcmSize > pcmSize) {
-                    lastNoteItem = sni;
-                    pcmSize = pcmWritten + newPcmSize;
-                }
-            }
-            if (sni->on() && sni->type() == Channel::Type::SPCM) {
-                const ROMChannelSettings* channelSettings = dynamic_cast<const ROMChannelSettings*>(sni->channelSettings());
-                quint32 newPcmSize = 0;
-
-                if (channelSettings->keySampleMappings().contains(sni->note().key())) {
-                    newPcmSize = qMin(spcmROM.size(channelSettings->keySampleMappings()[sni->note().key()]), (quint32)(sni->note().duration() / project.tempo() * 60 * 44100));
+                    newPcmSize = qMin(pcmROM.size(channelSettings->keySampleMappings()[sni->note().key()]), (quint32)(sni->note().duration() / project.tempo() * 60 * 44100));
                 }
 
                 if (pcmWritten + newPcmSize > pcmSize) {
@@ -1831,7 +1664,7 @@ void VGMStream::encodeSettingsItem(const Project& project, const StreamSettingsI
         if (_format == Format::CHROMASOUND) {
             int volume = rcs->volume() * item->velocity() / 100;
             int att = MAX_PCM_ATTENUATION * (float)(100 - volume) / 100;
-            data.append(0xF0 | item->channel() + ((project.getChannel(item->channel()).type() == Channel::Type::SPCM) ? DPCM_CHANNELS : 0));
+            data.append(0xF0 | item->channel());
             data.append(att);
         }
     } else if ((scs = dynamic_cast<const SSGChannelSettings*>(item->channelSettings())) != nullptr) {
@@ -1959,8 +1792,8 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
         int c = (item->channel() < 3) ? item->channel() : (1 + item->channel());
         data.append(0x28);
         data.append(((item->on() ? 0xF : 0x0) << 4) | c);
-    } else if (item->type() == Channel::Type::DPCM) {
-        ROM rom(project.resolve(project.dpcmFile()));
+    } else if (item->type() == Channel::Type::PCM) {
+        ROM rom(project.resolve(project.pcmFile()));
 
         if (_format == Format::CHROMASOUND) {
             if (item->on()) {
@@ -1984,34 +1817,6 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
                 quint32 offset = -1;
 
                 data.append(0xE0 | item->channel());
-                data.append((char*)&offset, sizeof(offset));
-            }
-        }
-    } else if (item->type() == Channel::Type::SPCM) {
-        ROM rom(project.resolve(project.spcmFile()));
-
-        if (_format == Format::CHROMASOUND) {
-            if (item->on()) {
-                const ROMChannelSettings* rcs = dynamic_cast<const ROMChannelSettings*>(item->channelSettings());
-
-                if (rcs->keySampleMappings().contains(item->note().key())) {
-                    int volume = rcs->volume() * item->note().velocity() / 100;
-                    int att = MAX_PCM_ATTENUATION * (float)(100 - volume) / 100;
-                    data.append(0xF0 | item->channel() + DPCM_CHANNELS);
-                    data.append(att);
-
-                    quint32 offset = rom.offsets()[rcs->keySampleMappings()[item->note().key()]];
-                    quint16 size = rom.size(rcs->keySampleMappings()[item->note().key()]);
-
-                    data.append(0xD0 | item->channel() + DPCM_CHANNELS);
-                    data.append((char*)&size, sizeof(size));
-                    data.append(0xE0 | item->channel() + DPCM_CHANNELS);
-                    data.append((char*)&offset, sizeof(offset));
-                }
-            } else {
-                quint32 offset = -1;
-
-                data.append(0xE0 | item->channel() + DPCM_CHANNELS);
                 data.append((char*)&offset, sizeof(offset));
             }
         }
@@ -2454,22 +2259,6 @@ int VGMStream::StreamLFOItem::mode() const
     return _mode;
 }
 
-VGMStream::DPCMChannel::DPCMChannel()
-    : _isLong(false)
-{
-
-}
-
-bool VGMStream::DPCMChannel::isLong() const
-{
-    return _isLong;
-}
-
-void VGMStream::DPCMChannel::setIsLong(const bool isLong)
-{
-    _isLong = isLong;
-}
-
 SSGChannelSettings& VGMStream::SSGChannel::settings()
 {
     return _settings;
@@ -2551,13 +2340,7 @@ const OPLSettings& VGMStream::StreamUserToneItem::settings() const
     return _settings;
 }
 
-ROMChannelSettings& VGMStream::SPCMChannel::settings()
+VGMStream::PCMChannel::PCMChannel()
 {
-    return _settings;
-}
 
-void VGMStream::SPCMChannel::reset()
-{
-    PhysicalChannel::reset();
-    _settings = ROMChannelSettings();
 }

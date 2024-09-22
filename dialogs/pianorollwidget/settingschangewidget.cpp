@@ -101,11 +101,6 @@ void SettingsChangeWidget::setSettings(ChannelSettings& settings)
     ui->footerWidget->setSettings(settings);
 }
 
-void SettingsChangeWidget::setROMType(const Channel::Type type)
-{
-    ui->romWidget->setROMType(type);
-}
-
 void SettingsChangeWidget::showAndHideOthers(const int index)
 {
     ui->fmWidget->setVisible(index == 1);

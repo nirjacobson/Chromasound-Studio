@@ -291,20 +291,10 @@ int Project::indexOfChannel(const Channel& channel)
     return -1;
 }
 
-bool Project::hasDPCM() const
+bool Project::hasPCM() const
 {
     for (const Channel& channel : _channels) {
-        if (channel.type() == Channel::Type::DPCM) {
-            return true;
-        }
-    }
-    return false;
-}
-
-bool Project::hasSPCM() const
-{
-    for (const Channel& channel : _channels) {
-        if (channel.type() == Channel::Type::SPCM) {
+        if (channel.type() == Channel::Type::PCM) {
             return true;
         }
     }
@@ -332,8 +322,7 @@ Project& Project::operator=(Project&& src)
     _ssgEnvelopeFreq = src._ssgEnvelopeFreq;
     _ssgNoiseFreq = src._ssgNoiseFreq;
     _userTone = src._userTone;
-    _spcmFile = src._spcmFile;
-    _dpcmFile = src._dpcmFile;
+    _pcmFile = src._pcmFile;
 
     _info = src._info;
     _showInfoOnOpen = src._showInfoOnOpen;
@@ -362,8 +351,7 @@ Project::Project(Project&& o)
     _ssgEnvelopeFreq = o._ssgEnvelopeFreq;
     _ssgNoiseFreq = o._ssgNoiseFreq;
     _userTone = o._userTone;
-    _spcmFile = o._spcmFile;
-    _dpcmFile = o._dpcmFile;
+    _pcmFile = o._pcmFile;
 
     _info = o._info;
     _showInfoOnOpen = o._showInfoOnOpen;
@@ -409,30 +397,20 @@ void Project::setOpllType(const OPLL::Type type)
     _opllType = type;
 }
 
-const QString& Project::spcmFile() const
+const QString& Project::pcmFile() const
 {
-    return _spcmFile;
+    return _pcmFile;
 }
 
-void Project::setSPCMFile(const QString& path)
+void Project::setPCMFile(const QString& path)
 {
-    _spcmFile = path;
-}
-
-const QString& Project::dpcmFile() const
-{
-    return _dpcmFile;
-}
-
-void Project::setDPCMFile(const QString& path)
-{
-    _dpcmFile = path;
+    _pcmFile = path;
 }
 
 bool Project::usesOPN() const
 {
     for (int i = 0; i < _channels.size(); i++) {
-        if (_channels[i].type() == Channel::Type::FM || _channels[i].type() == Channel::Type::DPCM) {
+        if (_channels[i].type() == Channel::Type::FM) {
             return true;
         }
     }

@@ -21,11 +21,10 @@ class Channel
             TONE = 0,
             NOISE,
             FM,
-            DPCM,
             SSG,
             MELODY,
             RHYTHM,
-            SPCM
+            PCM
         };
 
         Channel();

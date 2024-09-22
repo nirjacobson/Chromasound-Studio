@@ -40,16 +40,12 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
         _vgmStream.encode(project, _items, data);
 
         bool havePCM = false;
-        bool haveROM = false;
         for (VGMStream::StreamItem* item : _items) {
             VGMStream::StreamNoteItem* sni;
             if ((sni = dynamic_cast<VGMStream::StreamNoteItem*>(item))) {
                 if (sni->on()) {
-                    if (sni->type() == Channel::Type::DPCM) {
+                    if (sni->type() == Channel::Type::PCM) {
                         havePCM = true;
-                    }
-                    if (sni->type() == Channel::Type::SPCM) {
-                        haveROM = true;
                     }
                     continue;
                 } else {
@@ -93,7 +89,7 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
             data.prepend(enableRhythm);
         }
 
-        QFile romFile(project.resolve(project.dpcmFile()));
+        QFile romFile(project.resolve(project.pcmFile()));
         romFile.open(QIODevice::ReadOnly);
         QByteArray dataBlock = romFile.readAll();
         romFile.close();
@@ -106,15 +102,6 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
             pcmBlock.append((quint8)0x00);
             pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
             pcmBlock.append(dataBlock);
-            pcmBlock.append(0x52);
-            pcmBlock.append(0x2B);
-            pcmBlock.append(0x80);
-
-            data.prepend(pcmBlock);
-
-            _emu->set_fill_past_end_with_pcm(true);
-        } else if (haveROM) {
-            QByteArray pcmBlock;
             pcmBlock.append(0x52);
             pcmBlock.append(0x2B);
             pcmBlock.append(0x80);
@@ -161,10 +148,6 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
     _buffers[1] = nullptr;
     setBufferSizes();
     setEqualizer();
-
-    if (!project.spcmFile().isEmpty()) {
-        dynamic_cast<Vgm_Emu*>(_emu)->set_spcm_rom(project.resolve(project.spcmFile()).toStdString().c_str());
-    }
 
     _player->start();
 }
@@ -417,7 +400,7 @@ void Chromasound_Emu::keyOff(int key)
 
     bool havePCM = false;
     for (auto it = _keys.begin(); it != _keys.end(); ++it) {
-        if (it.value()->type() == Channel::Type::DPCM || it.value()->type() == Channel::Type::SPCM) {
+        if (it.value()->type() == Channel::Type::PCM) {
             havePCM = true;
             break;
         }

@@ -39,18 +39,11 @@ Vgm_Emu::Vgm_Emu()
     static equalizer_t const eq = { -14.0, 80 };
     set_equalizer( eq );
 
-    for (int i = 0; i < DPCM_CHANNELS; i++) {
-        dpcm_att[i] = 0;
-        dpcm_size[i] = 0;
-        dpcm_pos[i] = 0;
-        dpcm_start[i] = 0;
-    }
-
-    for (int i = 0; i < SPCM_CHANNELS; i++) {
-        spcm_att[i] = 0;
-        spcm_size[i] = 0;
-        spcm_pos[i] = 0;
-        spcm_start[i] = 0;
+    for (int i = 0; i < PCM_CHANNELS; i++) {
+        pcm_att[i] = 0;
+        pcm_size[i] = 0;
+        pcm_pos[i] = 0;
+        pcm_start[i] = 0;
     }
 
     fill_past_end_with_pcm = false;
@@ -412,7 +405,7 @@ blargg_err_t Vgm_Emu::start_track_( int track )
 
     dac_disabled = 0;
     pos          = data + header_size;
-    dpcm_data    = pos;
+    pcm_data    = pos;
     dac_amp      = 0;
     vgm_time     = 0;
     if ( GET_LE32( header().version ) >= 0x150 )

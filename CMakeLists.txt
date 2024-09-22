@@ -486,8 +486,6 @@ set(PROJECT_SOURCES
     formats/rom.h formats/rom.cpp
     globals/romtablemodel.h
     globals/romtablemodel.cpp
-    commands/setprojectspcmfilecommand.h
-    commands/setprojectspcmfilecommand.cpp
     project/channel/romchannelsettings.h
     project/channel/romchannelsettings.cpp
     rom/romwidget.h
@@ -507,8 +505,8 @@ set(PROJECT_SOURCES
     globals/romglobalswindow.h
     globals/romglobalswindow.cpp
     globals/romglobalswindow.ui
-    commands/setprojectdpcmfilecommand.h
-    commands/setprojectdpcmfilecommand.cpp
+    commands/setprojectpcmfilecommand.h
+    commands/setprojectpcmfilecommand.cpp
     dialogs/info/projectinfoscreendialog.h
     dialogs/info/projectinfoscreendialog.cpp
     dialogs/info/projectinfoscreendialog.ui

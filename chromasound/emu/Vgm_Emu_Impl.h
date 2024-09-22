@@ -4,8 +4,7 @@
 #ifndef VGM_EMU_IMPL_H
 #define VGM_EMU_IMPL_H
 
-#define DPCM_CHANNELS    4
-#define SPCM_CHANNELS    4
+#define PCM_CHANNELS    4
 
 #include "Dual_Resampler.h"
 #include "Classic_Emu.h"
@@ -40,7 +39,6 @@ class Vgm_Emu_Impl : public Classic_Emu, private Dual_Resampler {
 
         void set_opll_patchset( int patchset );
 
-        blargg_err_t set_spcm_rom(const char* path);
     protected:
         enum { stereo = 2 };
 
@@ -66,17 +64,12 @@ class Vgm_Emu_Impl : public Classic_Emu, private Dual_Resampler {
         blip_time_t run_commands( vgm_time_t );
         int play_frame( blip_time_t blip_time, int sample_count, sample_t* buf );
 
-        byte const* dpcm_data;
-        byte const* dpcm_pos  [DPCM_CHANNELS];
-        byte        dpcm_att  [DPCM_CHANNELS];
-        uint16_t    dpcm_size [DPCM_CHANNELS];
-        byte const* dpcm_start[DPCM_CHANNELS];
+        byte const* pcm_data;
+        byte const* pcm_pos  [PCM_CHANNELS];
+        byte        pcm_att  [PCM_CHANNELS];
+        uint16_t    pcm_size [PCM_CHANNELS];
+        byte const* pcm_start[PCM_CHANNELS];
 
-        blargg_vector<byte> spcm_data;
-        byte const* spcm_pos  [SPCM_CHANNELS];
-        byte        spcm_att  [SPCM_CHANNELS];
-        uint16_t    spcm_size [SPCM_CHANNELS];
-        byte const* spcm_start[SPCM_CHANNELS];
         int dac_amp;
         int dac_disabled; // -1 if disabled
         void write_pcm( vgm_time_t, int amp );

@@ -173,15 +173,10 @@ class VGMStream
             private:
                 NoiseChannelSettings _settings;
         };
-        class DPCMChannel : public PhysicalChannel {
+        class PCMChannel : public PhysicalChannel {
 
             public:
-                DPCMChannel();
-
-                bool isLong() const;
-                void setIsLong(const bool isLong);
-            private:
-                bool _isLong;
+                PCMChannel();
         };
         class SSGChannel : public PhysicalChannel {
             public:
@@ -207,20 +202,11 @@ class VGMStream
             private:
                 RhythmChannelSettings _settings;
         };
-        class SPCMChannel : public PhysicalChannel {
-        public:
-            ROMChannelSettings& settings();
-            void reset() override;
-
-        private:
-            ROMChannelSettings _settings;
-        };
 
         static constexpr int FM_CHANNELS = 6;
         static constexpr int TONE_CHANNELS = 3;
         static constexpr int NOISE_CHANNELS = 1;
-        static constexpr int DPCM_CHANNELS = 4;
-        static constexpr int SPCM_CHANNELS = 4;
+        static constexpr int PCM_CHANNELS = 4;
         static constexpr int SSG_CHANNELS = 3;
         static constexpr int MELODY_CHANNELS = 9;
         static constexpr int RHYTHM_CHANNELS = 5;
@@ -231,11 +217,10 @@ class VGMStream
         FMChannel _fmChannels[FM_CHANNELS];
         ToneChannel _toneChannels[TONE_CHANNELS];
         NoiseChannel _noiseChannels[NOISE_CHANNELS];
-        DPCMChannel _dpcmChannels[DPCM_CHANNELS];
         SSGChannel _ssgChannels[SSG_CHANNELS];
         MelodyChannel _melodyChannels[MELODY_CHANNELS];
         RhythmChannel _rhythmChannels[RHYTHM_CHANNELS];
-        SPCMChannel _spcmChannels[SPCM_CHANNELS];
+        PCMChannel _pcmChannels[PCM_CHANNELS];
 
         uint8_t _lastSSGMixer;
         uint8_t _lastSSGLevel[SSG_CHANNELS];
@@ -248,11 +233,10 @@ class VGMStream
         int acquireToneChannel(const float time, const float duration);
         int acquireNoiseChannel(const float time, const float duration, const NoiseChannelSettings* settings, QList<StreamItem*>& items);
         int acquireFMChannel(const float time, const float duration, const FMChannelSettings* settings, QList<StreamItem*>& items);
-        int acquireDPCMChannel(const Project& project, const float time, const float duration, const ROMChannelSettings* settings, const Note& note);
+        int acquirePCMChannel(const Project& project, const float time, const float duration, const ROMChannelSettings* settings);
         int acquireSSGChannel(const float time, const float duration, const SSGChannelSettings* settings, QList<StreamItem*>& items);
         int acquireMelodyChannel(const float time, const float duration, const MelodyChannelSettings* settings, QList<StreamItem*>& items);
         int acquireRhythmChannel(const float time, const float duration, const RhythmChannelSettings* settings, QList<StreamItem*>& items);
-        int acquireSPCMChannel(const float time, const float duration, const ROMChannelSettings* settings, QList<StreamItem*>& items);
 
         void processProject(const Project& project, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
         void processPattern(const float time, const Project& project, const Pattern& pattern, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);

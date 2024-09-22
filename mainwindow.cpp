@@ -604,29 +604,7 @@ void MainWindow::channelSelected(const int index)
             break;
         case Channel::TONE:
             break;
-        case Channel::DPCM:
-            it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window) {
-                return dynamic_cast<ROMWidgetWindow*>(window->widget());
-            });
-            if (it != _channelWindows[index].end()) {
-                _mdiArea->setActiveSubWindow(*it);
-            } else {
-                romWidget = new ROMWidgetWindow(this, _app, Channel::Type::DPCM);
-                romWidget->setSettings(dynamic_cast<ROMChannelSettings*>(&_app->project().getChannel(index).settings()));
-                romWidget->setWindowTitle(QString("%1: DPCM").arg(_app->project().getChannel(index).name()));
-
-                channelWindow->setWidget(romWidget);
-                channelWindow->resize(channelWindow->minimumSizeHint());
-                if (_mdiArea->viewMode() == QMdiArea::SubWindowView) {
-                    channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
-                }
-                _channelWindows[index].append(channelWindow);
-                connect(channelWindow, &MdiSubWindow::closed, this, [=]() {
-                    windowClosed(channelWindow);
-                });
-            }
-            break;
-        case Channel::SPCM:
+        case Channel::PCM:
             it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window) {
                 return dynamic_cast<ROMWidgetWindow*>(window->widget());
             });
@@ -635,7 +613,7 @@ void MainWindow::channelSelected(const int index)
             } else {
                 romWidget = new ROMWidgetWindow(this, _app);
                 romWidget->setSettings(dynamic_cast<ROMChannelSettings*>(&_app->project().getChannel(index).settings()));
-                romWidget->setWindowTitle(QString("%1: SPCM").arg(_app->project().getChannel(index).name()));
+                romWidget->setWindowTitle(QString("%1: DPCM").arg(_app->project().getChannel(index).name()));
 
                 channelWindow->setWidget(romWidget);
                 channelWindow->resize(channelWindow->minimumSizeHint());
@@ -787,18 +765,11 @@ void MainWindow::publishTriggered()
     if (!path.isNull()) {
         QDir dir(path);
 
-        if (!_app->project().dpcmFile().isEmpty()) {
-            QString newPath = dir.absoluteFilePath(QFileInfo(_app->project().dpcmFile()).fileName());
-            QFile::copy(_app->project().resolve(_app->project().dpcmFile()), newPath);
+        if (!_app->project().pcmFile().isEmpty()) {
+            QString newPath = dir.absoluteFilePath(QFileInfo(_app->project().pcmFile()).fileName());
+            QFile::copy(_app->project().resolve(_app->project().pcmFile()), newPath);
 
-            _app->project().setDPCMFile(dir.relativeFilePath(newPath));
-        }
-
-        if (!_app->project().spcmFile().isEmpty()) {
-            QString newPath = dir.absoluteFilePath(QFileInfo(_app->project().spcmFile()).fileName());
-            QFile::copy(_app->project().resolve(_app->project().spcmFile()), newPath);
-
-            _app->project().setSPCMFile(dir.relativeFilePath(newPath));
+            _app->project().setPCMFile(dir.relativeFilePath(newPath));
         }
 
         QString projectFileName("project.csp");
@@ -1481,11 +1452,7 @@ void MainWindow::doUpdate()
             } else if (dynamic_cast<RhythmWidget*>(window->widget())) {
                 tail = "Rhythm";
             } else if (dynamic_cast<ROMWidgetWindow*>(window->widget())) {
-                if (_app->project().getChannel(it.key()).type() == Channel::DPCM) {
-                    tail = "DPCM";
-                } else {
-                    tail = "SPCM";
-                }
+                tail = "PCM";
             }
 
             window->setWindowTitle(QString("%1: %2").arg(_app->project().getChannel(it.key()).name()).arg(tail));

@@ -96,18 +96,11 @@ inline int Ym_Emu<Emu>::run_until( int time )
 
 void Vgm_Emu_Impl::reset()
 {
-    for (int i = 0; i < DPCM_CHANNELS; i++) {
-        dpcm_att[i] = 0;
-        dpcm_pos[i] = 0;
-        dpcm_size[i] = 0;
-        dpcm_start[i] = 0;
-    }
-
-    for (int i = 0; i < SPCM_CHANNELS; i++) {
-        spcm_att[i] = 0;
-        spcm_pos[i] = 0;
-        spcm_size[i] = 0;
-        spcm_start[i] = 0;
+    for (int i = 0; i < PCM_CHANNELS; i++) {
+        pcm_att[i] = 0;
+        pcm_pos[i] = 0;
+        pcm_size[i] = 0;
+        pcm_start[i] = 0;
     }
 }
 
@@ -138,42 +131,19 @@ void Vgm_Emu_Impl::set_opll_patchset(int patchset)
     ym2413.reset_patch( patchset );
 }
 
-blargg_err_t Vgm_Emu_Impl::set_spcm_rom(const char* path)
-{
-    Std_File_Reader reader;
-    reader.open(path);
-
-    RETURN_ERR( spcm_data.resize( reader.remain() ) );
-    RETURN_ERR( reader.read( spcm_data.begin(), spcm_data.size() ) );
-
-    return 0;
-}
-
 int Vgm_Emu_Impl::pcm_read()
 {
     int result = 0x00;
 
-    for (int i = 0; i < DPCM_CHANNELS; i++) {
-        if (dpcm_pos[i]) {
-            int sample = *dpcm_pos[i] - 0x80;
-            dpcm_pos[i]++;
+    for (int i = 0; i < PCM_CHANNELS; i++) {
+        if (pcm_pos[i]) {
+            int sample = *pcm_pos[i] - 0x80;
+            pcm_pos[i]++;
 
-            if (dpcm_size[i] && dpcm_pos[i] == (dpcm_start[i] + dpcm_size[i])) {
-                dpcm_pos[i] = 0;
+            if (pcm_size[i] && pcm_pos[i] == (pcm_start[i] + pcm_size[i])) {
+                pcm_pos[i] = 0;
             }
-            result += sample >> dpcm_att[i];
-        }
-    }
-
-    for (int i = 0; i < SPCM_CHANNELS; i++) {
-        if (spcm_pos[i]) {
-            int sample = *spcm_pos[i] - 0x80;
-            spcm_pos[i]++;
-
-            if (spcm_size[i] && spcm_pos[i] == (spcm_start[i] + spcm_size[i])) {
-                spcm_pos[i] = 0;
-            }
-            result += sample >> spcm_att[i];
+            result += sample >> pcm_att[i];
         }
     }
 
@@ -284,7 +254,7 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
                 long size = GET_LE32( pos + 2 );
                 pos += 6;
                 if ( type == pcm_block_type )
-                    dpcm_data = pos;
+                    pcm_data = pos;
                 pos += size;
                 break;
             }
@@ -307,47 +277,23 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
                 {
                     case cmd_pcm_size:
                         channel = (cmd & 0x0F);
-                        if (channel < DPCM_CHANNELS) {
-                            dpcm_size[channel] = *(uint16_t*)pos;
-                            pos += 2;
-                        } else {
-                            channel -= DPCM_CHANNELS;
-
-                            spcm_size[channel] = *(uint16_t*)pos;
-                            pos += 2;
-                        }
+                        pcm_size[channel] = *(uint16_t*)pos;
+                        pos += 2;
                         break;
                     case cmd_pcm_seek:
                         channel = (cmd & 0x0F);
-                        if (channel < DPCM_CHANNELS) {
-                            offset = *(uint32_t*)pos;
-                            if (offset == -1) {
-                                dpcm_pos[channel] = 0;
-                            } else {
-                                dpcm_start[channel] = dpcm_pos[channel] = dpcm_data + offset;
-                            }
-                            pos += 4;
+                        offset = *(uint32_t*)pos;
+                        if (offset == -1) {
+                            pcm_pos[channel] = 0;
                         } else {
-                            channel -= DPCM_CHANNELS;
-
-                            offset = *(uint32_t*)pos;
-                            if (offset == (uint32_t)-1) {
-                                spcm_pos[channel] = 0;
-                            } else {
-                                spcm_start[channel] = spcm_pos[channel] = &spcm_data[0] + offset;
-                            }
-                            pos += 4;
+                            pcm_start[channel] = pcm_pos[channel] = pcm_data + offset;
                         }
+                        pos += 4;
                         break;
                     case cmd_pcm_attenuation:
                         channel = (cmd & 0x0F);
                         att = *pos;
-                        if (channel < DPCM_CHANNELS) {
-                            dpcm_att[channel] = att;
-                        } else {
-                            channel -= DPCM_CHANNELS;
-                            spcm_att[channel] = att;
-                        }
+                        pcm_att[channel] = att;
                         pos++;
                         break;
                     case cmd_pcm_delay:

@@ -15,7 +15,7 @@ class ROMWidgetWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit ROMWidgetWindow(QWidget *parent = nullptr, Application* app = nullptr, Channel::Type romType = Channel::Type::SPCM);
+    explicit ROMWidgetWindow(QWidget *parent = nullptr, Application* app = nullptr);
     ~ROMWidgetWindow();
 
     void setSettings(ROMChannelSettings* settings);

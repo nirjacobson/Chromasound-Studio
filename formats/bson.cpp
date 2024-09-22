@@ -181,14 +181,6 @@ Channel BSON::toChannel(bson_iter_t& b)
             c._settings = new FMChannelSettings;
             c._settings->fromBSON(settingsInner);
         }
-        if (c._type == Channel::Type::DPCM) {
-            c._settings = new ROMChannelSettings;
-            c._settings->fromBSON(settingsInner);
-        }
-        if (c._type == Channel::Type::SPCM) {
-            c._settings = new ROMChannelSettings;
-            c._settings->fromBSON(settingsInner);
-        }
         if (c._type == Channel::Type::SSG) {
             c._settings = new SSGChannelSettings;
             c._settings->fromBSON(settingsInner);
@@ -199,6 +191,10 @@ Channel BSON::toChannel(bson_iter_t& b)
         }
         if (c._type == Channel::Type::RHYTHM) {
             c._settings = new RhythmChannelSettings;
+            c._settings->fromBSON(settingsInner);
+        }
+        if (c._type == Channel::Type::PCM) {
+            c._settings = new ROMChannelSettings;
             c._settings->fromBSON(settingsInner);
         }
     }
@@ -448,14 +444,6 @@ Track::SettingsChange BSON::toTrackSettingsChange(bson_iter_t& b)
                         sc._settings = new FMChannelSettings;
                         sc._settings->fromBSON(settingsInner);
                         break;
-                    case Channel::DPCM:
-                        sc._settings = new ROMChannelSettings;
-                        sc._settings->fromBSON(settingsInner);
-                        break;
-                    case Channel::SPCM:
-                        sc._settings = new ROMChannelSettings;
-                        sc._settings->fromBSON(settingsInner);
-                        break;
                     case Channel::SSG:
                         sc._settings = new SSGChannelSettings;
                         sc._settings->fromBSON(settingsInner);
@@ -466,6 +454,10 @@ Track::SettingsChange BSON::toTrackSettingsChange(bson_iter_t& b)
                         break;
                     case Channel::RHYTHM:
                         sc._settings = new RhythmChannelSettings;
+                        sc._settings->fromBSON(settingsInner);
+                        break;
+                    case Channel::PCM:
+                        sc._settings = new ROMChannelSettings;
                         sc._settings->fromBSON(settingsInner);
                         break;
                 }
@@ -866,8 +858,7 @@ void BSON::fromProject(bson_t* dst,const Project& project)
     BSON_APPEND_DOCUMENT(dst, "userTone", &userTone);
 
     // ROM
-    BSON_APPEND_UTF8(dst, "spcmFile", project.spcmFile().toStdString().c_str());
-    BSON_APPEND_UTF8(dst, "dpcmFile", project.dpcmFile().toStdString().c_str());
+    BSON_APPEND_UTF8(dst, "pcmFile", project.pcmFile().toStdString().c_str());
 
     // Info
     bson_t b_info;
@@ -987,12 +978,8 @@ Project BSON::toProject(bson_iter_t& b)
 
     bson_iter_t romFile;
 
-    if (bson_iter_find_descendant(&b, "spcmFile", &romFile) && BSON_ITER_HOLDS_UTF8(&romFile)) {
-        p._spcmFile = bson_iter_utf8(&romFile, NULL);
-    }
-
-    if (bson_iter_find_descendant(&b, "dpcmFile", &romFile) && BSON_ITER_HOLDS_UTF8(&romFile)) {
-        p._dpcmFile = bson_iter_utf8(&romFile, NULL);
+    if (bson_iter_find_descendant(&b, "pcmFile", &romFile) && BSON_ITER_HOLDS_UTF8(&romFile)) {
+        p._pcmFile = bson_iter_utf8(&romFile, NULL);
     }
 
     // Info

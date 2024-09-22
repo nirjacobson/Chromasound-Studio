@@ -5,8 +5,7 @@
 #include <QMessageBox>
 
 #include "application.h"
-#include "commands/setprojectspcmfilecommand.h"
-#include "commands/setprojectdpcmfilecommand.h"
+#include "commands/setprojectpcmfilecommand.h"
 #include "commands/setromchannelsettingscommand.h"
 #include "common/mdiarea/mdisubwindow.h"
 
@@ -29,16 +28,12 @@ private:
     Application* _app;
 
 private slots:
-    void staticUpdated();
-    void dynamicUpdated();
+    void romUpdated();
 
     void open();
     void reset();
 
-    void optimizeDPCM();
-    void optimizeSPCM();
-
-    void tabIndexChanged(const int index);
+    void optimizePCM();
 
     // QWidget interface
 protected:

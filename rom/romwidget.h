@@ -36,14 +36,12 @@ class ROMWidget : public QWidget
     class SampleItemDelegate : public QStyledItemDelegate {
         // QAbstractItemDelegate interface
     public:
-        SampleItemDelegate(QObject* parent, Application* app, Channel::Type romType);
+        SampleItemDelegate(QObject* parent, Application* app);
         QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const;
 
         void setApplication(Application* app);
-        void setROMType(const Channel::Type romType);
     private:
         Application* _app;
-        Channel::Type _romType;
 
         // QAbstractItemDelegate interface
     public:
@@ -52,15 +50,13 @@ class ROMWidget : public QWidget
     };
 
 public:
-    explicit ROMWidget(QWidget *parent = nullptr, Application* app = nullptr, Channel::Type romType = Channel::Type::SPCM);
+    explicit ROMWidget(QWidget *parent = nullptr, Application* app = nullptr);
     ~ROMWidget();
 
     void setApplication(Application* app);
 
     void setSettings(ROMChannelSettings* settings);
     void doUpdate();
-
-    void setROMType(const Channel::Type romType);
 
 private:
     Ui::ROMWidget *ui;
@@ -73,7 +69,6 @@ private:
 
     Application* _app;
 
-    Channel::Type _romType;
     ROMChannelSettings* _settings;
 
     static int stringToKey(const QString& str);

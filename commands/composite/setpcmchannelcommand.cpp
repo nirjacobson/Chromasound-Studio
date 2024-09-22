@@ -43,8 +43,8 @@ void SetPCMChannelCommand::undo()
 
 void SetPCMChannelCommand::redo()
 {
-    if (_channel.type() != Channel::Type::DPCM) {
-        _setChannelTypeCommand = new SetChannelTypeCommand(_mainWindow, _channel, Channel::Type::DPCM);
+    if (_channel.type() != Channel::Type::PCM) {
+        _setChannelTypeCommand = new SetChannelTypeCommand(_mainWindow, _channel, Channel::Type::PCM);
         _setChannelTypeCommand->redo();
     }
 

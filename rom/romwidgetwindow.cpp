@@ -1,14 +1,13 @@
 #include "romwidgetwindow.h"
 #include "ui_romwidgetwindow.h"
 
-ROMWidgetWindow::ROMWidgetWindow(QWidget *parent, Application* app, Channel::Type romType)
+ROMWidgetWindow::ROMWidgetWindow(QWidget *parent, Application* app)
     : QMainWindow(parent)
     , ui(new Ui::ROMWidgetWindow)
 {
     ui->setupUi(this);
 
     ui->widget->setApplication(app);
-    ui->widget->setROMType(romType);
 
     connect(ui->actionOpen, &QAction::triggered, ui->widget, &ROMWidget::openTriggered);
     connect(ui->actionSave, &QAction::triggered, ui->widget, &ROMWidget::saveTriggered);

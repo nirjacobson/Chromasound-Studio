@@ -1,11 +1,10 @@
 #include "romwidgettablemodel.h"
 
-ROMWidgetTableModel::ROMWidgetTableModel(QObject* parent, Application* app, QList<QString>& keys, QList<int>& samples, Channel::Type romType)
+ROMWidgetTableModel::ROMWidgetTableModel(QObject* parent, Application* app, QList<QString>& keys, QList<int>& samples)
     : QAbstractTableModel(parent)
     , _keys(keys)
     , _samples(samples)
     , _app(app)
-    , _romType(romType)
 {
 
 }
@@ -61,7 +60,7 @@ QVariant ROMWidgetTableModel::data(const QModelIndex &index, int role) const
             case 0:
                 return _keys[index.row()];
             case 1:
-                return ROM(_app->project().resolve(_romType == Channel::Type::SPCM ? _app->project().spcmFile() : _app->project().dpcmFile())).names()[_samples[index.row()]];
+                return ROM(_app->project().resolve(_app->project().pcmFile())).names()[_samples[index.row()]];
             default:
                 break;
         }
@@ -103,11 +102,6 @@ void ROMWidgetTableModel::clear()
 void ROMWidgetTableModel::setApplication(Application* app)
 {
     _app = app;
-}
-
-void ROMWidgetTableModel::setROMType(const Channel::Type romType)
-{
-    _romType = romType;
 }
 
 Qt::ItemFlags ROMWidgetTableModel::flags(const QModelIndex& index) const
