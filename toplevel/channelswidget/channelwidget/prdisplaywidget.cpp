@@ -21,6 +21,9 @@ void PRDisplayWidget::setApplication(Application* app)
 void PRDisplayWidget::setIndex(const int i)
 {
     _index = i;
+
+    setNeedsFullPaint();
+    update();
 }
 
 void PRDisplayWidget::doUpdate(const float position, const bool full)

@@ -51,6 +51,7 @@ void PianoRollVelocitiesWidget::setItems(QList<GanttItem*>* items)
 void PianoRollVelocitiesWidget::setCellWidth(int width)
 {
     _cellWidth = width;
+
     setNeedsFullPaint();
     update();
 }

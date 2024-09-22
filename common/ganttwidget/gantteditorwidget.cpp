@@ -81,6 +81,8 @@ void GanttEditorWidget::invertRows(const bool invert)
 void GanttEditorWidget::setCellWidth(int width)
 {
     _cellWidth = width;
+
+    setNeedsFullPaint();
     update();
 }
 
