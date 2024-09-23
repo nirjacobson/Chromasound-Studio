@@ -405,7 +405,7 @@ blargg_err_t Vgm_Emu::start_track_( int track )
 
     dac_disabled = 0;
     pos          = data + header_size;
-    pcm_data    = pos;
+    // pcm_data    = pos;
     dac_amp      = 0;
     vgm_time     = 0;
     if ( GET_LE32( header().version ) >= 0x150 )

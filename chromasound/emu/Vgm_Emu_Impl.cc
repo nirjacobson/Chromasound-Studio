@@ -131,6 +131,18 @@ void Vgm_Emu_Impl::set_opll_patchset(int patchset)
     ym2413.reset_patch( patchset );
 }
 
+void Vgm_Emu_Impl::set_pcm_data(const char* path)
+{
+    Std_File_Reader reader;
+    reader.open(path);
+
+    long size = reader.size();
+    pcm_data.resize(size);
+    reader.read(pcm_data.begin(), size);
+
+    reader.close();
+}
+
 int Vgm_Emu_Impl::pcm_read()
 {
     int result = 0x00;
@@ -253,8 +265,10 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
                 int type = pos [1];
                 long size = GET_LE32( pos + 2 );
                 pos += 6;
-                if ( type == pcm_block_type )
-                    pcm_data = pos;
+                if ( type == pcm_block_type ) {
+                    pcm_data.resize(size);
+                    memcpy(pcm_data.begin(), pos, size);
+                }
                 pos += size;
                 break;
             }
@@ -286,7 +300,7 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
                         if (offset == -1) {
                             pcm_pos[channel] = 0;
                         } else {
-                            pcm_start[channel] = pcm_pos[channel] = pcm_data + offset;
+                            pcm_start[channel] = pcm_pos[channel] = pcm_data.begin() + offset;
                         }
                         pos += 4;
                         break;

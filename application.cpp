@@ -56,6 +56,13 @@ void Application::play()
             ? VGMStream::Format::CHROMASOUND
             : VGMStream::Format::STANDARD;
 
+        if (_project.usesOPL() && _project.hasPCM()) {
+            Chromasound_Emu* emu;
+            if ((emu = dynamic_cast<Chromasound_Emu*>(_chromasound))) {
+                emu->setPCMData(_project.pcmFile().toStdString().c_str());
+            }
+        }
+
         if (vgmFormat == VGMStream::Format::CHROMASOUND) {
             if (_project.playMode() == Project::PlayMode::PATTERN) {
                 QThread* thread = QThread::create([&]() {
@@ -156,6 +163,13 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
         ? VGMStream::Format::CHROMASOUND
         : VGMStream::Format::STANDARD;
 
+    if (_project.usesOPL() && _project.hasPCM()) {
+        Chromasound_Emu* emu;
+        if ((emu = dynamic_cast<Chromasound_Emu*>(_chromasound))) {
+            emu->setPCMData(_project.pcmFile().toStdString().c_str());
+        }
+    }
+
     if (vgmFormat == VGMStream::Format::CHROMASOUND) {
         QThread* thread = QThread::create([&](const float loopStart, const float loopEnd) {
             int loopOffsetData;
@@ -217,6 +231,13 @@ void Application::play(const float loopStart, const float loopEnd)
         _chromasound->supportedFormats().contains(VGMStream::Format::CHROMASOUND) && format == Chromasound_Studio::Chromasound
         ? VGMStream::Format::CHROMASOUND
         : VGMStream::Format::STANDARD;
+
+    if (_project.usesOPL() && _project.hasPCM()) {
+        Chromasound_Emu* emu;
+        if ((emu = dynamic_cast<Chromasound_Emu*>(_chromasound))) {
+            emu->setPCMData(_project.pcmFile().toStdString().c_str());
+        }
+    }
 
     if (vgmFormat == VGMStream::Format::CHROMASOUND) {
         QThread* thread = QThread::create([&](const float loopStart, const float loopEnd) {

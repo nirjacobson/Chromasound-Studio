@@ -166,6 +166,11 @@ Chromasound_Emu::~Chromasound_Emu()
     gme_delete(_emu);
 }
 
+void Chromasound_Emu::setPCMData(const char* path)
+{
+    dynamic_cast<Vgm_Emu_Impl*>(_emu)->set_pcm_data(path);
+}
+
 void Chromasound_Emu::setEqualizer()
 {
 #ifdef Q_OS_WIN

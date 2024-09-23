@@ -39,6 +39,8 @@ class Vgm_Emu_Impl : public Classic_Emu, private Dual_Resampler {
 
         void set_opll_patchset( int patchset );
 
+        void set_pcm_data(const char* path);
+
     protected:
         enum { stereo = 2 };
 
@@ -64,7 +66,7 @@ class Vgm_Emu_Impl : public Classic_Emu, private Dual_Resampler {
         blip_time_t run_commands( vgm_time_t );
         int play_frame( blip_time_t blip_time, int sample_count, sample_t* buf );
 
-        byte const* pcm_data;
+        blargg_vector<byte> pcm_data;
         byte const* pcm_pos  [PCM_CHANNELS];
         byte        pcm_att  [PCM_CHANNELS];
         uint16_t    pcm_size [PCM_CHANNELS];

@@ -213,7 +213,7 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
         data.prepend(enableRhythm);
     }
 
-    if (project.hasPCM()) {
+    if (project.hasPCM() && !project.usesOPL()) {
         QByteArray enableDac;
         enableDac.append(0x52);
         enableDac.append(0x2B);
@@ -440,7 +440,7 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
         data.prepend(enableRhythm);
     }
 
-    if (project.hasPCM()) {
+    if (project.hasPCM() && !project.usesOPL()) {
         QByteArray enableDac;
         enableDac.append(0x52);
         enableDac.append(0x2B);
