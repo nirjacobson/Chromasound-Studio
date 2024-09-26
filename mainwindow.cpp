@@ -767,7 +767,7 @@ void MainWindow::publishTriggered()
 
         if (!_app->project().pcmFile().isEmpty()) {
             QString newPath = dir.absoluteFilePath(QFileInfo(_app->project().pcmFile()).fileName());
-            QFile::copy(_app->project().resolve(_app->project().pcmFile()), newPath);
+            QFile::copy(_app->project().pcmFile(), newPath);
 
             _app->project().setPCMFile(dir.relativeFilePath(newPath));
         }

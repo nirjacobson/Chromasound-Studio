@@ -10,7 +10,7 @@ ROMGlobalsWindow::ROMGlobalsWindow(QWidget *parent, Application* app)
 
     ui->romGlobalsWidget->setApplication(app);
 
-    ui->romGlobalsWidget->setROMFile(app->project().resolve(app->project().pcmFile()));
+    ui->romGlobalsWidget->setROMFile(app->project().pcmFile());
 
     connect(ui->romGlobalsWidget, &ROMGlobalsWidget::updated, this, &ROMGlobalsWindow::romUpdated);
 
@@ -32,7 +32,7 @@ void ROMGlobalsWindow::doUpdate()
 {
     ui->romGlobalsWidget->blockSignals(true);
 
-    QString pcmFilePath = _app->project().resolve(_app->project().pcmFile());
+    QString pcmFilePath = _app->project().pcmFile();
 
     ui->romGlobalsWidget->setROMFile(pcmFilePath);
 

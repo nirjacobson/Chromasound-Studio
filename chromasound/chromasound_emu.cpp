@@ -89,7 +89,7 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
             data.prepend(enableRhythm);
         }
 
-        QFile romFile(project.resolve(project.pcmFile()));
+        QFile romFile(project.pcmFile());
         romFile.open(QIODevice::ReadOnly);
         QByteArray dataBlock = romFile.readAll();
         romFile.close();

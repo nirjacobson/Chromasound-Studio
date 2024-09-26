@@ -118,7 +118,7 @@ class Project
         OPLL::Type opllType() const;
         void setOpllType(const OPLL::Type type);
 
-        const QString& pcmFile() const;
+        QString pcmFile() const;
         void setPCMFile(const QString& path);
 
         bool usesOPN() const;
@@ -128,8 +128,6 @@ class Project
 
         const QString& path() const;
         void setPath(const QString& path);
-
-        QString resolve(const QString& path) const;
 
     private:
         QString _path;
@@ -156,6 +154,8 @@ class Project
 
         void swapChannels(const int idxa, const int idxb);
         void swapPatterns(const int idxa, const int idxb);
+
+        QString resolve(const QString& path) const;
 };
 
 #endif // PROJECT_H

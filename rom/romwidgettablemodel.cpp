@@ -60,7 +60,7 @@ QVariant ROMWidgetTableModel::data(const QModelIndex &index, int role) const
             case 0:
                 return _keys[index.row()];
             case 1:
-                return ROM(_app->project().resolve(_app->project().pcmFile())).names()[_samples[index.row()]];
+                return ROM(_app->project().pcmFile()).names()[_samples[index.row()]];
             default:
                 break;
         }

@@ -20,7 +20,7 @@ ROMWidget::ROMWidget(QWidget *parent, Application* app)
     ui->tableView->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectItems);
 
     if (app) {
-        QStringList items = ROM(app->project().resolve(app->project().pcmFile())).names();
+        QStringList items = ROM(app->project().pcmFile()).names();
         ui->stackedWidget->setCurrentIndex(!items.empty());
     }
 
@@ -42,7 +42,7 @@ void ROMWidget::setApplication(Application* app)
     _sampleDelegate.setApplication(app);
     _tableModel.setApplication(app);
 
-    QStringList items = ROM(app->project().resolve(app->project().pcmFile())).names();
+    QStringList items = ROM(app->project().pcmFile()).names();
     ui->stackedWidget->setCurrentIndex(!items.empty());
 }
 
@@ -60,7 +60,7 @@ void ROMWidget::doUpdate()
 {
     if (_settings) setSettings(_settings);
 
-    QStringList items = ROM(_app->project().resolve(_app->project().pcmFile())).names();
+    QStringList items = ROM(_app->project().pcmFile()).names();
     ui->stackedWidget->setCurrentIndex(!items.empty());
 }
 
@@ -75,7 +75,7 @@ QWidget* ROMWidget::SampleItemDelegate::createEditor(QWidget* parent, const QSty
 {
     QComboBox* comboBox = new QComboBox(parent);
 
-    QStringList items = ROM(_app->project().resolve(_app->project().pcmFile())).names();
+    QStringList items = ROM(_app->project().pcmFile()).names();
     comboBox->addItems(items);
 
     return comboBox;

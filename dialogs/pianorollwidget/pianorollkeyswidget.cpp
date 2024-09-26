@@ -268,7 +268,7 @@ void PianoRollKeysWidget::paintFull(QPaintEvent* event)
             QPoint thisTopLeft = topLeft - QPoint(0, j * _rowHeight);
             QRect rect(thisTopLeft, thisTopLeft + QPoint(width()/2, _rowHeight));
 
-            ROM rom(_app->project().resolve(_app->project().pcmFile()));
+            ROM rom(_app->project().pcmFile());
 
             QFont font = painter.font();
 

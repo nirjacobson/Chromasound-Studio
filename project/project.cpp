@@ -397,9 +397,9 @@ void Project::setOpllType(const OPLL::Type type)
     _opllType = type;
 }
 
-const QString& Project::pcmFile() const
+QString Project::pcmFile() const
 {
-    return _pcmFile;
+    return resolve(_pcmFile);
 }
 
 void Project::setPCMFile(const QString& path)

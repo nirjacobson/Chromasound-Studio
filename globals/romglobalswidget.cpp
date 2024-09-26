@@ -46,9 +46,9 @@ void ROMGlobalsWidget::doUpdate()
 {
     ui->stackedWidget->setCurrentIndex(!_romPath.isEmpty());
 
-    ui->label->setText(QFileInfo(_app->project().resolve(_romPath)).fileName());
+    ui->label->setText(QFileInfo(_romPath).fileName());
 
-    _rom = ROM(_app->project().resolve(_romPath));
+    _rom = ROM(_romPath);
     _tableModel.doUpdate();
 }
 

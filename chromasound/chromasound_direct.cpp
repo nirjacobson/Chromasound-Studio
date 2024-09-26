@@ -35,7 +35,7 @@ Chromasound_Direct::Chromasound_Direct(const Project& project)
 
         _mutex.unlock();
 
-        QFile romFile(project.resolve(project.pcmFile()));
+        QFile romFile(project.pcmFile());
         romFile.open(QIODevice::ReadOnly);
         QByteArray dataBlock = romFile.readAll();
         romFile.close();
