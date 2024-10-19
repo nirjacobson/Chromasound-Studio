@@ -1311,7 +1311,7 @@ void Ym2612_Impl::run( int pair_count, Ym2612_Emu::sample_t* out )
 
     for ( int i = 0; i < channel_count; i++ )
     {
-        if ( !(mute_mask & (1 << i)) && (i != 5 || !YM2612.DAC) )
+        if ( !(mute_mask & (1 << i)) )
             UPDATE_CHAN [YM2612.CHANNEL [i].ALGO]( g, YM2612.CHANNEL [i], out, pair_count );
     }
 
