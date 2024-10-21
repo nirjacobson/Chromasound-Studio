@@ -12,7 +12,6 @@ VGMPlayer::VGMPlayer(QObject *parent)
     , _loopOffsetData(0)
     , _playing(false)
     , _lastPCMBlockChecksum(0)
-    , _spiDelay(SPI_DELAY_FAST)
     , _fillWithPCM(false)
 {
     _spiFd = spi_init();
@@ -171,14 +170,14 @@ quint32 VGMPlayer::fletcher32(const QByteArray& data)
 
 void VGMPlayer::spi_write_wait(uint8_t val)
 {
-    while (_spiTimer.isValid() && _spiTimer.nsecsElapsed() < _spiDelay);
+    while (_spiTimer.isValid() && _spiTimer.nsecsElapsed() < SPI_DELAY);
     spi_write(_spiFd, val);
     _spiTimer.start();
 }
 
 void VGMPlayer::spi_xfer_wait(uint8_t* tx, uint8_t* rx)
 {
-    while (_spiTimer.isValid() && _spiTimer.nsecsElapsed() < _spiDelay);
+    while (_spiTimer.isValid() && _spiTimer.nsecsElapsed() < SPI_DELAY);
     spi_xfer(_spiFd, tx, rx);
     _spiTimer.start();
 }
@@ -195,8 +194,6 @@ void VGMPlayer::runInteractive()
 {
     uint8_t rx, tx;
     uint16_t space;
-
-    _spiDelay = SPI_DELAY_FAST;
 
     _paused = false;
     _stop = false;
@@ -251,8 +248,6 @@ void VGMPlayer::runPlayback()
 
     bool loop = _loopOffsetData >= 0 && _loopOffsetSamples >= 0;
     bool paused = _paused;
-
-    _spiDelay = SPI_DELAY_FAST;
 
     _paused = false;
     _stop = false;
@@ -352,10 +347,6 @@ void VGMPlayer::runPlayback()
                 for (int i = 0; i < count; i++) {
                     tx = _vgm[_position++];
                     spi_xfer_wait(&tx, &rx);
-
-                    if (i > 0) {
-                        _spiDelay = !!rx ? SPI_DELAY_SLOW : SPI_DELAY_FAST;
-                    }
                 }
             }
             _vgmLock.unlock();

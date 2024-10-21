@@ -42,8 +42,7 @@ class VGMPlayer : public QThread
         void pcmUploadFinished();
 
     private:
-        static constexpr int SPI_DELAY_FAST = 30000;
-        static constexpr int SPI_DELAY_SLOW = 12000000;
+        static constexpr int SPI_DELAY = 20000;
 
         enum {
             IDLE,
@@ -83,7 +82,6 @@ class VGMPlayer : public QThread
         bool _playing;
 
         QElapsedTimer _spiTimer;
-        qint64 _spiDelay;
 
         bool _fillWithPCM;
 
