@@ -15,7 +15,8 @@ class VGMStream
     public:
         enum Format {
             CHROMASOUND,
-            STANDARD
+            STANDARD,
+            LEGACY
         };
 
         class StreamItem {
@@ -227,6 +228,8 @@ class VGMStream
 
         uint8_t _lastChanVal[MELODY_CHANNELS];
         uint8_t _lastRhythm;
+
+        QByteArray _dataBlock;
 
         QList<Track::SettingsChange*> _createdSCs;
 

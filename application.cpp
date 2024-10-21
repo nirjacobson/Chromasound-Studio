@@ -51,10 +51,15 @@ void Application::play()
         QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
         QString format = settings.value(Chromasound_Studio::Format, Chromasound_Studio::Chromasound).toString();
-        VGMStream::Format vgmFormat =
-            _chromasound->supportedFormats().contains(VGMStream::Format::CHROMASOUND) && format == Chromasound_Studio::Chromasound
-            ? VGMStream::Format::CHROMASOUND
-            : VGMStream::Format::STANDARD;
+
+        VGMStream::Format vgmFormat;
+        if (_chromasound->supportedFormats().contains(VGMStream::Format::CHROMASOUND) && format == Chromasound_Studio::Chromasound) {
+            vgmFormat = VGMStream::Format::CHROMASOUND;
+        } else if (_chromasound->supportedFormats().contains(VGMStream::Format::STANDARD) && format == Chromasound_Studio::Standard) {
+            vgmFormat = VGMStream::Format::STANDARD;
+        } else {
+            vgmFormat = VGMStream::Format::LEGACY;
+        }
 
         if (_project.usesOPL() && _project.hasPCM()) {
             Chromasound_Emu* emu;
@@ -63,87 +68,46 @@ void Application::play()
             }
         }
 
-        if (vgmFormat == VGMStream::Format::CHROMASOUND) {
-            if (_project.playMode() == Project::PlayMode::PATTERN) {
-                QThread* thread = QThread::create([&]() {
-                    int currentOffsetData;
-                    int currentOffsetSamples = position() / _project.tempo() * 60 * 44100;
-                    VGMStream vgmStream;
 
-                    emit compileStarted();
-                    QByteArray vgm = vgmStream.compile(_project, _project.getFrontPattern(), false, nullptr, -1, -1, position(), &currentOffsetData);
-                    emit compileFinished();
+        if (_project.playMode() == Project::PlayMode::PATTERN) {
+            QThread* thread = QThread::create([&]() {
+                int currentOffsetData;
+                int currentOffsetSamples = position() / _project.tempo() * 60 * 44100;
+                VGMStream vgmStream(vgmFormat);
 
-                    _chromasound->play(vgm, currentOffsetSamples, currentOffsetData);
-                });
+                emit compileStarted();
+                QByteArray vgm = vgmStream.compile(_project, _project.getFrontPattern(), false, nullptr, -1, -1, position(), &currentOffsetData);
+                emit compileFinished();
 
-                connect(thread, &QThread::finished, this, [=]() {
-                    delete thread;
-                });
+                _chromasound->play(vgm, vgmFormat, currentOffsetSamples, currentOffsetData);
+            });
 
-                thread->start();
-            } else {
-                QThread* thread = QThread::create([&]() {
-                    int loopOffsetData;
-                    int currentOffsetData;
-                    int currentOffsetSamples = position() / _project.tempo() * 60 * 44100;
-                    VGMStream vgmStream;
+            connect(thread, &QThread::finished, this, [=]() {
+                delete thread;
+            });
 
-
-                    emit compileStarted();
-                    QByteArray vgm = vgmStream.compile(_project, false, &loopOffsetData, -1, -1, position(), &currentOffsetData);
-                    emit compileFinished();
-
-                    _chromasound->play(vgm, currentOffsetSamples, currentOffsetData);
-                });
-
-                connect(thread, &QThread::finished, this, [=]() {
-                    delete thread;
-                });
-
-                thread->start();
-            }
+            thread->start();
         } else {
-            if (_project.playMode() == Project::PlayMode::PATTERN) {
-                QThread* thread = QThread::create([&]() {
-                    int currentOffsetData;
-                    int currentOffsetSamples = position() / _project.tempo() * 60 * 44100;
-                    VGMStream vgmStream(VGMStream::Format::STANDARD);
+            QThread* thread = QThread::create([&]() {
+                int loopOffsetData;
+                int currentOffsetData;
+                int currentOffsetSamples = position() / _project.tempo() * 60 * 44100;
+                VGMStream vgmStream(vgmFormat);
 
-                    emit compileStarted();
-                    QByteArray vgm = vgmStream.compile(_project, _project.getFrontPattern(), false, nullptr, -1, -1, position(), &currentOffsetData);
-                    emit compileFinished();
 
-                    _chromasound->play(vgm, currentOffsetSamples, currentOffsetData);
-                });
+                emit compileStarted();
+                QByteArray vgm = vgmStream.compile(_project, false, &loopOffsetData, -1, -1, position(), &currentOffsetData);
+                emit compileFinished();
 
-                connect(thread, &QThread::finished, this, [=]() {
-                    delete thread;
-                });
+                _chromasound->play(vgm, vgmFormat, currentOffsetSamples, currentOffsetData);
+            });
 
-                thread->start();
-            } else {
-                QThread* thread = QThread::create([&]() {
-                    int loopOffsetData;
-                    int currentOffsetData;
-                    int currentOffsetSamples = position() / _project.tempo() * 60 * 44100;
-                    VGMStream vgmStream(VGMStream::Format::STANDARD);
+            connect(thread, &QThread::finished, this, [=]() {
+                delete thread;
+            });
 
-                    emit compileStarted();
-                    QByteArray vgm = vgmStream.compile(_project, false, &loopOffsetData, -1, -1, position(), &currentOffsetData);
-                    emit compileFinished();
-
-                    _chromasound->play(vgm, currentOffsetSamples, currentOffsetData);
-                });
-
-                connect(thread, &QThread::finished, this, [=]() {
-                    delete thread;
-                });
-
-                thread->start();
-            }
+            thread->start();
         }
-
     }
     _paused = false;
 }
@@ -158,10 +122,15 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
     QString format = settings.value(Chromasound_Studio::Format, Chromasound_Studio::Chromasound).toString();
-    VGMStream::Format vgmFormat =
-        _chromasound->supportedFormats().contains(VGMStream::Format::CHROMASOUND) && format == Chromasound_Studio::Chromasound
-        ? VGMStream::Format::CHROMASOUND
-        : VGMStream::Format::STANDARD;
+
+    VGMStream::Format vgmFormat;
+    if (_chromasound->supportedFormats().contains(VGMStream::Format::CHROMASOUND) && format == Chromasound_Studio::Chromasound) {
+        vgmFormat = VGMStream::Format::CHROMASOUND;
+    } else if (_chromasound->supportedFormats().contains(VGMStream::Format::STANDARD) && format == Chromasound_Studio::Standard) {
+        vgmFormat = VGMStream::Format::STANDARD;
+    } else {
+        vgmFormat = VGMStream::Format::LEGACY;
+    }
 
     if (_project.usesOPL() && _project.hasPCM()) {
         Chromasound_Emu* emu;
@@ -170,51 +139,27 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
         }
     }
 
-    if (vgmFormat == VGMStream::Format::CHROMASOUND) {
-        QThread* thread = QThread::create([&](const float loopStart, const float loopEnd) {
-            int loopOffsetData;
-            int currentOffsetData;
-            int loopOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
-            int currentOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
+    QThread* thread = QThread::create([&](const float loopStart, const float loopEnd) {
+        int loopOffsetData;
+        int currentOffsetData;
+        int loopOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
+        int currentOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
 
-            emit compileStarted();
-            QByteArray vgm = VGMStream().compile(_project, pattern, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
-            emit compileFinished();
+        emit compileStarted();
+        QByteArray vgm = VGMStream(vgmFormat).compile(_project, pattern, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
+        emit compileFinished();
 
-            if (_output) _output->stop();
-            _chromasound->setPosition(loopStart);
-            _chromasound->play(vgm, currentOffsetSamples, currentOffsetData, true);
-            if (_output) _output->start();
-        }, loopStart, loopEnd);
+        if (_output) _output->stop();
+        _chromasound->setPosition(loopStart);
+        _chromasound->play(vgm, vgmFormat, currentOffsetSamples, currentOffsetData, true);
+        if (_output) _output->start();
+    }, loopStart, loopEnd);
 
-        connect(thread, &QThread::finished, this, [=]() {
-            delete thread;
-        });
+    connect(thread, &QThread::finished, this, [=]() {
+        delete thread;
+    });
 
-        thread->start();
-    } else {
-        QThread* thread = QThread::create([&](const float loopStart, const float loopEnd) {
-            int loopOffsetData;
-            int currentOffsetData;
-            int loopOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
-            int currentOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
-
-            emit compileStarted();
-            QByteArray vgm = VGMStream(VGMStream::Format::STANDARD).compile(_project, pattern, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
-            emit compileFinished();
-
-            if (_output) _output->stop();
-            _chromasound->setPosition(loopStart);
-            _chromasound->play(vgm, currentOffsetSamples, currentOffsetData, true);
-            if (_output) _output->start();
-        }, loopStart, loopEnd);
-
-        connect(thread, &QThread::finished, this, [=]() {
-            delete thread;
-        });
-
-        thread->start();
-    }
+    thread->start();
 }
 
 void Application::play(const float loopStart, const float loopEnd)
@@ -227,10 +172,15 @@ void Application::play(const float loopStart, const float loopEnd)
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
     QString format = settings.value(Chromasound_Studio::Format, Chromasound_Studio::Chromasound).toString();
-    VGMStream::Format vgmFormat =
-        _chromasound->supportedFormats().contains(VGMStream::Format::CHROMASOUND) && format == Chromasound_Studio::Chromasound
-        ? VGMStream::Format::CHROMASOUND
-        : VGMStream::Format::STANDARD;
+
+    VGMStream::Format vgmFormat;
+    if (_chromasound->supportedFormats().contains(VGMStream::Format::CHROMASOUND) && format == Chromasound_Studio::Chromasound) {
+        vgmFormat = VGMStream::Format::CHROMASOUND;
+    } else if (_chromasound->supportedFormats().contains(VGMStream::Format::STANDARD) && format == Chromasound_Studio::Standard) {
+        vgmFormat = VGMStream::Format::STANDARD;
+    } else {
+        vgmFormat = VGMStream::Format::LEGACY;
+    }
 
     if (_project.usesOPL() && _project.hasPCM()) {
         Chromasound_Emu* emu;
@@ -239,51 +189,27 @@ void Application::play(const float loopStart, const float loopEnd)
         }
     }
 
-    if (vgmFormat == VGMStream::Format::CHROMASOUND) {
-        QThread* thread = QThread::create([&](const float loopStart, const float loopEnd) {
-            int loopOffsetData;
-            int currentOffsetData;
-            int loopOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
-            int currentOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
+    QThread* thread = QThread::create([&](const float loopStart, const float loopEnd) {
+        int loopOffsetData;
+        int currentOffsetData;
+        int loopOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
+        int currentOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
 
-            emit compileStarted();
-            QByteArray vgm = VGMStream().compile(_project, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
-            emit compileFinished();
+        emit compileStarted();
+        QByteArray vgm = VGMStream(vgmFormat).compile(_project, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
+        emit compileFinished();
 
-            if (_output) _output->stop();
-            _chromasound->setPosition(loopStart);
-            _chromasound->play(vgm, currentOffsetSamples, currentOffsetData, true);
-            if (_output) _output->start();
-        }, loopStart, loopEnd);
+        if (_output) _output->stop();
+        _chromasound->setPosition(loopStart);
+        _chromasound->play(vgm, vgmFormat, currentOffsetSamples, currentOffsetData, true);
+        if (_output) _output->start();
+    }, loopStart, loopEnd);
 
-        connect(thread, &QThread::finished, this, [=]() {
-            delete thread;
-        });
+    connect(thread, &QThread::finished, this, [=]() {
+        delete thread;
+    });
 
-        thread->start();
-    } else {
-        QThread* thread = QThread::create([&](const float loopStart, const float loopEnd) {
-            int loopOffsetData;
-            int currentOffsetData;
-            int loopOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
-            int currentOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
-
-            emit compileStarted();
-            QByteArray vgm = VGMStream(VGMStream::Format::STANDARD).compile(_project, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
-            emit compileFinished();
-
-            if (_output) _output->stop();
-            _chromasound->setPosition(loopStart);
-            _chromasound->play(vgm, currentOffsetSamples, currentOffsetData, true);
-            if (_output) _output->start();
-        }, loopStart, loopEnd);
-
-        connect(thread, &QThread::finished, this, [=]() {
-            delete thread;
-        });
-
-        thread->start();
-    }
+    thread->start();
 }
 void Application::stop()
 {

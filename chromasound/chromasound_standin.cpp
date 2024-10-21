@@ -60,7 +60,7 @@ void Chromasound_Standin::keyOff(int)
 
 QList<VGMStream::Format> Chromasound_Standin::supportedFormats()
 {
-    return QList<VGMStream::Format>({VGMStream::Format::CHROMASOUND, VGMStream::Format::STANDARD});
+    return QList<VGMStream::Format>({VGMStream::Format::CHROMASOUND, VGMStream::Format::STANDARD, VGMStream::Format::LEGACY});
 }
 
 qint64 Chromasound_Standin::nanosecondsPerBeat() const
@@ -79,7 +79,7 @@ Chromasound_Standin::Chromasound_Standin(const Project& project)
 
 }
 
-void Chromasound_Standin::play(const QByteArray& vgm, const int, const int, const bool)
+void Chromasound_Standin::play(const QByteArray& vgm, const VGMStream::Format, const int, const int, const bool)
 {
     QTimer::singleShot(3000, [&]() {
         emit pcmUploadFinished();

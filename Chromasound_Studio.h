@@ -22,6 +22,7 @@ class Chromasound_Studio {
 
         static const QString Chromasound;
         static const QString Standard;
+        static const QString Legacy;
 
         static const QString Emulator;
         static const QString ChromasoundDirect;

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>349</width>
-    <height>90</height>
+    <height>138</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -60,6 +60,26 @@
      </property>
      <property name="text">
       <string>Compatible with all VGM players.</string>
+     </property>
+     <property name="indent">
+      <number>20</number>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QRadioButton" name="legacyRadioButton">
+     <property name="text">
+      <string>Legacy</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="legacyLabel">
+     <property name="styleSheet">
+      <string notr="true">color: gray;</string>
+     </property>
+     <property name="text">
+      <string>Required for PCM on the Chromasound Nova Direct.</string>
      </property>
      <property name="indent">
       <number>20</number>

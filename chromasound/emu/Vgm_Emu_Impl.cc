@@ -102,6 +102,7 @@ void Vgm_Emu_Impl::reset()
         pcm_size[i] = 0;
         pcm_start[i] = 0;
     }
+    pcm_discrete = false;
 }
 
 inline Vgm_Emu_Impl::fm_time_t Vgm_Emu_Impl::to_fm_time( vgm_time_t t ) const
@@ -141,6 +142,11 @@ void Vgm_Emu_Impl::set_pcm_data(const char* path)
     reader.read(pcm_data.begin(), size);
 
     reader.close();
+}
+
+void Vgm_Emu_Impl::set_pcm_discrete(bool discrete)
+{
+    pcm_discrete = discrete;
 }
 
 int Vgm_Emu_Impl::pcm_read()
@@ -246,10 +252,14 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
                 {
                     if ( pos [0] == 0x2B )
                     {
-                        dac_disabled = (pos [1] >> 7 & 1) - 1;
-                        dac_amp |= dac_disabled;
+                        if (!pcm_discrete) {
+                            dac_disabled = (pos [1] >> 7 & 1) - 1;
+                            dac_amp |= dac_disabled;
+                            ym2612.write0( pos [0], pos [1] );
+                        }
+                    } else {
+                        ym2612.write0( pos [0], pos [1] );
                     }
-                    ym2612.write0( pos [0], pos [1] );
                 }
                 pos += 2;
                 break;

@@ -114,7 +114,7 @@ void Chromasound_Direct::setPosition(const float pos)
     _timeOffset = pos / _project.tempo() * 60 * 44100;
 }
 
-void Chromasound_Direct::play(const QByteArray& vgm, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection)
+void Chromasound_Direct::play(const QByteArray& vgm, const VGMStream::Format, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection)
 {
     if (isSelection) {
         _timeOffset = currentOffsetSamples;
@@ -228,5 +228,5 @@ void Chromasound_Direct::reset()
 
 QList<VGMStream::Format> Chromasound_Direct::supportedFormats()
 {
-    return QList<VGMStream::Format>({VGMStream::Format::CHROMASOUND, VGMStream::Format::STANDARD});
+    return QList<VGMStream::Format>({VGMStream::Format::CHROMASOUND, VGMStream::Format::STANDARD, VGMStream::Format::LEGACY});
 }

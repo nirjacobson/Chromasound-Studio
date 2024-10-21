@@ -256,8 +256,12 @@ void Chromasound_Emu::setPosition(const float pos)
     _position = 0;
 }
 
-void Chromasound_Emu::play(const QByteArray& vgm, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection)
+void Chromasound_Emu::play(const QByteArray& vgm, const VGMStream::Format format, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection)
 {
+    Vgm_Emu_Impl* impl = dynamic_cast<Vgm_Emu_Impl*>(_emu);
+
+    impl->set_pcm_discrete(format == VGMStream::Format::CHROMASOUND);
+
     deactivate();
     Mem_File_Reader reader(vgm.constData(), vgm.size());
     if (log_err(_emu->load(reader)))
@@ -447,7 +451,7 @@ int16_t* Chromasound_Emu::next(int size)
 
 QList<VGMStream::Format> Chromasound_Emu::supportedFormats()
 {
-    return QList<VGMStream::Format>({VGMStream::Format::CHROMASOUND, VGMStream::Format::STANDARD});
+    return QList<VGMStream::Format>({VGMStream::Format::CHROMASOUND, VGMStream::Format::STANDARD, VGMStream::Format::LEGACY});
 }
 
 void Chromasound_Emu::setOPLLPatchset(OPLL::Type type)

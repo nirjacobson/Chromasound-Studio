@@ -41,6 +41,8 @@ class Vgm_Emu_Impl : public Classic_Emu, private Dual_Resampler {
 
         void set_pcm_data(const char* path);
 
+        void set_pcm_discrete(bool discrete);
+
     protected:
         enum { stereo = 2 };
 
@@ -71,6 +73,8 @@ class Vgm_Emu_Impl : public Classic_Emu, private Dual_Resampler {
         byte        pcm_att  [PCM_CHANNELS];
         uint16_t    pcm_size [PCM_CHANNELS];
         byte const* pcm_start[PCM_CHANNELS];
+
+        bool pcm_discrete;
 
         int dac_amp;
         int dac_disabled; // -1 if disabled

@@ -15,8 +15,10 @@ PlaybackSettingsWidget::PlaybackSettingsWidget(QWidget *parent) :
 
     if (settings.value(Chromasound_Studio::Format, Chromasound_Studio::Chromasound).toString() == Chromasound_Studio::Chromasound) {
         ui->chromasoundRadioButton->setChecked(true);
-    } else {
+    } else if (settings.value(Chromasound_Studio::Format, Chromasound_Studio::Chromasound).toString() == Chromasound_Studio::Standard) {
         ui->standardRadioButton->setChecked(true);
+    } else {
+        ui->legacyRadioButton->setChecked(true);
     }
 }
 
@@ -27,5 +29,11 @@ PlaybackSettingsWidget::~PlaybackSettingsWidget()
 
 QString PlaybackSettingsWidget::format() const
 {
-    return ui->chromasoundRadioButton->isChecked() ? Chromasound_Studio::Chromasound : Chromasound_Studio::Standard;
+    if (ui->chromasoundRadioButton->isChecked()) {
+        return Chromasound_Studio::Chromasound;
+    } else if (ui->standardRadioButton->isChecked()) {
+        return Chromasound_Studio::Standard;
+    } else {
+        return Chromasound_Studio::Legacy;
+    }
 }

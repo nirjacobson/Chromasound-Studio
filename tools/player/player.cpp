@@ -112,7 +112,7 @@ void Player::play(const int index)
         _currentTrack = index;
         ui->playlistTableView->selectionModel()->setCurrentIndex(_playlistTableModel.index(index, 0), QItemSelectionModel::ClearAndSelect);
         _app->ignoreCSTime(true);
-        _app->chromasound().play(vgm, 0, 0);
+        _app->chromasound().play(vgm, VGMStream::CHROMASOUND, 0, 0);
     } else if (fileInfo.suffix().toLower() == "pcm") {
         QByteArray vgm = pcmToVgm(path);
 
@@ -120,7 +120,7 @@ void Player::play(const int index)
         _currentTrack = index;
         ui->playlistTableView->selectionModel()->setCurrentIndex(_playlistTableModel.index(index, 0), QItemSelectionModel::ClearAndSelect);
         _app->ignoreCSTime(true);
-        _app->chromasound().play(vgm, 0, 0);
+        _app->chromasound().play(vgm, VGMStream::CHROMASOUND, 0, 0);
     }
     ui->playButton->setIcon(ui->playButton->style()->standardIcon(QStyle::SP_MediaPause));
     _timer.start();
