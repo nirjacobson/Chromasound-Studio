@@ -308,6 +308,10 @@ void VGMPlayer::runPlayback()
     _timer.start();
     _playing = true;
 
+    bool have52 = false;
+    bool have522A = false;
+    bool pcm = false;
+
     while (true) {
         _stopLock.lock();
         bool stop = _stop;
@@ -337,16 +341,36 @@ void VGMPlayer::runPlayback()
 
             if (count > 0) {
                 tx = RECEIVE_DATA;
-                spi_xfer_wait(&tx, &rx);
+                spi_write_wait(tx);
 
                 for (int i = 0; i < 4; i++) {
                     tx = ((char*)&count)[i];
-                    spi_xfer_wait(&tx, &rx);
+                    spi_write_wait(tx);
                 }
 
                 for (int i = 0; i < count; i++) {
-                    tx = _vgm[_position++];
-                    spi_xfer_wait(&tx, &rx);
+                    have52 = have52 || _vgm[_position] == 0x52;
+                    have522A = have522A || (have52 && _vgm[_position] == 0x2A);
+
+                    if (_vgm[_position] == 0x52 || have52 && _vgm[_position] == 0x2A) {
+                        _position++;
+                        continue;
+                    }
+
+                    if (have522A) {
+                        spi_write_wait(0x52);
+                        spi_write(_spiFd, 0x2A);
+                        spi_write(_spiFd, _vgm[_position++]);
+
+                        have52 = false;
+                        have522A = false;
+                    } else if (have52) {
+                        spi_write_wait(0x52);
+                        spi_write_wait(_vgm[_position++]);
+                        have52 = false;
+                    } else {
+                        spi_write_wait(_vgm[_position++]);
+                    }
                 }
             }
             _vgmLock.unlock();
