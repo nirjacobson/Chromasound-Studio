@@ -769,7 +769,7 @@ void MainWindow::publishTriggered()
             QString newPath = dir.absoluteFilePath(QFileInfo(_app->project().pcmFile()).fileName());
             QFile::copy(_app->project().pcmFile(), newPath);
 
-            _app->project().setPCMFile(dir.relativeFilePath(newPath));
+            _app->project().setPCMFile(QFileInfo(_app->project().pcmFile()).fileName());
         }
 
         QString projectFileName("project.csp");
