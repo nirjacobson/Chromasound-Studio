@@ -1,6 +1,8 @@
 #include "vgmplayer.h"
 #include "spi.h"
 
+int VGMPlayer::SPI_DELAY = 20000;
+
 VGMPlayer::VGMPlayer(QObject *parent)
     : QThread{parent}
     , _mode(Mode::Interactive)
@@ -308,10 +310,6 @@ void VGMPlayer::runPlayback()
     _timer.start();
     _playing = true;
 
-    bool have52 = false;
-    bool have522A = false;
-    bool pcm = false;
-
     while (true) {
         _stopLock.lock();
         bool stop = _stop;
@@ -349,28 +347,15 @@ void VGMPlayer::runPlayback()
                 }
 
                 for (int i = 0; i < count; i++) {
-                    have52 = have52 || _vgm[_position] == 0x52;
-                    have522A = have522A || (have52 && _vgm[_position] == 0x2A);
+                    spi_write_wait(_vgm[_position]);
 
-                    if (_vgm[_position] == 0x52 || have52 && _vgm[_position] == 0x2A) {
-                        _position++;
-                        continue;
+                    if (_vgm[_position] == 0x52 && _vgm[_position+1] == 0x2A) {
+                        SPI_DELAY = 6000;
+                    } else if (_position > 1 && _vgm[_position-2] == 0x52 && _vgm[_position-1] == 0x2A) {
+                        SPI_DELAY = 20000;
                     }
 
-                    if (have522A) {
-                        spi_write_wait(0x52);
-                        spi_write(_spiFd, 0x2A);
-                        spi_write(_spiFd, _vgm[_position++]);
-
-                        have52 = false;
-                        have522A = false;
-                    } else if (have52) {
-                        spi_write_wait(0x52);
-                        spi_write_wait(_vgm[_position++]);
-                        have52 = false;
-                    } else {
-                        spi_write_wait(_vgm[_position++]);
-                    }
+                    _position++;
                 }
             }
             _vgmLock.unlock();
