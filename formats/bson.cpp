@@ -858,7 +858,7 @@ void BSON::fromProject(bson_t* dst,const Project& project)
     BSON_APPEND_DOCUMENT(dst, "userTone", &userTone);
 
     // ROM
-    BSON_APPEND_UTF8(dst, "pcmFile", project.pcmFile().toStdString().c_str());
+    BSON_APPEND_UTF8(dst, "pcmFile", project._pcmFile.toStdString().c_str());
 
     // Info
     bson_t b_info;
