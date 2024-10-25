@@ -35,6 +35,7 @@ enum {
     cmd_short_delay     = 0x70,
     cmd_pcm_delay       = 0x80,
     cmd_pcm_play        = 0x96,
+    cmd_pcm_inline      = 0x97,
     cmd_ssg             = 0xA0,
     cmd_pcm_size        = 0xD0,
     cmd_pcm_seek        = 0xE0,
@@ -180,11 +181,18 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
 
     if (samples > 0) {
         for (uint32_t i = samples_offset; i < samples && vgm_time < end_time; i++) {
-            write_pcm( vgm_time++, pcm_read() );
-            samples_offset++;
+            if (inlinePCMPos) {
+                write_pcm( vgm_time, *inlinePCMPos++ );
+                vgm_time += 2;
+                samples_offset++;
+            } else {
+                write_pcm( vgm_time++, pcm_read() );
+                samples_offset++;
+            }
         }
         if (samples_offset == samples) {
             samples = samples_offset = 0;
+            inlinePCMPos = NULL;
         }
     } else if ( pos >= data_end ) {
         if (fill_past_end_with_pcm) {
@@ -275,7 +283,7 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
                 int type = pos [1];
                 long size = GET_LE32( pos + 2 );
                 pos += 6;
-                if ( type == pcm_block_type ) {
+                if ( type == pcm_block_type || type == 1 ) {
                     pcm_data.resize(size);
                     memcpy(pcm_data.begin(), pos, size);
                 }
@@ -285,11 +293,23 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
             case cmd_pcm_play:
                 samples = *(uint32_t*)pos;
                 samples_offset = 0;
+                inlinePCMPos = NULL;
                 for (uint32_t i = 0; i < samples && vgm_time < end_time; i++) {
                     write_pcm( vgm_time++, pcm_read() );
                     samples_offset++;
                 }
                 pos += 4;
+                break;
+            case cmd_pcm_inline:
+                samples = *(uint32_t*)&pos[1];
+                samples_offset = 0;
+                inlinePCMPos = &pos[5];
+                for (uint32_t i = 0; i < samples && vgm_time < end_time; i++) {
+                    write_pcm( vgm_time, pos[5 + i] );
+                    vgm_time += 2;
+                    samples_offset++;
+                }
+                pos += 5 + samples;
                 break;
 
             default:

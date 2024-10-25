@@ -90,6 +90,7 @@ class Vgm_Emu_Impl : public Classic_Emu, private Dual_Resampler {
 
         int pcm_read();
 
+        byte const* inlinePCMPos = NULL;
         int samples = 0;
         int samples_offset = 0;
 
