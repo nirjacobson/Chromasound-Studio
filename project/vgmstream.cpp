@@ -34,8 +34,8 @@ QList<int> VGMStream::ym2413_frequencies = {
     172, 181, 192, 204, 216, 229, 242, 257, 272, 288, 305, 323
 };
 
-VGMStream::VGMStream(const Format format)
-    : _format(format)
+VGMStream::VGMStream(const Chromasound_Studio::Profile profile)
+    : _profile(profile)
 {
     reset();
 }
@@ -142,7 +142,7 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
     addSettingsAtCurrentOffset(items, currentOffset);
 
     if (project.hasPCM()) {
-        if (_format == Format::CHROMASOUND) {
+        if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::RANDOM) {
             QFile romFile(project.pcmFile());
             romFile.open(QIODevice::ReadOnly);
             _dataBlock = romFile.readAll();
@@ -225,7 +225,7 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
     }
 
     if (project.hasPCM()) {
-        if (!project.usesOPL() && _format != Format::CHROMASOUND) {
+        if (!_profile.discretePCM()) {
             QByteArray enableDac;
             enableDac.append(0x52);
             enableDac.append(0x2B);
@@ -242,10 +242,10 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
         QByteArray pcmBlock;
         dataBlockSize = _dataBlock.size();
 
-        if (_format != Format::LEGACY) {
+        if (_profile.pcmStrategy() != Chromasound_Studio::PCMStrategy::INLINE) {
             pcmBlock.append(0x67);
             pcmBlock.append(0x66);
-            pcmBlock.append((quint8)0x00);
+            pcmBlock.append((quint8)0x00 | !_profile.usePCMSRAM());
             pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
             pcmBlock.append(_dataBlock);
 
@@ -253,7 +253,7 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
             _currentOffsetData += 7 + dataBlockSize;
         }
 
-        if (_format == Format::STANDARD) {
+        if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::SEQUENTIAL) {
             pcmBlock.append(0xE0);
             pcmBlock.append((quint8)0x00);
             pcmBlock.append((quint8)0x00);
@@ -305,8 +305,9 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
     applySettingsChanges2(project, items);
     addSettingsAtCurrentOffset(items, currentOffset);
 
+
     if (project.hasPCM()) {
-        if (_format == Format::CHROMASOUND) {
+        if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::RANDOM) {
             QFile romFile(project.pcmFile());
             romFile.open(QIODevice::ReadOnly);
             _dataBlock = romFile.readAll();
@@ -458,7 +459,7 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
     }
 
     if (project.hasPCM()) {
-        if (!project.usesOPL() && _format != Format::CHROMASOUND) {
+        if (!_profile.discretePCM()) {
             QByteArray enableDac;
             enableDac.append(0x52);
             enableDac.append(0x2B);
@@ -475,10 +476,10 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
         QByteArray pcmBlock;
         dataBlockSize = _dataBlock.size();
 
-        if (_format != Format::LEGACY) {
+        if (_profile.pcmStrategy() != Chromasound_Studio::PCMStrategy::INLINE) {
             pcmBlock.append(0x67);
             pcmBlock.append(0x66);
-            pcmBlock.append((quint8)0x00);
+            pcmBlock.append((quint8)0x00 | !_profile.usePCMSRAM());
             pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
             pcmBlock.append(_dataBlock);
 
@@ -486,7 +487,7 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
             _currentOffsetData += 7 + dataBlockSize;
         }
 
-        if (_format == Format::STANDARD) {
+        if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::SEQUENTIAL) {
             pcmBlock.append(0xE0);
             pcmBlock.append((quint8)0x00);
             pcmBlock.append((quint8)0x00);
@@ -1452,7 +1453,7 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
 
         if (items[i]->time() >= loopTime && !setLoopOffsetData) {
             _loopOffsetData = data.size();
-            if (_format == Format::STANDARD) {
+            if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::SEQUENTIAL) {
                 data.append(0xE0);
                 data.append((char*)&pcmWritten, sizeof(pcmWritten));
             }
@@ -1532,16 +1533,31 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
 int VGMStream::encodeDelay(const quint32 samples, QByteArray& data, const bool pcm) {
     quint32 s = samples;
 
-    if (_format == Format::CHROMASOUND && pcm && samples > 8) {
-        data.append(0x96);
-        data.append((char*)&samples, sizeof(samples));
+    if (pcm && _profile.isChromasound()) {
+        if (_profile.pcmStrategy() != Chromasound_Studio::PCMStrategy::INLINE) {
+            data.append(0x96);
+            data.append((char*)&samples, sizeof(samples));
+        } else {
+            QByteArray pcmData;
+            quint32 s = samples / 2;
+
+            for (int i = 0; i < s; i++) {
+                pcmData.append(_dataBlock[i * 2]);
+
+            }
+            data.append(0x97);
+            data.append(0xFE);
+            data.append((char*)&s, sizeof(s));
+            data.append(pcmData);
+            _dataBlock.remove(0, samples);
+        }
 
         return samples;
     }
 
     while (s > 0) {
         if (pcm) {
-            if (_format != Format::LEGACY) {
+            if (_profile.pcmStrategy() != Chromasound_Studio::PCMStrategy::INLINE) {
                 data.append(0x81);
             } else {
                 data.append(0x52);
@@ -1670,7 +1686,7 @@ void VGMStream::encodeSettingsItem(const Project& project, const StreamSettingsI
         data.append(0xB4 + channel);
         data.append(datum);
     } else if ((rcs = dynamic_cast<const ROMChannelSettings*>(item->channelSettings())) != nullptr) {
-        if (_format == Format::CHROMASOUND) {
+        if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::RANDOM) {
             int volume = rcs->volume() * item->velocity() / 100;
             int att = MAX_PCM_ATTENUATION * (float)(100 - volume) / 100;
             data.append(0xF0 | item->channel());
@@ -1804,7 +1820,7 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
     } else if (item->type() == Channel::Type::PCM) {
         ROM rom(project.pcmFile());
 
-        if (_format == Format::CHROMASOUND) {
+        if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::RANDOM) {
             if (item->on()) {
                 const ROMChannelSettings* rcs = dynamic_cast<const ROMChannelSettings*>(item->channelSettings());
 

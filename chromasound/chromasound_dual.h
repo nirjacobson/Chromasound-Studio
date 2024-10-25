@@ -13,7 +13,7 @@ class Chromasound_Dual : public Chromasound
     public:
         quint32 position();
         void setPosition(const float pos);
-        void play(const QByteArray& vgm, const VGMStream::Format format, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection);
+        void play(const QByteArray& vgm, const Chromasound_Studio::Profile profile, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection);
         void play();
         void pause();
         void stop();
@@ -21,7 +21,6 @@ class Chromasound_Dual : public Chromasound
         bool isPaused() const;
         void keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity);
         void keyOff(int key);
-        QList<VGMStream::Format> supportedFormats();
 
         void setOPLLPatchset(OPLL::Type type);
     private:

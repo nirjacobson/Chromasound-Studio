@@ -105,8 +105,7 @@ class MainWindow : public QMainWindow
         void saveTriggered();
         void saveAsTriggered();
         void publishTriggered();
-        void renderForChromasoundTriggered();
-        void renderFor3rdPartyTriggered();
+        void renderTriggered();
 
         void keyOn(const int key, const int velocity);
         void keyOff(const int key);

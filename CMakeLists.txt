@@ -460,9 +460,6 @@ set(PROJECT_SOURCES
     dialogs/settings/emulationsettingswidget.h
     dialogs/settings/emulationsettingswidget.cpp
     dialogs/settings/emulationsettingswidget.ui
-    dialogs/settings/playbacksettingswidget.h
-    dialogs/settings/playbacksettingswidget.cpp
-    dialogs/settings/playbacksettingswidget.ui
     dialogs/settings/chromasoundlayoutwidget.h
     dialogs/settings/chromasoundlayoutwidget.cpp
     dialogs/settings/chromasoundlayoutwidget.ui
@@ -524,6 +521,9 @@ set(PROJECT_SOURCES
     dialogs/settings/emulatoroutputdevicesettingswidget.h
     dialogs/settings/emulatoroutputdevicesettingswidget.cpp
     dialogs/settings/emulatoroutputdevicesettingswidget.ui
+    dialogs/settings/profilesettingswidget.h
+    dialogs/settings/profilesettingswidget.cpp
+    dialogs/settings/profilesettingswidget.ui
 )
 
 if (LINUX)

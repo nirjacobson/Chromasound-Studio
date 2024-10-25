@@ -103,6 +103,17 @@ void Player::play(const int index)
     QFile file(path);
     QFileInfo fileInfo(file);
 
+#ifdef Q_OS_WIN
+    QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
+#else
+    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+#endif
+    bool isChromasound = settings.value(Chromasound_Studio::IsChromasoundKey, true).toBool();
+    bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
+    bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
+    Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
+    Chromasound_Studio::Profile profile(isChromasound, pcmStrategy, discretePCM, usePCMSRAM);
+
     if (fileInfo.suffix().toLower() == "vgm") {
         file.open(QIODevice::ReadOnly);
         QByteArray vgm = file.readAll();
@@ -112,7 +123,7 @@ void Player::play(const int index)
         _currentTrack = index;
         ui->playlistTableView->selectionModel()->setCurrentIndex(_playlistTableModel.index(index, 0), QItemSelectionModel::ClearAndSelect);
         _app->ignoreCSTime(true);
-        _app->chromasound().play(vgm, VGMStream::CHROMASOUND, 0, 0);
+        _app->chromasound().play(vgm, profile, 0, 0);
     } else if (fileInfo.suffix().toLower() == "pcm") {
         QByteArray vgm = pcmToVgm(path);
 
@@ -120,7 +131,7 @@ void Player::play(const int index)
         _currentTrack = index;
         ui->playlistTableView->selectionModel()->setCurrentIndex(_playlistTableModel.index(index, 0), QItemSelectionModel::ClearAndSelect);
         _app->ignoreCSTime(true);
-        _app->chromasound().play(vgm, VGMStream::CHROMASOUND, 0, 0);
+        _app->chromasound().play(vgm, profile, 0, 0);
     }
     ui->playButton->setIcon(ui->playButton->style()->standardIcon(QStyle::SP_MediaPause));
     _timer.start();

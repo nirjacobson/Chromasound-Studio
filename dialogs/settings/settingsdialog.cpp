@@ -27,15 +27,19 @@ void SettingsDialog::accepted()
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
 
-    settings.setValue(Chromasound_Studio::EqualizerBass, ui->emulationSettingsWidget->bass());
-    settings.setValue(Chromasound_Studio::EqualizerTreble, ui->emulationSettingsWidget->treble());
-    settings.setValue(Chromasound_Studio::AudioBufferSize, ui->emulationSettingsWidget->audioBufferSize());
-    settings.setValue(Chromasound_Studio::ReadBufferSize, ui->emulationSettingsWidget->readBufferSize());
-    settings.setValue(Chromasound_Studio::Format, ui->playbackSettingsWidget->format());
-    settings.setValue(Chromasound_Studio::NumberOfChromasounds, ui->chromasoundLayoutWidget->quantity());
-    settings.setValue(Chromasound_Studio::Chromasound1, ui->chromasoundLayoutWidget->chromasound1());
-    settings.setValue(Chromasound_Studio::Chromasound2, ui->chromasoundLayoutWidget->chromasound2());
-    settings.setValue(Chromasound_Studio::OutputDevice, ui->emulatorOutputDeviceWidget->outputDeviceIndex());
+    settings.setValue(Chromasound_Studio::EqualizerBassKey, ui->emulationSettingsWidget->bass());
+    settings.setValue(Chromasound_Studio::EqualizerTrebleKey, ui->emulationSettingsWidget->treble());
+    settings.setValue(Chromasound_Studio::AudioBufferSizeKey, ui->emulationSettingsWidget->audioBufferSize());
+    settings.setValue(Chromasound_Studio::ReadBufferSizeKey, ui->emulationSettingsWidget->readBufferSize());
+    settings.setValue(Chromasound_Studio::IsChromasoundKey, ui->profileSettingsWidget->profile().isChromasound());
+    settings.setValue(Chromasound_Studio::ProfilePresetKey, ui->profileSettingsWidget->preset());
+    settings.setValue(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::pcmStrategyToString(ui->profileSettingsWidget->profile().pcmStrategy()));
+    settings.setValue(Chromasound_Studio::DiscretePCMKey, ui->profileSettingsWidget->profile().discretePCM());
+    settings.setValue(Chromasound_Studio::UsePCMSRAMKey, ui->profileSettingsWidget->profile().usePCMSRAM());
+    settings.setValue(Chromasound_Studio::NumberOfChromasoundsKey, ui->chromasoundLayoutWidget->quantity());
+    settings.setValue(Chromasound_Studio::Chromasound1Key, ui->chromasoundLayoutWidget->chromasound1());
+    settings.setValue(Chromasound_Studio::Chromasound2Key, ui->chromasoundLayoutWidget->chromasound2());
+    settings.setValue(Chromasound_Studio::OutputDeviceKey, ui->emulatorOutputDeviceWidget->outputDeviceIndex());
 
     emit done();
 

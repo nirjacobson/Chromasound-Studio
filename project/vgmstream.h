@@ -9,16 +9,11 @@
 #include "note.h"
 #include "formats/gd3.h"
 #include "formats/rom.h"
+#include "Chromasound_Studio.h"
 
 class VGMStream
 {
     public:
-        enum Format {
-            CHROMASOUND,
-            STANDARD,
-            LEGACY
-        };
-
         class StreamItem {
             private:
                 float _time;
@@ -101,7 +96,7 @@ class VGMStream
                 OPLSettings _settings;
         };
 
-        VGMStream(const Format format = Format::CHROMASOUND);
+        VGMStream(const Chromasound_Studio::Profile profile = Chromasound_Studio::ChromasoundProPreset);
         ~VGMStream();
 
         void assignChannel(const Project& project, StreamNoteItem* noteItem, QList<StreamItem*>& items);
@@ -213,7 +208,7 @@ class VGMStream
         static constexpr int RHYTHM_CHANNELS = 5;
         static constexpr int MAX_PCM_ATTENUATION = 4;
 
-        Format _format;
+        Chromasound_Studio::Profile _profile;
 
         FMChannel _fmChannels[FM_CHANNELS];
         ToneChannel _toneChannels[TONE_CHANNELS];

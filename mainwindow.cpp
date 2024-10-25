@@ -124,8 +124,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveTriggered);
     connect(ui->actionSaveAs, &QAction::triggered, this, &MainWindow::saveAsTriggered);
     connect(ui->actionPublish, &QAction::triggered, this, &MainWindow::publishTriggered);
-    connect(ui->actionForChromasound, &QAction::triggered, this, &MainWindow::renderForChromasoundTriggered);
-    connect(ui->actionFor3rdPartyPlayers, &QAction::triggered, this, &MainWindow::renderFor3rdPartyTriggered);
+    connect(ui->actionRender, &QAction::triggered, this, &MainWindow::renderTriggered);
     connect(ui->actionInfo, &QAction::triggered, this, &MainWindow::projectInfoTriggered);
     connect(ui->actionExit, &QAction::triggered, this, &MainWindow::close);
     connect(ui->actionSettings, &QAction::triggered, this, &MainWindow::settingsTriggered);
@@ -786,48 +785,31 @@ void MainWindow::publishTriggered()
     }
 }
 
-void MainWindow::renderForChromasoundTriggered()
+void MainWindow::renderTriggered()
 {
     const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "VGM files (*.vgm)", nullptr, QFileDialog::DontUseNativeDialog);
+
+#ifdef Q_OS_WIN
+    QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
+#else
+    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+#endif
+    bool isChromasound = settings.value(Chromasound_Studio::IsChromasoundKey, true).toBool();
+    bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
+    bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
+    Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
+    Chromasound_Studio::Profile profile(isChromasound, pcmStrategy, discretePCM, usePCMSRAM);
 
     if (!path.isNull()) {
         QThread* thread = QThread::create([&](const QString path) {
             QFile file(path);
             file.open(QIODevice::WriteOnly);
 
-            VGMStream vgmStream;
+            VGMStream vgmStream(profile);
             compileStarted();
             QByteArray data = _app->project().playMode() == Project::PlayMode::PATTERN
-                              ? vgmStream.compile(_app->project(), _app->project().getFrontPattern(), true)
-                              : vgmStream.compile(_app->project(), true);
-            file.write(data);
-            file.close();
-
-            ui->topWidget->setStatusMessage(QString("Saved %1.").arg(QFileInfo(path).fileName()));
-        }, path);
-
-        connect(thread, &QThread::finished, this, [=]() {
-            delete thread;
-        });
-
-        thread->start();
-    }
-}
-
-void MainWindow::renderFor3rdPartyTriggered()
-{
-    const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "VGM files (*.vgm)", nullptr, QFileDialog::DontUseNativeDialog);
-
-    if (!path.isNull()) {
-        QThread* thread = QThread::create([&](const QString path) {
-            QFile file(path);
-            file.open(QIODevice::WriteOnly);
-
-            VGMStream vgmStream(VGMStream::Format::STANDARD);
-            compileStarted();
-            QByteArray data = _app->project().playMode() == Project::PlayMode::PATTERN
-                              ? vgmStream.compile(_app->project(), _app->project().getFrontPattern(), true)
-                              : vgmStream.compile(_app->project(), true);
+                                  ? vgmStream.compile(_app->project(), _app->project().getFrontPattern(), true)
+                                  : vgmStream.compile(_app->project(), true);
             file.write(data);
             file.close();
 

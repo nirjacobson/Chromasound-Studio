@@ -24,9 +24,9 @@ void Chromasound_Dual::setPosition(const float pos)
     _chromasound1->setPosition(pos);
 }
 
-void Chromasound_Dual::play(const QByteArray& vgm, const VGMStream::Format format, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection)
+void Chromasound_Dual::play(const QByteArray& vgm, const Chromasound_Studio::Profile profile, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection)
 {
-    _chromasound1->play(vgm, format, currentOffsetSamples, currentOffsetData, isSelection);
+    _chromasound1->play(vgm, profile, currentOffsetSamples, currentOffsetData, isSelection);
 }
 
 void Chromasound_Dual::play()
@@ -63,20 +63,6 @@ void Chromasound_Dual::keyOn(const Project& project, const Channel::Type channel
 void Chromasound_Dual::keyOff(int key)
 {
     _chromasound2->keyOff(key);
-}
-
-QList<VGMStream::Format> Chromasound_Dual::supportedFormats()
-{
-    QList<VGMStream::Format> formats1 = _chromasound1->supportedFormats();
-    QList<VGMStream::Format> formats2 = _chromasound2->supportedFormats();
-
-    QSet<VGMStream::Format> formatsSet1(formats1.begin(), formats1.end());
-    QSet<VGMStream::Format> formatsSet2(formats2.begin(), formats2.end());
-    QSet<VGMStream::Format> intersection = formatsSet1.intersect(formatsSet2);
-
-    QList<VGMStream::Format> intersectionList(intersection.begin(), intersection.end());
-
-    return intersectionList;
 }
 
 void Chromasound_Dual::setOPLLPatchset(OPLL::Type type)

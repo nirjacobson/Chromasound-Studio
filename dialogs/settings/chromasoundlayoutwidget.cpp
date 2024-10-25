@@ -13,12 +13,12 @@ ChromasoundLayoutWidget::ChromasoundLayoutWidget(QWidget *parent) :
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
 
-    int quantity = settings.value(Chromasound_Studio::NumberOfChromasounds, 1).toInt();
+    int quantity = settings.value(Chromasound_Studio::NumberOfChromasoundsKey, 1).toInt();
 
     ui->numberOfComboBox->setCurrentIndex(quantity - 1);
-    ui->implementationComboBox->setCurrentIndex(settings.value(Chromasound_Studio::Chromasound1, Chromasound_Studio::Emulator) == Chromasound_Studio::Emulator ? 0 : 1);
-    ui->playbackComboBox->setCurrentIndex(settings.value(Chromasound_Studio::Chromasound1, Chromasound_Studio::Emulator) == Chromasound_Studio::Emulator ? 0 : 1);
-    ui->interactiveComboBox->setCurrentIndex(settings.value(Chromasound_Studio::Chromasound2, Chromasound_Studio::Emulator) == Chromasound_Studio::Emulator ? 0 : 1);
+    ui->implementationComboBox->setCurrentIndex(settings.value(Chromasound_Studio::Chromasound1Key, Chromasound_Studio::Emulator) == Chromasound_Studio::Emulator ? 0 : 1);
+    ui->playbackComboBox->setCurrentIndex(settings.value(Chromasound_Studio::Chromasound1Key, Chromasound_Studio::Emulator) == Chromasound_Studio::Emulator ? 0 : 1);
+    ui->interactiveComboBox->setCurrentIndex(settings.value(Chromasound_Studio::Chromasound2Key, Chromasound_Studio::Emulator) == Chromasound_Studio::Emulator ? 0 : 1);
 
     connect(ui->numberOfComboBox, &QComboBox::currentIndexChanged, this, &ChromasoundLayoutWidget::quantityChanged);
     connect(ui->playbackComboBox, &QComboBox::currentIndexChanged, this, &ChromasoundLayoutWidget::playbackChanged);

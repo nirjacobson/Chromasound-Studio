@@ -12,7 +12,7 @@ class Chromasound_Standin : public Chromasound
     public:
         Chromasound_Standin(const Project& project);
 
-        void play(const QByteArray&vgm, const VGMStream::Format, const int, const int, const bool = false);
+        void play(const QByteArray&vgm, const Chromasound_Studio::Profile, const int, const int, const bool = false);
         void play();
         void pause();
         void stop();
@@ -23,8 +23,6 @@ class Chromasound_Standin : public Chromasound
 
         void keyOn(const Project&, const Channel::Type, const ChannelSettings&, const int, const int);
         void keyOff(int);
-
-        QList<VGMStream::Format> supportedFormats();
 
     private:
         const Project& _project;

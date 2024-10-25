@@ -5,27 +5,74 @@
 
 class Chromasound_Studio {
     public:
+        enum PCMStrategy {
+            NONE,
+            INLINE,
+            SEQUENTIAL,
+            RANDOM
+        };
+
+        class Profile {
+            public:
+                Profile(const bool isChromasound, const PCMStrategy pcmStrategy, const bool discretePCM, const bool usePCMSRAM);
+
+                bool isChromasound() const;
+                PCMStrategy pcmStrategy() const;
+                bool discretePCM() const;
+                bool usePCMSRAM() const;
+
+            private:
+                bool _isChromasound;
+                PCMStrategy _pcmStrategy;
+                bool _discretePCM;
+                bool _usePCMSRAM;
+
+        };
+
+        static PCMStrategy pcmStrategyFromString(const QString& str);
+        static QString pcmStrategyToString(const PCMStrategy stra);
+
         static const QString Organization;
         static const QString Application;
 
         static const QString SettingsFile;
 
-        static const QString OutputDevice;
-        static const QString EqualizerBass;
-        static const QString EqualizerTreble;
-        static const QString AudioBufferSize;
-        static const QString ReadBufferSize;
-        static const QString Format;
-        static const QString NumberOfChromasounds;
-        static const QString Chromasound1;
-        static const QString Chromasound2;
+        static const QString ProfilePresetKey;
+        static const QString IsChromasoundKey;
+        static const QString PCMStrategyKey;
+        static const QString DiscretePCMKey;
+        static const QString UsePCMSRAMKey;
+        static const QString OutputDeviceKey;
+        static const QString EqualizerBassKey;
+        static const QString EqualizerTrebleKey;
+        static const QString AudioBufferSizeKey;
+        static const QString ReadBufferSizeKey;
+        static const QString NumberOfChromasoundsKey;
+        static const QString Chromasound1Key;
+        static const QString Chromasound2Key;
 
-        static const QString Chromasound;
-        static const QString Standard;
-        static const QString Legacy;
+        static const QString ChromasoundNova;
+        static const QString ChromasoundNovaDirect;
+        static const QString ChromasoundPro;
+        static const QString ChromasoundProDirect;
+        static const QString Genesis;
+        static const QString MSX2;
+        static const QString Custom;
+
+        static const QString None;
+        static const QString Inline;
+        static const QString Sequential;
+        static const QString Random;
 
         static const QString Emulator;
         static const QString ChromasoundDirect;
+
+        static const Profile ChromasoundNovaPreset;
+        static const Profile ChromasoundNovaDirectPreset;
+        static const Profile ChromasoundProPreset;
+        static const Profile ChromasoundProDirectPreset;
+        static const Profile GenesisPreset;
+        static const Profile MSX2Preset;
 };
 
 #endif // CHROMASOUND_STUDIO_H

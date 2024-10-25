@@ -179,8 +179,8 @@ void Chromasound_Emu::setEqualizer()
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
 
-    int _bass = settings.value(Chromasound_Studio::EqualizerBass, 0).toInt();
-    int _treble = settings.value(Chromasound_Studio::EqualizerTreble, 0).toInt();
+    int _bass = settings.value(Chromasound_Studio::EqualizerBassKey, 0).toInt();
+    int _treble = settings.value(Chromasound_Studio::EqualizerTrebleKey, 0).toInt();
 
     Music_Emu::equalizer_t eq;
 
@@ -203,8 +203,8 @@ void Chromasound_Emu::setBufferSizes()
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
 
-    int audioBufferSize = settings.value(Chromasound_Studio::AudioBufferSize, 256).toInt();
-    int readBufferSize = settings.value(Chromasound_Studio::ReadBufferSize, 1).toInt();
+    int audioBufferSize = settings.value(Chromasound_Studio::AudioBufferSizeKey, 256).toInt();
+    int readBufferSize = settings.value(Chromasound_Studio::ReadBufferSizeKey, 1).toInt();
 
     _framesPerReadBuffer = audioBufferSize * readBufferSize;
 
@@ -256,11 +256,11 @@ void Chromasound_Emu::setPosition(const float pos)
     _position = 0;
 }
 
-void Chromasound_Emu::play(const QByteArray& vgm, const VGMStream::Format format, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection)
+void Chromasound_Emu::play(const QByteArray& vgm, const Chromasound_Studio::Profile profile, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection)
 {
     Vgm_Emu_Impl* impl = dynamic_cast<Vgm_Emu_Impl*>(_emu);
 
-    impl->set_pcm_discrete(format == VGMStream::Format::CHROMASOUND);
+    impl->set_pcm_discrete(profile.isChromasound());
 
     deactivate();
     Mem_File_Reader reader(vgm.constData(), vgm.size());
@@ -447,11 +447,6 @@ int16_t* Chromasound_Emu::next(int size)
     }
 
     return addr;
-}
-
-QList<VGMStream::Format> Chromasound_Emu::supportedFormats()
-{
-    return QList<VGMStream::Format>({VGMStream::Format::CHROMASOUND, VGMStream::Format::STANDARD, VGMStream::Format::LEGACY});
 }
 
 void Chromasound_Emu::setOPLLPatchset(OPLL::Type type)

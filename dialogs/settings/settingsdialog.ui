@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>517</width>
-    <height>274</height>
+    <height>300</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -87,14 +87,14 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>Playback Format</string>
+      <string>Target Device Profile</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
       <property name="sizeConstraint">
        <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
       </property>
       <item row="0" column="0">
-       <widget class="PlaybackSettingsWidget" name="playbackSettingsWidget" native="true"/>
+       <widget class="ProfileSettingsWidget" name="profileSettingsWidget" native="true"/>
       </item>
      </layout>
     </widget>
@@ -146,12 +146,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>PlaybackSettingsWidget</class>
-   <extends>QWidget</extends>
-   <header>dialogs/settings/playbacksettingswidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>ChromasoundLayoutWidget</class>
    <extends>QWidget</extends>
    <header>dialogs/settings/chromasoundlayoutwidget.h</header>
@@ -161,6 +155,12 @@
    <class>EmulatorOutputDeviceSettingsWidget</class>
    <extends>QWidget</extends>
    <header>dialogs/settings/emulatoroutputdevicesettingswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ProfileSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>dialogs/settings/profilesettingswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -19,7 +19,7 @@ class Chromasound_Direct : public Chromasound
 
         quint32 position();
         void setPosition(const float pos);
-        void play(const QByteArray& vgm, const VGMStream::Format, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection = false);
+        void play(const QByteArray& vgm, const Chromasound_Studio::Profile, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection = false);
         void play();
         void pause();
         void stop();
@@ -28,8 +28,6 @@ class Chromasound_Direct : public Chromasound
 
         void keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity);
         void keyOff(int key);
-
-        QList<VGMStream::Format> supportedFormats();
 
     private:
         const Project& _project;

@@ -36,13 +36,6 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <widget class="QMenu" name="menuRender">
-     <property name="title">
-      <string>&amp;Render</string>
-     </property>
-     <addaction name="actionForChromasound"/>
-     <addaction name="actionFor3rdPartyPlayers"/>
-    </widget>
     <widget class="QMenu" name="menuNew">
      <property name="title">
       <string>&amp;New</string>
@@ -62,7 +55,7 @@
     <addaction name="actionSaveAs"/>
     <addaction name="separator"/>
     <addaction name="actionPublish"/>
-    <addaction name="menuRender"/>
+    <addaction name="actionRender"/>
     <addaction name="separator"/>
     <addaction name="actionInfo"/>
     <addaction name="separator"/>
@@ -138,16 +131,6 @@
     <string>&amp;Playlist</string>
    </property>
   </action>
-  <action name="actionForChromasound">
-   <property name="text">
-    <string>For Chromasound</string>
-   </property>
-  </action>
-  <action name="actionFor3rdPartyPlayers">
-   <property name="text">
-    <string>For 3rd party players</string>
-   </property>
-  </action>
   <action name="actionInfo">
    <property name="text">
     <string>Project &amp;Info</string>
@@ -221,6 +204,11 @@
   <action name="actionEmptyProject">
    <property name="text">
     <string>&amp;Empty project</string>
+   </property>
+  </action>
+  <action name="actionRender">
+   <property name="text">
+    <string>&amp;Render</string>
    </property>
   </action>
  </widget>

@@ -50,16 +50,11 @@ void Application::play()
 #else
         QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
-        QString format = settings.value(Chromasound_Studio::Format, Chromasound_Studio::Chromasound).toString();
-
-        VGMStream::Format vgmFormat;
-        if (_chromasound->supportedFormats().contains(VGMStream::Format::CHROMASOUND) && format == Chromasound_Studio::Chromasound) {
-            vgmFormat = VGMStream::Format::CHROMASOUND;
-        } else if (_chromasound->supportedFormats().contains(VGMStream::Format::STANDARD) && format == Chromasound_Studio::Standard) {
-            vgmFormat = VGMStream::Format::STANDARD;
-        } else {
-            vgmFormat = VGMStream::Format::LEGACY;
-        }
+        bool isChromasound = settings.value(Chromasound_Studio::IsChromasoundKey, true).toBool();
+        bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
+        bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
+        Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
+        Chromasound_Studio::Profile profile(isChromasound, pcmStrategy, discretePCM, usePCMSRAM);
 
         if (_project.usesOPL() && _project.hasPCM()) {
             Chromasound_Emu* emu;
@@ -73,13 +68,13 @@ void Application::play()
             QThread* thread = QThread::create([&]() {
                 int currentOffsetData;
                 int currentOffsetSamples = position() / _project.tempo() * 60 * 44100;
-                VGMStream vgmStream(vgmFormat);
+                VGMStream vgmStream(profile);
 
                 emit compileStarted();
                 QByteArray vgm = vgmStream.compile(_project, _project.getFrontPattern(), false, nullptr, -1, -1, position(), &currentOffsetData);
                 emit compileFinished();
 
-                _chromasound->play(vgm, vgmFormat, currentOffsetSamples, currentOffsetData);
+                _chromasound->play(vgm, profile, currentOffsetSamples, currentOffsetData);
             });
 
             connect(thread, &QThread::finished, this, [=]() {
@@ -92,14 +87,14 @@ void Application::play()
                 int loopOffsetData;
                 int currentOffsetData;
                 int currentOffsetSamples = position() / _project.tempo() * 60 * 44100;
-                VGMStream vgmStream(vgmFormat);
+                VGMStream vgmStream(profile);
 
 
                 emit compileStarted();
                 QByteArray vgm = vgmStream.compile(_project, false, &loopOffsetData, -1, -1, position(), &currentOffsetData);
                 emit compileFinished();
 
-                _chromasound->play(vgm, vgmFormat, currentOffsetSamples, currentOffsetData);
+                _chromasound->play(vgm, profile, currentOffsetSamples, currentOffsetData);
             });
 
             connect(thread, &QThread::finished, this, [=]() {
@@ -121,16 +116,11 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
 #else
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
-    QString format = settings.value(Chromasound_Studio::Format, Chromasound_Studio::Chromasound).toString();
-
-    VGMStream::Format vgmFormat;
-    if (_chromasound->supportedFormats().contains(VGMStream::Format::CHROMASOUND) && format == Chromasound_Studio::Chromasound) {
-        vgmFormat = VGMStream::Format::CHROMASOUND;
-    } else if (_chromasound->supportedFormats().contains(VGMStream::Format::STANDARD) && format == Chromasound_Studio::Standard) {
-        vgmFormat = VGMStream::Format::STANDARD;
-    } else {
-        vgmFormat = VGMStream::Format::LEGACY;
-    }
+    bool isChromasound = settings.value(Chromasound_Studio::IsChromasoundKey, true).toBool();
+    bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
+    bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
+    Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
+    Chromasound_Studio::Profile profile(isChromasound, pcmStrategy, discretePCM, usePCMSRAM);
 
     if (_project.usesOPL() && _project.hasPCM()) {
         Chromasound_Emu* emu;
@@ -146,12 +136,12 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
         int currentOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
 
         emit compileStarted();
-        QByteArray vgm = VGMStream(vgmFormat).compile(_project, pattern, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
+        QByteArray vgm = VGMStream(profile).compile(_project, pattern, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
         emit compileFinished();
 
         if (_output) _output->stop();
         _chromasound->setPosition(loopStart);
-        _chromasound->play(vgm, vgmFormat, currentOffsetSamples, currentOffsetData, true);
+        _chromasound->play(vgm, profile, currentOffsetSamples, currentOffsetData, true);
         if (_output) _output->start();
     }, loopStart, loopEnd);
 
@@ -171,16 +161,11 @@ void Application::play(const float loopStart, const float loopEnd)
 #else
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
-    QString format = settings.value(Chromasound_Studio::Format, Chromasound_Studio::Chromasound).toString();
-
-    VGMStream::Format vgmFormat;
-    if (_chromasound->supportedFormats().contains(VGMStream::Format::CHROMASOUND) && format == Chromasound_Studio::Chromasound) {
-        vgmFormat = VGMStream::Format::CHROMASOUND;
-    } else if (_chromasound->supportedFormats().contains(VGMStream::Format::STANDARD) && format == Chromasound_Studio::Standard) {
-        vgmFormat = VGMStream::Format::STANDARD;
-    } else {
-        vgmFormat = VGMStream::Format::LEGACY;
-    }
+    bool isChromasound = settings.value(Chromasound_Studio::IsChromasoundKey, true).toBool();
+    bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
+    bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
+    Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
+    Chromasound_Studio::Profile profile(isChromasound, pcmStrategy, discretePCM, usePCMSRAM);
 
     if (_project.usesOPL() && _project.hasPCM()) {
         Chromasound_Emu* emu;
@@ -196,12 +181,12 @@ void Application::play(const float loopStart, const float loopEnd)
         int currentOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
 
         emit compileStarted();
-        QByteArray vgm = VGMStream(vgmFormat).compile(_project, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
+        QByteArray vgm = VGMStream(profile).compile(_project, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
         emit compileFinished();
 
         if (_output) _output->stop();
         _chromasound->setPosition(loopStart);
-        _chromasound->play(vgm, vgmFormat, currentOffsetSamples, currentOffsetData, true);
+        _chromasound->play(vgm, profile, currentOffsetSamples, currentOffsetData, true);
         if (_output) _output->start();
     }, loopStart, loopEnd);
 
@@ -290,12 +275,12 @@ void Application::setupChromasound()
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
 
-    int audioBufferSize = settings.value(Chromasound_Studio::AudioBufferSize, 256).toInt();
-    int readBufferSize = settings.value(Chromasound_Studio::ReadBufferSize, 1).toInt();
+    int audioBufferSize = settings.value(Chromasound_Studio::AudioBufferSizeKey, 256).toInt();
+    int readBufferSize = settings.value(Chromasound_Studio::ReadBufferSizeKey, 1).toInt();
 
-    int numChromasounds = settings.value(Chromasound_Studio::NumberOfChromasounds, 1).toInt();
-    QString chromasound1Type = settings.value(Chromasound_Studio::Chromasound1, Chromasound_Studio::Emulator).toString();
-    QString chromasound2Type = settings.value(Chromasound_Studio::Chromasound2, Chromasound_Studio::Emulator).toString();
+    int numChromasounds = settings.value(Chromasound_Studio::NumberOfChromasoundsKey, 1).toInt();
+    QString chromasound1Type = settings.value(Chromasound_Studio::Chromasound1Key, Chromasound_Studio::Emulator).toString();
+    QString chromasound2Type = settings.value(Chromasound_Studio::Chromasound2Key, Chromasound_Studio::Emulator).toString();
 
     Chromasound* chromasound1 = nullptr;
     Chromasound* chromasound2 = nullptr;
@@ -309,7 +294,7 @@ void Application::setupChromasound()
         _output = AudioOutput<int16_t>::instance();
         _output->init();
 
-        int outputDeviceIndex = settings.value(Chromasound_Studio::OutputDevice, AudioOutput<int16_t>::instance()->defaultDeviceIndex()).toInt();
+        int outputDeviceIndex = settings.value(Chromasound_Studio::OutputDeviceKey, AudioOutput<int16_t>::instance()->defaultDeviceIndex()).toInt();
         _output->open(outputDeviceIndex, audioBufferSize);
     }
 

@@ -1,7 +1,7 @@
 #include "vgmplayer.h"
 #include "spi.h"
 
-int VGMPlayer::SPI_DELAY = 20000;
+int VGMPlayer::SPI_DELAY = 60000;
 
 VGMPlayer::VGMPlayer(QObject *parent)
     : QThread{parent}
@@ -185,6 +185,19 @@ void VGMPlayer::spi_xfer_wait(uint8_t* tx, uint8_t* rx)
 }
 
 void VGMPlayer::run() {
+#ifdef Q_OS_WIN
+    QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
+#else
+    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+#endif
+    bool isChromasound = settings.value(Chromasound_Studio::IsChromasoundKey, true).toBool();
+    bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
+    bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
+    Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
+    Chromasound_Studio::Profile profile(isChromasound, pcmStrategy, discretePCM, usePCMSRAM);
+
+    SPI_DELAY = profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::RANDOM ? 60000 : 20000;
+
     if (_mode == Mode::Interactive) {
         runInteractive();
     } else {
@@ -347,15 +360,7 @@ void VGMPlayer::runPlayback()
                 }
 
                 for (int i = 0; i < count; i++) {
-                    spi_write_wait(_vgm[_position]);
-
-                    if (_vgm[_position] == 0x52 && _vgm[_position+1] == 0x2A) {
-                        SPI_DELAY = 6000;
-                    } else if (_position > 1 && _vgm[_position-2] == 0x52 && _vgm[_position-1] == 0x2A) {
-                        SPI_DELAY = 20000;
-                    }
-
-                    _position++;
+                    spi_write_wait(_vgm[_position++]);
                 }
             }
             _vgmLock.unlock();

@@ -4,6 +4,9 @@
 #include <QThread>
 #include <QMutex>
 #include <QElapsedTimer>
+#include <QSettings>
+
+#include "Chromasound_Studio.h"
 
 
 class VGMPlayer : public QThread
