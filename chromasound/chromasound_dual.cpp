@@ -6,6 +6,8 @@ Chromasound_Dual::Chromasound_Dual(Chromasound* chromasound1, Chromasound* chrom
     , _chromasound2(chromasound2)
 {
 
+    connect(_chromasound1, &Chromasound::pcmUploadStarted, this, &Chromasound_Dual::pcmUploadStarted);
+    connect(_chromasound1, &Chromasound::pcmUploadFinished, this, &Chromasound_Dual::pcmUploadFinished);
 }
 
 Chromasound_Dual::~Chromasound_Dual()

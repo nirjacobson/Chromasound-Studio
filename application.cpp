@@ -11,9 +11,6 @@ Application::Application(int &argc, char **argv, int flags)
     , _chromasound(nullptr)
 {
     setupChromasound();
-
-    connect(_chromasound, &Chromasound::pcmUploadStarted, this, &Application::pcmUploadStarted);
-    connect(_chromasound, &Chromasound::pcmUploadFinished, this, &Application::pcmUploadFinished);
 }
 
 Application::~Application()
@@ -331,5 +328,8 @@ void Application::setupChromasound()
     if (chromasound1Type == Chromasound_Studio::Emulator || (chromasound2Type == Chromasound_Studio::Emulator && numChromasounds == 2)) {
         _output->start();
     }
+
+    connect(_chromasound, &Chromasound::pcmUploadStarted, this, &Application::pcmUploadStarted);
+    connect(_chromasound, &Chromasound::pcmUploadFinished, this, &Application::pcmUploadFinished);
 }
 
