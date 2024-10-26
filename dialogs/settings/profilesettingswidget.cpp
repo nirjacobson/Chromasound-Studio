@@ -31,6 +31,7 @@ ProfileSettingsWidget::ProfileSettingsWidget(QWidget *parent)
     deviceChanged(devices.indexOf(device));
 
     connect(ui->deviceComboBox, &QComboBox::currentIndexChanged, this, &ProfileSettingsWidget::deviceChanged);
+    connect(ui->pcmStrategyComboBox, &QComboBox::currentTextChanged, this, &ProfileSettingsWidget::pcmStrategyChanged);
 
     QStringList strategies = {
         "None",
@@ -131,7 +132,6 @@ void ProfileSettingsWidget::deviceChanged(const int index)
     case 3:
         profile = &Chromasound_Studio::ChromasoundProDirectPreset;
         strategies.removeOne("None");
-        strategies.removeOne("Sequential");
         ui->chromasoundCheckBox->setVisible(true);
         ui->discretePCMCheckBox->setVisible(true);
         ui->pcmSRAMCheckBox->setVisible(false);
@@ -155,10 +155,8 @@ void ProfileSettingsWidget::deviceChanged(const int index)
         break;
     }
 
-    ui->pcmStrategyComboBox->blockSignals(true);
     ui->pcmStrategyComboBox->clear();
     ui->pcmStrategyComboBox->addItems(strategies);
-    ui->pcmStrategyComboBox->blockSignals(false);
 
     QStringList strategiesLower = strategies;
 
@@ -166,9 +164,7 @@ void ProfileSettingsWidget::deviceChanged(const int index)
         str = str.toLower();
     }
 
-    ui->pcmStrategyComboBox->blockSignals(true);
     ui->pcmStrategyComboBox->setCurrentIndex(strategiesLower.indexOf(Chromasound_Studio::pcmStrategyToString(profile->pcmStrategy())));
-    ui->pcmStrategyComboBox->blockSignals(false);
 
     ui->chromasoundCheckBox->blockSignals(true);
     ui->chromasoundCheckBox->setChecked(profile->isChromasound());
@@ -181,4 +177,16 @@ void ProfileSettingsWidget::deviceChanged(const int index)
     ui->pcmSRAMCheckBox->blockSignals(true);
     ui->pcmSRAMCheckBox->setChecked(profile->usePCMSRAM());
     ui->pcmSRAMCheckBox->blockSignals(false);
+}
+
+void ProfileSettingsWidget::pcmStrategyChanged(const QString& value)
+{
+    if (ui->deviceComboBox->currentIndex() == 2 || ui->deviceComboBox->currentIndex() == 3) {
+        if (value == "Inline") {
+            ui->pcmSRAMCheckBox->setChecked(false);
+        } else if (value == "Random") {
+            ui->pcmSRAMCheckBox->setChecked(true);
+        }
+        ui->pcmSRAMCheckBox->setVisible(value == "Sequential" && ui->deviceComboBox->currentIndex() != 3);
+    }
 }

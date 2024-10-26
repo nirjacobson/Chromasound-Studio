@@ -26,6 +26,7 @@ private:
 
 private slots:
     void deviceChanged(const int index);
+    void pcmStrategyChanged(const QString& value);
 };
 
 #endif // PROFILESETTINGSWIDGET_H
