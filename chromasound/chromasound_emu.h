@@ -42,7 +42,7 @@ class Chromasound_Emu : public Chromasound, public Producer<int16_t>
 
         track_info_t _info;
 
-        VGMStream _vgmStream;
+        VGMStream* _vgmStream;
         QMap<int, VGMStream::StreamNoteItem*> _keys;
         bool _startedInteractive;
 
@@ -58,6 +58,8 @@ class Chromasound_Emu : public Chromasound, public Producer<int16_t>
         bool _haveInfo;
 
         bool _isSelection;
+
+        Chromasound_Studio::Profile _profile;
 
         void setEqualizer();
         void setBufferSizes();

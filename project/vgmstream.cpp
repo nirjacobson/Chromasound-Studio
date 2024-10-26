@@ -696,11 +696,6 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const float loop
 
 QByteArray VGMStream::encodeStandardPCM(const Project& project, QList<StreamItem*>& items, const float loopStart, const float loopEnd)
 {
-
-    static int z = 0;
-
-    z++;
-
     QByteArray data;
 
     int _loopOffsetData = 0;

@@ -29,7 +29,21 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
     , _paused(false)
     , _haveInfo(false)
     , _isSelection(false)
+    , _profile(Chromasound_Studio::ChromasoundProPreset)
 {
+#ifdef Q_OS_WIN
+    QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
+#else
+    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+#endif
+    bool isChromasound = settings.value(Chromasound_Studio::IsChromasoundKey, true).toBool();
+    bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
+    bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
+    Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
+    _profile = Chromasound_Studio::Profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
+
+    _vgmStream = new VGMStream(_profile);
+
     _timer.setSingleShot(true);
 
     _timer.callOnTimeout([&]() {
@@ -37,7 +51,7 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
 
         _mutex.lock();
 
-        _vgmStream.encode(project, _items, data);
+        _vgmStream->encode(project, _items, data);
 
         bool havePCM = false;
         for (VGMStream::StreamItem* item : _items) {
@@ -47,15 +61,11 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
                     if (sni->type() == Channel::Type::PCM) {
                         havePCM = true;
                     }
-                    continue;
                 } else {
                     _keys.remove(sni->note().key());
                 }
             }
-            delete item;
         }
-
-        _items.clear();
 
         _mutex.unlock();
 
@@ -89,30 +99,60 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
             data.prepend(enableRhythm);
         }
 
-        QFile romFile(project.pcmFile());
-        romFile.open(QIODevice::ReadOnly);
-        QByteArray dataBlock = romFile.readAll();
-        romFile.close();
-        quint32 dataBlockSize = dataBlock.size();
+        if (havePCM) {
+            if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::INLINE) {
+                QByteArray pcm = _vgmStream->encodeStandardPCM(project, _items);
 
-        if (havePCM && dataBlockSize > 0) {
-            QByteArray pcmBlock;
-            pcmBlock.append(0x67);
-            pcmBlock.append(0x66);
-            pcmBlock.append((quint8)0x00);
-            pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
-            pcmBlock.append(dataBlock);
-            pcmBlock.append(0x52);
-            pcmBlock.append(0x2B);
-            pcmBlock.append(0x80);
+                QByteArray pcmData;
+                quint32 s = pcm.size() / 2;
 
-            data.prepend(pcmBlock);
+                for (int i = 0; i < s; i++) {
+                    pcmData.append(pcm[i * 2]);
 
-            _emu->set_fill_past_end_with_pcm(true);
+                }
+                data.append(0x97);
+                data.append(0xFE);
+                data.append((char*)&s, sizeof(s));
+                data.append(pcmData);
+            } else {
+                QFile romFile(project.pcmFile());
+                romFile.open(QIODevice::ReadOnly);
+                QByteArray dataBlock = romFile.readAll();
+                romFile.close();
+                quint32 dataBlockSize = dataBlock.size();
+
+                if (dataBlockSize > 0) {
+                    QByteArray pcmBlock;
+                    pcmBlock.append(0x67);
+                    pcmBlock.append(0x66);
+                    pcmBlock.append((quint8)0x00);
+                    pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
+                    pcmBlock.append(dataBlock);
+                    pcmBlock.append(0x52);
+                    pcmBlock.append(0x2B);
+                    pcmBlock.append(0x80);
+
+                    data.prepend(pcmBlock);
+
+                    _emu->set_fill_past_end_with_pcm(true);
+                }
+            }
         }
 
+        for (VGMStream::StreamItem* item : _items) {
+            VGMStream::StreamNoteItem* sni;
+            if ((sni = dynamic_cast<VGMStream::StreamNoteItem*>(item))) {
+                if (sni->on()) {
+                    continue;
+                }
+            }
+            delete item;
+        }
+
+        _items.clear();
+
         if (!_startedInteractive) {
-            data.prepend(_vgmStream.generateHeader(project, data, -1, 0, 0, false));
+            data.prepend(_vgmStream->generateHeader(project, data, -1, 0, 0, false));
         }
 
         Mem_File_Reader reader(data.constData(), data.size());
@@ -162,6 +202,8 @@ Chromasound_Emu::~Chromasound_Emu()
 
     delete _buffers[0];
     delete _buffers[1];
+
+    delete _vgmStream;
 
     gme_delete(_emu);
 }
@@ -328,10 +370,10 @@ void Chromasound_Emu::stop()
     _positionOffset = 0;
     _startedInteractive = false;
 
-    _vgmStream.reset();
+    _vgmStream->reset();
 
     QByteArray data;
-    data.prepend(_vgmStream.generateHeader(_project, data, -1, 0, 0, false));
+    data.prepend(_vgmStream->generateHeader(_project, data, -1, 0, 0, false));
     data.append(0x66);
     Mem_File_Reader reader(data.constData(), data.size());
 
@@ -366,7 +408,7 @@ bool Chromasound_Emu::isPaused() const
 
 void Chromasound_Emu::keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity)
 {
-    VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(0, channelType, nullptr, Note(key, 0, velocity), &settings);
+    VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(0, channelType, nullptr, Note(key, channelType == Channel::PCM ? 4 : 0, velocity), &settings);
 
     _keys[key] = sni;
 
@@ -388,7 +430,9 @@ void Chromasound_Emu::keyOn(const Project& project, const Channel::Type channelT
     _items.append(uti);
 
     _items.append(sni);
-    _vgmStream.assignChannel(project, sni, _items);
+    _vgmStream->assignChannel(project, sni, _items);
+
+    _items.append(new VGMStream::StreamEndItem(channelType == Channel::PCM ? 4 : 0));
 
     _mutex.unlock();
 
@@ -403,7 +447,7 @@ void Chromasound_Emu::keyOff(int key)
 
     _mutex.lock();
 
-    _vgmStream.releaseChannel(sni->type(), sni->channel());
+    _vgmStream->releaseChannel(sni->type(), sni->channel());
     sni->setOn(false);
     _items.append(sni);
 

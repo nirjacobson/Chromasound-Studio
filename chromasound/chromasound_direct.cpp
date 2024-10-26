@@ -45,6 +45,36 @@ Chromasound_Direct::Chromasound_Direct(const Project& project)
 
         _mutex.unlock();
 
+        if (project.usesRhythm()) {
+            QByteArray enableRhythm;
+
+            enableRhythm.append(0x51);
+            enableRhythm.append(0x16);
+            enableRhythm.append(0x20);
+
+            enableRhythm.append(0x51);
+            enableRhythm.append(0x17);
+            enableRhythm.append(0x50);
+
+            enableRhythm.append(0x51);
+            enableRhythm.append(0x18);
+            enableRhythm.append(0xC0);
+
+            enableRhythm.append(0x51);
+            enableRhythm.append(0x26);
+            enableRhythm.append(0x05);
+
+            enableRhythm.append(0x51);
+            enableRhythm.append(0x27);
+            enableRhythm.append(0x05);
+
+            enableRhythm.append(0x51);
+            enableRhythm.append(0x28);
+            enableRhythm.append(0x01);
+
+            data.prepend(enableRhythm);
+        }
+
         if (havePCM) {
             if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::INLINE) {
                 QByteArray pcm = _vgmStream->encodeStandardPCM(project, _items);
@@ -68,7 +98,7 @@ Chromasound_Direct::Chromasound_Direct(const Project& project)
 
                 quint32 dataBlockSize = dataBlock.size();
 
-                if (havePCM && dataBlockSize > 0) {
+                if (dataBlockSize > 0) {
                     QByteArray pcmBlock;
                     pcmBlock.append(0x67);
                     pcmBlock.append(0x66);
@@ -219,6 +249,18 @@ void Chromasound_Direct::keyOn(const Project& project, const Channel::Type chann
     VGMStream::StreamLFOItem* sli = new VGMStream::StreamLFOItem(0, project.lfoMode());
     _items.append(sli);
 
+    VGMStream::StreamNoiseFrequencyItem* nfi = new VGMStream::StreamNoiseFrequencyItem(0, project.ssgNoiseFrequency());
+    _items.append(nfi);
+
+    VGMStream::StreamEnvelopeFrequencyItem* efi = new VGMStream::StreamEnvelopeFrequencyItem(0, project.ssgEnvelopeFrequency());
+    _items.append(efi);
+
+    VGMStream::StreamEnvelopeShapeItem* esi = new VGMStream::StreamEnvelopeShapeItem(0, project.ssgEnvelopeShape());
+    _items.append(esi);
+
+    VGMStream::StreamUserToneItem* uti = new VGMStream::StreamUserToneItem(0, project.userTone());
+    _items.append(uti);
+
     _items.append(sni);
     _vgmStream->assignChannel(project, sni, _items);
 
@@ -231,14 +273,12 @@ void Chromasound_Direct::keyOn(const Project& project, const Channel::Type chann
 
 void Chromasound_Direct::keyOff(int key)
 {
-    _mutex.lock();
-
-    if (!_keys.contains(key)) {
-        _mutex.unlock();
-        return;
-    }
+    if (!_keys.contains(key)) return;
 
     VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(*_keys[key]);
+
+    _mutex.lock();
+
 
     _vgmStream->releaseChannel(sni->type(), sni->channel());
     sni->setOn(false);
@@ -252,11 +292,11 @@ void Chromasound_Direct::keyOff(int key)
         }
     }
 
-    _mutex.unlock();
-
     if (!havePCM) {
         _vgmPlayer->fillWithPCM(false);
     }
+
+    _mutex.unlock();
 
     _timer.start(20);
 }
