@@ -12,34 +12,38 @@ ProfileSettingsWidget::ProfileSettingsWidget(QWidget *parent)
 #else
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
-    QList<QString> presets = {
+    QList<QString> devices = {
         Chromasound_Studio::ChromasoundNova,
         Chromasound_Studio::ChromasoundNovaDirect,
         Chromasound_Studio::ChromasoundPro,
         Chromasound_Studio::ChromasoundProDirect,
         Chromasound_Studio::Genesis,
-        Chromasound_Studio::MSX2,
-        Chromasound_Studio::Custom
+        Chromasound_Studio::MSX2
     };
 
-    QString preset = settings.value(Chromasound_Studio::ProfilePresetKey, Chromasound_Studio::Custom).toString();
+    QString device = settings.value(Chromasound_Studio::DeviceKey, Chromasound_Studio::ChromasoundNova).toString();
     bool isChromasound = settings.value(Chromasound_Studio::IsChromasoundKey, true).toBool();
     bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
     bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
-    Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
-    Chromasound_Studio::Profile profile(isChromasound, pcmStrategy, discretePCM, usePCMSRAM);
+    Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString().toLower());
+    Chromasound_Studio::Profile profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
 
-    ui->presetComboBox->setCurrentIndex(presets.indexOf(preset));
+    deviceChanged(devices.indexOf(device));
+
+    connect(ui->deviceComboBox, &QComboBox::currentIndexChanged, this, &ProfileSettingsWidget::deviceChanged);
+
+    QStringList strategies = {
+        "None",
+        "Inline",
+        "Sequential",
+        "Random"
+    };
+
+    ui->deviceComboBox->setCurrentIndex(devices.indexOf(device));
     ui->chromasoundCheckBox->setChecked(profile.isChromasound());
-    ui->pcmStrategyComboBox->setCurrentIndex(profile.pcmStrategy());
+    ui->pcmStrategyComboBox->setCurrentText(strategies[profile.pcmStrategy()]);
     ui->discretePCMCheckBox->setChecked(profile.discretePCM());
     ui->pcmSRAMCheckBox->setChecked(profile.usePCMSRAM());
-
-    connect(ui->presetComboBox, &QComboBox::currentIndexChanged, this, &ProfileSettingsWidget::presetChanged);
-    connect(ui->chromasoundCheckBox, &QCheckBox::clicked, this, &ProfileSettingsWidget::checkboxClicked);
-    connect(ui->discretePCMCheckBox, &QCheckBox::clicked, this, &ProfileSettingsWidget::checkboxClicked);
-    connect(ui->pcmSRAMCheckBox, &QCheckBox::clicked, this, &ProfileSettingsWidget::checkboxClicked);
-    connect(ui->pcmStrategyComboBox, &QComboBox::currentIndexChanged, this, &ProfileSettingsWidget::pcmStrategyChanged);
 }
 
 ProfileSettingsWidget::~ProfileSettingsWidget()
@@ -47,9 +51,9 @@ ProfileSettingsWidget::~ProfileSettingsWidget()
     delete ui;
 }
 
-QString ProfileSettingsWidget::preset() const
+QString ProfileSettingsWidget::device() const
 {
-    switch (ui->presetComboBox->currentIndex()) {
+    switch (ui->deviceComboBox->currentIndex()) {
     case 0:
         return Chromasound_Studio::ChromasoundNova;
     case 1:
@@ -62,37 +66,21 @@ QString ProfileSettingsWidget::preset() const
         return Chromasound_Studio::Genesis;
     case 5:
         return Chromasound_Studio::MSX2;
-    case 6:
-        return Chromasound_Studio::Custom;
     }
 
-    return Chromasound_Studio::Custom;
+    return Chromasound_Studio::ChromasoundNova;
 }
 
 Chromasound_Studio::Profile ProfileSettingsWidget::profile() const
 {
     return Chromasound_Studio::Profile(
+        Chromasound_Studio::pcmStrategyFromString(ui->pcmStrategyComboBox->currentText().toLower()),
         ui->chromasoundCheckBox->isChecked(),
-        static_cast<Chromasound_Studio::PCMStrategy>(ui->pcmStrategyComboBox->currentIndex()),
         ui->discretePCMCheckBox->isChecked(),
         ui->pcmSRAMCheckBox->isChecked());
 }
 
-void ProfileSettingsWidget::checkboxClicked(bool)
-{
-    ui->presetComboBox->blockSignals(true);
-    ui->presetComboBox->setCurrentIndex(ui->presetComboBox->count() - 1);
-    ui->presetComboBox->blockSignals(false);
-}
-
-void ProfileSettingsWidget::pcmStrategyChanged(const int index)
-{
-    ui->presetComboBox->blockSignals(true);
-    ui->presetComboBox->setCurrentIndex(ui->presetComboBox->count() - 1);
-    ui->presetComboBox->blockSignals(false);
-}
-
-void ProfileSettingsWidget::presetChanged(const int index)
+void ProfileSettingsWidget::deviceChanged(const int index)
 {
 #ifdef Q_OS_WIN
     QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
@@ -100,45 +88,91 @@ void ProfileSettingsWidget::presetChanged(const int index)
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
 
-    QString preset = settings.value(Chromasound_Studio::ProfilePresetKey, Chromasound_Studio::Custom).toString();
+    QString device = settings.value(Chromasound_Studio::DeviceKey, Chromasound_Studio::ChromasoundNova).toString();
     bool isChromasound = settings.value(Chromasound_Studio::IsChromasoundKey, true).toBool();
     bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
     bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
     Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
-    Chromasound_Studio::Profile defaultProfile(isChromasound, pcmStrategy, discretePCM, usePCMSRAM);
+    Chromasound_Studio::Profile currentProfile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
+
+    QStringList strategies = {
+        "None",
+        "Inline",
+        "Sequential",
+        "Random"
+    };
 
     const Chromasound_Studio::Profile* profile;
     switch (index) {
     case 0:
         profile = &Chromasound_Studio::ChromasoundNovaPreset;
+        strategies.removeOne("None");
+        strategies.removeOne("Random");
+        ui->chromasoundCheckBox->setVisible(true);
+        ui->discretePCMCheckBox->setVisible(false);
+        ui->pcmSRAMCheckBox->setVisible(false);
         break;
     case 1:
         profile = &Chromasound_Studio::ChromasoundNovaDirectPreset;
+        strategies.removeOne("None");
+        strategies.removeOne("Random");
+        strategies.removeOne("Sequential");
+        ui->chromasoundCheckBox->setVisible(true);
+        ui->discretePCMCheckBox->setVisible(false);
+        ui->pcmSRAMCheckBox->setVisible(false);
         break;
     case 2:
         profile = &Chromasound_Studio::ChromasoundProPreset;
+        strategies.removeOne("None");
+        ui->chromasoundCheckBox->setVisible(true);
+        ui->discretePCMCheckBox->setVisible(true);
+        ui->pcmSRAMCheckBox->setVisible(true);
         break;
     case 3:
         profile = &Chromasound_Studio::ChromasoundProDirectPreset;
+        strategies.removeOne("None");
+        strategies.removeOne("Sequential");
+        ui->chromasoundCheckBox->setVisible(true);
+        ui->discretePCMCheckBox->setVisible(true);
+        ui->pcmSRAMCheckBox->setVisible(false);
         break;
     case 4:
         profile = &Chromasound_Studio::GenesisPreset;
+        strategies = { "Sequential" };
+        ui->chromasoundCheckBox->setVisible(false);
+        ui->discretePCMCheckBox->setVisible(false);
+        ui->pcmSRAMCheckBox->setVisible(false);
         break;
     case 5:
         profile = &Chromasound_Studio::MSX2Preset;
+        strategies = { "None" };
+        ui->chromasoundCheckBox->setVisible(false);
+        ui->discretePCMCheckBox->setVisible(false);
+        ui->pcmSRAMCheckBox->setVisible(false);
         break;
     default:
-        profile = &defaultProfile;
+        profile = &currentProfile;
         break;
     }
+
+    ui->pcmStrategyComboBox->blockSignals(true);
+    ui->pcmStrategyComboBox->clear();
+    ui->pcmStrategyComboBox->addItems(strategies);
+    ui->pcmStrategyComboBox->blockSignals(false);
+
+    QStringList strategiesLower = strategies;
+
+    for (QString& str : strategiesLower) {
+        str = str.toLower();
+    }
+
+    ui->pcmStrategyComboBox->blockSignals(true);
+    ui->pcmStrategyComboBox->setCurrentIndex(strategiesLower.indexOf(Chromasound_Studio::pcmStrategyToString(profile->pcmStrategy())));
+    ui->pcmStrategyComboBox->blockSignals(false);
 
     ui->chromasoundCheckBox->blockSignals(true);
     ui->chromasoundCheckBox->setChecked(profile->isChromasound());
     ui->chromasoundCheckBox->blockSignals(false);
-
-    ui->pcmStrategyComboBox->blockSignals(true);
-    ui->pcmStrategyComboBox->setCurrentIndex(profile->pcmStrategy());
-    ui->pcmStrategyComboBox->blockSignals(false);
 
     ui->discretePCMCheckBox->blockSignals(true);
     ui->discretePCMCheckBox->setChecked(profile->discretePCM());

@@ -14,7 +14,7 @@ class Chromasound_Studio {
 
         class Profile {
             public:
-                Profile(const bool isChromasound, const PCMStrategy pcmStrategy, const bool discretePCM, const bool usePCMSRAM);
+                Profile(const PCMStrategy pcmStrategy, const bool isChromasound, const bool discretePCM, const bool usePCMSRAM);
 
                 bool isChromasound() const;
                 PCMStrategy pcmStrategy() const;
@@ -37,7 +37,7 @@ class Chromasound_Studio {
 
         static const QString SettingsFile;
 
-        static const QString ProfilePresetKey;
+        static const QString DeviceKey;
         static const QString IsChromasoundKey;
         static const QString PCMStrategyKey;
         static const QString DiscretePCMKey;
@@ -57,7 +57,6 @@ class Chromasound_Studio {
         static const QString ChromasoundProDirect;
         static const QString Genesis;
         static const QString MSX2;
-        static const QString Custom;
 
         static const QString None;
         static const QString Inline;

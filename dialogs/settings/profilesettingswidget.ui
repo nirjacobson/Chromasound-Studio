@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>350</width>
-    <height>254</height>
+    <height>172</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,14 +17,14 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
      <item>
-      <widget class="QLabel" name="presetLabel">
+      <widget class="QLabel" name="deviceLabel">
        <property name="text">
-        <string>Preset:</string>
+        <string>Device:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="presetComboBox">
+      <widget class="QComboBox" name="deviceComboBox">
        <item>
         <property name="text">
          <string>Chromasound Nova</string>
@@ -53,11 +53,6 @@
        <item>
         <property name="text">
          <string>ASCII MSX2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Custom</string>
         </property>
        </item>
       </widget>

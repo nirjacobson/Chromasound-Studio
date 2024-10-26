@@ -51,7 +51,7 @@ void Application::play()
         bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
         bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
         Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
-        Chromasound_Studio::Profile profile(isChromasound, pcmStrategy, discretePCM, usePCMSRAM);
+        Chromasound_Studio::Profile profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
 
         if (_project.usesOPL() && _project.hasPCM()) {
             Chromasound_Emu* emu;
@@ -117,7 +117,7 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
     bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
     bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
     Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
-    Chromasound_Studio::Profile profile(isChromasound, pcmStrategy, discretePCM, usePCMSRAM);
+    Chromasound_Studio::Profile profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
 
     if (_project.usesOPL() && _project.hasPCM()) {
         Chromasound_Emu* emu;
@@ -162,7 +162,7 @@ void Application::play(const float loopStart, const float loopEnd)
     bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
     bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
     Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
-    Chromasound_Studio::Profile profile(isChromasound, pcmStrategy, discretePCM, usePCMSRAM);
+    Chromasound_Studio::Profile profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
 
     if (_project.usesOPL() && _project.hasPCM()) {
         Chromasound_Emu* emu;

@@ -18,16 +18,14 @@ public:
     explicit ProfileSettingsWidget(QWidget *parent = nullptr);
     ~ProfileSettingsWidget();
 
-    QString preset() const;
+    QString device() const;
     Chromasound_Studio::Profile profile() const;
 
 private:
     Ui::ProfileSettingsWidget *ui;
 
 private slots:
-    void checkboxClicked(bool);
-    void pcmStrategyChanged(const int index);
-    void presetChanged(const int index);
+    void deviceChanged(const int index);
 };
 
 #endif // PROFILESETTINGSWIDGET_H

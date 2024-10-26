@@ -87,7 +87,7 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>Target Device Profile</string>
+      <string>VGM Device Profile</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
       <property name="sizeConstraint">

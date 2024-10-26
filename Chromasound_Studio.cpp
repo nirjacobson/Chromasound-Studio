@@ -3,7 +3,7 @@
 const QString Chromasound_Studio::Organization = "Nir Jacobson";
 const QString Chromasound_Studio::Application = "Chromasound Studio";
 const QString Chromasound_Studio::SettingsFile = "settings.ini";
-const QString Chromasound_Studio::ProfilePresetKey = "profilePreset";
+const QString Chromasound_Studio::DeviceKey = "device";
 const QString Chromasound_Studio::IsChromasoundKey = "isChromasound";
 const QString Chromasound_Studio::PCMStrategyKey = "pcmStrategy";
 const QString Chromasound_Studio::DiscretePCMKey = "discretePCM";
@@ -22,7 +22,6 @@ const QString Chromasound_Studio::ChromasoundPro = "pro";
 const QString Chromasound_Studio::ChromasoundProDirect = "proDirect";
 const QString Chromasound_Studio::Genesis = "genesis";
 const QString Chromasound_Studio::MSX2 = "msx2";
-const QString Chromasound_Studio::Custom = "custom";
 const QString Chromasound_Studio::None = "none";
 const QString Chromasound_Studio::Inline = "inline";
 const QString Chromasound_Studio::Sequential = "sequential";
@@ -30,14 +29,14 @@ const QString Chromasound_Studio::Random = "random";
 const QString Chromasound_Studio::Emulator = "emulator";
 const QString Chromasound_Studio::ChromasoundDirect = "chromasoundDirect";
 
-const Chromasound_Studio::Profile Chromasound_Studio::ChromasoundNovaPreset(true, PCMStrategy::SEQUENTIAL, true, false);
-const Chromasound_Studio::Profile Chromasound_Studio::ChromasoundNovaDirectPreset(true, PCMStrategy::INLINE, true, false);
-const Chromasound_Studio::Profile Chromasound_Studio::ChromasoundProPreset(true, PCMStrategy::RANDOM, true, true);
-const Chromasound_Studio::Profile Chromasound_Studio::ChromasoundProDirectPreset(true, PCMStrategy::RANDOM, true, true);
-const Chromasound_Studio::Profile Chromasound_Studio::GenesisPreset(false, PCMStrategy::SEQUENTIAL, false, false);
-const Chromasound_Studio::Profile Chromasound_Studio::MSX2Preset(false, PCMStrategy::NONE, false, false);
+const Chromasound_Studio::Profile Chromasound_Studio::ChromasoundNovaPreset(PCMStrategy::SEQUENTIAL, true, true, false);
+const Chromasound_Studio::Profile Chromasound_Studio::ChromasoundNovaDirectPreset(PCMStrategy::INLINE, true, true, false);
+const Chromasound_Studio::Profile Chromasound_Studio::ChromasoundProPreset(PCMStrategy::RANDOM, true, true, true);
+const Chromasound_Studio::Profile Chromasound_Studio::ChromasoundProDirectPreset(PCMStrategy::RANDOM, true, true, true);
+const Chromasound_Studio::Profile Chromasound_Studio::GenesisPreset(PCMStrategy::SEQUENTIAL, false, false, false);
+const Chromasound_Studio::Profile Chromasound_Studio::MSX2Preset(PCMStrategy::NONE, false, false, false);
 
-Chromasound_Studio::Profile::Profile(const bool isChromasound, const PCMStrategy pcmStrategy, const bool discretePCM, const bool usePCMSRAM)
+Chromasound_Studio::Profile::Profile(const PCMStrategy pcmStrategy, const bool isChromasound, const bool discretePCM, const bool usePCMSRAM)
     : _isChromasound(isChromasound)
     , _pcmStrategy(pcmStrategy)
     , _discretePCM(discretePCM)

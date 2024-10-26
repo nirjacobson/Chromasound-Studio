@@ -32,7 +32,7 @@ void SettingsDialog::accepted()
     settings.setValue(Chromasound_Studio::AudioBufferSizeKey, ui->emulationSettingsWidget->audioBufferSize());
     settings.setValue(Chromasound_Studio::ReadBufferSizeKey, ui->emulationSettingsWidget->readBufferSize());
     settings.setValue(Chromasound_Studio::IsChromasoundKey, ui->profileSettingsWidget->profile().isChromasound());
-    settings.setValue(Chromasound_Studio::ProfilePresetKey, ui->profileSettingsWidget->preset());
+    settings.setValue(Chromasound_Studio::DeviceKey, ui->profileSettingsWidget->device());
     settings.setValue(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::pcmStrategyToString(ui->profileSettingsWidget->profile().pcmStrategy()));
     settings.setValue(Chromasound_Studio::DiscretePCMKey, ui->profileSettingsWidget->profile().discretePCM());
     settings.setValue(Chromasound_Studio::UsePCMSRAMKey, ui->profileSettingsWidget->profile().usePCMSRAM());
