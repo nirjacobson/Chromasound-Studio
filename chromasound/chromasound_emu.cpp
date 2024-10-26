@@ -298,7 +298,7 @@ void Chromasound_Emu::setPosition(const float pos)
     _position = 0;
 }
 
-void Chromasound_Emu::play(const QByteArray& vgm, const Chromasound_Studio::Profile profile, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection)
+void Chromasound_Emu::play(const QByteArray& vgm, const Chromasound_Studio::Profile& profile, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection)
 {
     Vgm_Emu_Impl* impl = dynamic_cast<Vgm_Emu_Impl*>(_emu);
 

@@ -6,17 +6,6 @@ Chromasound_Direct::Chromasound_Direct(const Project& project)
     , _timeOffset(0)
     , _profile(Chromasound_Studio::ChromasoundProPreset)
 {
-#ifdef Q_OS_WIN
-    QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
-#else
-    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
-#endif
-    bool isChromasound = settings.value(Chromasound_Studio::IsChromasoundKey, true).toBool();
-    bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
-    bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
-    Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
-    _profile = Chromasound_Studio::Profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
-
     _vgmStream = new VGMStream(_profile);
 
     _timer.setSingleShot(true);
@@ -187,7 +176,7 @@ void Chromasound_Direct::setPosition(const float pos)
     _timeOffset = pos / _project.tempo() * 60 * 44100;
 }
 
-void Chromasound_Direct::play(const QByteArray& vgm, const Chromasound_Studio::Profile, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection)
+void Chromasound_Direct::play(const QByteArray& vgm, const Chromasound_Studio::Profile& profile, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection)
 {
     if (isSelection) {
         _timeOffset = currentOffsetSamples;
@@ -199,6 +188,7 @@ void Chromasound_Direct::play(const QByteArray& vgm, const Chromasound_Studio::P
 
     reset();
 
+    _vgmPlayer->setProfile(profile);
     _vgmPlayer->setMode(VGMPlayer::Mode::Playback);
     _vgmPlayer->setVGM(vgm, currentOffsetData);
     _vgmPlayer->start();

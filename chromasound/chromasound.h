@@ -20,7 +20,7 @@ class Chromasound : public QObject
         virtual quint32 position() = 0;
         virtual void setPosition(const float pos) = 0;
 
-        virtual void play(const QByteArray& vgm, const Chromasound_Studio::Profile profile, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection = false) = 0;
+        virtual void play(const QByteArray& vgm, const Chromasound_Studio::Profile& profile, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection = false) = 0;
         virtual void play() = 0;
         virtual void pause() = 0;
         virtual void stop() = 0;

@@ -16,6 +16,7 @@ VGMPlayer::VGMPlayer(QObject *parent)
     , _lastPCMBlockChecksum(0)
     , _fillWithPCM(false)
     , _discretePCM(true)
+    , _profile(Chromasound_Studio::ChromasoundProPreset)
 {
     _spiFd = spi_init();
 }
@@ -158,6 +159,11 @@ void VGMPlayer::discretePCM(const bool enable)
     _discretePCM = enable;
 }
 
+void VGMPlayer::setProfile(const Chromasound_Studio::Profile& profile)
+{
+    _profile = profile;
+}
+
 quint32 VGMPlayer::fletcher32(const QByteArray& data)
 {
     quint32 c0, c1, i;
@@ -198,19 +204,8 @@ void VGMPlayer::spi_xfer_wait(uint8_t* tx, uint8_t* rx)
 }
 
 void VGMPlayer::run() {
-#ifdef Q_OS_WIN
-    QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
-#else
-    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
-#endif
-    bool isChromasound = settings.value(Chromasound_Studio::IsChromasoundKey, true).toBool();
-    bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
-    bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
-    Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
-    Chromasound_Studio::Profile profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
-
-    SPI_DELAY = profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::RANDOM ? 60000 : 20000;
-    _discretePCM = profile.discretePCM();
+    SPI_DELAY = _profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::RANDOM ? 60000 : 20000;
+    _discretePCM = _profile.discretePCM();
 
     if (_mode == Mode::Interactive) {
         runInteractive();

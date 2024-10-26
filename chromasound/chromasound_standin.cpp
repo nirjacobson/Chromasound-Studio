@@ -74,7 +74,7 @@ Chromasound_Standin::Chromasound_Standin(const Project& project)
 
 }
 
-void Chromasound_Standin::play(const QByteArray& vgm, const Chromasound_Studio::Profile, const int, const int, const bool)
+void Chromasound_Standin::play(const QByteArray& vgm, const Chromasound_Studio::Profile&, const int, const int, const bool)
 {
     QTimer::singleShot(3000, [&]() {
         emit pcmUploadFinished();

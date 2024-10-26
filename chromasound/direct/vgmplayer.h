@@ -41,6 +41,8 @@ class VGMPlayer : public QThread
         void fillWithPCM(const bool enable);
         void discretePCM(const bool enable);
 
+        void setProfile(const Chromasound_Studio::Profile& profile);
+
     signals:
         void pcmUploadStarted();
         void pcmUploadFinished();
@@ -91,6 +93,8 @@ class VGMPlayer : public QThread
 
         bool _fillWithPCM;
         bool _discretePCM;
+
+        Chromasound_Studio::Profile _profile;
 
         quint32 fletcher32(const QByteArray& data);
         quint32 _lastPCMBlockChecksum;

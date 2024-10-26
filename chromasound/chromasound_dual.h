@@ -13,7 +13,7 @@ class Chromasound_Dual : public Chromasound
     public:
         quint32 position();
         void setPosition(const float pos);
-        void play(const QByteArray& vgm, const Chromasound_Studio::Profile profile, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection);
+        void play(const QByteArray& vgm, const Chromasound_Studio::Profile& profile, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection);
         void play();
         void pause();
         void stop();

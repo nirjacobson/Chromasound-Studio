@@ -26,7 +26,7 @@ void Chromasound_Dual::setPosition(const float pos)
     _chromasound1->setPosition(pos);
 }
 
-void Chromasound_Dual::play(const QByteArray& vgm, const Chromasound_Studio::Profile profile, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection)
+void Chromasound_Dual::play(const QByteArray& vgm, const Chromasound_Studio::Profile& profile, const int currentOffsetSamples, const int currentOffsetData, const bool isSelection)
 {
     _chromasound1->play(vgm, profile, currentOffsetSamples, currentOffsetData, isSelection);
 }
