@@ -38,7 +38,14 @@ void VGMPlayer::setVGM(const QByteArray& vgm, const int currentOffsetData)
 
     _vgmLock.lock();
 
-    if (vgm[dataOffset] == 0x67) {
+    if (dataOffset == vgm.size()) {
+        _vgm = QByteArray();
+        _loopOffsetData = -1;
+        _loopOffsetSamples = -1;
+        _position = 0;
+        _vgmLock.unlock();
+        return;
+    } else if (vgm[dataOffset] == 0x67) {
         quint32 size = *(quint32*)&vgm.constData()[dataOffset + 3];
         _pcmBlock = vgm.mid(dataOffset, 7 + size);
         _vgm = vgm.mid(dataOffset + 7 + size, gd3Offset - dataOffset - 7 - size);

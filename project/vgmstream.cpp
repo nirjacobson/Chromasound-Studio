@@ -683,18 +683,28 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const Pattern& p
 
 QByteArray VGMStream::encodeStandardPCM(const Project& project, const float loopStart, const float loopEnd)
 {
-    QByteArray data;
-
     QList<StreamItem*> items;
-
-    int _loopOffsetData = 0;
-    int _currentOffsetData;
 
     processProject(project, items, loopStart, loopEnd);
     applySettingsChanges(project, items);
     assignChannelsAndExpand(project, items, project.tempo());
     applySettingsChanges2(project, items);
     addSettingsAtCurrentOffset(items, qMax(0.0f, loopStart));
+
+    return encodeStandardPCM(project, items, loopStart, loopEnd);
+}
+
+QByteArray VGMStream::encodeStandardPCM(const Project& project, QList<StreamItem*>& items, const float loopStart, const float loopEnd)
+{
+
+    static int z = 0;
+
+    z++;
+
+    QByteArray data;
+
+    int _loopOffsetData = 0;
+    int _currentOffsetData;
 
     QByteArray pcmData;
     QMap<int, int> pcmOffsetsByChannel;
@@ -2210,6 +2220,8 @@ bool VGMStream::PhysicalChannel::acquire(float time, float duration, bool& first
 void VGMStream::PhysicalChannel::release()
 {
     _acquiredIndefinitely = false;
+    _time = 0;
+    _duration = 0;
 }
 
 void VGMStream::PhysicalChannel::reset()

@@ -33,7 +33,7 @@ class Chromasound_Direct : public Chromasound
         const Project& _project;
         int _gpioFd;
 
-        VGMStream _vgmStream;
+        VGMStream* _vgmStream;
         QMap<int, VGMStream::StreamNoteItem*> _keys;
 
         QTimer _timer;
@@ -44,6 +44,8 @@ class Chromasound_Direct : public Chromasound
         VGMPlayer* _vgmPlayer;
 
         long _timeOffset;
+
+        Chromasound_Studio::Profile _profile;
 
         void reset();
 };

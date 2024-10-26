@@ -4,7 +4,21 @@
 Chromasound_Direct::Chromasound_Direct(const Project& project)
     : _project(project)
     , _timeOffset(0)
+    , _profile(Chromasound_Studio::ChromasoundProPreset)
 {
+#ifdef Q_OS_WIN
+    QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
+#else
+    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+#endif
+    bool isChromasound = settings.value(Chromasound_Studio::IsChromasoundKey, true).toBool();
+    bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
+    bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
+    Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
+    _profile = Chromasound_Studio::Profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
+
+    _vgmStream = new VGMStream(_profile);
+
     _timer.setSingleShot(true);
 
     _timer.callOnTimeout([&]() {
@@ -12,7 +26,7 @@ Chromasound_Direct::Chromasound_Direct(const Project& project)
 
         _mutex.lock();
 
-        _vgmStream.encode(project, _items, data);
+        _vgmStream->encode(project, _items, data);
 
         bool havePCM = false;
         for (VGMStream::StreamItem* item : _items) {
@@ -22,10 +36,61 @@ Chromasound_Direct::Chromasound_Direct(const Project& project)
                     if (sni->type() == Channel::Type::PCM) {
                         havePCM = true;
                     }
-                    continue;
                 } else {
                     int key = sni->note().key();
                     _keys.remove(key);
+                }
+            }
+        }
+
+        _mutex.unlock();
+
+        if (havePCM) {
+            if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::INLINE) {
+                QByteArray pcm = _vgmStream->encodeStandardPCM(project, _items);
+
+                QByteArray pcmData;
+                quint32 s = pcm.size() / 2;
+
+                for (int i = 0; i < s; i++) {
+                    pcmData.append(pcm[i * 2]);
+
+                }
+                data.append(0x97);
+                data.append(0xFE);
+                data.append((char*)&s, sizeof(s));
+                data.append(pcmData);
+            } else {
+                QFile romFile(project.pcmFile());
+                romFile.open(QIODevice::ReadOnly);
+                QByteArray dataBlock = romFile.readAll();
+                romFile.close();
+
+                quint32 dataBlockSize = dataBlock.size();
+
+                if (havePCM && dataBlockSize > 0) {
+                    QByteArray pcmBlock;
+                    pcmBlock.append(0x67);
+                    pcmBlock.append(0x66);
+                    pcmBlock.append((quint8)0x00);
+                    pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
+                    pcmBlock.append(dataBlock);
+                    pcmBlock.append(0x52);
+                    pcmBlock.append(0x2B);
+                    pcmBlock.append(0x80);
+
+                    data.prepend(pcmBlock);
+
+                    _vgmPlayer->fillWithPCM(true);
+                }
+            }
+        }
+
+        for (VGMStream::StreamItem* item : _items) {
+            VGMStream::StreamNoteItem* sni;
+            if ((sni = dynamic_cast<VGMStream::StreamNoteItem*>(item))) {
+                if (sni->on()) {
+                    continue;
                 }
             }
             delete item;
@@ -33,32 +98,8 @@ Chromasound_Direct::Chromasound_Direct(const Project& project)
 
         _items.clear();
 
-        _mutex.unlock();
 
-        QFile romFile(project.pcmFile());
-        romFile.open(QIODevice::ReadOnly);
-        QByteArray dataBlock = romFile.readAll();
-        romFile.close();
-
-        quint32 dataBlockSize = dataBlock.size();
-
-        if (havePCM && dataBlockSize > 0) {
-            QByteArray pcmBlock;
-            pcmBlock.append(0x67);
-            pcmBlock.append(0x66);
-            pcmBlock.append((quint8)0x00);
-            pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
-            pcmBlock.append(dataBlock);
-            pcmBlock.append(0x52);
-            pcmBlock.append(0x2B);
-            pcmBlock.append(0x80);
-
-            data.prepend(pcmBlock);
-
-            _vgmPlayer->fillWithPCM(true);
-        }
-
-        data.prepend(_vgmStream.generateHeader(project, data, 0, 0, 0, false));
+        data.prepend(_vgmStream->generateHeader(project, data, 0, 0, 0, false));
 
         _vgmPlayer->setVGM(data, 0);
     });
@@ -80,6 +121,8 @@ Chromasound_Direct::~Chromasound_Direct()
     _vgmPlayer->wait();
 
     delete _vgmPlayer;
+
+    delete _vgmStream;
 
     gpio_close(_gpioFd);
 }
@@ -167,7 +210,8 @@ bool Chromasound_Direct::isPaused() const
 
 void Chromasound_Direct::keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity)
 {
-    VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(0, channelType, nullptr, Note(key, 0, velocity), &settings);
+
+    VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(0, channelType, nullptr, Note(key, channelType == Channel::PCM ? 4 : 0, velocity), &settings);
     _keys[key] = sni;
 
     _mutex.lock();
@@ -176,7 +220,9 @@ void Chromasound_Direct::keyOn(const Project& project, const Channel::Type chann
     _items.append(sli);
 
     _items.append(sni);
-    _vgmStream.assignChannel(project, sni, _items);
+    _vgmStream->assignChannel(project, sni, _items);
+
+    _items.append(new VGMStream::StreamEndItem(channelType == Channel::PCM ? 4 : 0));
 
     _mutex.unlock();
 
@@ -194,7 +240,7 @@ void Chromasound_Direct::keyOff(int key)
 
     VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(*_keys[key]);
 
-    _vgmStream.releaseChannel(sni->type(), sni->channel());
+    _vgmStream->releaseChannel(sni->type(), sni->channel());
     sni->setOn(false);
     _items.append(sni);
 
@@ -223,5 +269,5 @@ void Chromasound_Direct::reset()
     gpio_write(_gpioFd, 2, 1);
     QThread::usleep(10000);
 
-    _vgmStream.reset();
+    _vgmStream->reset();
 }

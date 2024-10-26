@@ -96,6 +96,11 @@ class VGMStream
                 OPLSettings _settings;
         };
 
+        class StreamEndItem : public StreamItem {
+            public:
+                StreamEndItem(const float time);
+        };
+
         VGMStream(const Chromasound_Studio::Profile profile = Chromasound_Studio::ChromasoundProPreset);
         ~VGMStream();
 
@@ -111,6 +116,7 @@ class VGMStream
 
         QByteArray encodeStandardPCM(const Project& project, const Pattern& pattern, const float loopStart = -1, const float loopEnd = -1);
         QByteArray encodeStandardPCM(const Project& project, const float loopStart = -1, const float loopEnd = -1);
+        QByteArray encodeStandardPCM(const Project& project, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
 
         QByteArray generateHeader(const Project& project, const QByteArray& data, const int totalSamples, const int loopOffsetData, const int gd3size, const bool selectionLoop);
 
@@ -131,11 +137,6 @@ class VGMStream
                 int _channel;
                 const ChannelSettings* _channelSettings;
                 int _velocity;
-        };
-
-        class StreamEndItem : public StreamItem {
-            public:
-                StreamEndItem(const float time);
         };
 
         class PhysicalChannel {
