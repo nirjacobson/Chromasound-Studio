@@ -39,6 +39,7 @@ class VGMPlayer : public QThread
         void setTime(const uint32_t time);
 
         void fillWithPCM(const bool enable);
+        void discretePCM(const bool enable);
 
     signals:
         void pcmUploadStarted();
@@ -56,7 +57,9 @@ class VGMPlayer : public QThread
             STOP,
             RESET,
             FILL_WITH_PCM,
-            STOP_FILL_WITH_PCM
+            STOP_FILL_WITH_PCM,
+            DISCRETE_PCM,
+            INTEGR8D_PCM
         } Command;
 
         Mode _mode;
@@ -87,6 +90,7 @@ class VGMPlayer : public QThread
         QElapsedTimer _spiTimer;
 
         bool _fillWithPCM;
+        bool _discretePCM;
 
         quint32 fletcher32(const QByteArray& data);
         quint32 _lastPCMBlockChecksum;

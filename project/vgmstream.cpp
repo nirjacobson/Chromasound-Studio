@@ -245,7 +245,7 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
         if (_profile.pcmStrategy() != Chromasound_Studio::PCMStrategy::INLINE) {
             pcmBlock.append(0x67);
             pcmBlock.append(0x66);
-            pcmBlock.append((quint8)0x00 | !_profile.usePCMSRAM());
+            pcmBlock.append((quint8)0x00 | (!_profile.discretePCM() << 1) | !_profile.usePCMSRAM());
             pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
             pcmBlock.append(_dataBlock);
 
@@ -479,7 +479,7 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
         if (_profile.pcmStrategy() != Chromasound_Studio::PCMStrategy::INLINE) {
             pcmBlock.append(0x67);
             pcmBlock.append(0x66);
-            pcmBlock.append((quint8)0x00 | !_profile.usePCMSRAM());
+            pcmBlock.append((quint8)0x00 | (!_profile.discretePCM() << 1) | !_profile.usePCMSRAM());
             pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
             pcmBlock.append(_dataBlock);
 

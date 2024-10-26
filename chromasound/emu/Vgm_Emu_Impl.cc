@@ -283,10 +283,8 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
                 int type = pos [1];
                 long size = GET_LE32( pos + 2 );
                 pos += 6;
-                if ( type == pcm_block_type || type == 1 ) {
-                    pcm_data.resize(size);
-                    memcpy(pcm_data.begin(), pos, size);
-                }
+                pcm_data.resize(size);
+                memcpy(pcm_data.begin(), pos, size);
                 pos += size;
                 break;
             }

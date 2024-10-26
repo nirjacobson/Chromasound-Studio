@@ -15,6 +15,7 @@ VGMPlayer::VGMPlayer(QObject *parent)
     , _playing(false)
     , _lastPCMBlockChecksum(0)
     , _fillWithPCM(false)
+    , _discretePCM(true)
 {
     _spiFd = spi_init();
 }
@@ -145,6 +146,11 @@ void VGMPlayer::fillWithPCM(const bool enable)
     _fillWithPCM = enable;
 }
 
+void VGMPlayer::discretePCM(const bool enable)
+{
+    _discretePCM = enable;
+}
+
 quint32 VGMPlayer::fletcher32(const QByteArray& data)
 {
     quint32 c0, c1, i;
@@ -197,6 +203,7 @@ void VGMPlayer::run() {
     Chromasound_Studio::Profile profile(isChromasound, pcmStrategy, discretePCM, usePCMSRAM);
 
     SPI_DELAY = profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::RANDOM ? 60000 : 20000;
+    _discretePCM = profile.discretePCM();
 
     if (_mode == Mode::Interactive) {
         runInteractive();
@@ -214,6 +221,7 @@ void VGMPlayer::runInteractive()
     _stop = false;
 
     bool fillWithPCM = _fillWithPCM;
+    bool discretePCM = _discretePCM;
 
     while (true) {
         _stopLock.lock();
@@ -252,6 +260,11 @@ void VGMPlayer::runInteractive()
         if (_fillWithPCM != fillWithPCM) {
             spi_write_wait(_fillWithPCM ? FILL_WITH_PCM : STOP_FILL_WITH_PCM);
             fillWithPCM = _fillWithPCM;
+        }
+
+        if (_discretePCM != discretePCM) {
+            spi_write_wait(_discretePCM ? DISCRETE_PCM : INTEGR8D_PCM);
+            discretePCM = _discretePCM;
         }
     }
 }
@@ -319,6 +332,8 @@ void VGMPlayer::runPlayback()
             }
         }
     }
+
+    spi_write_wait(_discretePCM ? DISCRETE_PCM : INTEGR8D_PCM);
 
     _timer.start();
     _playing = true;
