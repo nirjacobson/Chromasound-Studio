@@ -73,6 +73,8 @@ class Application : public QApplication
 
         bool _paused;
         bool _ignoreCSTime;
+
+        Chromasound_Studio::Profile _profile;
 };
 
 #endif // APPLICATION_H

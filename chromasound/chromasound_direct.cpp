@@ -6,6 +6,17 @@ Chromasound_Direct::Chromasound_Direct(const Project& project)
     , _timeOffset(0)
     , _profile(Chromasound_Studio::ChromasoundProPreset)
 {
+#ifdef Q_OS_WIN
+    QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
+#else
+    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+#endif
+    bool isChromasound = settings.value(Chromasound_Studio::IsChromasoundKey, true).toBool();
+    bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
+    bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
+    Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
+    _profile = Chromasound_Studio::Profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
+
     _vgmStream = new VGMStream(_profile);
 
     _timer.setSingleShot(true);
@@ -130,6 +141,7 @@ Chromasound_Direct::Chromasound_Direct(const Project& project)
     connect(_vgmPlayer, &VGMPlayer::pcmUploadStarted, this, &Chromasound::pcmUploadStarted);
     connect(_vgmPlayer, &VGMPlayer::pcmUploadFinished, this, &Chromasound::pcmUploadFinished);
 
+    _vgmPlayer->setProfile(_profile);
     _vgmPlayer->start();
 }
 
@@ -206,6 +218,21 @@ void Chromasound_Direct::pause()
 
 void Chromasound_Direct::stop()
 {
+#ifdef Q_OS_WIN
+    QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
+#else
+    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+#endif
+    bool isChromasound = settings.value(Chromasound_Studio::IsChromasoundKey, true).toBool();
+    bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
+    bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
+    Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
+    _profile = Chromasound_Studio::Profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
+
+    if (_vgmStream) delete _vgmStream;
+
+    _vgmStream = new VGMStream(_profile);
+
     _vgmPlayer->stop();
     _vgmPlayer->quit();
     _vgmPlayer->wait();
@@ -214,6 +241,7 @@ void Chromasound_Direct::stop()
 
     _timeOffset = 0;
 
+    _vgmPlayer->setProfile(_profile);
     _vgmPlayer->setMode(VGMPlayer::Mode::Interactive);
     _vgmPlayer->start();
 }

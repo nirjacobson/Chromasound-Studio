@@ -244,6 +244,10 @@ void VGMPlayer::runInteractive()
             int remaining = _vgm.size() - _position;
             long count = space < remaining ? space : remaining;
 
+            if (_vgm.isEmpty() && _profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::INLINE) {
+                spi_write_wait(RESET);
+            }
+
             if (count > 0) {
                 spi_write_wait(RECEIVE_DATA);
 

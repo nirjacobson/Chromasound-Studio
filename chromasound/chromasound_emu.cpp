@@ -302,7 +302,7 @@ void Chromasound_Emu::play(const QByteArray& vgm, const Chromasound_Studio::Prof
 {
     Vgm_Emu_Impl* impl = dynamic_cast<Vgm_Emu_Impl*>(_emu);
 
-    impl->set_pcm_discrete(profile.isChromasound());
+    impl->set_pcm_discrete(profile.discretePCM());
 
     deactivate();
     Mem_File_Reader reader(vgm.constData(), vgm.size());

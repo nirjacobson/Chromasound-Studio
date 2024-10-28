@@ -9,6 +9,7 @@ Application::Application(int &argc, char **argv, int flags)
     , _mainWindow(nullptr)
     , _output(nullptr)
     , _chromasound(nullptr)
+    , _profile(Chromasound_Studio::ChromasoundProPreset)
 {
     setupChromasound();
 }
@@ -51,7 +52,7 @@ void Application::play()
         bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
         bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
         Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
-        Chromasound_Studio::Profile profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
+        _profile = Chromasound_Studio::Profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
 
         if (_project.usesOPL() && _project.hasPCM()) {
             Chromasound_Emu* emu;
@@ -65,13 +66,13 @@ void Application::play()
             QThread* thread = QThread::create([&]() {
                 int currentOffsetData;
                 int currentOffsetSamples = position() / _project.tempo() * 60 * 44100;
-                VGMStream vgmStream(profile);
+                VGMStream vgmStream(_profile);
 
                 emit compileStarted();
                 QByteArray vgm = vgmStream.compile(_project, _project.getFrontPattern(), false, nullptr, -1, -1, position(), &currentOffsetData);
                 emit compileFinished();
 
-                _chromasound->play(vgm, profile, currentOffsetSamples, currentOffsetData);
+                _chromasound->play(vgm, _profile, currentOffsetSamples, currentOffsetData);
             });
 
             connect(thread, &QThread::finished, this, [=]() {
@@ -84,14 +85,14 @@ void Application::play()
                 int loopOffsetData;
                 int currentOffsetData;
                 int currentOffsetSamples = position() / _project.tempo() * 60 * 44100;
-                VGMStream vgmStream(profile);
+                VGMStream vgmStream(_profile);
 
 
                 emit compileStarted();
                 QByteArray vgm = vgmStream.compile(_project, false, &loopOffsetData, -1, -1, position(), &currentOffsetData);
                 emit compileFinished();
 
-                _chromasound->play(vgm, profile, currentOffsetSamples, currentOffsetData);
+                _chromasound->play(vgm, _profile, currentOffsetSamples, currentOffsetData);
             });
 
             connect(thread, &QThread::finished, this, [=]() {
@@ -117,7 +118,7 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
     bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
     bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
     Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
-    Chromasound_Studio::Profile profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
+    _profile = Chromasound_Studio::Profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
 
     if (_project.usesOPL() && _project.hasPCM()) {
         Chromasound_Emu* emu;
@@ -133,12 +134,12 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
         int currentOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
 
         emit compileStarted();
-        QByteArray vgm = VGMStream(profile).compile(_project, pattern, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
+        QByteArray vgm = VGMStream(_profile).compile(_project, pattern, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
         emit compileFinished();
 
         if (_output) _output->stop();
         _chromasound->setPosition(loopStart);
-        _chromasound->play(vgm, profile, currentOffsetSamples, currentOffsetData, true);
+        _chromasound->play(vgm, _profile, currentOffsetSamples, currentOffsetData, true);
         if (_output) _output->start();
     }, loopStart, loopEnd);
 
@@ -162,7 +163,7 @@ void Application::play(const float loopStart, const float loopEnd)
     bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
     bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
     Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
-    Chromasound_Studio::Profile profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
+    _profile = Chromasound_Studio::Profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
 
     if (_project.usesOPL() && _project.hasPCM()) {
         Chromasound_Emu* emu;
@@ -178,12 +179,12 @@ void Application::play(const float loopStart, const float loopEnd)
         int currentOffsetSamples = loopStart / _project.tempo() * 60 * 44100;
 
         emit compileStarted();
-        QByteArray vgm = VGMStream(profile).compile(_project, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
+        QByteArray vgm = VGMStream(_profile).compile(_project, false, &loopOffsetData, loopStart, loopEnd, loopStart, &currentOffsetData);
         emit compileFinished();
 
         if (_output) _output->stop();
         _chromasound->setPosition(loopStart);
-        _chromasound->play(vgm, profile, currentOffsetSamples, currentOffsetData, true);
+        _chromasound->play(vgm, _profile, currentOffsetSamples, currentOffsetData, true);
         if (_output) _output->start();
     }, loopStart, loopEnd);
 
