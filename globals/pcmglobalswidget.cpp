@@ -1,7 +1,7 @@
-#include "romglobalswidget.h"
-#include "ui_romglobalswidget.h"
+#include "pcmglobalswidget.h"
+#include "ui_pcmglobalswidget.h"
 
-ROMGlobalsWidget::ROMGlobalsWidget(QWidget *parent, Application* app, const QString& romFilePath)
+PCMGlobalsWidget::PCMGlobalsWidget(QWidget *parent, Application* app, const QString& romFilePath)
     : QWidget(parent)
     , ui(new Ui::ROMGlobalsWidget)
     , _app(app)
@@ -18,17 +18,17 @@ ROMGlobalsWidget::ROMGlobalsWidget(QWidget *parent, Application* app, const QStr
     ui->tableView->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
 }
 
-ROMGlobalsWidget::~ROMGlobalsWidget()
+PCMGlobalsWidget::~PCMGlobalsWidget()
 {
     delete ui;
 }
 
-void ROMGlobalsWidget::setApplication(Application* app)
+void PCMGlobalsWidget::setApplication(Application* app)
 {
     _app = app;
 }
 
-void ROMGlobalsWidget::setROMFile(const QString& path)
+void PCMGlobalsWidget::setROMFile(const QString& path)
 {
     _romPath = path;
 
@@ -37,12 +37,12 @@ void ROMGlobalsWidget::setROMFile(const QString& path)
     emit updated();
 }
 
-const QString& ROMGlobalsWidget::romFile() const
+const QString& PCMGlobalsWidget::romFile() const
 {
     return _romPath;
 }
 
-void ROMGlobalsWidget::doUpdate()
+void PCMGlobalsWidget::doUpdate()
 {
     ui->stackedWidget->setCurrentIndex(!_romPath.isEmpty());
 
@@ -52,27 +52,27 @@ void ROMGlobalsWidget::doUpdate()
     _tableModel.doUpdate();
 }
 
-void ROMGlobalsWidget::open()
+void PCMGlobalsWidget::open()
 {
     QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "Chromasound ROM (*.rom)", nullptr, QFileDialog::DontUseNativeDialog);
 
     setROMFile(path);
 }
 
-void ROMGlobalsWidget::reset()
+void PCMGlobalsWidget::reset()
 {
     setROMFile("");
 }
 
 
-void ROMGlobalsWidget::dragEnterEvent(QDragEnterEvent* event)
+void PCMGlobalsWidget::dragEnterEvent(QDragEnterEvent* event)
 {
     if (event->mimeData()->hasFormat("text/uri-list")) {
         event->acceptProposedAction();
     }
 }
 
-void ROMGlobalsWidget::dropEvent(QDropEvent* event)
+void PCMGlobalsWidget::dropEvent(QDropEvent* event)
 {
     QByteArray data = event->mimeData()->data("text/uri-list");
     QString pathsString(data);

@@ -1,5 +1,5 @@
-#ifndef ROMGLOBALSWINDOW_H
-#define ROMGLOBALSWINDOW_H
+#ifndef PCMGLOBALSWINDOW_H
+#define PCMGLOBALSWINDOW_H
 
 #include <QMainWindow>
 #include <QMessageBox>
@@ -10,21 +10,21 @@
 #include "common/mdiarea/mdisubwindow.h"
 
 namespace Ui {
-class ROMGlobalsWindow;
+class PCMGlobalsWindow;
 }
 
-class ROMGlobalsWindow : public QMainWindow
+class PCMGlobalsWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit ROMGlobalsWindow(QWidget *parent = nullptr, Application* app = nullptr);
-    ~ROMGlobalsWindow();
+    explicit PCMGlobalsWindow(QWidget *parent = nullptr, Application* app = nullptr);
+    ~PCMGlobalsWindow();
 
     void doUpdate();
 
 private:
-    Ui::ROMGlobalsWindow *ui;
+    Ui::PCMGlobalsWindow *ui;
     Application* _app;
 
 private slots:
@@ -40,4 +40,4 @@ protected:
     void closeEvent(QCloseEvent* event);
 };
 
-#endif // ROMGLOBALSWINDOW_H
+#endif // PCMGLOBALSWINDOW_H

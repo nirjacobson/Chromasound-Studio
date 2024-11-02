@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ROMGlobalsWindow</class>
- <widget class="QMainWindow" name="ROMGlobalsWindow">
+ <class>PCMGlobalsWindow</class>
+ <widget class="QMainWindow" name="PCMGlobalsWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0" colspan="2">
-     <widget class="ROMGlobalsWidget" name="romGlobalsWidget" native="true"/>
+     <widget class="PCMGlobalsWidget" name="pcmGlobalsWidget" native="true"/>
     </item>
     <item row="1" column="0">
      <spacer name="horizontalSpacer">
@@ -79,9 +79,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ROMGlobalsWidget</class>
+   <class>PCMGlobalsWidget</class>
    <extends>QWidget</extends>
-   <header>globals/romglobalswidget.h</header>
+   <header>globals/pcmglobalswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

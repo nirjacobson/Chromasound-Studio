@@ -1,62 +1,62 @@
-#include "romglobalswindow.h"
-#include "ui_romglobalswindow.h"
+#include "pcmglobalswindow.h"
+#include "ui_pcmglobalswindow.h"
 
-ROMGlobalsWindow::ROMGlobalsWindow(QWidget *parent, Application* app)
+PCMGlobalsWindow::PCMGlobalsWindow(QWidget *parent, Application* app)
     : QMainWindow(parent)
-    , ui(new Ui::ROMGlobalsWindow)
+    , ui(new Ui::PCMGlobalsWindow)
     , _app(app)
 {
     ui->setupUi(this);
 
-    ui->romGlobalsWidget->setApplication(app);
+    ui->pcmGlobalsWidget->setApplication(app);
 
-    ui->romGlobalsWidget->setROMFile(app->project().pcmFile());
+    ui->pcmGlobalsWidget->setROMFile(app->project().pcmFile());
 
-    connect(ui->romGlobalsWidget, &ROMGlobalsWidget::updated, this, &ROMGlobalsWindow::romUpdated);
+    connect(ui->pcmGlobalsWidget, &PCMGlobalsWidget::updated, this, &PCMGlobalsWindow::romUpdated);
 
-    connect(ui->actionOpen, &QAction::triggered, this, &ROMGlobalsWindow::open);
-    connect(ui->actionReset, &QAction::triggered, this, &ROMGlobalsWindow::reset);
+    connect(ui->actionOpen, &QAction::triggered, this, &PCMGlobalsWindow::open);
+    connect(ui->actionReset, &QAction::triggered, this, &PCMGlobalsWindow::reset);
     connect(ui->actionClose, &QAction::triggered, this, &QMainWindow::close);
 
-    connect(ui->optimizePCMButton, &QPushButton::clicked, this, &ROMGlobalsWindow::optimizePCM);
+    connect(ui->optimizePCMButton, &QPushButton::clicked, this, &PCMGlobalsWindow::optimizePCM);
 
     ui->menubar->setNativeMenuBar(false);
 }
 
-ROMGlobalsWindow::~ROMGlobalsWindow()
+PCMGlobalsWindow::~PCMGlobalsWindow()
 {
     delete ui;
 }
 
-void ROMGlobalsWindow::doUpdate()
+void PCMGlobalsWindow::doUpdate()
 {
-    ui->romGlobalsWidget->blockSignals(true);
+    ui->pcmGlobalsWidget->blockSignals(true);
 
     QString pcmFilePath = _app->project().pcmFile();
 
-    ui->romGlobalsWidget->setROMFile(pcmFilePath);
+    ui->pcmGlobalsWidget->setROMFile(pcmFilePath);
 
     ui->optimizePCMButton->setVisible(!pcmFilePath.isNull());
 
-    ui->romGlobalsWidget->blockSignals(false);
+    ui->pcmGlobalsWidget->blockSignals(false);
 }
 
-void ROMGlobalsWindow::romUpdated()
+void PCMGlobalsWindow::romUpdated()
 {
-    _app->undoStack().push(new SetProjectPCMFileCommand(_app->window(), _app->project(), ui->romGlobalsWidget->romFile()));
+    _app->undoStack().push(new SetProjectPCMFileCommand(_app->window(), _app->project(), ui->pcmGlobalsWidget->romFile()));
 }
 
-void ROMGlobalsWindow::open()
+void PCMGlobalsWindow::open()
 {
-    ui->romGlobalsWidget->open();
+    ui->pcmGlobalsWidget->open();
 }
 
-void ROMGlobalsWindow::reset()
+void PCMGlobalsWindow::reset()
 {
-    ui->romGlobalsWidget->reset();
+    ui->pcmGlobalsWidget->reset();
 }
 
-void ROMGlobalsWindow::optimizePCM()
+void PCMGlobalsWindow::optimizePCM()
 {
     QMessageBox::information(this, "Save the ROM", "In the next dialog, please choose a save location for the optimized ROM.");
 
@@ -78,7 +78,7 @@ void ROMGlobalsWindow::optimizePCM()
                                     usedSamples.insert(settings->keySampleMappings()[item->note().key()]);
                                 }
                             } else {
-                                const ROMChannelSettings* changeSettings = dynamic_cast<const ROMChannelSettings*>(*it);
+                                const PCMChannelSettings* changeSettings = dynamic_cast<const PCMChannelSettings*>(*it);
                                 if (changeSettings->keySampleMappings().contains(item->note().key())) {
                                     usedSamples.insert(changeSettings->keySampleMappings()[item->note().key()]);
                                 }
@@ -133,8 +133,8 @@ void ROMGlobalsWindow::optimizePCM()
                     if (pattern->hasTrack(i)) {
                         Track* track = pattern->tracks()[i];
                         for (Track::SettingsChange* settingsChange : track->settingsChanges()) {
-                            ROMChannelSettings* origSettings = dynamic_cast<ROMChannelSettings*>(&settingsChange->settings());
-                            ROMChannelSettings settings = *origSettings;
+                            PCMChannelSettings* origSettings = dynamic_cast<PCMChannelSettings*>(&settingsChange->settings());
+                            PCMChannelSettings settings = *origSettings;
 
                             for (auto it = origSettings->keySampleMappings().begin(); it != origSettings->keySampleMappings().end(); ++it) {
                                 if (samplesToRemove.contains(it.value())) {
@@ -150,7 +150,7 @@ void ROMGlobalsWindow::optimizePCM()
                                 }
                             }
 
-                            _app->undoStack().push(new SetPCMChannelSettingsCommand(_app->window(), dynamic_cast<ROMChannelSettings&>(settingsChange->settings()), settings, true));
+                            _app->undoStack().push(new SetPCMChannelSettingsCommand(_app->window(), dynamic_cast<PCMChannelSettings&>(settingsChange->settings()), settings, true));
                         }
                     }
                 }
@@ -160,7 +160,7 @@ void ROMGlobalsWindow::optimizePCM()
 }
 
 
-void ROMGlobalsWindow::closeEvent(QCloseEvent* event)
+void PCMGlobalsWindow::closeEvent(QCloseEvent* event)
 {
     MdiSubWindow* subwindow = dynamic_cast<MdiSubWindow*>(parent());
     subwindow->close();

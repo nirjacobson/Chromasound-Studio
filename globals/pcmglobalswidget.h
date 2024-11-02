@@ -1,5 +1,5 @@
-#ifndef ROMGLOBALSWIDGET_H
-#define ROMGLOBALSWIDGET_H
+#ifndef PCMGLOBALSWIDGET_H
+#define PCMGLOBALSWIDGET_H
 
 #include <QWidget>
 #include <QFileDialog>
@@ -15,13 +15,13 @@ namespace Ui {
 class ROMGlobalsWidget;
 }
 
-class ROMGlobalsWidget : public QWidget
+class PCMGlobalsWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit ROMGlobalsWidget(QWidget *parent = nullptr, Application* app = nullptr, const QString& romFilePath = "");
-    ~ROMGlobalsWidget();
+    explicit PCMGlobalsWidget(QWidget *parent = nullptr, Application* app = nullptr, const QString& romFilePath = "");
+    ~PCMGlobalsWidget();
 
     void setApplication(Application* app);
 
@@ -50,4 +50,4 @@ protected:
     void dropEvent(QDropEvent* event);
 };
 
-#endif // ROMGLOBALSWIDGET_H
+#endif // PCMGLOBALSWIDGET_H

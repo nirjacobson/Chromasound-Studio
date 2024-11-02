@@ -1116,7 +1116,7 @@ void MainWindow::melodyGlobalsTriggered()
 void MainWindow::romGlobalsTriggered()
 {
     if (_romGlobalsWindow == nullptr) {
-        _romGlobalsWindow = new ROMGlobalsWindow(this, _app);
+        _romGlobalsWindow = new PCMGlobalsWindow(this, _app);
 
         MdiSubWindow* window = new MdiSubWindow(_mdiArea);
         connect(window, &MdiSubWindow::closed, this, [&]() {

@@ -37,7 +37,7 @@
 #include "globals/melodyglobalswidget.h"
 #include "globals/ssgglobalswidget.h"
 #include "globals/fmglobalswidget.h"
-#include "globals/romglobalswindow.h"
+#include "globals/pcmglobalswindow.h"
 #include "opl/melodywidget.h"
 #include "opl/rhythmwidget.h"
 #include "opn/lfowidget.h"
@@ -177,7 +177,7 @@ class MainWindow : public QMainWindow
         FMGlobalsWidget* _fmGlobalsWidget;
         SSGGlobalsWidget* _ssgGlobalsWidget;
         MelodyGlobalsWidget* _melodyGlobalsWidget;
-        ROMGlobalsWindow* _romGlobalsWindow;
+        PCMGlobalsWindow* _romGlobalsWindow;
 
         MdiSubWindow* _settingsDialogWindow;
         MdiSubWindow* _infoDialogWindow;

@@ -497,12 +497,12 @@ set(PROJECT_SOURCES
     commands/composite/loadmultitrackmidicommand.cpp
     rom/romwidgettablemodel.h
     rom/romwidgettablemodel.cpp
-    globals/romglobalswidget.h
-    globals/romglobalswidget.cpp
-    globals/romglobalswidget.ui
-    globals/romglobalswindow.h
-    globals/romglobalswindow.cpp
-    globals/romglobalswindow.ui
+    globals/pcmglobalswidget.h
+    globals/pcmglobalswidget.cpp
+    globals/pcmglobalswidget.ui
+    globals/pcmglobalswindow.h
+    globals/pcmglobalswindow.cpp
+    globals/pcmglobalswindow.ui
     commands/setprojectpcmfilecommand.h
     commands/setprojectpcmfilecommand.cpp
     dialogs/info/projectinfoscreendialog.h
