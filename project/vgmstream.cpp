@@ -73,7 +73,7 @@ void VGMStream::assignChannel(const Project& project, StreamNoteItem* noteItem, 
         int channel = acquireRhythmChannel(noteItem->time(), noteItem->note().duration(), rcs, items);
         noteItem->setChannel(channel);
     } else if (noteItem->type() == Channel::Type::PCM) {
-        const ROMChannelSettings* rcs = dynamic_cast<const ROMChannelSettings*>(noteItem->channelSettings());
+        const PCMChannelSettings* rcs = dynamic_cast<const PCMChannelSettings*>(noteItem->channelSettings());
         int channel = acquirePCMChannel(project, noteItem->time(), noteItem->note().duration(), rcs);
         noteItem->setChannel(channel);
     }
@@ -653,7 +653,7 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const Pattern& p
                 quint32 newPcmSize;
                 if (sni->type() == Channel::Type::PCM) {
 
-                    const ROMChannelSettings* channelSettings = dynamic_cast<const ROMChannelSettings*>(sni->channelSettings());
+                    const PCMChannelSettings* channelSettings = dynamic_cast<const PCMChannelSettings*>(sni->channelSettings());
                     newPcmSize = 0;
 
                     if (channelSettings->keySampleMappings().contains(sni->note().key())) {
@@ -772,7 +772,7 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, QList<StreamItem
             if (sni->on()) {
                 quint32 newPcmSize;
                 if (sni->type() == Channel::Type::PCM) {
-                    const ROMChannelSettings* channelSettings = dynamic_cast<const ROMChannelSettings*>(sni->channelSettings());
+                    const PCMChannelSettings* channelSettings = dynamic_cast<const PCMChannelSettings*>(sni->channelSettings());
                     newPcmSize = 0;
 
                     if (channelSettings->keySampleMappings().contains(sni->note().key())) {
@@ -942,7 +942,7 @@ int VGMStream::acquireRhythmChannel(const float time, const float duration, cons
     return -1;
 }
 
-int VGMStream::acquirePCMChannel(const Project& project, const float time, const float duration, const ROMChannelSettings* settings)
+int VGMStream::acquirePCMChannel(const Project& project, const float time, const float duration, const PCMChannelSettings* settings)
 {
     ROM pcmROM(project.pcmFile());
 
@@ -1074,7 +1074,7 @@ void VGMStream::assignChannelsAndExpand(const Project& project, QList<StreamItem
 
         float duration = noteItem->note().duration();
         if (noteItem->type() == Channel::Type::PCM) {
-            const ROMChannelSettings* channelSettings = dynamic_cast<const ROMChannelSettings*>(noteItem->channelSettings());
+            const PCMChannelSettings* channelSettings = dynamic_cast<const PCMChannelSettings*>(noteItem->channelSettings());
             quint32 size = 0;
             quint32 durationSamples = duration / tempo * 60 * 44100;
 
@@ -1368,7 +1368,7 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
             auto it2 = std::find_if(items.rbegin(), items.rend(), [&](StreamItem* si) {
                 StreamSettingsItem* ssi;
                 return (ssi = dynamic_cast<StreamSettingsItem*>(si)) &&
-                       dynamic_cast<const ROMChannelSettings*>(ssi->channelSettings()) &&
+                       dynamic_cast<const PCMChannelSettings*>(ssi->channelSettings()) &&
                        ssi->channel() == i && ssi->time() <= currentTime;
             });
 
@@ -1486,7 +1486,7 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
             encodeNoteItem(project, sni, data);
 
             if (sni->on() && sni->type() == Channel::Type::PCM) {
-                const ROMChannelSettings* channelSettings = dynamic_cast<const ROMChannelSettings*>(sni->channelSettings());
+                const PCMChannelSettings* channelSettings = dynamic_cast<const PCMChannelSettings*>(sni->channelSettings());
                 quint32 newPcmSize = 0;
 
                 if (channelSettings->keySampleMappings().contains(sni->note().key())) {
@@ -1605,7 +1605,7 @@ void VGMStream::encodeSettingsItem(const Project& project, const StreamSettingsI
     const SSGChannelSettings* scs;
     const MelodyChannelSettings* mcs;
     const RhythmChannelSettings* rhcs;
-    const ROMChannelSettings* rcs;
+    const PCMChannelSettings* rcs;
     if ((tcs = dynamic_cast<const ToneChannelSettings*>(item->channelSettings())) != nullptr) {
         int addr = (item->channel() * 2) + 1;
         int att;
@@ -1690,7 +1690,7 @@ void VGMStream::encodeSettingsItem(const Project& project, const StreamSettingsI
         data.append((part == 1) ? 0x52 : 0x53);
         data.append(0xB4 + channel);
         data.append(datum);
-    } else if ((rcs = dynamic_cast<const ROMChannelSettings*>(item->channelSettings())) != nullptr) {
+    } else if ((rcs = dynamic_cast<const PCMChannelSettings*>(item->channelSettings())) != nullptr) {
         if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::RANDOM) {
             int volume = rcs->volume() * item->velocity() / 100;
             int att = MAX_PCM_ATTENUATION * (float)(100 - volume) / 100;
@@ -1827,7 +1827,7 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
 
         if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::RANDOM) {
             if (item->on()) {
-                const ROMChannelSettings* rcs = dynamic_cast<const ROMChannelSettings*>(item->channelSettings());
+                const PCMChannelSettings* rcs = dynamic_cast<const PCMChannelSettings*>(item->channelSettings());
 
                 if (rcs->keySampleMappings().contains(item->note().key())) {
                     int volume = rcs->volume() * item->note().velocity() / 100;

@@ -61,7 +61,7 @@ void PianoRollKeysWidget::releaseKey(const int key)
     update();
 }
 
-void PianoRollKeysWidget::setROMChannelSettings(const ROMChannelSettings* settings)
+void PianoRollKeysWidget::setROMChannelSettings(const PCMChannelSettings* settings)
 {
     _romChannelSettings = settings;
 }

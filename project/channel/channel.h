@@ -10,7 +10,7 @@
 #include "ssgchannelsettings.h"
 #include "melodychannelsettings.h"
 #include "rhythmchannelsettings.h"
-#include "romchannelsettings.h"
+#include "pcmchannelsettings.h"
 
 class Channel
 {

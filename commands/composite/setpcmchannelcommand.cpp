@@ -1,7 +1,7 @@
 #include "setpcmchannelcommand.h"
 #include "mainwindow.h"
 
-SetPCMChannelCommand::SetPCMChannelCommand(MainWindow* window, Channel& channel, ROMChannelSettings settingsAfter, const QString& name)
+SetPCMChannelCommand::SetPCMChannelCommand(MainWindow* window, Channel& channel, PCMChannelSettings settingsAfter, const QString& name)
     : _mainWindow(window)
     , _channel(channel)
     , _settingsAfter(settingsAfter)
@@ -48,7 +48,7 @@ void SetPCMChannelCommand::redo()
         _setChannelTypeCommand->redo();
     }
 
-    _setROMChannelSettingsCommand = new SetROMChannelSettingsCommand(_mainWindow, dynamic_cast<ROMChannelSettings&>(_channel.settings()), _settingsAfter);
+    _setROMChannelSettingsCommand = new SetPCMChannelSettingsCommand(_mainWindow, dynamic_cast<PCMChannelSettings&>(_channel.settings()), _settingsAfter);
     _setROMChannelSettingsCommand->redo();
 
     if (!_name.isEmpty()) {

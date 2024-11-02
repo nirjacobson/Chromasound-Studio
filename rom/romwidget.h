@@ -14,7 +14,7 @@
 #include "application.h"
 #include "formats/rom.h"
 #include "formats/bson.h"
-#include "commands/editromchannelsettingscommand.h"
+#include "commands/editpcmchannelsettingscommand.h"
 #include "romwidgettablemodel.h"
 
 namespace Ui {
@@ -55,7 +55,7 @@ public:
 
     void setApplication(Application* app);
 
-    void setSettings(ROMChannelSettings* settings);
+    void setSettings(PCMChannelSettings* settings);
     void doUpdate();
 
 private:
@@ -69,7 +69,7 @@ private:
 
     Application* _app;
 
-    ROMChannelSettings* _settings;
+    PCMChannelSettings* _settings;
 
     static int stringToKey(const QString& str);
     static QString keyToString(const int key);

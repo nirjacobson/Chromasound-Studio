@@ -18,7 +18,7 @@
 #include "commands/composite/setfmchannelcommand.h"
 #include "commands/composite/setpcmchannelcommand.h"
 #include "commands/composite/replacetrackitemscommand.h"
-#include "commands/setromchannelsettingscommand.h"
+#include "commands/setpcmchannelsettingscommand.h"
 #include "commands/removetrackitemscommand.h"
 #include "commands/addtrackitemscommand.h"
 #include "commands/setchanneltypecommand.h"

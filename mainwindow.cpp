@@ -611,7 +611,7 @@ void MainWindow::channelSelected(const int index)
                 _mdiArea->setActiveSubWindow(*it);
             } else {
                 romWidget = new ROMWidgetWindow(this, _app);
-                romWidget->setSettings(dynamic_cast<ROMChannelSettings*>(&_app->project().getChannel(index).settings()));
+                romWidget->setSettings(dynamic_cast<PCMChannelSettings*>(&_app->project().getChannel(index).settings()));
                 romWidget->setWindowTitle(QString("%1: DPCM").arg(_app->project().getChannel(index).name()));
 
                 channelWindow->setWidget(romWidget);

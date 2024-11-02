@@ -1,32 +1,32 @@
-#include "romchannelsettings.h"
+#include "pcmchannelsettings.h"
 #include "project/channel/channel.h"
 
-ROMChannelSettings::ROMChannelSettings()
+PCMChannelSettings::PCMChannelSettings()
 {
 
 }
 
-QMap<int, int>& ROMChannelSettings::keySampleMappings()
-{
-    return _keySampleMappings;
-}
-
-const QMap<int, int>& ROMChannelSettings::keySampleMappings() const
+QMap<int, int>& PCMChannelSettings::keySampleMappings()
 {
     return _keySampleMappings;
 }
 
-void ROMChannelSettings::setSample(const int key, const int sample)
+const QMap<int, int>& PCMChannelSettings::keySampleMappings() const
+{
+    return _keySampleMappings;
+}
+
+void PCMChannelSettings::setSample(const int key, const int sample)
 {
     _keySampleMappings[key] = sample;
 }
 
-bool ROMChannelSettings::operator==(const ROMChannelSettings& o) const
+bool PCMChannelSettings::operator==(const PCMChannelSettings& o) const
 {
     return _keySampleMappings == o._keySampleMappings;
 }
 
-bson_t ROMChannelSettings::toBSON() const
+bson_t PCMChannelSettings::toBSON() const
 {
     bson_t bson = ChannelSettings::toBSON();
 
@@ -45,7 +45,7 @@ bson_t ROMChannelSettings::toBSON() const
     return bson;
 }
 
-void ROMChannelSettings::fromBSON(bson_iter_t& bson)
+void PCMChannelSettings::fromBSON(bson_iter_t& bson)
 {
     ChannelSettings::fromBSON(bson);
 
@@ -62,14 +62,14 @@ void ROMChannelSettings::fromBSON(bson_iter_t& bson)
     }
 }
 
-QString ROMChannelSettings::type() const
+QString PCMChannelSettings::type() const
 {
     return Channel::channelTypeToString(Channel::Type::PCM);
 }
 
-ChannelSettings* ROMChannelSettings::copy() const
+ChannelSettings* PCMChannelSettings::copy() const
 {
-    ROMChannelSettings* rcs = new ROMChannelSettings;
+    PCMChannelSettings* rcs = new PCMChannelSettings;
     *rcs = *this;
 
     return rcs;

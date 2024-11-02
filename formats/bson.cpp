@@ -116,7 +116,7 @@ OPLSettings* BSON::decodeOPLPatch(const QString& file)
     return settings;
 }
 
-ROMChannelSettings* BSON::decodePCMLayout(const QString& file)
+PCMChannelSettings* BSON::decodePCMLayout(const QString& file)
 {
     bson_reader_t* reader;
     const bson_t* b;
@@ -131,7 +131,7 @@ ROMChannelSettings* BSON::decodePCMLayout(const QString& file)
     bson_iter_t iter;
     bson_iter_init(&iter, b);
 
-    ROMChannelSettings* settings = new ROMChannelSettings;
+    PCMChannelSettings* settings = new PCMChannelSettings;
     settings->fromBSON(iter);
 
     return settings;
@@ -194,7 +194,7 @@ Channel BSON::toChannel(bson_iter_t& b)
             c._settings->fromBSON(settingsInner);
         }
         if (c._type == Channel::Type::PCM) {
-            c._settings = new ROMChannelSettings;
+            c._settings = new PCMChannelSettings;
             c._settings->fromBSON(settingsInner);
         }
     }
@@ -457,7 +457,7 @@ Track::SettingsChange BSON::toTrackSettingsChange(bson_iter_t& b)
                         sc._settings->fromBSON(settingsInner);
                         break;
                     case Channel::PCM:
-                        sc._settings = new ROMChannelSettings;
+                        sc._settings = new PCMChannelSettings;
                         sc._settings->fromBSON(settingsInner);
                         break;
                 }

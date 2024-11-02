@@ -8,7 +8,7 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(LINUX_ARM OFF)
+set(LINUX_ARM ON)
 set(WIN32_ARM OFF)
 
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
@@ -225,8 +225,8 @@ set(PROJECT_SOURCES
     formats/midi/midi.cpp
     commands/setchanneltypecommand.h
     commands/setchanneltypecommand.cpp
-    commands/setromchannelsettingscommand.h
-    commands/setromchannelsettingscommand.cpp
+    commands/setpcmchannelsettingscommand.h
+    commands/setpcmchannelsettingscommand.cpp
     tools/fmimport/opnimportdialog.h
     tools/fmimport/opnimportdialog.cpp
     tools/fmimport/opnimportdialog.ui
@@ -299,7 +299,8 @@ set(PROJECT_SOURCES
     chromasound/emu/Effects_Buffer.h
     chromasound/emu/Fir_Resampler.cc
     chromasound/emu/Fir_Resampler.h
-    chromasound/emu/gme.cc chromasound/emu/gme.h
+    chromasound/emu/gme.cc
+    chromasound/emu/gme.h
     chromasound/emu/Gme_File.cc
     chromasound/emu/Gme_File.h
     chromasound/emu/gme_types.h
@@ -483,13 +484,13 @@ set(PROJECT_SOURCES
     formats/rom.h formats/rom.cpp
     globals/romtablemodel.h
     globals/romtablemodel.cpp
-    project/channel/romchannelsettings.h
-    project/channel/romchannelsettings.cpp
+    project/channel/pcmchannelsettings.h
+    project/channel/pcmchannelsettings.cpp
     rom/romwidget.h
     rom/romwidget.cpp
     rom/romwidget.ui
-    commands/editromchannelsettingscommand.h
-    commands/editromchannelsettingscommand.cpp
+    commands/editpcmchannelsettingscommand.h
+    commands/editpcmchannelsettingscommand.cpp
     toplevel/browser/filesystemtreeview.h
     toplevel/browser/filesystemtreeview.cpp
     commands/composite/loadmultitrackmidicommand.h

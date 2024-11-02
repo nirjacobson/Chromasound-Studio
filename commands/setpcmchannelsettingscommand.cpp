@@ -1,7 +1,7 @@
 #include "mainwindow.h"
-#include "setromchannelsettingscommand.h"
+#include "setpcmchannelsettingscommand.h"
 
-SetROMChannelSettingsCommand::SetROMChannelSettingsCommand(MainWindow* window, ROMChannelSettings& settings, const ROMChannelSettings& settingsAfter, const bool merge)
+SetPCMChannelSettingsCommand::SetPCMChannelSettingsCommand(MainWindow* window, PCMChannelSettings& settings, const PCMChannelSettings& settingsAfter, const bool merge)
     : _mainWindow(window)
     , _merge(merge)
 {
@@ -12,7 +12,7 @@ SetROMChannelSettingsCommand::SetROMChannelSettingsCommand(MainWindow* window, R
     _settingsAfter.append(settingsAfter);
 }
 
-void SetROMChannelSettingsCommand::undo()
+void SetPCMChannelSettingsCommand::undo()
 {
     for (int i = 0; i < _settings.size(); i++) {
         *_settings[i] = _settingsBefore[i];
@@ -21,7 +21,7 @@ void SetROMChannelSettingsCommand::undo()
     _mainWindow->channelSettingsUpdated();
 }
 
-void SetROMChannelSettingsCommand::redo()
+void SetPCMChannelSettingsCommand::redo()
 {
     for (int i = 0; i < _settings.size(); i++) {
         *_settings[i] = _settingsAfter[i];
@@ -30,14 +30,14 @@ void SetROMChannelSettingsCommand::redo()
     _mainWindow->channelSettingsUpdated();
 }
 
-int SetROMChannelSettingsCommand::id() const
+int SetPCMChannelSettingsCommand::id() const
 {
     return 'R';
 }
 
-bool SetROMChannelSettingsCommand::mergeWith(const QUndoCommand* other)
+bool SetPCMChannelSettingsCommand::mergeWith(const QUndoCommand* other)
 {
-    const SetROMChannelSettingsCommand* otherComm = dynamic_cast<const SetROMChannelSettingsCommand*>(other);
+    const SetPCMChannelSettingsCommand* otherComm = dynamic_cast<const SetPCMChannelSettingsCommand*>(other);
 
     if (otherComm->_merge) {
         _settings.append(otherComm->_settings);

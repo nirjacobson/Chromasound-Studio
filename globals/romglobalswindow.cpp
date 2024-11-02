@@ -67,7 +67,7 @@ void ROMGlobalsWindow::optimizePCM()
         for (int i = 0; i < _app->project().channelCount(); i++) {
             const Channel* channel = &_app->project().channels()[i];
             if (channel->type() == Channel::Type::PCM) {
-                const ROMChannelSettings* settings = dynamic_cast<const ROMChannelSettings*>(&channel->settings());
+                const PCMChannelSettings* settings = dynamic_cast<const PCMChannelSettings*>(&channel->settings());
                 for (const Pattern* pattern : _app->project().patterns()) {
                     if (pattern->hasTrack(i)) {
                         Track* track = pattern->tracks()[i];
@@ -110,8 +110,8 @@ void ROMGlobalsWindow::optimizePCM()
         for (int i = 0; i < _app->project().channelCount(); i++) {
             Channel* channel = &_app->project().getChannel(i);
             if (channel->type() == Channel::Type::PCM) {
-                ROMChannelSettings* origSettings = dynamic_cast<ROMChannelSettings*>(&channel->settings());
-                ROMChannelSettings settings = *origSettings;
+                PCMChannelSettings* origSettings = dynamic_cast<PCMChannelSettings*>(&channel->settings());
+                PCMChannelSettings settings = *origSettings;
 
                 for (auto it = origSettings->keySampleMappings().begin(); it != origSettings->keySampleMappings().end(); ++it) {
                     if (samplesToRemove.contains(it.value())) {
@@ -127,7 +127,7 @@ void ROMGlobalsWindow::optimizePCM()
                     }
                 }
 
-                _app->undoStack().push(new SetROMChannelSettingsCommand(_app->window(), dynamic_cast<ROMChannelSettings&>(channel->settings()), settings, true));
+                _app->undoStack().push(new SetPCMChannelSettingsCommand(_app->window(), dynamic_cast<PCMChannelSettings&>(channel->settings()), settings, true));
 
                 for (Pattern* pattern : _app->project().patterns()) {
                     if (pattern->hasTrack(i)) {
@@ -150,7 +150,7 @@ void ROMGlobalsWindow::optimizePCM()
                                 }
                             }
 
-                            _app->undoStack().push(new SetROMChannelSettingsCommand(_app->window(), dynamic_cast<ROMChannelSettings&>(settingsChange->settings()), settings, true));
+                            _app->undoStack().push(new SetPCMChannelSettingsCommand(_app->window(), dynamic_cast<ROMChannelSettings&>(settingsChange->settings()), settings, true));
                         }
                     }
                 }

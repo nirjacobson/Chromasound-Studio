@@ -46,7 +46,7 @@ void ROMWidget::setApplication(Application* app)
     ui->stackedWidget->setCurrentIndex(!items.empty());
 }
 
-void ROMWidget::setSettings(ROMChannelSettings* settings)
+void ROMWidget::setSettings(PCMChannelSettings* settings)
 {
     _settings = settings;
 
@@ -172,7 +172,7 @@ QString ROMWidget::keyToString(const int key)
 
 void ROMWidget::tableModelUpdated()
 {
-    *_settings = ROMChannelSettings();
+    *_settings = PCMChannelSettings();
 
     for (int i = 0; i < _keys.size(); i++) {
         _settings->setSample(stringToKey(_keys[i]), _samples[i]);
@@ -213,7 +213,7 @@ void ROMWidget::openTriggered()
     const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "PCM Layout (*.lay)", nullptr, QFileDialog::DontUseNativeDialog);
 
     if (!path.isNull()) {
-        ROMChannelSettings* settings = BSON::decodePCMLayout(path);
+        PCMChannelSettings* settings = BSON::decodePCMLayout(path);
         *_settings = *settings;
         setSettings(_settings);
         delete settings;
@@ -239,7 +239,7 @@ void ROMWidget::dropEvent(QDropEvent* event)
     QFileInfo fileInfo(file);
 
     if (fileInfo.suffix() == "lay") {
-        ROMChannelSettings* settings = BSON::decodePCMLayout(path);
+        PCMChannelSettings* settings = BSON::decodePCMLayout(path);
         *_settings = *settings;
         setSettings(_settings);
         delete settings;

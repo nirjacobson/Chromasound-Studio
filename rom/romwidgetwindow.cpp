@@ -21,7 +21,7 @@ ROMWidgetWindow::~ROMWidgetWindow()
     delete ui;
 }
 
-void ROMWidgetWindow::setSettings(ROMChannelSettings* settings)
+void ROMWidgetWindow::setSettings(PCMChannelSettings* settings)
 {
     _settings = settings;
     ui->widget->setSettings(settings);

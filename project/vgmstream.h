@@ -232,7 +232,7 @@ class VGMStream
         int acquireToneChannel(const float time, const float duration);
         int acquireNoiseChannel(const float time, const float duration, const NoiseChannelSettings* settings, QList<StreamItem*>& items);
         int acquireFMChannel(const float time, const float duration, const FMChannelSettings* settings, QList<StreamItem*>& items);
-        int acquirePCMChannel(const Project& project, const float time, const float duration, const ROMChannelSettings* settings);
+        int acquirePCMChannel(const Project& project, const float time, const float duration, const PCMChannelSettings* settings);
         int acquireSSGChannel(const float time, const float duration, const SSGChannelSettings* settings, QList<StreamItem*>& items);
         int acquireMelodyChannel(const float time, const float duration, const MelodyChannelSettings* settings, QList<StreamItem*>& items);
         int acquireRhythmChannel(const float time, const float duration, const RhythmChannelSettings* settings, QList<StreamItem*>& items);

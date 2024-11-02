@@ -6,7 +6,7 @@
 
 #include "application.h"
 #include "commands/setprojectpcmfilecommand.h"
-#include "commands/setromchannelsettingscommand.h"
+#include "commands/setpcmchannelsettingscommand.h"
 #include "common/mdiarea/mdisubwindow.h"
 
 namespace Ui {

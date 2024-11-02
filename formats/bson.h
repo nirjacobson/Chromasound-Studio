@@ -28,7 +28,7 @@ class BSON
         static FMChannelSettings* decodeOPNPatch(const QString& file);
         static OPLSettings* decodeOPLPatch(const QString& file);
 
-        static ROMChannelSettings* decodePCMLayout(const QString& file);
+        static PCMChannelSettings* decodePCMLayout(const QString& file);
 
         static void fromTrackItem(bson_t* dst, const Track::Item* const item);
         static Track::Item toTrackItem(bson_iter_t& b);

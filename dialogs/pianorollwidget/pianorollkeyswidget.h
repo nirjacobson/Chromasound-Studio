@@ -29,7 +29,7 @@ class PianoRollKeysWidget : public GanttLeftWidget
         void pressKey(const int key);
         void releaseKey(const int key);
 
-        void setROMChannelSettings(const ROMChannelSettings* settings);
+        void setROMChannelSettings(const PCMChannelSettings* settings);
 
     signals:
         void keyOn(const int key, const int velocity);
@@ -47,7 +47,7 @@ class PianoRollKeysWidget : public GanttLeftWidget
 
         Application* _app;
 
-        const ROMChannelSettings* _romChannelSettings;
+        const PCMChannelSettings* _romChannelSettings;
 
         int _rows;
         int _top;

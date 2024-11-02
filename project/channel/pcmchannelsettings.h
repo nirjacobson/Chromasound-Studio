@@ -1,20 +1,20 @@
-#ifndef ROMCHANNELSETTINGS_H
-#define ROMCHANNELSETTINGS_H
+#ifndef PCMCHANNELSETTINGS_H
+#define PCMCHANNELSETTINGS_H
 
 #include <QMap>
 
 #include "channelsettings.h"
 
-class ROMChannelSettings : public ChannelSettings
+class PCMChannelSettings : public ChannelSettings
 {
 public:
-    ROMChannelSettings();
+    PCMChannelSettings();
 
     QMap<int, int>& keySampleMappings();
     const QMap<int, int>& keySampleMappings() const;
     void setSample(const int key, const int patch);
 
-    bool operator==(const ROMChannelSettings& o) const;
+    bool operator==(const PCMChannelSettings& o) const;
 
 private:
     QMap<int, int> _keySampleMappings;
@@ -31,4 +31,4 @@ public:
 
 };
 
-#endif // ROMCHANNELSETTINGS_H
+#endif // PCMCHANNELSETTINGS_H

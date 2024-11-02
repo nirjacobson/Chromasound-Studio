@@ -57,7 +57,7 @@ void Channel::setType(const Type type)
             _settings = new RhythmChannelSettings;
             break;
         case PCM:
-            _settings = new ROMChannelSettings;
+            _settings = new PCMChannelSettings;
             break;
     }
 

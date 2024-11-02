@@ -18,12 +18,12 @@ public:
     explicit ROMWidgetWindow(QWidget *parent = nullptr, Application* app = nullptr);
     ~ROMWidgetWindow();
 
-    void setSettings(ROMChannelSettings* settings);
+    void setSettings(PCMChannelSettings* settings);
     void doUpdate();
 
 private:
     Ui::ROMWidgetWindow *ui;
-    ROMChannelSettings* _settings;
+    PCMChannelSettings* _settings;
 
     // QWidget interface
 protected:

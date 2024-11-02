@@ -84,7 +84,7 @@ void SettingsChangeWidget::setSettings(ChannelSettings& settings)
                         ui->stackedWidget->setCurrentIndex(5);
                     } catch (std::bad_cast) {
                         try {
-                            ROMChannelSettings& rcs = dynamic_cast<ROMChannelSettings&>(settings);
+                            PCMChannelSettings& rcs = dynamic_cast<PCMChannelSettings&>(settings);
                             ui->romWidget->setSettings(&rcs);
                             showAndHideOthers(6);
                             ui->stackedWidget->setCurrentIndex(6);
