@@ -62,6 +62,9 @@
      <property name="alignment">
       <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
      </property>
+     <property name="displayFormat">
+      <string>M/d/yyyy</string>
+     </property>
      <property name="date">
       <date>
        <year>2024</year>

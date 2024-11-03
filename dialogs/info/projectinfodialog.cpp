@@ -8,12 +8,7 @@ ProjectInfoDialog::ProjectInfoDialog(QWidget *parent, Application* app) :
 {
     ui->setupUi(this);
 
-    ui->titleLineEdit->setText(_app->project().info().title());
-    ui->gameLineEdit->setText(_app->project().info().game());
-    ui->authorLineEdit->setText(_app->project().info().author());
-    ui->releaseDateEdit->setDate(_app->project().info().releaseDate());
-    ui->notesTextEdit->setPlainText(_app->project().info().notes());
-    ui->showOnOpenCheckBox->setChecked(_app->project().showInfoOnOpen());
+    doUpdate();
 
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::close);
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &ProjectInfoDialog::accepted);
@@ -24,14 +19,26 @@ ProjectInfoDialog::~ProjectInfoDialog()
     delete ui;
 }
 
+void ProjectInfoDialog::doUpdate()
+{
+    ui->titleLineEdit->setText(_app->project().info().title());
+    ui->gameLineEdit->setText(_app->project().info().game());
+    ui->authorLineEdit->setText(_app->project().info().author());
+    ui->releaseDateEdit->setDate(_app->project().info().releaseDate());
+    ui->notesTextEdit->setPlainText(_app->project().info().notes());
+    ui->showOnOpenCheckBox->setChecked(_app->project().showInfoOnOpen());
+}
+
 void ProjectInfoDialog::accepted()
 {
-    _app->project().info().setTitle(ui->titleLineEdit->text());
-    _app->project().info().setGame(ui->gameLineEdit->text());
-    _app->project().info().setAuthor(ui->authorLineEdit->text());
-    _app->project().info().setReleaseDate(ui->releaseDateEdit->date());
-    _app->project().info().setNotes(ui->notesTextEdit->toPlainText());
-    _app->project().showInfoOnOpen(ui->showOnOpenCheckBox->isChecked());
+    Project::Info info;
+    info.setTitle(ui->titleLineEdit->text());
+    info.setGame(ui->gameLineEdit->text());
+    info.setAuthor(ui->authorLineEdit->text());
+    info.setReleaseDate(ui->releaseDateEdit->date());
+    info.setNotes(ui->notesTextEdit->toPlainText());
+
+    _app->undoStack().push(new SetProjectInfoCommand(_app->window(), _app->project(), info, ui->showOnOpenCheckBox->isChecked()));
 
     close();
 }

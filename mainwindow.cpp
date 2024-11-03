@@ -1404,6 +1404,7 @@ void MainWindow::doUpdate()
     if (_ssgGlobalsWindow) _ssgGlobalsWidget->doUpdate();
     if (_melodyGlobalsWindow) _melodyGlobalsWidget->doUpdate();
     if (_romGlobalsWindow) _romGlobalsWindow->doUpdate();
+    if (_infoDialog) _infoDialog->doUpdate();
 
     for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
         for (MdiSubWindow* window : (*it)) {

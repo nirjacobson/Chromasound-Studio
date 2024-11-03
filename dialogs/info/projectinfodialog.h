@@ -4,6 +4,7 @@
 #include <QDialog>
 
 #include "application.h"
+#include "commands/setprojectinfocommand.h"
 
 namespace Ui {
     class ProjectInfoWidget;
@@ -16,6 +17,8 @@ class ProjectInfoDialog : public QDialog
     public:
         explicit ProjectInfoDialog(QWidget *parent = nullptr, Application* app = nullptr);
         ~ProjectInfoDialog();
+
+        void doUpdate();
 
     private:
         Ui::ProjectInfoWidget *ui;

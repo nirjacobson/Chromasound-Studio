@@ -496,6 +496,12 @@ void Project::swapPatterns(const int idxa, const int idxb)
     }
 }
 
+Project::Info::Info()
+    : _releaseDate(QDate::currentDate())
+{
+
+}
+
 const QString& Project::Info::title() const
 {
     return _title;

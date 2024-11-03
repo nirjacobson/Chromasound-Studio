@@ -476,6 +476,8 @@ set(PROJECT_SOURCES
     commands/insertpatterncommand.cpp
     commands/duplicatepatterncommand.h
     commands/duplicatepatterncommand.cpp
+    commands/setprojectinfocommand.h
+    commands/setprojectinfocommand.cpp
     tools/rombuilder/rombuilderdialog.h
     tools/rombuilder/rombuilderdialog.cpp
     tools/rombuilder/rombuilderdialog.ui

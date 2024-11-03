@@ -25,6 +25,8 @@ class Project
 
         class Info {
             public:
+                Info();
+
                 const QString& title() const;
                 const QString& game() const;
                 const QString& author() const;
