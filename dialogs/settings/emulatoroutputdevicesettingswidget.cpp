@@ -20,8 +20,8 @@ EmulatorOutputDeviceSettingsWidget::EmulatorOutputDeviceSettingsWidget(QWidget *
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
 
-    ui->outputDeviceComboBox->setCurrentIndex(settings.value(Chromasound_Studio::OutputDeviceKey, AudioOutput<int16_t>::instance()->defaultDeviceIndex()).toInt());
-
+    QString outputDevice = settings.value(Chromasound_Studio::OutputDeviceKey, QString::fromStdString(AudioOutput<int16_t>::instance()->devices()[AudioOutput<int16_t>::instance()->defaultDeviceIndex()])).toString();
+    ui->outputDeviceComboBox->setCurrentText(outputDevice);
 }
 
 EmulatorOutputDeviceSettingsWidget::~EmulatorOutputDeviceSettingsWidget()
@@ -29,11 +29,10 @@ EmulatorOutputDeviceSettingsWidget::~EmulatorOutputDeviceSettingsWidget()
     delete ui;
 }
 
-int EmulatorOutputDeviceSettingsWidget::outputDeviceIndex() const
+QString EmulatorOutputDeviceSettingsWidget::outputDevice() const
 {
-    return ui->outputDeviceComboBox->currentIndex();
+    return ui->outputDeviceComboBox->currentText();
 }
-
 
 void EmulatorOutputDeviceSettingsWidget::doUpdate()
 {
@@ -55,17 +54,17 @@ void EmulatorOutputDeviceSettingsWidget::doUpdate()
     }
     ui->outputDeviceComboBox->addItems(devicesList);
 
-    if (mustInit) {
-        AudioOutput<int16_t>::instance()->destroy();
-    }
-
 #ifdef Q_OS_WIN
     QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
 #else
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
-    ui->outputDeviceComboBox->setCurrentIndex(settings.value(Chromasound_Studio::OutputDeviceKey, AudioOutput<int16_t>::instance()->defaultDeviceIndex()).toInt());
+    QString outputDevice = settings.value(Chromasound_Studio::OutputDeviceKey, QString::fromStdString(AudioOutput<int16_t>::instance()->devices()[AudioOutput<int16_t>::instance()->defaultDeviceIndex()])).toString();
+    ui->outputDeviceComboBox->setCurrentText(outputDevice);
 
     ui->outputDeviceComboBox->blockSignals(false);
-}
 
+    if (mustInit) {
+        AudioOutput<int16_t>::instance()->destroy();
+    }
+}

@@ -19,7 +19,7 @@ public:
     explicit EmulatorOutputDeviceSettingsWidget(QWidget *parent = nullptr);
     ~EmulatorOutputDeviceSettingsWidget();
 
-    int outputDeviceIndex() const;
+    QString outputDevice() const;
 
     void doUpdate();
 
