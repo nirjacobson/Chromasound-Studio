@@ -21,6 +21,8 @@ public:
 
     int outputDeviceIndex() const;
 
+    void doUpdate();
+
 private:
     Ui::EmulatorOutputDeviceSettingsWidget *ui;
 };

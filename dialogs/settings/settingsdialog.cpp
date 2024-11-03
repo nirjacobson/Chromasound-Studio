@@ -51,4 +51,8 @@ void SettingsDialog::chromasoundLayoutChanged()
     bool showEmuSettings = (ui->chromasoundLayoutWidget->chromasound1() == Chromasound_Studio::Emulator || (ui->chromasoundLayoutWidget->chromasound2() == Chromasound_Studio::Emulator && ui->chromasoundLayoutWidget->quantity() == 2));
     ui->outputDeviceGroupBox->setVisible(showEmuSettings);
     ui->emuAdjustmentsGroupBox->setVisible(showEmuSettings);
+
+    if (showEmuSettings) {
+        ui->emulatorOutputDeviceWidget->doUpdate();
+    }
 }
