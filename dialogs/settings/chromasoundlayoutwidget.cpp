@@ -13,6 +13,14 @@ ChromasoundLayoutWidget::ChromasoundLayoutWidget(QWidget *parent) :
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
 
+#ifdef Q_OS_LINUX
+    if (Application::isRaspberryPi()) {
+        ui->implementationComboBox->addItem("Chromasound Direct");
+        ui->playbackComboBox->addItem("Chromasound Direct");
+        ui->interactiveComboBox->addItem("Chromasound Direct");
+    }
+#endif
+
     int quantity = settings.value(Chromasound_Studio::NumberOfChromasoundsKey, 1).toInt();
 
     ui->numberOfComboBox->setCurrentIndex(quantity - 1);

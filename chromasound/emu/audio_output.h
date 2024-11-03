@@ -13,6 +13,8 @@
 template <typename T>
 class AudioOutput : public Consumer<T> {
     public:
+        AudioOutput();
+
         static AudioOutput* instance();
 
         void init();
@@ -26,6 +28,7 @@ class AudioOutput : public Consumer<T> {
         void stop();
         void restart();
 
+        bool isInited();
         bool isDefault();
         bool isRunning();
 
@@ -36,6 +39,8 @@ class AudioOutput : public Consumer<T> {
 
         PaError _paError;
         PaStream* _paStream;
+
+        bool _inited;
 
         bool _running;
 
@@ -48,6 +53,20 @@ class AudioOutput : public Consumer<T> {
                               PaStreamCallbackFlags statusFlags,
                               void* userData);
 };
+
+template <typename T>
+AudioOutput<T>::AudioOutput()
+    : _inited(false)
+    , _running(false)
+{
+
+}
+
+template <typename T>
+bool AudioOutput<T>::isInited()
+{
+    return _inited;
+}
 
 template <typename T>
 AudioOutput<T>* AudioOutput<T>::_instance = nullptr;
@@ -68,6 +87,7 @@ void AudioOutput<T>::init() {
         std::cerr << "PortAudio error: " << Pa_GetErrorText( _paError ) << std::endl;
         return;
     }
+    _inited = true;
 }
 
 template <typename T>
@@ -141,6 +161,7 @@ void AudioOutput<T>::destroy() {
 
     delete _instance;
     _instance = nullptr;
+    _inited = false;
 }
 
 template <typename T>

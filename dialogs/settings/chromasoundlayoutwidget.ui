@@ -61,11 +61,6 @@
        <string>Emulator</string>
       </property>
      </item>
-     <item>
-      <property name="text">
-       <string>Chromasound Direct</string>
-      </property>
-     </item>
     </widget>
    </item>
    <item row="2" column="0">
@@ -80,11 +75,6 @@
      <item>
       <property name="text">
        <string>Emulator</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Chromasound Direct</string>
       </property>
      </item>
     </widget>
@@ -103,20 +93,15 @@
        <string>Emulator</string>
       </property>
      </item>
-     <item>
-      <property name="text">
-       <string>Chromasound Direct</string>
-      </property>
-     </item>
     </widget>
    </item>
    <item row="4" column="0" colspan="2">
     <widget class="QFrame" name="frame">
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::Shape::StyledPanel</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
+      <enum>QFrame::Shadow::Raised</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
@@ -125,10 +110,10 @@
          <string/>
         </property>
         <property name="textFormat">
-         <enum>Qt::RichText</enum>
+         <enum>Qt::TextFormat::RichText</enum>
         </property>
         <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+         <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
         </property>
         <property name="wordWrap">
          <bool>true</bool>

@@ -5,6 +5,7 @@
 #include <QSettings>
 
 #include "Chromasound_Studio.h"
+#include "application.h"
 
 namespace Ui {
     class ChromasoundLayoutWidget;

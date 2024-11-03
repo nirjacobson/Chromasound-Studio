@@ -28,6 +28,8 @@ class Application : public QApplication
         Application(int &argc, char **argv, int flags = ApplicationFlags);
         ~Application();
 
+        static bool isRaspberryPi();
+
         void pause();
         bool paused() const;
         void play();
