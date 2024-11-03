@@ -59,6 +59,13 @@ void EmulatorOutputDeviceSettingsWidget::doUpdate()
         AudioOutput<int16_t>::instance()->destroy();
     }
 
+#ifdef Q_OS_WIN
+    QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
+#else
+    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+#endif
+    ui->outputDeviceComboBox->setCurrentIndex(settings.value(Chromasound_Studio::OutputDeviceKey, AudioOutput<int16_t>::instance()->defaultDeviceIndex()).toInt());
+
     ui->outputDeviceComboBox->blockSignals(false);
 }
 
