@@ -13,6 +13,7 @@
 #include "patchtablemodel.h"
 #include "formats/bson.h"
 #include "tableview.h"
+#include "common/mdiarea/mdisubwindow.h"
 #include "commands/addchannelcommand.h"
 #include "commands/setchanneltypecommand.h"
 #include "commands/setfmchannelsettingscommand.h"
@@ -62,6 +63,7 @@ class OPNImportDialog : public QMainWindow
     protected:
         void dragEnterEvent(QDragEnterEvent* event);
         void dropEvent(QDropEvent* event);
+        void closeEvent(QCloseEvent* event);
 };
 
 #endif // OPNIMPORTDIALOG_H

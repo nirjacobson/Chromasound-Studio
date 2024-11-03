@@ -13,6 +13,7 @@
 #include "playlistitem.h"
 #include "playlisttablemodel.h"
 #include "formats/gd3.h"
+#include "common/mdiarea/mdisubwindow.h"
 
 namespace Ui {
     class Player;
@@ -67,6 +68,7 @@ class Player : public QMainWindow
     protected:
         void dragEnterEvent(QDragEnterEvent* event);
         void dropEvent(QDropEvent* event);
+        void closeEvent(QCloseEvent* event);
 };
 
 #endif // PLAYER_H

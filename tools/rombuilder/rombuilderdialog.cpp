@@ -22,7 +22,7 @@ ROMBuilderDialog::ROMBuilderDialog(QWidget *parent)
     connect(ui->addButton, &QPushButton::clicked, this, &ROMBuilderDialog::add);
 
     connect(ui->actionSave, &QAction::triggered, this, &ROMBuilderDialog::save);
-    connect(ui->actionClose, &QAction::triggered, this, &QDialog::close);
+    connect(ui->actionClose, &QAction::triggered, this, &QMainWindow::close);
 
     connect(ui->tableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ROMBuilderDialog::selectionChanged);
 
@@ -168,4 +168,10 @@ void ROMBuilderDialog::dropEvent(QDropEvent* event)
             add_(*it);
         }
     }
+}
+
+void ROMBuilderDialog::closeEvent(QCloseEvent* event)
+{
+    MdiSubWindow* subwindow = dynamic_cast<MdiSubWindow*>(parent());
+    subwindow->close();
 }

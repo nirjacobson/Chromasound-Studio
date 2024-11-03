@@ -7,6 +7,7 @@
 #include <QPainter>
 
 #include "application.h"
+#include "common/mdiarea/mdisubwindow.h"
 
 namespace Ui {
     class StyleDialog;
@@ -37,6 +38,7 @@ class StyleDialog : public QMainWindow
         // QWidget interface
     protected:
         void paintEvent(QPaintEvent* event);
+        void closeEvent(QCloseEvent* event);
 };
 
 #endif // STYLEDIALOG_H

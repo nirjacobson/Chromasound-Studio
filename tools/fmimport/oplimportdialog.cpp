@@ -17,7 +17,7 @@ OPLImportDialog::OPLImportDialog(QWidget *parent)
     connect(ui->actionOpen, &QAction::triggered, this, &OPLImportDialog::openTriggered);
     connect(ui->actionSave, &QAction::triggered, this, &OPLImportDialog::saveTriggered);
     connect(ui->actionSaveAll, &QAction::triggered, this, &OPLImportDialog::saveAllTriggered);
-    connect(ui->actionClose, &QAction::triggered, this, &OPLImportDialog::close);
+    connect(ui->actionClose, &QAction::triggered, this, &QMainWindow::close);
 
     connect(ui->patchTableView, &TableView::keyPressed, this, &OPLImportDialog::keyPressedOnTable);
 
@@ -284,4 +284,10 @@ void OPLImportDialog::dropEvent(QDropEvent* event)
     if (fileInfo.suffix() == "vgm") {
         load(paths.first());
     }
+}
+
+void OPLImportDialog::closeEvent(QCloseEvent* event)
+{
+    MdiSubWindow* subwindow = dynamic_cast<MdiSubWindow*>(parent());
+    subwindow->close();
 }

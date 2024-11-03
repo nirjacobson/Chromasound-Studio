@@ -10,7 +10,7 @@ StyleDialog::StyleDialog(QWidget *parent) :
     connect(ui->actionNew, &QAction::triggered, this, &StyleDialog::newTriggered);
     connect(ui->actionOpen, &QAction::triggered, this, &StyleDialog::openTriggered);
     connect(ui->actionSave, &QAction::triggered, this, &StyleDialog::saveTriggered);
-    connect(ui->actionClose, &QAction::triggered, this, &StyleDialog::close);
+    connect(ui->actionClose, &QAction::triggered, this, &QMainWindow::close);
 
     connect(ui->resetButton, &QPushButton::clicked, this, &StyleDialog::reset);
     connect(ui->applyButton, &QPushButton::clicked, this, &StyleDialog::apply);
@@ -83,4 +83,10 @@ void StyleDialog::paintEvent(QPaintEvent* event)
     opt.initFrom(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
+void StyleDialog::closeEvent(QCloseEvent* event)
+{
+    MdiSubWindow* subwindow = dynamic_cast<MdiSubWindow*>(parent());
+    subwindow->close();
 }

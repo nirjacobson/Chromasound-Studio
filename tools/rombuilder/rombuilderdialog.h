@@ -7,6 +7,7 @@
 #include <QMimeData>
 
 #include "rombuildertablemodel.h"
+#include "common/mdiarea/mdisubwindow.h"
 
 namespace Ui {
 class ROMBuilderDialog;
@@ -47,6 +48,7 @@ private slots:
 protected:
     void dragEnterEvent(QDragEnterEvent* event);
     void dropEvent(QDropEvent* event);
+    void closeEvent(QCloseEvent* event);
 };
 
 #endif // ROMBUILDERDIALOG_H

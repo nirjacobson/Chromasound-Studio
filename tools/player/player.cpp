@@ -31,6 +31,7 @@ Player::Player(QWidget *parent, Application* app)
     connect(ui->actionOpenFolder, &QAction::triggered, this, &Player::openFolder);
     connect(ui->actionAddFiles, &QAction::triggered, this, &Player::addFiles);
     connect(ui->actionAddFolder, &QAction::triggered, this, &Player::addFolder);
+    connect(ui->actionClose, &QAction::triggered, this, &QMainWindow::close);
 
     connect(ui->openButton, &QToolButton::clicked, this, &Player::openFiles);
     connect(ui->addButton, &QToolButton::clicked, this, &Player::addFiles);
@@ -347,4 +348,10 @@ void Player::dropEvent(QDropEvent* event)
     }
 
     openFiles_(paths, false);
+}
+
+void Player::closeEvent(QCloseEvent* event)
+{
+    MdiSubWindow* subwindow = dynamic_cast<MdiSubWindow*>(parent());
+    subwindow->close();
 }

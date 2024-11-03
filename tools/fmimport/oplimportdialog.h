@@ -13,6 +13,7 @@
 #include "formats/bson.h"
 #include "tableview.h"
 
+#include "common/mdiarea/mdisubwindow.h"
 #include "commands/editoplsettingscommand.h"
 
 namespace Ui {
@@ -55,6 +56,7 @@ class OPLImportDialog : public QMainWindow
     protected:
         void dragEnterEvent(QDragEnterEvent* event);
         void dropEvent(QDropEvent* event);
+        void closeEvent(QCloseEvent* event);
 };
 
 #endif // OPLIMPORTDIALOG_H
