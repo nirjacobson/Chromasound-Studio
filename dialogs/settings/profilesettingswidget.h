@@ -25,8 +25,8 @@ private:
     Ui::ProfileSettingsWidget *ui;
 
 private slots:
-    void deviceChanged(const int index);
-    void pcmStrategyChanged(const QString& value);
+    void comboBoxChanged(const int index);
+    void deviceComboBoxChanged(const int index);
 };
 
 #endif // PROFILESETTINGSWIDGET_H
