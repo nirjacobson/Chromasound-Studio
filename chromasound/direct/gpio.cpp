@@ -27,22 +27,21 @@ void gpio_close(int fd)
 void gpio_write(int fd, int pin, int value) {
     int ret;
 
-    struct gpio_v2_line_request rq;
-    rq.offsets[0] = pin;
-    rq.num_lines = 1;
-    rq.config.flags = GPIO_V2_LINE_FLAG_OUTPUT;
+    struct gpiohandle_request rq;
+    rq.lineoffsets[0] = pin;
+    rq.lines = 1;
+    rq.flags = GPIOHANDLE_REQUEST_OUTPUT;
 
-    ret = ioctl(fd, GPIO_V2_GET_LINE_IOCTL, &rq);
+    ret = ioctl(fd, GPIO_GET_LINEHANDLE_IOCTL, &rq);
 
     if (ret == -1) {
         printf("Unable to get line handle from ioctl: %s", strerror(errno));
         return;
     }
 
-    struct gpio_v2_line_values data;
-    data.bits = 1;
-    data.mask = 1;
-    ret = ioctl(rq.fd, GPIO_V2_LINE_SET_VALUES_IOCTL, &data);
+    struct gpiohandle_data data;
+    data.values[0] = value;
+    ret = ioctl(rq.fd, GPIOHANDLE_SET_LINE_VALUES_IOCTL, &data);
 
     if (ret == -1) {
         printf("Unable to set line value using ioctl: %s", strerror(errno));
