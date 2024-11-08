@@ -23,6 +23,7 @@ class AudioOutput : public Consumer<T> {
 
         std::vector<std::string> devices();
         int defaultDeviceIndex();
+        std::string defaultDevice();
 
         void start();
         void stop();
@@ -143,6 +144,11 @@ std::vector<std::string> AudioOutput<T>::devices() {
 template <typename T>
 int AudioOutput<T>::defaultDeviceIndex() {
     return Pa_GetDefaultOutputDevice();
+}
+
+template <typename T>
+std::string AudioOutput<T>::defaultDevice() {
+    return devices()[defaultDeviceIndex()];
 }
 
 template <typename T>

@@ -20,8 +20,18 @@ EmulatorOutputDeviceSettingsWidget::EmulatorOutputDeviceSettingsWidget(QWidget *
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
 
-    QString outputDevice = settings.value(Chromasound_Studio::OutputDeviceKey, QString::fromStdString(AudioOutput<int16_t>::instance()->devices()[AudioOutput<int16_t>::instance()->defaultDeviceIndex()])).toString();
+    bool mustInit = !AudioOutput<int16_t>::instance()->isInited();
+
+    if (mustInit) {
+        AudioOutput<int16_t>::instance()->init();
+    }
+
+    QString outputDevice = settings.value(Chromasound_Studio::OutputDeviceKey, QString::fromStdString(AudioOutput<int16_t>::instance()->defaultDevice())).toString();
     ui->outputDeviceComboBox->setCurrentText(outputDevice);
+
+    if (mustInit) {
+        AudioOutput<int16_t>::instance()->destroy();
+    }
 }
 
 EmulatorOutputDeviceSettingsWidget::~EmulatorOutputDeviceSettingsWidget()
@@ -59,7 +69,7 @@ void EmulatorOutputDeviceSettingsWidget::doUpdate()
 #else
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
-    QString outputDevice = settings.value(Chromasound_Studio::OutputDeviceKey, QString::fromStdString(AudioOutput<int16_t>::instance()->devices()[AudioOutput<int16_t>::instance()->defaultDeviceIndex()])).toString();
+    QString outputDevice = settings.value(Chromasound_Studio::OutputDeviceKey, QString::fromStdString(AudioOutput<int16_t>::instance()->defaultDevice())).toString();
     ui->outputDeviceComboBox->setCurrentText(outputDevice);
 
     ui->outputDeviceComboBox->blockSignals(false);
