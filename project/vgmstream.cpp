@@ -576,12 +576,7 @@ void VGMStream::reset()
 
 QByteArray VGMStream::encodeStandardPCM(const Project& project, const Pattern& pattern, const float loopStart, const float loopEnd)
 {
-    QByteArray data;
-
     QList<StreamItem*> items;
-
-    int _loopOffsetData = 0;
-    int _currentOffsetData;
 
     processPattern(0, project, pattern, items, loopStart, loopEnd);
     applySettingsChanges(0, pattern, items);
@@ -589,104 +584,7 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, const Pattern& p
     applySettingsChanges2(0, pattern, items);
     addSettingsAtCurrentOffset(items, qMax(0.0f, loopStart));
 
-    QByteArray pcmData;
-    QMap<int, quint32> pcmOffsetsByChannel;
-    QMap<int, int> pcmSampleByChannel;
-    QMap<int, int> pcmVolumeByChannel;
-
-    if (!project.pcmFile().isEmpty()) {
-        QFile romFile(project.pcmFile());
-        romFile.open(QIODevice::ReadOnly);
-        pcmData = romFile.readAll();
-        romFile.close();
-    }
-
-    sortItems(items);
-
-    ROM pcmROM(project.pcmFile());
-
-    float lastTime = 0.0;
-    quint32 pcmSize = 0;
-    quint32 pcmWritten = 0;
-    StreamNoteItem* lastNoteItem = nullptr;
-    for (int i = 0; i < items.size(); i++) {
-        quint32 fullDelaySamples = (quint32)((items[i]->time() - lastTime) / project.tempo() * 60 * 44100);
-        lastTime = items[i]->time();
-        if (fullDelaySamples > 0) {
-            if (lastNoteItem) {
-                quint32 delayToEndOfPCM = pcmSize - pcmWritten;
-                quint32 pcmLength = qMin(fullDelaySamples, delayToEndOfPCM);
-
-                QByteArray dataToAppend((qsizetype)pcmLength, (char)0);
-                for (quint32 j = 0; j < pcmLength; j++) {
-                    int result = 0x00;
-
-                    for (auto it = pcmOffsetsByChannel.begin(); it != pcmOffsetsByChannel.end();) {
-                        int sample = pcmData[pcmOffsetsByChannel[it.key()]++];
-                        int volume = pcmVolumeByChannel[it.key()];
-                        int att = MAX_PCM_ATTENUATION * (100 - volume) / 100.0f;
-
-                        if (pcmROM.size(pcmSampleByChannel[it.key()]) == pcmOffsetsByChannel[it.key()] - pcmROM.offsets()[pcmSampleByChannel[it.key()]]) {
-                            it = pcmOffsetsByChannel.erase(it);
-                        } else {
-                            ++it;
-                        }
-
-                        result += (sample - 0x80) >> att;
-                    }
-
-                    result += 0x80;
-
-                    if (result < 0) {
-                        dataToAppend[j] = 0;
-                    } else if (result >= 0xFF) {
-                        dataToAppend[j] = 0xFF;
-                    } else {
-                        dataToAppend[j] = result;
-                    }
-                }
-                data.append(dataToAppend);
-
-                pcmWritten += pcmLength;
-
-                if (pcmWritten == pcmSize) {
-                    lastNoteItem = nullptr;
-                }
-            }
-        }
-
-        StreamNoteItem* sni;
-        if ((sni = dynamic_cast<StreamNoteItem*>(items[i]))) {
-            if (sni->on()) {
-                quint32 newPcmSize;
-                if (sni->type() == Channel::Type::PCM) {
-
-                    const PCMChannelSettings* channelSettings = dynamic_cast<const PCMChannelSettings*>(sni->channelSettings());
-                    newPcmSize = 0;
-
-                    if (channelSettings->keySampleMappings().contains(sni->note().key())) {
-                        newPcmSize = qMin(pcmROM.size(channelSettings->keySampleMappings()[sni->note().key()]), (quint32)(sni->note().duration() / project.tempo() * 60 * 44100));
-                        pcmOffsetsByChannel[sni->channel()] = pcmROM.offsets()[channelSettings->keySampleMappings()[sni->note().key()]];
-                        pcmSampleByChannel[sni->channel()] = channelSettings->keySampleMappings()[sni->note().key()];
-                        pcmVolumeByChannel[sni->channel()] = channelSettings->volume() * sni->note().velocity() / 100.0f;
-                    }
-
-                    if (pcmWritten + newPcmSize > pcmSize) {
-                        lastNoteItem = sni;
-                        pcmSize = pcmWritten + newPcmSize;
-                    }
-                }
-            } else {
-                if (sni->type() == Channel::Type::PCM) {
-                    pcmOffsetsByChannel.remove(sni->channel());
-                    pcmSampleByChannel.remove(sni->channel());
-                    pcmVolumeByChannel.remove(sni->channel());
-                }
-            }
-        }
-    }
-
-    return data;
+    return encodeStandardPCM(project, items, loopStart, loopEnd);
 }
 
 QByteArray VGMStream::encodeStandardPCM(const Project& project, const float loopStart, const float loopEnd)
@@ -742,7 +640,7 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, QList<StreamItem
                     int result = 0x00;
 
                     for (auto it = pcmOffsetsByChannel.begin(); it != pcmOffsetsByChannel.end();) {
-                        int sample = pcmData[pcmOffsetsByChannel[it.key()]++];
+                        int sample = pcmData[pcmOffsetsByChannel[it.key()]++] & 0xFF;
                         int volume = pcmVolumeByChannel[it.key()];
                         int att = MAX_PCM_ATTENUATION * (100 - volume) / 100.0f;
 
