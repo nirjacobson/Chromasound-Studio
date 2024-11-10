@@ -81,14 +81,6 @@ void Application::play()
         Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
         _profile = Chromasound_Studio::Profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
 
-        if (_project.usesOPL() && _project.hasPCM()) {
-            Chromasound_Emu* emu;
-            if ((emu = dynamic_cast<Chromasound_Emu*>(_chromasound))) {
-                emu->setPCMData(_project.pcmFile().toStdString().c_str());
-            }
-        }
-
-
         if (_project.playMode() == Project::PlayMode::PATTERN) {
             QThread* thread = QThread::create([&]() {
                 int currentOffsetData;
@@ -147,13 +139,6 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
     Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
     _profile = Chromasound_Studio::Profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
 
-    if (_project.usesOPL() && _project.hasPCM()) {
-        Chromasound_Emu* emu;
-        if ((emu = dynamic_cast<Chromasound_Emu*>(_chromasound))) {
-            emu->setPCMData(_project.pcmFile().toStdString().c_str());
-        }
-    }
-
     QThread* thread = QThread::create([&](const float loopStart, const float loopEnd) {
         int loopOffsetData;
         int currentOffsetData;
@@ -191,13 +176,6 @@ void Application::play(const float loopStart, const float loopEnd)
     bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
     Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
     _profile = Chromasound_Studio::Profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
-
-    if (_project.usesOPL() && _project.hasPCM()) {
-        Chromasound_Emu* emu;
-        if ((emu = dynamic_cast<Chromasound_Emu*>(_chromasound))) {
-            emu->setPCMData(_project.pcmFile().toStdString().c_str());
-        }
-    }
 
     QThread* thread = QThread::create([&](const float loopStart, const float loopEnd) {
         int loopOffsetData;

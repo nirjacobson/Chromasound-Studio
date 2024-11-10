@@ -133,18 +133,6 @@ void Vgm_Emu_Impl::set_opll_patchset(int patchset)
     ym2413.reset_patch( patchset );
 }
 
-void Vgm_Emu_Impl::set_pcm_data(const char* path)
-{
-    Std_File_Reader reader;
-    reader.open(path);
-
-    long size = reader.size();
-    pcm_data.resize(size);
-    reader.read(pcm_data.begin(), size);
-
-    reader.close();
-}
-
 void Vgm_Emu_Impl::set_pcm_discrete(bool discrete)
 {
     pcm_discrete = discrete;
