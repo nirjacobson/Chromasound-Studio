@@ -7,6 +7,7 @@
 #include <string.h>
 #include <vector>
 #include <algorithm>
+#include <sstream>
 
 #include "consumer.h"
 
@@ -136,6 +137,23 @@ std::vector<std::string> AudioOutput<T>::devices() {
     for (int i = 0; i < count; i++) {
         const PaDeviceInfo* info = Pa_GetDeviceInfo(i);
         devices.push_back(info->name);
+    }
+
+    for (int i = 0; i < count; i++) {
+        int devCount = 1;
+        for (int j = i + 1; j < count; j++) {
+            if (devices[i].starts_with(devices[j])) {
+                if (devCount == 1) {
+                    std::stringstream ss;
+                    ss << devices[i] << " #" << devCount++;
+                    devices[i] = ss.str();
+                }
+
+                std::stringstream ss;
+                ss << devices[j] << " #" << devCount++;
+                devices[j] = ss.str();
+            }
+        }
     }
 
     return devices;
