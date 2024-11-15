@@ -35,12 +35,6 @@ ProfileSettingsWidget::ProfileSettingsWidget(QWidget *parent)
         "Random"
     };
 
-    ui->deviceComboBox->setCurrentIndex(devices.indexOf(device));
-    ui->chromasoundCheckBox->setChecked(profile.isChromasound());
-    ui->pcmStrategyComboBox->setCurrentText(strategies[profile.pcmStrategy()]);
-    ui->discretePCMCheckBox->setChecked(profile.discretePCM());
-    ui->pcmSRAMCheckBox->setChecked(profile.usePCMSRAM());
-
     connect(ui->pcmStrategyComboBox, &QComboBox::currentIndexChanged, this, &ProfileSettingsWidget::comboBoxChanged);
     connect(ui->deviceComboBox, &QComboBox::currentIndexChanged, this, &ProfileSettingsWidget::deviceComboBoxChanged);
     connect(ui->deviceComboBox, &QComboBox::currentIndexChanged, this, &ProfileSettingsWidget::comboBoxChanged);
@@ -48,7 +42,11 @@ ProfileSettingsWidget::ProfileSettingsWidget(QWidget *parent)
     comboBoxChanged(devices.indexOf(device));
     deviceComboBoxChanged(devices.indexOf(device));
 
+    ui->deviceComboBox->setCurrentIndex(devices.indexOf(device));
+    ui->chromasoundCheckBox->setChecked(profile.isChromasound());
     ui->pcmStrategyComboBox->setCurrentText(strategies[profile.pcmStrategy()]);
+    ui->discretePCMCheckBox->setChecked(profile.discretePCM());
+    ui->pcmSRAMCheckBox->setChecked(profile.usePCMSRAM());
 }
 
 ProfileSettingsWidget::~ProfileSettingsWidget()
@@ -156,19 +154,6 @@ void ProfileSettingsWidget::comboBoxChanged(const int index)
 
 void ProfileSettingsWidget::deviceComboBoxChanged(const int index)
 {
-#ifdef Q_OS_WIN
-    QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
-#else
-    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
-#endif
-
-    QString device = settings.value(Chromasound_Studio::DeviceKey, Chromasound_Studio::ChromasoundNova).toString();
-    bool isChromasound = settings.value(Chromasound_Studio::IsChromasoundKey, true).toBool();
-    bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
-    bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
-    Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
-    Chromasound_Studio::Profile currentProfile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
-
     QStringList strategies = {
         "None",
         "Inline",
@@ -206,9 +191,12 @@ void ProfileSettingsWidget::deviceComboBoxChanged(const int index)
         strategies = { "None" };
         break;
     default:
-        profile = &currentProfile;
         break;
     }
+
+    ui->chromasoundCheckBox->setChecked(profile->isChromasound());
+    ui->discretePCMCheckBox->setChecked(profile->discretePCM());
+    ui->pcmSRAMCheckBox->setChecked(profile->usePCMSRAM());
 
     QStringList strategiesLower = strategies;
 
