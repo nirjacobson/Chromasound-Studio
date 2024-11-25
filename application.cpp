@@ -75,10 +75,10 @@ void Application::play()
 #else
         QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
-        bool isChromasound = settings.value(Chromasound_Studio::IsChromasoundKey, true).toBool();
-        bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
-        bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
-        Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
+        bool isChromasound = settings.value(Chromasound_Studio::IsChromasoundKey, Chromasound_Studio::ChromasoundProPreset.isChromasound()).toBool();
+        bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, Chromasound_Studio::ChromasoundProPreset.discretePCM()).toBool();
+        bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, Chromasound_Studio::ChromasoundProPreset.usePCMSRAM()).toBool();
+        Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::ChromasoundProPreset.pcmStrategy()).toString());
         _profile = Chromasound_Studio::Profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
 
         if (_project.playMode() == Project::PlayMode::PATTERN) {
@@ -133,10 +133,10 @@ void Application::play(const Pattern& pattern, const float loopStart, const floa
 #else
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
-    bool isChromasound = settings.value(Chromasound_Studio::IsChromasoundKey, true).toBool();
-    bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
-    bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
-    Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
+    bool isChromasound = settings.value(Chromasound_Studio::IsChromasoundKey, Chromasound_Studio::ChromasoundProPreset.isChromasound()).toBool();
+    bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, Chromasound_Studio::ChromasoundProPreset.discretePCM()).toBool();
+    bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, Chromasound_Studio::ChromasoundProPreset.usePCMSRAM()).toBool();
+    Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::ChromasoundProPreset.pcmStrategy()).toString());
     _profile = Chromasound_Studio::Profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
 
     QThread* thread = QThread::create([&](const float loopStart, const float loopEnd) {
@@ -171,10 +171,10 @@ void Application::play(const float loopStart, const float loopEnd)
 #else
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
-    bool isChromasound = settings.value(Chromasound_Studio::IsChromasoundKey, true).toBool();
-    bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, false).toBool();
-    bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, false).toBool();
-    Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::Random).toString());
+    bool isChromasound = settings.value(Chromasound_Studio::IsChromasoundKey, Chromasound_Studio::ChromasoundProPreset.isChromasound()).toBool();
+    bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, Chromasound_Studio::ChromasoundProPreset.discretePCM()).toBool();
+    bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, Chromasound_Studio::ChromasoundProPreset.usePCMSRAM()).toBool();
+    Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::ChromasoundProPreset.pcmStrategy()).toString());
     _profile = Chromasound_Studio::Profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
 
     QThread* thread = QThread::create([&](const float loopStart, const float loopEnd) {
@@ -278,7 +278,7 @@ void Application::setupChromasound()
     QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
 
-    int audioBufferSize = settings.value(Chromasound_Studio::AudioBufferSizeKey, 256).toInt();
+    int audioBufferSize = settings.value(Chromasound_Studio::AudioBufferSizeKey, 1024).toInt();
     int readBufferSize = settings.value(Chromasound_Studio::ReadBufferSizeKey, 1).toInt();
 
     int numChromasounds = settings.value(Chromasound_Studio::NumberOfChromasoundsKey, 1).toInt();

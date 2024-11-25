@@ -14,7 +14,7 @@ EmulationSettingsWidget::EmulationSettingsWidget(QWidget *parent) :
 #endif
     ui->bassSpinBox->setValue(settings.value(Chromasound_Studio::EqualizerBassKey, 0).toInt());
     ui->trebleSpinBox->setValue(settings.value(Chromasound_Studio::EqualizerTrebleKey, 0).toInt());
-    ui->audioBufferSizeSpinBox->setValue(settings.value(Chromasound_Studio::AudioBufferSizeKey, 256).toInt());
+    ui->audioBufferSizeSpinBox->setValue(settings.value(Chromasound_Studio::AudioBufferSizeKey, 1024).toInt());
     ui->readBufferSizeSpinBox->setValue(settings.value(Chromasound_Studio::ReadBufferSizeKey, 1).toInt());
 }
 
