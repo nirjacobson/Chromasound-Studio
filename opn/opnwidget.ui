@@ -38,10 +38,10 @@
     <widget class="AlgorithmWidget" name="algorithmWidget" native="true"/>
    </item>
    <item row="1" column="0">
-    <widget class="OPNOperatorWidget" name="operatorWidget2" native="true"/>
+    <widget class="OPNOperatorWidget" name="operatorWidget3" native="true"/>
    </item>
    <item row="2" column="0">
-    <widget class="OPNOperatorWidget" name="operatorWidget3" native="true"/>
+    <widget class="OPNOperatorWidget" name="operatorWidget2" native="true"/>
    </item>
    <item row="3" column="0">
     <widget class="OPNOperatorWidget" name="operatorWidget4" native="true"/>
