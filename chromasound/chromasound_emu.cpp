@@ -409,23 +409,29 @@ void Chromasound_Emu::keyOn(const Project& project, const Channel::Type channelT
 
     _mutex.lock();
 
-    VGMStream::StreamLFOItem* sli = new VGMStream::StreamLFOItem(0, project.lfoMode());
-    _items.append(sli);
+    if (project.usesOPN()) {
+        VGMStream::StreamLFOItem* sli = new VGMStream::StreamLFOItem(0, project.lfoMode());
+        _items.append(sli);
+    }
 
-    VGMStream::StreamNoiseFrequencyItem* nfi = new VGMStream::StreamNoiseFrequencyItem(0, project.ssgNoiseFrequency());
-    _items.append(nfi);
+    if (project.usesSSG()) {
+        VGMStream::StreamNoiseFrequencyItem* nfi = new VGMStream::StreamNoiseFrequencyItem(0, project.ssgNoiseFrequency());
+        _items.append(nfi);
 
-    VGMStream::StreamEnvelopeFrequencyItem* efi = new VGMStream::StreamEnvelopeFrequencyItem(0, project.ssgEnvelopeFrequency());
-    _items.append(efi);
+        VGMStream::StreamEnvelopeFrequencyItem* efi = new VGMStream::StreamEnvelopeFrequencyItem(0, project.ssgEnvelopeFrequency());
+        _items.append(efi);
 
-    VGMStream::StreamEnvelopeShapeItem* esi = new VGMStream::StreamEnvelopeShapeItem(0, project.ssgEnvelopeShape());
-    _items.append(esi);
+        VGMStream::StreamEnvelopeShapeItem* esi = new VGMStream::StreamEnvelopeShapeItem(0, project.ssgEnvelopeShape());
+        _items.append(esi);
+    }
 
-    VGMStream::StreamUserToneItem* uti = new VGMStream::StreamUserToneItem(0, project.userTone());
-    _items.append(uti);
+    if (project.usesOPL()) {
+        VGMStream::StreamUserToneItem* uti = new VGMStream::StreamUserToneItem(0, project.userTone());
+        _items.append(uti);
+    }
 
-    _items.append(sni);
     _vgmStream->assignChannel(project, sni, _items);
+    _items.append(sni);
 
     _items.append(new VGMStream::StreamEndItem(channelType == Channel::PCM ? 4 : 0));
 
