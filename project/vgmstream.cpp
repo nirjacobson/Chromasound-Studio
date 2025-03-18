@@ -1692,6 +1692,7 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
         data.append(0x80 | (addr << 4) | att);
 
     } else if (item->type() == Channel::Type::FM) {
+        const FMChannelSettings* fmcs = dynamic_cast<const FMChannelSettings*>(item->channelSettings());
         int part = 1 + (item->channel() >= 3);
         int channel = item->channel() % 3;
 
@@ -1707,6 +1708,20 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
             data.append((part == 1) ? 0x52 : 0x53);
             data.append(0xA0 + channel);
             data.append(n & 0xFF);
+
+            QList<int> sls = slotsByAlg[fmcs->algorithm().algorithm()];
+            for (int i = 0; i < sls.size(); i++) {
+                int offset = (sls[i] * 4) + channel;
+                int t1l = fmcs->operators()[sls[i]].envelopeSettings().t1l();
+
+                    int volume = fmcs->volume() * item->note().velocity() / 100;
+                int amt = (127 - t1l) * (100 - volume)/100.0f;
+                int newT1l = t1l + amt;
+
+                    data.append((part == 1) ? 0x52 : 0x53);
+                data.append(0x40 + offset);
+                data.append(newT1l);
+            }
         }
 
         data.append(0x52);
