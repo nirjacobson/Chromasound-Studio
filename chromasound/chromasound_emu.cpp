@@ -17,7 +17,7 @@ static void log_warning(Music_Emu * emu)
         fprintf(stderr, "%s\n", str);
 }
 
-Chromasound_Emu::Chromasound_Emu(const Project& project)
+Chromasound_Emu::Chromasound_Emu(const Project& project, int readBufferSize)
     : _position(0)
     , _positionOffset(0)
     , _project(project)
@@ -29,6 +29,7 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
     , _paused(false)
     , _haveInfo(false)
     , _isSelection(false)
+    , _readBufferSize(readBufferSize)
     , _profile(Chromasound_Studio::ChromasoundProPreset)
 {
 #ifdef Q_OS_WIN
@@ -105,9 +106,8 @@ void Chromasound_Emu::setBufferSizes()
 #endif
 
     int audioBufferSize = settings.value(Chromasound_Studio::AudioBufferSizeKey, 1024).toInt();
-    int readBufferSize = settings.value(Chromasound_Studio::ReadBufferSizeKey, 1).toInt();
 
-    _framesPerReadBuffer = audioBufferSize * readBufferSize;
+    _framesPerReadBuffer = audioBufferSize * _readBufferSize;
 
     if (_buffers[0] != nullptr && _buffers[1] != nullptr) {
         delete _buffers[0];

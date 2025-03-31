@@ -30,7 +30,8 @@ void SettingsDialog::accepted()
     settings.setValue(Chromasound_Studio::EqualizerBassKey, ui->emulationSettingsWidget->bass());
     settings.setValue(Chromasound_Studio::EqualizerTrebleKey, ui->emulationSettingsWidget->treble());
     settings.setValue(Chromasound_Studio::AudioBufferSizeKey, ui->emulationSettingsWidget->audioBufferSize());
-    settings.setValue(Chromasound_Studio::ReadBufferSizeKey, ui->emulationSettingsWidget->readBufferSize());
+    settings.setValue(Chromasound_Studio::PlaybackReadBufferSizeKey, ui->emulationSettingsWidget->playbackReadBufferSize());
+    settings.setValue(Chromasound_Studio::InteractiveReadBufferSizeKey, ui->emulationSettingsWidget->interactiveReadBufferSize());
     settings.setValue(Chromasound_Studio::IsChromasoundKey, ui->profileSettingsWidget->profile().isChromasound());
     settings.setValue(Chromasound_Studio::DeviceKey, ui->profileSettingsWidget->device());
     settings.setValue(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::pcmStrategyToString(ui->profileSettingsWidget->profile().pcmStrategy()));
@@ -54,5 +55,6 @@ void SettingsDialog::chromasoundLayoutChanged()
 
     if (showEmuSettings) {
         ui->emulatorOutputDeviceWidget->doUpdate();
+        ui->emulationSettingsWidget->setDual(ui->chromasoundLayoutWidget->quantity() == 2);
     }
 }

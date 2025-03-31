@@ -279,7 +279,6 @@ void Application::setupChromasound()
 #endif
 
     int audioBufferSize = settings.value(Chromasound_Studio::AudioBufferSizeKey, 1024).toInt();
-    int readBufferSize = settings.value(Chromasound_Studio::ReadBufferSizeKey, 1).toInt();
 
     int numChromasounds = settings.value(Chromasound_Studio::NumberOfChromasoundsKey, 1).toInt();
     QString chromasound1Type = settings.value(Chromasound_Studio::Chromasound1Key, Chromasound_Studio::Emulator).toString();
@@ -302,7 +301,8 @@ void Application::setupChromasound()
     }
 
     if (chromasound1Type == Chromasound_Studio::Emulator) {
-        chromasound1 = new Chromasound_Emu(_project);
+        int readBufferSize = settings.value(Chromasound_Studio::PlaybackReadBufferSizeKey, 1).toInt();
+        chromasound1 = new Chromasound_Emu(_project, readBufferSize);
         _output->producer(dynamic_cast<Chromasound_Emu*>(chromasound1));
     } else {
 #ifdef Q_OS_LINUX
@@ -312,7 +312,8 @@ void Application::setupChromasound()
 
     if (numChromasounds == 2) {
         if (chromasound2Type == Chromasound_Studio::Emulator) {
-            chromasound2 = new Chromasound_Emu(_project);
+            int readBufferSize = settings.value(Chromasound_Studio::InteractiveReadBufferSizeKey, 1).toInt();
+            chromasound2 = new Chromasound_Emu(_project, readBufferSize);
             _output->producer(dynamic_cast<Chromasound_Emu*>(chromasound2));
         } else {
 #ifdef Q_OS_LINUX

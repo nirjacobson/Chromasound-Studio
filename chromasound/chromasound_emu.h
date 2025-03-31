@@ -17,7 +17,7 @@
 class Chromasound_Emu : public Chromasound, public Producer<int16_t>
 {
     public:
-        Chromasound_Emu(const Project& project);
+        Chromasound_Emu(const Project& project, int readBufferSize);
         ~Chromasound_Emu();
 
     private:
@@ -55,6 +55,8 @@ class Chromasound_Emu : public Chromasound, public Producer<int16_t>
         bool _isSelection;
 
         Chromasound_Studio::Profile _profile;
+
+        int _readBufferSize;
 
         void setEqualizer();
         void setBufferSizes();
