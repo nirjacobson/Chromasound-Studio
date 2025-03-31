@@ -62,6 +62,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     ui->menuEdit->insertAction(menuEditFirstAction, redoAction);
 
     connect(&_midiPoller, &MIDIPoller::receivedMessage, this, &MainWindow::handleMIDIMessage);
+    connect(&_midiPoller, &MIDIPoller::sync, this, &MainWindow::handleMIDISync);
     _midiPoller.start();
 
     ui->topWidget->setApplication(app);
@@ -876,6 +877,11 @@ void MainWindow::handleMIDIMessage(const long message)
     } else if (status == 0x80) {
         keyOff(data1);
     }
+}
+
+void MainWindow::handleMIDISync()
+{
+    _app->midiSync();
 }
 
 void MainWindow::setMIDIDevice(const int device)

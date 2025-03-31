@@ -58,6 +58,11 @@ void Chromasound_Standin::keyOff(int)
 
 }
 
+void Chromasound_Standin::sync()
+{
+
+}
+
 qint64 Chromasound_Standin::nanosecondsPerBeat() const
 {
     return 1e9 * 60 / _project.tempo();

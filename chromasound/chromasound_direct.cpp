@@ -19,120 +19,6 @@ Chromasound_Direct::Chromasound_Direct(const Project& project)
 
     _vgmStream = new VGMStream(_profile);
 
-    _timer.setSingleShot(true);
-
-    _timer.callOnTimeout([&]() {
-        QByteArray data;
-
-        _mutex.lock();
-
-        _vgmStream->encode(project, _items, data);
-
-        bool havePCM = false;
-        for (VGMStream::StreamItem* item : _items) {
-            VGMStream::StreamNoteItem* sni;
-            if ((sni = dynamic_cast<VGMStream::StreamNoteItem*>(item))) {
-                if (sni->on()) {
-                    if (sni->type() == Channel::Type::PCM) {
-                        havePCM = true;
-                    }
-                } else {
-                    int key = sni->note().key();
-                    _keys.remove(key);
-                }
-            }
-        }
-
-        _mutex.unlock();
-
-        if (project.usesRhythm()) {
-            QByteArray enableRhythm;
-
-            enableRhythm.append(0x51);
-            enableRhythm.append(0x16);
-            enableRhythm.append(0x20);
-
-            enableRhythm.append(0x51);
-            enableRhythm.append(0x17);
-            enableRhythm.append(0x50);
-
-            enableRhythm.append(0x51);
-            enableRhythm.append(0x18);
-            enableRhythm.append(0xC0);
-
-            enableRhythm.append(0x51);
-            enableRhythm.append(0x26);
-            enableRhythm.append(0x05);
-
-            enableRhythm.append(0x51);
-            enableRhythm.append(0x27);
-            enableRhythm.append(0x05);
-
-            enableRhythm.append(0x51);
-            enableRhythm.append(0x28);
-            enableRhythm.append(0x01);
-
-            data.prepend(enableRhythm);
-        }
-
-        if (havePCM) {
-            if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::INLINE) {
-                QByteArray pcm = _vgmStream->encodeStandardPCM(project, _items);
-
-                QByteArray pcmData;
-                quint32 s = pcm.size() / 2;
-
-                for (int i = 0; i < s; i++) {
-                    pcmData.append(pcm[i * 2]);
-
-                }
-                data.append(0x97);
-                data.append(0xFE);
-                data.append((char*)&s, sizeof(s));
-                data.append(pcmData);
-            } else {
-                QFile romFile(project.pcmFile());
-                romFile.open(QIODevice::ReadOnly);
-                QByteArray dataBlock = romFile.readAll();
-                romFile.close();
-
-                quint32 dataBlockSize = dataBlock.size();
-
-                if (dataBlockSize > 0) {
-                    QByteArray pcmBlock;
-                    pcmBlock.append(0x67);
-                    pcmBlock.append(0x66);
-                    pcmBlock.append((quint8)0x00);
-                    pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
-                    pcmBlock.append(dataBlock);
-                    pcmBlock.append(0x52);
-                    pcmBlock.append(0x2B);
-                    pcmBlock.append(0x80);
-
-                    data.prepend(pcmBlock);
-
-                    _vgmPlayer->fillWithPCM(true);
-                }
-            }
-        }
-
-        for (VGMStream::StreamItem* item : _items) {
-            VGMStream::StreamNoteItem* sni;
-            if ((sni = dynamic_cast<VGMStream::StreamNoteItem*>(item))) {
-                if (sni->on()) {
-                    continue;
-                }
-            }
-            delete item;
-        }
-
-        _items.clear();
-
-
-        data.prepend(_vgmStream->generateHeader(project, data, 0, 0, 0, false));
-
-        _vgmPlayer->setVGM(data, 0);
-    });
     _gpioFd = gpio_init();
 
     _vgmPlayer = new VGMPlayer(this);
@@ -262,8 +148,6 @@ void Chromasound_Direct::keyOn(const Project& project, const Channel::Type chann
     VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(0, channelType, nullptr, Note(key, channelType == Channel::PCM ? 4 : 0, velocity), &settings);
     _keys[key] = sni;
 
-    _mutex.lock();
-
     if (project.usesOPL()) {
         VGMStream::StreamLFOItem* sli = new VGMStream::StreamLFOItem(0, project.lfoMode());
         _items.append(sli);
@@ -287,12 +171,6 @@ void Chromasound_Direct::keyOn(const Project& project, const Channel::Type chann
 
     _vgmStream->assignChannel(project, sni, _items);
     _items.append(sni);
-
-    _items.append(new VGMStream::StreamEndItem(channelType == Channel::PCM ? 4 : 0));
-
-    _mutex.unlock();
-
-    _timer.start(20);
 }
 
 void Chromasound_Direct::keyOff(int key)
@@ -300,9 +178,6 @@ void Chromasound_Direct::keyOff(int key)
     if (!_keys.contains(key)) return;
 
     VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(*_keys[key]);
-
-    _mutex.lock();
-
 
     _vgmStream->releaseChannel(sni->type(), sni->channel());
     sni->setOn(false);
@@ -319,10 +194,117 @@ void Chromasound_Direct::keyOff(int key)
     if (!havePCM) {
         _vgmPlayer->fillWithPCM(false);
     }
+}
 
-    _mutex.unlock();
+void Chromasound_Direct::sync()
+{
 
-    _timer.start(20);
+    QByteArray data;
+
+    _vgmStream->encode(_project, _items, data);
+
+    bool havePCM = false;
+    for (VGMStream::StreamItem* item : _items) {
+        VGMStream::StreamNoteItem* sni;
+        if ((sni = dynamic_cast<VGMStream::StreamNoteItem*>(item))) {
+            if (sni->on()) {
+                if (sni->type() == Channel::Type::PCM) {
+                    havePCM = true;
+                }
+            } else {
+                int key = sni->note().key();
+                _keys.remove(key);
+            }
+        }
+    }
+
+    if (_project.usesRhythm()) {
+        QByteArray enableRhythm;
+
+        enableRhythm.append(0x51);
+        enableRhythm.append(0x16);
+        enableRhythm.append(0x20);
+
+        enableRhythm.append(0x51);
+        enableRhythm.append(0x17);
+        enableRhythm.append(0x50);
+
+        enableRhythm.append(0x51);
+        enableRhythm.append(0x18);
+        enableRhythm.append(0xC0);
+
+        enableRhythm.append(0x51);
+        enableRhythm.append(0x26);
+        enableRhythm.append(0x05);
+
+        enableRhythm.append(0x51);
+        enableRhythm.append(0x27);
+        enableRhythm.append(0x05);
+
+        enableRhythm.append(0x51);
+        enableRhythm.append(0x28);
+        enableRhythm.append(0x01);
+
+        data.prepend(enableRhythm);
+    }
+
+    if (havePCM) {
+        if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::INLINE) {
+            QByteArray pcm = _vgmStream->encodeStandardPCM(_project, _items);
+
+            QByteArray pcmData;
+            quint32 s = pcm.size() / 2;
+
+            for (int i = 0; i < s; i++) {
+                pcmData.append(pcm[i * 2]);
+
+            }
+            data.append(0x97);
+            data.append(0xFE);
+            data.append((char*)&s, sizeof(s));
+            data.append(pcmData);
+        } else {
+            QFile romFile(_project.pcmFile());
+            romFile.open(QIODevice::ReadOnly);
+            QByteArray dataBlock = romFile.readAll();
+            romFile.close();
+
+            quint32 dataBlockSize = dataBlock.size();
+
+            if (dataBlockSize > 0) {
+                QByteArray pcmBlock;
+                pcmBlock.append(0x67);
+                pcmBlock.append(0x66);
+                pcmBlock.append((quint8)0x00);
+                pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
+                pcmBlock.append(dataBlock);
+                pcmBlock.append(0x52);
+                pcmBlock.append(0x2B);
+                pcmBlock.append(0x80);
+
+                data.prepend(pcmBlock);
+
+                _vgmPlayer->fillWithPCM(true);
+            }
+        }
+    }
+
+    for (VGMStream::StreamItem* item : _items) {
+        VGMStream::StreamNoteItem* sni;
+        if ((sni = dynamic_cast<VGMStream::StreamNoteItem*>(item))) {
+            if (sni->on()) {
+                continue;
+            }
+        }
+        delete item;
+    }
+
+    _items.clear();
+
+
+    data.prepend(_vgmStream->generateHeader(_project, data, 0, 0, 0, false));
+
+    _vgmPlayer->setVGM(data, 0);
 }
 
 void Chromasound_Direct::reset()

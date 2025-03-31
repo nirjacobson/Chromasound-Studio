@@ -58,6 +58,8 @@ class Application : public QApplication
 
         void setupChromasound();
 
+        void midiSync();
+
     signals:
         void pcmUploadStarted();
         void pcmUploadFinished();

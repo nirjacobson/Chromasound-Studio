@@ -67,6 +67,11 @@ void Chromasound_Dual::keyOff(int key)
     _chromasound2->keyOff(key);
 }
 
+void Chromasound_Dual::sync()
+{
+    _chromasound2->sync();
+}
+
 void Chromasound_Dual::setOPLLPatchset(OPLL::Type type)
 {
     Chromasound_Emu* emu;

@@ -44,10 +44,7 @@ class Chromasound_Emu : public Chromasound, public Producer<int16_t>
         QMap<int, VGMStream::StreamNoteItem*> _keys;
         bool _startedInteractive;
 
-        QTimer _timer;
         QList<VGMStream::StreamItem*> _items;
-
-        QMutex _mutex;
 
         QMutex _loadLock;
 
@@ -74,6 +71,7 @@ class Chromasound_Emu : public Chromasound, public Producer<int16_t>
         bool isPaused() const;
         void keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity);
         void keyOff(int key);
+        void sync();
 
         void setOPLLPatchset(OPLL::Type type);
 

@@ -12,6 +12,7 @@ class MIDIPoller : public QThread
 
     signals:
         void receivedMessage(const long msg);
+        void sync();
 
     public:
         MIDIPoller(QObject *parent = nullptr);
@@ -31,6 +32,7 @@ class MIDIPoller : public QThread
 
         QMutex _stopLock;
         bool _stop;
+        bool _synced;
 };
 
 #endif // MIDIPOLLER_H

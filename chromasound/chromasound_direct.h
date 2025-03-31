@@ -4,7 +4,6 @@
 #include <QMap>
 
 #include <QTimer>
-#include <QMutex>
 
 #include "chromasound.h"
 #include "project/project.h"
@@ -28,6 +27,7 @@ class Chromasound_Direct : public Chromasound
 
         void keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity);
         void keyOff(int key);
+        void sync();
 
     private:
         const Project& _project;
@@ -36,11 +36,7 @@ class Chromasound_Direct : public Chromasound
         VGMStream* _vgmStream;
         QMap<int, VGMStream::StreamNoteItem*> _keys;
 
-        QTimer _timer;
         QList<VGMStream::StreamItem*> _items;
-
-        QMutex _mutex;
-
         VGMPlayer* _vgmPlayer;
 
         long _timeOffset;

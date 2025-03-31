@@ -339,3 +339,8 @@ void Application::setupChromasound()
     connect(_chromasound, &Chromasound::pcmUploadFinished, this, &Application::pcmUploadFinished);
 }
 
+void Application::midiSync()
+{
+    _chromasound->sync();
+}
+

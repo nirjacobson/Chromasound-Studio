@@ -4,6 +4,7 @@ MIDIPoller::MIDIPoller(QObject *parent)
     : QThread{parent}
     , _midiInput(MIDIInput::instance())
     , _stop(false)
+    , _synced(true)
 {
 
 }
@@ -37,11 +38,21 @@ void MIDIPoller::run()
         _stopLock.unlock();
         if (stop) return;
 
-        QList<long> messages = _midiInput->read();
-        if (!messages.empty()) {
-            for (const long message : messages) {
-                emit receivedMessage(message);
+        QList<long> messages;
+        do {
+            QThread::msleep(5);
+            messages = _midiInput->read();
+            if (!messages.empty()) {
+                _synced = false;
+                for (const long message : messages) {
+                    emit receivedMessage(message);
+                }
             }
+        } while (!messages.empty());
+
+        if (!_synced) {
+            emit sync();
+            _synced = true;
         }
     }
 }

@@ -110,6 +110,7 @@ class MainWindow : public QMainWindow
         void keyOn(const int key, const int velocity);
         void keyOff(const int key);
         void handleMIDIMessage(const long msg);
+        void handleMIDISync();
         void setMIDIDevice(const int device);
 
         void projectInfoTriggered();

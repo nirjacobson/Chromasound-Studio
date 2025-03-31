@@ -44,142 +44,6 @@ Chromasound_Emu::Chromasound_Emu(const Project& project)
 
     _vgmStream = new VGMStream(_profile);
 
-    _timer.setSingleShot(true);
-
-    _timer.callOnTimeout([&]() {
-        QByteArray data;
-
-        _mutex.lock();
-
-        _vgmStream->encode(project, _items, data);
-
-        bool havePCM = false;
-        for (VGMStream::StreamItem* item : _items) {
-            VGMStream::StreamNoteItem* sni;
-            if ((sni = dynamic_cast<VGMStream::StreamNoteItem*>(item))) {
-                if (sni->on()) {
-                    if (sni->type() == Channel::Type::PCM) {
-                        havePCM = true;
-                    }
-                } else {
-                    _keys.remove(sni->note().key());
-                }
-            }
-        }
-
-        _mutex.unlock();
-
-        if (project.usesRhythm()) {
-            QByteArray enableRhythm;
-
-            enableRhythm.append(0x51);
-            enableRhythm.append(0x16);
-            enableRhythm.append(0x20);
-
-            enableRhythm.append(0x51);
-            enableRhythm.append(0x17);
-            enableRhythm.append(0x50);
-
-            enableRhythm.append(0x51);
-            enableRhythm.append(0x18);
-            enableRhythm.append(0xC0);
-
-            enableRhythm.append(0x51);
-            enableRhythm.append(0x26);
-            enableRhythm.append(0x05);
-
-            enableRhythm.append(0x51);
-            enableRhythm.append(0x27);
-            enableRhythm.append(0x05);
-
-            enableRhythm.append(0x51);
-            enableRhythm.append(0x28);
-            enableRhythm.append(0x01);
-
-            data.prepend(enableRhythm);
-        }
-
-        if (havePCM) {
-            if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::INLINE) {
-                QByteArray pcm = _vgmStream->encodeStandardPCM(project, _items);
-
-                QByteArray pcmData;
-                quint32 s = pcm.size() / 2;
-
-                for (int i = 0; i < s; i++) {
-                    pcmData.append(pcm[i * 2]);
-
-                }
-                data.append(0x97);
-                data.append(0xFE);
-                data.append((char*)&s, sizeof(s));
-                data.append(pcmData);
-            } else {
-                QFile romFile(project.pcmFile());
-                romFile.open(QIODevice::ReadOnly);
-                QByteArray dataBlock = romFile.readAll();
-                romFile.close();
-                quint32 dataBlockSize = dataBlock.size();
-
-                if (dataBlockSize > 0) {
-                    QByteArray pcmBlock;
-                    pcmBlock.append(0x67);
-                    pcmBlock.append(0x66);
-                    pcmBlock.append((quint8)0x00);
-                    pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
-                    pcmBlock.append(dataBlock);
-                    pcmBlock.append(0x52);
-                    pcmBlock.append(0x2B);
-                    pcmBlock.append(0x80);
-
-                    data.prepend(pcmBlock);
-
-                    _emu->set_fill_past_end_with_pcm(true);
-                }
-            }
-        }
-
-        for (VGMStream::StreamItem* item : _items) {
-            VGMStream::StreamNoteItem* sni;
-            if ((sni = dynamic_cast<VGMStream::StreamNoteItem*>(item))) {
-                if (sni->on()) {
-                    continue;
-                }
-            }
-            delete item;
-        }
-
-        _items.clear();
-
-        if (!_startedInteractive) {
-            data.prepend(_vgmStream->generateHeader(project, data, -1, 0, 0, false));
-        }
-
-        Mem_File_Reader reader(data.constData(), data.size());
-
-        if (!_startedInteractive) {
-            if (log_err(_emu->load(reader)))
-                return;
-        } else {
-            if (log_err(_emu->append(reader)))
-                return;
-        }
-
-        log_warning(_emu);
-
-        if (!_startedInteractive) {
-            // start track
-            if (log_err(_emu->start_track(0)))
-                return;
-
-            log_warning(_emu);
-        }
-
-        if (!_startedInteractive) {
-            _startedInteractive = true;
-        }
-    });
-
     _type = gme_vgm_type;
     _emu = gme_new_emu(_type, 44100);
     _emu->ignore_silence(true);
@@ -407,8 +271,6 @@ void Chromasound_Emu::keyOn(const Project& project, const Channel::Type channelT
 
     _keys[key] = sni;
 
-    _mutex.lock();
-
     if (project.usesOPN()) {
         VGMStream::StreamLFOItem* sli = new VGMStream::StreamLFOItem(0, project.lfoMode());
         _items.append(sli);
@@ -432,12 +294,6 @@ void Chromasound_Emu::keyOn(const Project& project, const Channel::Type channelT
 
     _vgmStream->assignChannel(project, sni, _items);
     _items.append(sni);
-
-    _items.append(new VGMStream::StreamEndItem(channelType == Channel::PCM ? 4 : 0));
-
-    _mutex.unlock();
-
-    _timer.start(20);
 }
 
 void Chromasound_Emu::keyOff(int key)
@@ -445,8 +301,6 @@ void Chromasound_Emu::keyOff(int key)
     if (!_keys.contains(key)) return;
 
     VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(*_keys[key]);
-
-    _mutex.lock();
 
     _vgmStream->releaseChannel(sni->type(), sni->channel());
     sni->setOn(false);
@@ -463,10 +317,137 @@ void Chromasound_Emu::keyOff(int key)
     if (!havePCM) {
         _emu->set_fill_past_end_with_pcm(false);
     }
+}
 
-    _mutex.unlock();
+void Chromasound_Emu::sync()
+{
+    QByteArray data;
 
-    _timer.start(20);
+    _vgmStream->encode(_project, _items, data);
+
+    bool havePCM = false;
+    for (VGMStream::StreamItem* item : _items) {
+        VGMStream::StreamNoteItem* sni;
+        if ((sni = dynamic_cast<VGMStream::StreamNoteItem*>(item))) {
+            if (sni->on()) {
+                if (sni->type() == Channel::Type::PCM) {
+                    havePCM = true;
+                }
+            } else {
+                _keys.remove(sni->note().key());
+            }
+        }
+    }
+
+    if (_project.usesRhythm()) {
+        QByteArray enableRhythm;
+
+        enableRhythm.append(0x51);
+        enableRhythm.append(0x16);
+        enableRhythm.append(0x20);
+
+        enableRhythm.append(0x51);
+        enableRhythm.append(0x17);
+        enableRhythm.append(0x50);
+
+        enableRhythm.append(0x51);
+        enableRhythm.append(0x18);
+        enableRhythm.append(0xC0);
+
+        enableRhythm.append(0x51);
+        enableRhythm.append(0x26);
+        enableRhythm.append(0x05);
+
+        enableRhythm.append(0x51);
+        enableRhythm.append(0x27);
+        enableRhythm.append(0x05);
+
+        enableRhythm.append(0x51);
+        enableRhythm.append(0x28);
+        enableRhythm.append(0x01);
+
+        data.prepend(enableRhythm);
+    }
+
+    if (havePCM) {
+        if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::INLINE) {
+            QByteArray pcm = _vgmStream->encodeStandardPCM(_project, _items);
+
+            QByteArray pcmData;
+            quint32 s = pcm.size() / 2;
+
+            for (int i = 0; i < s; i++) {
+                pcmData.append(pcm[i * 2]);
+
+            }
+            data.append(0x97);
+            data.append(0xFE);
+            data.append((char*)&s, sizeof(s));
+            data.append(pcmData);
+        } else {
+            QFile romFile(_project.pcmFile());
+            romFile.open(QIODevice::ReadOnly);
+            QByteArray dataBlock = romFile.readAll();
+            romFile.close();
+            quint32 dataBlockSize = dataBlock.size();
+
+            if (dataBlockSize > 0) {
+                QByteArray pcmBlock;
+                pcmBlock.append(0x67);
+                pcmBlock.append(0x66);
+                pcmBlock.append((quint8)0x00);
+                pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
+                pcmBlock.append(dataBlock);
+                pcmBlock.append(0x52);
+                pcmBlock.append(0x2B);
+                pcmBlock.append(0x80);
+
+                data.prepend(pcmBlock);
+
+                _emu->set_fill_past_end_with_pcm(true);
+            }
+        }
+    }
+
+    for (VGMStream::StreamItem* item : _items) {
+        VGMStream::StreamNoteItem* sni;
+        if ((sni = dynamic_cast<VGMStream::StreamNoteItem*>(item))) {
+            if (sni->on()) {
+                continue;
+            }
+        }
+        delete item;
+    }
+
+    _items.clear();
+
+    if (!_startedInteractive) {
+        data.prepend(_vgmStream->generateHeader(_project, data, -1, 0, 0, false));
+    }
+
+    Mem_File_Reader reader(data.constData(), data.size());
+
+    if (!_startedInteractive) {
+        if (log_err(_emu->load(reader)))
+            return;
+    } else {
+        if (log_err(_emu->append(reader)))
+            return;
+    }
+
+    log_warning(_emu);
+
+    if (!_startedInteractive) {
+        // start track
+        if (log_err(_emu->start_track(0)))
+            return;
+
+        log_warning(_emu);
+    }
+
+    if (!_startedInteractive) {
+        _startedInteractive = true;
+    }
 }
 
 int16_t* Chromasound_Emu::next(int size)
