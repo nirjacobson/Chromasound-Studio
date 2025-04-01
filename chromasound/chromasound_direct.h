@@ -43,6 +43,8 @@ class Chromasound_Direct : public Chromasound
 
         Chromasound_Studio::Profile _profile;
 
+        bool _startedInteractive;
+
         void reset();
 };
 

@@ -74,6 +74,13 @@ void VGMPlayer::setVGM(const QByteArray& vgm, const int currentOffsetData)
     _vgmLock.unlock();
 }
 
+void VGMPlayer::addVGM(const QByteArray &vgm)
+{
+    _vgmLock.lock();
+    _vgm.append(vgm);
+    _vgmLock.unlock();
+}
+
 void VGMPlayer::setMode(const Mode mode)
 {
     _mode = mode;

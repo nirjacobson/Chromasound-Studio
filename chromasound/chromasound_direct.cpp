@@ -4,6 +4,7 @@
 Chromasound_Direct::Chromasound_Direct(const Project& project)
     : _project(project)
     , _timeOffset(0)
+    , _startedInteractive(false)
     , _profile(Chromasound_Studio::ChromasoundProPreset)
 {
 #ifdef Q_OS_WIN
@@ -127,6 +128,8 @@ void Chromasound_Direct::stop()
 
     _timeOffset = 0;
 
+    _startedInteractive = false;
+
     _vgmPlayer->setProfile(_profile);
     _vgmPlayer->setMode(VGMPlayer::Mode::Interactive);
     _vgmPlayer->start();
@@ -149,25 +152,27 @@ void Chromasound_Direct::keyOn(const Project& project, const Channel::Type chann
     VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(0, channelType, nullptr, Note(key, channelType == Channel::PCM ? 4 : 0, velocity), &settings);
     _keys[key] = sni;
 
-    if (project.usesOPL()) {
-        VGMStream::StreamLFOItem* sli = new VGMStream::StreamLFOItem(0, project.lfoMode());
-        _items.append(sli);
-    }
+    if (!_startedInteractive) {
+        if (project.usesOPN()) {
+            VGMStream::StreamLFOItem* sli = new VGMStream::StreamLFOItem(0, project.lfoMode());
+            _items.append(sli);
+        }
 
-    if (project.usesSSG()) {
-        VGMStream::StreamNoiseFrequencyItem* nfi = new VGMStream::StreamNoiseFrequencyItem(0, project.ssgNoiseFrequency());
-        _items.append(nfi);
+        if (project.usesSSG()) {
+            VGMStream::StreamNoiseFrequencyItem* nfi = new VGMStream::StreamNoiseFrequencyItem(0, project.ssgNoiseFrequency());
+            _items.append(nfi);
 
-        VGMStream::StreamEnvelopeFrequencyItem* efi = new VGMStream::StreamEnvelopeFrequencyItem(0, project.ssgEnvelopeFrequency());
-        _items.append(efi);
+            VGMStream::StreamEnvelopeFrequencyItem* efi = new VGMStream::StreamEnvelopeFrequencyItem(0, project.ssgEnvelopeFrequency());
+            _items.append(efi);
 
-        VGMStream::StreamEnvelopeShapeItem* esi = new VGMStream::StreamEnvelopeShapeItem(0, project.ssgEnvelopeShape());
-        _items.append(esi);
-    }
+            VGMStream::StreamEnvelopeShapeItem* esi = new VGMStream::StreamEnvelopeShapeItem(0, project.ssgEnvelopeShape());
+            _items.append(esi);
+        }
 
-    if (project.usesOPL()) {
-        VGMStream::StreamUserToneItem* uti = new VGMStream::StreamUserToneItem(0, project.userTone());
-        _items.append(uti);
+        if (project.usesOPL()) {
+            VGMStream::StreamUserToneItem* uti = new VGMStream::StreamUserToneItem(0, project.userTone());
+            _items.append(uti);
+        }
     }
 
     _vgmStream->assignChannel(project, sni, _items);
@@ -222,7 +227,7 @@ void Chromasound_Direct::sync()
         }
     }
 
-    if (_project.usesRhythm()) {
+    if (!_startedInteractive && _project.usesRhythm()) {
         QByteArray enableRhythm;
 
         enableRhythm.append(0x51);
@@ -267,7 +272,7 @@ void Chromasound_Direct::sync()
             data.append(0xFE);
             data.append((char*)&s, sizeof(s));
             data.append(pcmData);
-        } else {
+        } else if (!_startedInteractive) {
             QFile romFile(_project.pcmFile());
             romFile.open(QIODevice::ReadOnly);
             QByteArray dataBlock = romFile.readAll();
@@ -305,10 +310,17 @@ void Chromasound_Direct::sync()
 
     _items.clear();
 
+    if (!_startedInteractive) {
+        data.prepend(_vgmStream->generateHeader(_project, data, 0, 0, 0, false));
 
-    data.prepend(_vgmStream->generateHeader(_project, data, 0, 0, 0, false));
+        _vgmPlayer->setVGM(data, 0);
+    } else {
+        _vgmPlayer->addVGM(data);
+    }
 
-    _vgmPlayer->setVGM(data, 0);
+    if (!_startedInteractive) {
+        _startedInteractive = true;
+    }
 }
 
 void Chromasound_Direct::reset()

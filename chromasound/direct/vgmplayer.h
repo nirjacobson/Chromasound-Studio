@@ -23,6 +23,7 @@ class VGMPlayer : public QThread
         ~VGMPlayer();
 
         void setVGM(const QByteArray& vgm, const int currentOffsetData);
+        void addVGM(const QByteArray& vgm);
         void setMode(const Mode mode);
 
         bool isPlaying() const;

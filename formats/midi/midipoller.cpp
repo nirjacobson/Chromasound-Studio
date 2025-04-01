@@ -40,13 +40,13 @@ void MIDIPoller::run()
 
         QList<long> messages;
         do {
-            QThread::msleep(5);
             messages = _midiInput->read();
             if (!messages.empty()) {
                 _synced = false;
                 for (const long message : messages) {
                     emit receivedMessage(message);
                 }
+                QThread::msleep(5);
             }
         } while (!messages.empty());
 

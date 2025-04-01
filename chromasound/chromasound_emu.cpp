@@ -273,25 +273,27 @@ void Chromasound_Emu::keyOn(const Project& project, const Channel::Type channelT
 
     _keys[key] = sni;
 
-    if (project.usesOPN()) {
-        VGMStream::StreamLFOItem* sli = new VGMStream::StreamLFOItem(0, project.lfoMode());
-        _items.append(sli);
-    }
+    if (!_startedInteractive) {
+        if (project.usesOPN()) {
+            VGMStream::StreamLFOItem* sli = new VGMStream::StreamLFOItem(0, project.lfoMode());
+            _items.append(sli);
+        }
 
-    if (project.usesSSG()) {
-        VGMStream::StreamNoiseFrequencyItem* nfi = new VGMStream::StreamNoiseFrequencyItem(0, project.ssgNoiseFrequency());
-        _items.append(nfi);
+        if (project.usesSSG()) {
+            VGMStream::StreamNoiseFrequencyItem* nfi = new VGMStream::StreamNoiseFrequencyItem(0, project.ssgNoiseFrequency());
+            _items.append(nfi);
 
-        VGMStream::StreamEnvelopeFrequencyItem* efi = new VGMStream::StreamEnvelopeFrequencyItem(0, project.ssgEnvelopeFrequency());
-        _items.append(efi);
+            VGMStream::StreamEnvelopeFrequencyItem* efi = new VGMStream::StreamEnvelopeFrequencyItem(0, project.ssgEnvelopeFrequency());
+            _items.append(efi);
 
-        VGMStream::StreamEnvelopeShapeItem* esi = new VGMStream::StreamEnvelopeShapeItem(0, project.ssgEnvelopeShape());
-        _items.append(esi);
-    }
+            VGMStream::StreamEnvelopeShapeItem* esi = new VGMStream::StreamEnvelopeShapeItem(0, project.ssgEnvelopeShape());
+            _items.append(esi);
+        }
 
-    if (project.usesOPL()) {
-        VGMStream::StreamUserToneItem* uti = new VGMStream::StreamUserToneItem(0, project.userTone());
-        _items.append(uti);
+        if (project.usesOPL()) {
+            VGMStream::StreamUserToneItem* uti = new VGMStream::StreamUserToneItem(0, project.userTone());
+            _items.append(uti);
+        }
     }
 
     _vgmStream->assignChannel(project, sni, _items);
@@ -345,7 +347,7 @@ void Chromasound_Emu::sync()
         }
     }
 
-    if (_project.usesRhythm()) {
+    if (!_startedInteractive && _project.usesRhythm()) {
         QByteArray enableRhythm;
 
         enableRhythm.append(0x51);
@@ -390,7 +392,7 @@ void Chromasound_Emu::sync()
             data.append(0xFE);
             data.append((char*)&s, sizeof(s));
             data.append(pcmData);
-        } else {
+        } else if (!_startedInteractive) {
             QFile romFile(_project.pcmFile());
             romFile.open(QIODevice::ReadOnly);
             QByteArray dataBlock = romFile.readAll();
