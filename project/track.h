@@ -96,6 +96,9 @@ class Track
 
         Track* copy() const;
 
+        void clear();
+        bool empty() const;
+
     private:
         QList<Item*> _items;
         QList<SettingsChange*> _settingsChanges;

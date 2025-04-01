@@ -10,6 +10,7 @@ Application::Application(int &argc, char **argv, int flags)
     , _output(nullptr)
     , _chromasound(nullptr)
     , _profile(Chromasound_Studio::ChromasoundProPreset)
+    , _recording(false)
 {
     setupChromasound();
 }
@@ -203,12 +204,24 @@ void Application::stop()
 {
     _chromasound->stop();
     _paused = false;
+    _recording = false;
+}
+
+void Application::record()
+{
+    _recording = true;
+    _recordingTrack.clear();
+    _recordingTimer.start();
 }
 
 float Application::position() const
 {
     if (_ignoreCSTime) {
         return 0;
+    }
+
+    if (!_chromasound->isPlaying() && _recording) {
+        return _recordingTimer.elapsed() / 1000.0f / 60 * _project.tempo();
     }
 
     return _chromasound->position() / 44100.0f / 60 * _project.tempo();
@@ -247,11 +260,22 @@ Project& Application::project()
 
 void Application::keyOn(const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity)
 {
+    if (_recording) {
+        _recordingMap[key] = QPair<float, int>(position(), velocity);
+    }
+
     _chromasound->keyOn(_project, channelType, settings, key, velocity);
 }
 
 void Application::keyOff(int key)
 {
+    if (_recording && _recordingMap.contains(key)) {
+        Note n(key, position() - _recordingMap[key].first, _recordingMap[key].second);
+
+        _recordingTrack.addItem(_recordingMap[key].first, n);
+
+        _recordingMap.remove(key);
+    }
     _chromasound->keyOff(key);
 }
 
@@ -343,5 +367,15 @@ void Application::setupChromasound()
 void Application::midiSync()
 {
     _chromasound->sync();
+}
+
+const Track &Application::recording() const
+{
+    return _recordingTrack;
+}
+
+void Application::clearRecording()
+{
+    _recordingTrack.clear();
 }
 

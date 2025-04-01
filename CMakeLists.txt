@@ -524,6 +524,8 @@ set(PROJECT_SOURCES
     dialogs/settings/profilesettingswidget.h
     dialogs/settings/profilesettingswidget.cpp
     dialogs/settings/profilesettingswidget.ui
+    common/recordiconengine.h
+    common/recordiconengine.cpp
 )
 
 if (LINUX)

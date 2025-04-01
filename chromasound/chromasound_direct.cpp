@@ -144,6 +144,7 @@ bool Chromasound_Direct::isPaused() const
 
 void Chromasound_Direct::keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity)
 {
+    if (isPlaying()) return;
 
     VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(0, channelType, nullptr, Note(key, channelType == Channel::PCM ? 4 : 0, velocity), &settings);
     _keys[key] = sni;
@@ -175,6 +176,8 @@ void Chromasound_Direct::keyOn(const Project& project, const Channel::Type chann
 
 void Chromasound_Direct::keyOff(int key)
 {
+    if (isPlaying()) return;
+
     if (!_keys.contains(key)) return;
 
     VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(*_keys[key]);
@@ -198,6 +201,7 @@ void Chromasound_Direct::keyOff(int key)
 
 void Chromasound_Direct::sync()
 {
+    if (isPlaying()) return;
 
     QByteArray data;
 

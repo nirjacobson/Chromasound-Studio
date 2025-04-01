@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _actionFM2(tr("FM"))
     , _actionFM2SSG(tr("FM + SSG"))
     , _shownEver(false)
+    , _selectedChannel(-1)
 {
     _midiInput->init();
 
@@ -149,6 +150,9 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(ui->actionSSGGlobals, &QAction::triggered, this, &MainWindow::ssgGlobalsTriggered);
     connect(ui->actionMelodyGlobals, &QAction::triggered, this, &MainWindow::melodyGlobalsTriggered);
     connect(ui->actionPCMGlobals, &QAction::triggered, this, &MainWindow::romGlobalsTriggered);
+
+    _countoffTimer.setSingleShot(true);
+    connect(&_countoffTimer, &QTimer::timeout, this, &MainWindow::countoffTimeout);
 
     connect(_splitter, &QSplitter::splitterMoved, this, &MainWindow::splitterMoved);
 
@@ -380,29 +384,33 @@ int MainWindow::channels() const
     return _app->project().channelCount();
 }
 
-void MainWindow::play()
+void MainWindow::play(bool record)
 {
     _timer.start();
 
-    if (!_app->paused()) {
-        PianoRollWidget* prw;
-        PlaylistWidget* pw;
-        if ((prw = dynamic_cast<PianoRollWidget*>(_mdiArea->activeSubWindow()->widget()))) {
-            if (prw->hasLoop()) {
-                _app->play(prw->pattern(), prw->loopStart(), prw->loopEnd());
-                return;
-            }
-        } else if ((pw = dynamic_cast<PlaylistWidget*>(_mdiArea->activeSubWindow()->widget()))) {
-            if (_app->project().playMode() == Project::PlayMode::SONG) {
-                if (pw->hasLoop()) {
-                    _app->play(pw->loopStart(), pw->loopEnd());
+    if (record) {
+        _countoffTimer.start(0);
+    } else {
+        if (!_app->paused()) {
+            PianoRollWidget* prw;
+            PlaylistWidget* pw;
+            if ((prw = dynamic_cast<PianoRollWidget*>(_mdiArea->activeSubWindow()->widget()))) {
+                if (prw->hasLoop()) {
+                    _app->play(prw->pattern(), prw->loopStart(), prw->loopEnd());
                     return;
+                }
+            } else if ((pw = dynamic_cast<PlaylistWidget*>(_mdiArea->activeSubWindow()->widget()))) {
+                if (_app->project().playMode() == Project::PlayMode::SONG) {
+                    if (pw->hasLoop()) {
+                        _app->play(pw->loopStart(), pw->loopEnd());
+                        return;
+                    }
                 }
             }
         }
-    }
 
-    _app->play();
+        _app->play();
+    }
 }
 
 void MainWindow::pause()
@@ -415,6 +423,18 @@ void MainWindow::stop()
 {
     _app->stop();
     _timer.stop();
+
+    if (!_app->recording().empty()) {
+        if (_selectedChannel < 0) {
+            _app->undoStack().push(new AddTrackCommand(this, _app->recording().items(), "Recording"));
+            _app->project().getFrontPattern().getTrack(_app->project().channelCount() - 1).usePianoRoll();
+        } else {
+            _app->undoStack().push(new AddTrackItemsCommand(this, _app->project().getFrontPattern().getTrack(_selectedChannel), 0, _app->recording().items(), false));
+            _app->project().getFrontPattern().getTrack(_selectedChannel).usePianoRoll();
+        }
+        _app->clearRecording();
+    }
+
     ui->topWidget->setStatusMessage("Ready.");
     doUpdate();
 }
@@ -495,8 +515,8 @@ void MainWindow::pianoRollTriggered(const int index, const bool on)
     } else if (on) {
         PianoRollWidget* pianoRollWidget = new PianoRollWidget(this, _app);
         pianoRollWidget->setWindowTitle(QString("%1: Piano Roll").arg(_app->project().getChannel(index).name()));
-        connect(pianoRollWidget, &PianoRollWidget::keyOn, this, &MainWindow::keyOn);
-        connect(pianoRollWidget, &PianoRollWidget::keyOff, this, &MainWindow::keyOff);
+        connect(pianoRollWidget, &PianoRollWidget::keyOn, this, &MainWindow::keyOnWithSync);
+        connect(pianoRollWidget, &PianoRollWidget::keyOff, this, &MainWindow::keyOffWithSync);
 
         pianoRollWidget->setTrack(_app->project().frontPattern(), index);
 
@@ -866,16 +886,77 @@ void MainWindow::keyOff(const int key)
     }
 }
 
+void MainWindow::keyOnWithSync(const int key, const int velocity)
+{
+    keyOn(key, velocity);
+    handleMIDISync();
+}
+
+void MainWindow::keyOffWithSync(const int key)
+{
+    keyOff(key);
+    handleMIDISync();
+}
+
+void MainWindow::padOn(const int pad, const int velocity)
+{
+    int activeChannel;
+    PianoRollWidget* prw;
+    if ((prw = dynamic_cast<PianoRollWidget*>(_mdiArea->activeSubWindow()->widget()))) {
+        activeChannel = prw->channel();
+    } else {
+        activeChannel = qMax(0, _channelsWidget->activeChannel());
+    }
+
+    Channel& channel = _app->project().getChannel(activeChannel);
+
+    if (channel.type() == Channel::Type::PCM) {
+        PCMChannelSettings& settings = dynamic_cast<PCMChannelSettings&>(channel.settings());
+        int key = settings.keySampleMappings().keys().at(pad);
+        _app->keyOn(channel.type(), channel.settings(), key, velocity);
+    }
+}
+
+void MainWindow::padOff(const int pad)
+{
+    int activeChannel;
+    PianoRollWidget* prw;
+    if ((prw = dynamic_cast<PianoRollWidget*>(_mdiArea->activeSubWindow()->widget()))) {
+        activeChannel = prw->channel();
+    } else {
+        activeChannel = qMax(0, _channelsWidget->activeChannel());
+    }
+
+    Channel& channel = _app->project().getChannel(activeChannel);
+
+    if (channel.type() == Channel::Type::PCM) {
+        PCMChannelSettings& settings = dynamic_cast<PCMChannelSettings&>(channel.settings());
+        int key = settings.keySampleMappings().keys().at(pad);
+        _app->keyOff(key);
+    }
+}
+
 void MainWindow::handleMIDIMessage(const long message)
 {
     const quint8 status = ((message >> 0) & 0xFF);
     const quint8 data1 = ((message >> 8) & 0xFF);
     const quint8 data2 = ((message >> 16) & 0xFF);
 
-    if (status == 0x90) {
+    switch(status) {
+    case 0x90:
         keyOn(data1, qMin((int)data2, 100));
-    } else if (status == 0x80) {
+        break;
+    case 0x80:
         keyOff(data1);
+        break;
+    case 0x99:
+        padOn(data1 - 0x24, qMin((int)data2, 100));
+        break;
+    case 0x89:
+        padOff(data1 - 0x24);
+        break;
+    default:
+        break;
     }
 }
 
@@ -1307,6 +1388,58 @@ void MainWindow::loadFM2SSGTemplate()
 void MainWindow::cleanChanged(bool clean)
 {
     updateWindowTitle();
+}
+
+void MainWindow::countoffTimeout()
+{
+    static int count = 3;
+    if (count == 0) {
+        count = 3;
+
+        _app->record();
+
+        ui->topWidget->setStatusMessage("Ready.");
+
+#ifdef Q_OS_WIN
+        QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
+#else
+        QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+#endif
+        bool isDual = settings.value(Chromasound_Studio::NumberOfChromasoundsKey, 1).toInt() == 2;
+
+        if (!isDual) return;
+
+        if (!_app->paused()) {
+            PianoRollWidget* prw;
+            PlaylistWidget* pw;
+            if ((prw = dynamic_cast<PianoRollWidget*>(_mdiArea->activeSubWindow()->widget()))) {
+                if (prw->pattern().tracks().empty()) {
+                    return;
+                }
+                if (prw->hasLoop()) {
+                    _app->play(prw->pattern(), prw->loopStart(), prw->loopEnd());
+                    return;
+                }
+            } else if ((pw = dynamic_cast<PlaylistWidget*>(_mdiArea->activeSubWindow()->widget()))) {
+                if (_app->project().patterns().empty()) {
+                    return;
+                }
+                if (_app->project().playMode() == Project::PlayMode::SONG) {
+                    if (pw->hasLoop()) {
+                        _app->play(pw->loopStart(), pw->loopEnd());
+                        return;
+                    }
+                }
+            }
+        }
+        if (_app->project().playlist().empty()) {
+            return;
+        }
+        _app->play();
+    } else {
+        ui->topWidget->setStatusMessage(QString::number(count--));
+        _countoffTimer.start(1000);
+    }
 }
 
 void MainWindow::windowClosed(MdiSubWindow* window)

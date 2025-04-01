@@ -394,6 +394,11 @@ void Playlist::removeUserToneChange(const UserToneChange* utc, const bool keep)
     }
 }
 
+bool Playlist::empty() const
+{
+    return _items.empty();
+}
+
 Playlist::Playlist()
 {
 

@@ -6,6 +6,7 @@
 
 #include "application.h"
 #include "formats/midi/midiinput.h"
+#include "common/recordiconengine.h"
 
 namespace Ui {
     class TopWidget;
@@ -26,7 +27,7 @@ class TopWidget : public QWidget
         void doUpdate(const float position);
 
     signals:
-        void play();
+        void play(bool record);
         void pause();
         void stop();
         void patternChanged(int);

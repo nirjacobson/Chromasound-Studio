@@ -201,6 +201,7 @@ class Playlist
         UserToneChange* addUserToneChange(const float time, const OPLSettings& tone);
         void removeUserToneChange(const UserToneChange* utc, const bool keep = false);
 
+        bool empty() const;
     private:
         Playlist();
 

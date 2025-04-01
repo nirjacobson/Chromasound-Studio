@@ -171,6 +171,17 @@ Track* Track::copy() const
     return track;
 }
 
+void Track::clear()
+{
+    _items.clear();
+    _settingsChanges.clear();
+}
+
+bool Track::empty() const
+{
+    return _items.empty() && _settingsChanges.empty();
+}
+
 Track::Item::Item(const float time, const Note& note)
     : _time(time)
     , _note(note)

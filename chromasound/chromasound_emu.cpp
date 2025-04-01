@@ -267,6 +267,8 @@ bool Chromasound_Emu::isPaused() const
 
 void Chromasound_Emu::keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity)
 {
+    if (isPlaying()) return;
+
     VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(0, channelType, nullptr, Note(key, channelType == Channel::PCM ? 4 : 0, velocity), &settings);
 
     _keys[key] = sni;
@@ -298,6 +300,8 @@ void Chromasound_Emu::keyOn(const Project& project, const Channel::Type channelT
 
 void Chromasound_Emu::keyOff(int key)
 {
+    if (isPlaying()) return;
+
     if (!_keys.contains(key)) return;
 
     VGMStream::StreamNoteItem* sni = new VGMStream::StreamNoteItem(*_keys[key]);
@@ -321,6 +325,8 @@ void Chromasound_Emu::keyOff(int key)
 
 void Chromasound_Emu::sync()
 {
+    if (isPlaying()) return;
+
     QByteArray data;
 
     _vgmStream->encode(_project, _items, data);

@@ -19,8 +19,11 @@ TopWidget::TopWidget(QWidget *parent, Application* app)
 
     ui->deviceComboBox->setCurrentIndex(_midiInput->device());
 
+    RecordIconEngine* engine = new RecordIconEngine();
+    QIcon recordIcon(engine);
+    ui->recordButton->setIcon(recordIcon);
     ui->playButton->setIcon(ui->playButton->style()->standardIcon(QStyle::SP_MediaPlay));
-    ui->stopButton->setIcon(ui->playButton->style()->standardIcon(QStyle::SP_MediaStop));
+    ui->stopButton->setIcon(ui->stopButton->style()->standardIcon(QStyle::SP_MediaStop));
 
     connect(ui->deviceComboBox, &QComboBox::currentIndexChanged, this, &TopWidget::midiDeviceSet);
     connect(ui->patRadioButton, &QRadioButton::clicked, this, &TopWidget::patModeSelected);
@@ -94,7 +97,7 @@ void TopWidget::playPauseClicked()
     ui->playButton->setIcon(ui->playButton->style()->standardIcon(_isPlaying ? QStyle::SP_MediaPause : QStyle::SP_MediaPlay));
 
     if (_isPlaying) {
-        emit play();
+        emit play(ui->recordButton->isChecked());
     } else {
         emit pause();
     }
@@ -104,6 +107,7 @@ void TopWidget::stopClicked()
 {
     _isPlaying = false;
     ui->playButton->setIcon(ui->playButton->style()->standardIcon(QStyle::SP_MediaPlay));
+    ui->recordButton->setChecked(false);
 
     emit stop();
 }

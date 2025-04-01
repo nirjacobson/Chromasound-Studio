@@ -89,7 +89,7 @@ class MainWindow : public QMainWindow
         Application* app();
 
     private slots:
-        void play();
+        void play(bool record);
         void pause();
         void stop();
 
@@ -109,6 +109,10 @@ class MainWindow : public QMainWindow
 
         void keyOn(const int key, const int velocity);
         void keyOff(const int key);
+        void keyOnWithSync(const int key, const int velocity);
+        void keyOffWithSync(const int key);
+        void padOn(const int pad, const int velocity);
+        void padOff(const int pad);
         void handleMIDIMessage(const long msg);
         void handleMIDISync();
         void setMIDIDevice(const int device);
@@ -148,6 +152,8 @@ class MainWindow : public QMainWindow
         void loadFM2SSGTemplate();
 
         void cleanChanged(bool clean);
+
+        void countoffTimeout();
 
     private:
         Ui::MainWindow* ui;
@@ -208,6 +214,7 @@ class MainWindow : public QMainWindow
         QSize _pianoRollSize;
 
         QTimer _timer;
+        QTimer _countoffTimer;
 
         bool _shownEver;
 

@@ -5,6 +5,7 @@
 #include <QList>
 #include <QElapsedTimer>
 #include <QUndoStack>
+#include <QPair>
 
 #include "project/project.h"
 #include "project/vgmstream.h"
@@ -37,6 +38,8 @@ class Application : public QApplication
         void play(const float loopStart, const float loopEnd);
         void stop();
 
+        void record();
+
         float position() const;
         void setPosition(const float pos);
         bool isPlaying() const;
@@ -60,6 +63,9 @@ class Application : public QApplication
 
         void midiSync();
 
+        const Track& recording() const;
+        void clearRecording();
+
     signals:
         void pcmUploadStarted();
         void pcmUploadFinished();
@@ -78,7 +84,14 @@ class Application : public QApplication
         bool _paused;
         bool _ignoreCSTime;
 
+        bool _recording;
+
         Chromasound_Studio::Profile _profile;
+
+        QElapsedTimer _recordingTimer;
+
+        QMap<int, QPair<float, int>> _recordingMap;
+        Track _recordingTrack;
 };
 
 #endif // APPLICATION_H
