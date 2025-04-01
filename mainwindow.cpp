@@ -862,19 +862,21 @@ void MainWindow::keyOn(const int key, const int velocity)
     if (_channelWindows[activeChannel].contains(_mdiArea->activeSubWindow())) {
         if (prw) {
             prw->pressKey(key);
-            _app->keyOn(channel.type(), prw->currentSettings(), key, velocity);
+            _app->keyOn(channel, prw->currentSettings(), key, velocity);
             return;
         } else if ((fmw = dynamic_cast<FMWidgetWindow*>(_mdiArea->activeSubWindow()->widget()))) {
             fmw->pressKey(key);
         }
     }
-    _app->keyOn(channel.type(), channel.settings(), key, velocity);
+    _app->keyOn(channel, key, velocity);
 }
 
 void MainWindow::keyOff(const int key)
 {
     int activeChannel = _channelsWidget->activeChannel();
-    _app->keyOff(key);
+    Channel& channel = _app->project().getChannel(activeChannel);
+
+    _app->keyOff(channel, key);
     for (MdiSubWindow* window : _channelWindows[activeChannel]) {
         PianoRollWidget* prw;
         FMWidgetWindow* fmw;
@@ -913,7 +915,7 @@ void MainWindow::padOn(const int pad, const int velocity)
     if (channel.type() == Channel::Type::PCM) {
         PCMChannelSettings& settings = dynamic_cast<PCMChannelSettings&>(channel.settings());
         int key = settings.keySampleMappings().keys().at(pad);
-        _app->keyOn(channel.type(), channel.settings(), key, velocity);
+        _app->keyOn(channel, key, velocity);
     }
 }
 
@@ -932,7 +934,7 @@ void MainWindow::padOff(const int pad)
     if (channel.type() == Channel::Type::PCM) {
         PCMChannelSettings& settings = dynamic_cast<PCMChannelSettings&>(channel.settings());
         int key = settings.keySampleMappings().keys().at(pad);
-        _app->keyOff(key);
+        _app->keyOff(channel, key);
     }
 }
 

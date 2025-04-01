@@ -50,8 +50,9 @@ class Application : public QApplication
 
         Project& project();
 
-        void keyOn(const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity);
-        void keyOff(int key);
+        void keyOn(const Channel& channel, const int key, const int velocity);
+        void keyOn(const Channel& channel, const ChannelSettings& settings, const int key, const int velocity);
+        void keyOff(const Channel &channel, int key);
 
         QUndoStack& undoStack();
 

@@ -258,16 +258,29 @@ Project& Application::project()
     return _project;
 }
 
-void Application::keyOn(const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity)
+void Application::keyOn(const Channel &channel, const int key, const int velocity)
 {
     if (_recording) {
         _recordingMap[key] = QPair<float, int>(position(), velocity);
     }
 
-    _chromasound->keyOn(_project, channelType, settings, key, velocity);
+    if (channel.enabled()) {
+        _chromasound->keyOn(_project, channel.type(), channel.settings(), key, velocity);
+    }
 }
 
-void Application::keyOff(int key)
+void Application::keyOn(const Channel &channel, const ChannelSettings &settings, const int key, const int velocity)
+{
+    if (_recording) {
+        _recordingMap[key] = QPair<float, int>(position(), velocity);
+    }
+
+    if (channel.enabled()) {
+        _chromasound->keyOn(_project, channel.type(), settings, key, velocity);
+    }
+}
+
+void Application::keyOff(const Channel &channel, int key)
 {
     if (_recording && _recordingMap.contains(key)) {
         Note n(key, position() - _recordingMap[key].first, _recordingMap[key].second);
@@ -276,7 +289,10 @@ void Application::keyOff(int key)
 
         _recordingMap.remove(key);
     }
-    _chromasound->keyOff(key);
+
+    if (channel.enabled()) {
+        _chromasound->keyOff(key);
+    }
 }
 
 QUndoStack& Application::undoStack()
