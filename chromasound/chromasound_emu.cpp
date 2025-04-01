@@ -379,6 +379,7 @@ void Chromasound_Emu::sync()
 
     if (havePCM) {
         if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::INLINE) {
+            _items.append(new VGMStream::StreamEndItem(4));
             QByteArray pcm = _vgmStream->encodeStandardPCM(_project, _items);
 
             QByteArray pcmData;
@@ -392,6 +393,39 @@ void Chromasound_Emu::sync()
             data.append(0xFE);
             data.append((char*)&s, sizeof(s));
             data.append(pcmData);
+        } else if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::SEQUENTIAL) {
+            _items.append(new VGMStream::StreamEndItem(4));
+            QByteArray pcm = _vgmStream->encodeStandardPCM(_project, _items);
+            quint32 dataBlockSize = pcm.size();
+
+            if (dataBlockSize > 0) {
+                QByteArray pcmBlock;
+                pcmBlock.append(0x67);
+                pcmBlock.append(0x66);
+                pcmBlock.append((quint8)0x00);
+                pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
+                pcmBlock.append(pcm);
+                pcmBlock.append(0x52);
+                pcmBlock.append(0x2B);
+                pcmBlock.append(0x80);
+
+                data.prepend(pcmBlock);
+
+                data.append(0xE0);
+                data.append((quint8)0x00);
+                data.append((quint8)0x00);
+                data.append((quint8)0x00);
+                data.append((quint8)0x00);
+
+                if (_profile.isChromasound()) {
+                    data.append(0x96);
+                    data.append((char*)&dataBlockSize, sizeof(dataBlockSize));
+                } else {
+                    for (quint32 i = 0; i < dataBlockSize; i++) {
+                        data.append(0x81);
+                    }
+                }
+            }
         } else if (!_startedInteractive) {
             QFile romFile(_project.pcmFile());
             romFile.open(QIODevice::ReadOnly);

@@ -873,7 +873,14 @@ void MainWindow::keyOn(const int key, const int velocity)
 
 void MainWindow::keyOff(const int key)
 {
-    int activeChannel = _channelsWidget->activeChannel();
+    int activeChannel;
+    PianoRollWidget* prw;
+    if ((prw = dynamic_cast<PianoRollWidget*>(_mdiArea->activeSubWindow()->widget()))) {
+        activeChannel = prw->channel();
+    } else {
+        activeChannel = qMax(0, _channelsWidget->activeChannel());
+    }
+
     Channel& channel = _app->project().getChannel(activeChannel);
 
     _app->keyOff(channel, key);
