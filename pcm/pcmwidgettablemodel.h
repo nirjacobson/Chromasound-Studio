@@ -1,17 +1,17 @@
-#ifndef ROMWIDGETTABLEMODEL_H
-#define ROMWIDGETTABLEMODEL_H
+#ifndef PCMWIDGETTABLEMODEL_H
+#define PCMWIDGETTABLEMODEL_H
 
 #include <QAbstractTableModel>
 
 #include "application.h"
 #include "formats/rom.h"
 
-class ROMWidgetTableModel : public QAbstractTableModel
+class PCMWidgetTableModel : public QAbstractTableModel
 {
     Q_OBJECT
 
 public:
-    explicit ROMWidgetTableModel(QObject *parent, Application* app, QList<QString>& keys, QList<int>& samples);
+    explicit PCMWidgetTableModel(QObject *parent, Application* app, QList<QString>& keys, QList<int>& samples);
 
     // Header:
     QVariant headerData(int section,
@@ -46,4 +46,4 @@ signals:
     void updated();
 };
 
-#endif // ROMWIDGETTABLEMODEL_H
+#endif // PCMWIDGETTABLEMODEL_H

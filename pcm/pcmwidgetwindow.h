@@ -1,5 +1,5 @@
-#ifndef ROMWIDGETWINDOW_H
-#define ROMWIDGETWINDOW_H
+#ifndef PCMWIDGETWINDOW_H
+#define PCMWIDGETWINDOW_H
 
 #include <QMainWindow>
 
@@ -7,22 +7,22 @@
 #include "common/mdiarea/mdisubwindow.h"
 
 namespace Ui {
-class ROMWidgetWindow;
+class PCMWidgetWindow;
 }
 
-class ROMWidgetWindow : public QMainWindow
+class PCMWidgetWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit ROMWidgetWindow(QWidget *parent = nullptr, Application* app = nullptr);
-    ~ROMWidgetWindow();
+    explicit PCMWidgetWindow(QWidget *parent = nullptr, Application* app = nullptr);
+    ~PCMWidgetWindow();
 
     void setSettings(PCMChannelSettings* settings);
     void doUpdate();
 
 private:
-    Ui::ROMWidgetWindow *ui;
+    Ui::PCMWidgetWindow *ui;
     PCMChannelSettings* _settings;
 
     // QWidget interface
@@ -31,4 +31,4 @@ protected:
 
 };
 
-#endif // ROMWIDGETWINDOW_H
+#endif // PCMWIDGETWINDOW_H

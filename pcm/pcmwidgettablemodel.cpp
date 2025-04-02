@@ -1,6 +1,6 @@
-#include "romwidgettablemodel.h"
+#include "pcmwidgettablemodel.h"
 
-ROMWidgetTableModel::ROMWidgetTableModel(QObject* parent, Application* app, QList<QString>& keys, QList<int>& samples)
+PCMWidgetTableModel::PCMWidgetTableModel(QObject* parent, Application* app, QList<QString>& keys, QList<int>& samples)
     : QAbstractTableModel(parent)
     , _keys(keys)
     , _samples(samples)
@@ -9,7 +9,7 @@ ROMWidgetTableModel::ROMWidgetTableModel(QObject* parent, Application* app, QLis
 
 }
 
-QVariant ROMWidgetTableModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant PCMWidgetTableModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (role != Qt::DisplayRole || orientation == Qt::Vertical) {
         return QVariant();
@@ -25,7 +25,7 @@ QVariant ROMWidgetTableModel::headerData(int section, Qt::Orientation orientatio
     }
 }
 
-int ROMWidgetTableModel::rowCount(const QModelIndex &parent) const
+int PCMWidgetTableModel::rowCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
@@ -33,7 +33,7 @@ int ROMWidgetTableModel::rowCount(const QModelIndex &parent) const
     return _keys.size();
 }
 
-int ROMWidgetTableModel::columnCount(const QModelIndex &parent) const
+int PCMWidgetTableModel::columnCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
@@ -41,7 +41,7 @@ int ROMWidgetTableModel::columnCount(const QModelIndex &parent) const
     return 2;
 }
 
-QVariant ROMWidgetTableModel::data(const QModelIndex &index, int role) const
+QVariant PCMWidgetTableModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
         return QVariant();
@@ -70,12 +70,12 @@ QVariant ROMWidgetTableModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-void ROMWidgetTableModel::insertRow()
+void PCMWidgetTableModel::insertRow()
 {
     insertRow("C5", 0);
 }
 
-void ROMWidgetTableModel::insertRow(const QString& key, const int sample)
+void PCMWidgetTableModel::insertRow(const QString& key, const int sample)
 {
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     _keys.append(key);
@@ -83,7 +83,7 @@ void ROMWidgetTableModel::insertRow(const QString& key, const int sample)
     endInsertRows();
 }
 
-void ROMWidgetTableModel::removeRow(const int index)
+void PCMWidgetTableModel::removeRow(const int index)
 {
     beginRemoveRows(QModelIndex(), index, index);
     _keys.remove(index);
@@ -91,7 +91,7 @@ void ROMWidgetTableModel::removeRow(const int index)
     endRemoveRows();
 }
 
-void ROMWidgetTableModel::clear()
+void PCMWidgetTableModel::clear()
 {
     beginRemoveRows(QModelIndex(), 0, rowCount() - 1);
     _keys.clear();
@@ -99,17 +99,17 @@ void ROMWidgetTableModel::clear()
     endRemoveRows();
 }
 
-void ROMWidgetTableModel::setApplication(Application* app)
+void PCMWidgetTableModel::setApplication(Application* app)
 {
     _app = app;
 }
 
-Qt::ItemFlags ROMWidgetTableModel::flags(const QModelIndex& index) const
+Qt::ItemFlags PCMWidgetTableModel::flags(const QModelIndex& index) const
 {
     return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
 }
 
-bool ROMWidgetTableModel::setData(const QModelIndex& index, const QVariant& value, int role)
+bool PCMWidgetTableModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
     int keyBefore;
     int keyAfter;

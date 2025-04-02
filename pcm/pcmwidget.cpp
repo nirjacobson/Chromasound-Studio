@@ -1,9 +1,9 @@
-#include "romwidget.h"
-#include "ui_romwidget.h"
+#include "pcmwidget.h"
+#include "ui_pcmwidget.h"
 
-ROMWidget::ROMWidget(QWidget *parent, Application* app)
+PCMWidget::PCMWidget(QWidget *parent, Application* app)
     : QWidget(parent)
-    , ui(new Ui::ROMWidget)
+    , ui(new Ui::PCMWidget)
     , _app(app)
     , _tableModel(this, app, _keys, _samples)
     , _sampleDelegate(this, app)
@@ -24,19 +24,19 @@ ROMWidget::ROMWidget(QWidget *parent, Application* app)
         ui->stackedWidget->setCurrentIndex(!items.empty());
     }
 
-    connect(&_tableModel, &ROMWidgetTableModel::updated, this, &ROMWidget::tableModelUpdated);
-    connect(ui->addButton, &QPushButton::clicked, this, &ROMWidget::addClicked);
-    connect(ui->removeButton, &QPushButton::clicked, this, &ROMWidget::removeClicked);
-    connect(ui->tableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ROMWidget::selectionChanged);
+    connect(&_tableModel, &PCMWidgetTableModel::updated, this, &PCMWidget::tableModelUpdated);
+    connect(ui->addButton, &QPushButton::clicked, this, &PCMWidget::addClicked);
+    connect(ui->removeButton, &QPushButton::clicked, this, &PCMWidget::removeClicked);
+    connect(ui->tableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &PCMWidget::selectionChanged);
 
 }
 
-ROMWidget::~ROMWidget()
+PCMWidget::~PCMWidget()
 {
     delete ui;
 }
 
-void ROMWidget::setApplication(Application* app)
+void PCMWidget::setApplication(Application* app)
 {
     _app = app;
     _sampleDelegate.setApplication(app);
@@ -46,7 +46,7 @@ void ROMWidget::setApplication(Application* app)
     ui->stackedWidget->setCurrentIndex(!items.empty());
 }
 
-void ROMWidget::setSettings(PCMChannelSettings* settings)
+void PCMWidget::setSettings(PCMChannelSettings* settings)
 {
     _settings = settings;
 
@@ -56,7 +56,7 @@ void ROMWidget::setSettings(PCMChannelSettings* settings)
     }
 }
 
-void ROMWidget::doUpdate()
+void PCMWidget::doUpdate()
 {
     if (_settings) setSettings(_settings);
 
@@ -64,14 +64,14 @@ void ROMWidget::doUpdate()
     ui->stackedWidget->setCurrentIndex(!items.empty());
 }
 
-ROMWidget::SampleItemDelegate::SampleItemDelegate(QObject* parent, Application* app)
+PCMWidget::SampleItemDelegate::SampleItemDelegate(QObject* parent, Application* app)
     : QStyledItemDelegate(parent)
     , _app(app)
 {
 
 }
 
-QWidget* ROMWidget::SampleItemDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const
+QWidget* PCMWidget::SampleItemDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
     QComboBox* comboBox = new QComboBox(parent);
 
@@ -81,25 +81,25 @@ QWidget* ROMWidget::SampleItemDelegate::createEditor(QWidget* parent, const QSty
     return comboBox;
 }
 
-void ROMWidget::SampleItemDelegate::setApplication(Application* app)
+void PCMWidget::SampleItemDelegate::setApplication(Application* app)
 {
     _app = app;
 }
 
-void ROMWidget::SampleItemDelegate::setEditorData(QWidget* editor, const QModelIndex& index) const
+void PCMWidget::SampleItemDelegate::setEditorData(QWidget* editor, const QModelIndex& index) const
 {
     int sample = index.model()->data(index, Qt::EditRole).toInt();
     dynamic_cast<QComboBox*>(editor)->setCurrentIndex(sample);
 }
 
-void ROMWidget::SampleItemDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const
+void PCMWidget::SampleItemDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const
 {
     int sample = dynamic_cast<QComboBox*>(editor)->currentIndex();
 
     model->setData(index, sample);
 }
 
-int ROMWidget::stringToKey(const QString& str)
+int PCMWidget::stringToKey(const QString& str)
 {
     bool ok = true;
 
@@ -136,7 +136,7 @@ int ROMWidget::stringToKey(const QString& str)
     return key;
 }
 
-QString ROMWidget::keyToString(const int key)
+QString PCMWidget::keyToString(const int key)
 {
     QMap<int, QChar> notes = {
         {0, 'C'},
@@ -170,7 +170,7 @@ QString ROMWidget::keyToString(const int key)
 
 }
 
-void ROMWidget::tableModelUpdated()
+void PCMWidget::tableModelUpdated()
 {
     *_settings = PCMChannelSettings();
 
@@ -181,22 +181,22 @@ void ROMWidget::tableModelUpdated()
     doUpdate();
 }
 
-void ROMWidget::addClicked()
+void PCMWidget::addClicked()
 {
     _tableModel.insertRow();
 }
 
-void ROMWidget::removeClicked()
+void PCMWidget::removeClicked()
 {
     _tableModel.removeRow(ui->tableView->selectionModel()->selectedIndexes().first().row());
 }
 
-void ROMWidget::selectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
+void PCMWidget::selectionChanged(const QItemSelection& selected, const QItemSelection& deselected)
 {
     ui->removeButton->setEnabled(!selected.indexes().empty() && selected.indexes().first().row() >= 0);
 }
 
-void ROMWidget::saveTriggered()
+void PCMWidget::saveTriggered()
 {
     const QString path = QFileDialog::getSaveFileName(this, tr("Save file"), "", "PCM Layout (*.lay)", nullptr, QFileDialog::DontUseNativeDialog);
 
@@ -208,7 +208,7 @@ void ROMWidget::saveTriggered()
     }
 }
 
-void ROMWidget::openTriggered()
+void PCMWidget::openTriggered()
 {
     const QString path = QFileDialog::getOpenFileName(this, tr("Open file"), "", "PCM Layout (*.lay)", nullptr, QFileDialog::DontUseNativeDialog);
 
@@ -220,14 +220,14 @@ void ROMWidget::openTriggered()
     }
 }
 
-void ROMWidget::dragEnterEvent(QDragEnterEvent* event)
+void PCMWidget::dragEnterEvent(QDragEnterEvent* event)
 {
     if (event->mimeData()->hasFormat("text/uri-list")) {
         event->acceptProposedAction();
     }
 }
 
-void ROMWidget::dropEvent(QDropEvent* event)
+void PCMWidget::dropEvent(QDropEvent* event)
 {
     QByteArray data = event->mimeData()->data("text/uri-list");
     QString path(data);
@@ -248,7 +248,7 @@ void ROMWidget::dropEvent(QDropEvent* event)
     }
 }
 
-QWidget* ROMWidget::KeyItemDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const
+QWidget* PCMWidget::KeyItemDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
     QLineEdit* lineEdit = new QLineEdit(parent);
     QValidator* validator = new QRegularExpressionValidator(QRegularExpression("^([A-Ga-g][b|#]?\\d)|\\d+$"), parent);
@@ -258,13 +258,13 @@ QWidget* ROMWidget::KeyItemDelegate::createEditor(QWidget* parent, const QStyleO
     return lineEdit;
 }
 
-void ROMWidget::KeyItemDelegate::setEditorData(QWidget* editor, const QModelIndex& index) const
+void PCMWidget::KeyItemDelegate::setEditorData(QWidget* editor, const QModelIndex& index) const
 {
     QString key = index.model()->data(index).toString();
     dynamic_cast<QLineEdit*>(editor)->setText(key);
 }
 
-void ROMWidget::KeyItemDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const
+void PCMWidget::KeyItemDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const
 {
     QString key = dynamic_cast<QLineEdit*>(editor)->text();
 

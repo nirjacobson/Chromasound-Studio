@@ -1,5 +1,5 @@
-#ifndef ROMWIDGET_H
-#define ROMWIDGET_H
+#ifndef PCMWIDGET_H
+#define PCMWIDGET_H
 
 #include <QWidget>
 #include <QComboBox>
@@ -15,13 +15,13 @@
 #include "formats/rom.h"
 #include "formats/bson.h"
 #include "commands/editpcmchannelsettingscommand.h"
-#include "romwidgettablemodel.h"
+#include "pcmwidgettablemodel.h"
 
 namespace Ui {
-class ROMWidget;
+class PCMWidget;
 }
 
-class ROMWidget : public QWidget
+class PCMWidget : public QWidget
 {
     Q_OBJECT
 
@@ -50,8 +50,8 @@ class ROMWidget : public QWidget
     };
 
 public:
-    explicit ROMWidget(QWidget *parent = nullptr, Application* app = nullptr);
-    ~ROMWidget();
+    explicit PCMWidget(QWidget *parent = nullptr, Application* app = nullptr);
+    ~PCMWidget();
 
     void setApplication(Application* app);
 
@@ -59,8 +59,8 @@ public:
     void doUpdate();
 
 private:
-    Ui::ROMWidget *ui;
-    ROMWidgetTableModel _tableModel;
+    Ui::PCMWidget *ui;
+    PCMWidgetTableModel _tableModel;
     KeyItemDelegate _keyDelegate;
     SampleItemDelegate _sampleDelegate;
 
@@ -92,4 +92,4 @@ protected:
     void dropEvent(QDropEvent* event);
 };
 
-#endif // ROMWIDGET_H
+#endif // PCMWIDGET_H

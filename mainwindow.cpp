@@ -571,7 +571,7 @@ void MainWindow::channelSelected(const int index)
     SSGWidget* ssgWidget;
     MelodyWidget* melodyWidget;
     RhythmWidget* rhythmWidget;
-    ROMWidgetWindow* romWidget;
+    PCMWidgetWindow* pcmWidget;
     QList<MdiSubWindow*>::Iterator it;
 
     for (MdiSubWindow* window : _channelWindows[index]) {
@@ -627,16 +627,16 @@ void MainWindow::channelSelected(const int index)
             break;
         case Channel::PCM:
             it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window) {
-                return dynamic_cast<ROMWidgetWindow*>(window->widget());
+                return dynamic_cast<PCMWidgetWindow*>(window->widget());
             });
             if (it != _channelWindows[index].end()) {
                 _mdiArea->setActiveSubWindow(*it);
             } else {
-                romWidget = new ROMWidgetWindow(this, _app);
-                romWidget->setSettings(dynamic_cast<PCMChannelSettings*>(&_app->project().getChannel(index).settings()));
-                romWidget->setWindowTitle(QString("%1: DPCM").arg(_app->project().getChannel(index).name()));
+                pcmWidget = new PCMWidgetWindow(this, _app);
+                pcmWidget->setSettings(dynamic_cast<PCMChannelSettings*>(&_app->project().getChannel(index).settings()));
+                pcmWidget->setWindowTitle(QString("%1: PCM").arg(_app->project().getChannel(index).name()));
 
-                channelWindow->setWidget(romWidget);
+                channelWindow->setWidget(pcmWidget);
                 channelWindow->resize(channelWindow->minimumSizeHint());
                 if (_mdiArea->viewMode() == QMdiArea::SubWindowView) {
                     channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
@@ -1559,14 +1559,14 @@ void MainWindow::doUpdate()
         for (MdiSubWindow* window : (*it)) {
             PianoRollWidget* prw;
             MelodyWidget* mw;
-            ROMWidgetWindow* rw;
+            PCMWidgetWindow* rw;
             if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
                 prw->doUpdate(position, true);
             }
             if ((mw = dynamic_cast<MelodyWidget*>(window->widget()))) {
                 mw->doUpdate();
             }
-            if ((rw = dynamic_cast<ROMWidgetWindow*>(window->widget()))) {
+            if ((rw = dynamic_cast<PCMWidgetWindow*>(window->widget()))) {
                 rw->doUpdate();
             }
 
@@ -1583,7 +1583,7 @@ void MainWindow::doUpdate()
                 tail = "Melody";
             } else if (dynamic_cast<RhythmWidget*>(window->widget())) {
                 tail = "Rhythm";
-            } else if (dynamic_cast<ROMWidgetWindow*>(window->widget())) {
+            } else if (dynamic_cast<PCMWidgetWindow*>(window->widget())) {
                 tail = "PCM";
             }
 
@@ -1602,13 +1602,13 @@ void MainWindow::channelSettingsUpdated()
             PianoRollWidget* prw;
             MelodyWidget* mw;
             RhythmWidget* rw;
-            ROMWidgetWindow* romw;
+            PCMWidgetWindow* romw;
 
             if ((nw = dynamic_cast<NoiseWidget*>(window->widget()))) {
                 nw->doUpdate();
             } else if ((fmw = dynamic_cast<FMWidgetWindow*>(window->widget()))) {
                 fmw->doUpdate();
-            } else if ((romw = dynamic_cast<ROMWidgetWindow*>(window->widget()))) {
+            } else if ((romw = dynamic_cast<PCMWidgetWindow*>(window->widget()))) {
                 romw->doUpdate();
             } else if ((sw = dynamic_cast<SSGWidget*>(window->widget()))) {
                 sw->doUpdate();

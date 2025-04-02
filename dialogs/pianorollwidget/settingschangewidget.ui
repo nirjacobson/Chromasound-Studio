@@ -127,7 +127,7 @@
         <number>0</number>
        </property>
        <item row="0" column="0">
-        <widget class="ROMWidget" name="romWidget" native="true"/>
+        <widget class="PCMWidget" name="romWidget" native="true"/>
        </item>
       </layout>
      </widget>
@@ -152,6 +152,12 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>PCMWidget</class>
+   <extends>QWidget</extends>
+   <header>pcm/pcmwidget.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>OPNWidget</class>
    <extends>QWidget</extends>
@@ -186,12 +192,6 @@
    <class>RhythmWidget</class>
    <extends>QWidget</extends>
    <header>opl/rhythmwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>ROMWidget</class>
-   <extends>QWidget</extends>
-   <header>rom/romwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

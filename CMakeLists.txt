@@ -485,17 +485,17 @@ set(PROJECT_SOURCES
     globals/romtablemodel.cpp
     project/channel/pcmchannelsettings.h
     project/channel/pcmchannelsettings.cpp
-    rom/romwidget.h
-    rom/romwidget.cpp
-    rom/romwidget.ui
+    pcm/pcmwidget.h
+    pcm/pcmwidget.cpp
+    pcm/pcmwidget.ui
     commands/editpcmchannelsettingscommand.h
     commands/editpcmchannelsettingscommand.cpp
     toplevel/browser/filesystemtreeview.h
     toplevel/browser/filesystemtreeview.cpp
     commands/composite/loadmultitrackmidicommand.h
     commands/composite/loadmultitrackmidicommand.cpp
-    rom/romwidgettablemodel.h
-    rom/romwidgettablemodel.cpp
+    pcm/pcmwidgettablemodel.h
+    pcm/pcmwidgettablemodel.cpp
     globals/pcmglobalswidget.h
     globals/pcmglobalswidget.cpp
     globals/pcmglobalswidget.ui
@@ -511,9 +511,9 @@ set(PROJECT_SOURCES
     dialogs/pianorollwidget/pianorollvelocitydialog.h
     dialogs/pianorollwidget/pianorollvelocitydialog.cpp
     dialogs/pianorollwidget/pianorollvelocitydialog.ui
-    rom/romwidgetwindow.h
-    rom/romwidgetwindow.cpp
-    rom/romwidgetwindow.ui
+    pcm/pcmwidgetwindow.h
+    pcm/pcmwidgetwindow.cpp
+    pcm/pcmwidgetwindow.ui
     commands/setchannelenabledcommand.h
     commands/setchannelenabledcommand.cpp
     common/damagewidget/damagewidget.h
