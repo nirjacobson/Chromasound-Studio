@@ -5,9 +5,11 @@ Chromasound_Dual::Chromasound_Dual(Chromasound* chromasound1, Chromasound* chrom
     : _chromasound1(chromasound1)
     , _chromasound2(chromasound2)
 {
-
     connect(_chromasound1, &Chromasound::pcmUploadStarted, this, &Chromasound::pcmUploadStarted);
     connect(_chromasound1, &Chromasound::pcmUploadFinished, this, &Chromasound::pcmUploadFinished);
+
+    connect(_chromasound2, &Chromasound::pcmUploadStarted, this, &Chromasound::pcmUploadStarted);
+    connect(_chromasound2, &Chromasound::pcmUploadFinished, this, &Chromasound::pcmUploadFinished);
 }
 
 Chromasound_Dual::~Chromasound_Dual()
@@ -81,4 +83,14 @@ void Chromasound_Dual::setOPLLPatchset(OPLL::Type type)
     if ((emu = dynamic_cast<Chromasound_Emu*>(_chromasound2))) {
         emu->setOPLLPatchset(type);
     }
+}
+
+Chromasound* Chromasound_Dual::chromasound1()
+{
+    return _chromasound1;
+}
+
+Chromasound* Chromasound_Dual::chromasound2()
+{
+    return _chromasound2;
 }

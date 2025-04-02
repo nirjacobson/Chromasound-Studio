@@ -26,6 +26,8 @@ class TopWidget : public QWidget
 
         void doUpdate(const float position);
 
+        void showUploadButton(bool show);
+
     signals:
         void play(bool record);
         void pause();
@@ -36,6 +38,7 @@ class TopWidget : public QWidget
         void midiDeviceSet(int);
         void userToneTriggered();
         void seekClicked(const float pos);
+        void uploadClicked();
 
     private:
         Ui::TopWidget *ui;

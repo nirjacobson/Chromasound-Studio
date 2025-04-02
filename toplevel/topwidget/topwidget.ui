@@ -190,6 +190,26 @@
         </widget>
        </item>
        <item>
+        <widget class="Line" name="uploadLine">
+         <property name="orientation">
+          <enum>Qt::Orientation::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="uploadButton">
+         <property name="maximumSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="horizontalSpacer_3">
          <property name="orientation">
           <enum>Qt::Orientation::Horizontal</enum>

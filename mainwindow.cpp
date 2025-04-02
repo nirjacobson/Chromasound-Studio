@@ -112,6 +112,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(ui->topWidget, &TopWidget::beatsPerBarChanged, this, &MainWindow::beatsPerBarChanged);
     connect(ui->topWidget, &TopWidget::midiDeviceSet, this, &MainWindow::setMIDIDevice);
     connect(ui->topWidget, &TopWidget::seekClicked, this, &MainWindow::seekClicked);
+    connect(ui->topWidget, &TopWidget::uploadClicked, this, &MainWindow::uploadPCM);
 
     connect(_mdiArea, &MdiArea::viewModeChanged, this, &MainWindow::mdiViewModeChanged);
 
@@ -1019,6 +1020,20 @@ void MainWindow::settingsTriggered()
         });
         connect(_settingsDialog, &SettingsDialog::done, this, [&]() {
             _app->setupChromasound();
+
+#ifdef Q_OS_WIN
+            QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
+#else
+             QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+#endif
+            int quantity = settings.value(Chromasound_Studio::NumberOfChromasoundsKey, 1).toInt();
+            QString chromasound1 = settings.value(Chromasound_Studio::Chromasound1Key, Chromasound_Studio::Emulator).toString();
+            QString chromasound2 = settings.value(Chromasound_Studio::Chromasound2Key, Chromasound_Studio::Emulator).toString();
+            QString device = settings.value(Chromasound_Studio::DeviceKey, Chromasound_Studio::ChromasoundPro).toString();
+
+            ui->topWidget->showUploadButton((chromasound1 == Chromasound_Studio::ChromasoundDirect ||
+                                             (quantity == 2 && chromasound2 == Chromasound_Studio::ChromasoundDirect)) &&
+                                            device == Chromasound_Studio::ChromasoundProDirect);
         });
         window->setAttribute(Qt::WA_DeleteOnClose);
         window->setWidget(_settingsDialog);
@@ -1448,6 +1463,74 @@ void MainWindow::countoffTimeout()
     } else {
         ui->topWidget->setStatusMessage(QString::number(count--));
         _countoffTimer.start(1000);
+    }
+}
+
+void MainWindow::uploadPCM()
+{
+#ifdef Q_OS_WIN
+    QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
+#else
+    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+#endif
+    bool isChromasound = settings.value(Chromasound_Studio::IsChromasoundKey, Chromasound_Studio::ChromasoundProPreset.isChromasound()).toBool();
+    bool discretePCM = settings.value(Chromasound_Studio::DiscretePCMKey, Chromasound_Studio::ChromasoundProPreset.discretePCM()).toBool();
+    bool usePCMSRAM = settings.value(Chromasound_Studio::UsePCMSRAMKey, Chromasound_Studio::ChromasoundProPreset.usePCMSRAM()).toBool();
+    Chromasound_Studio::PCMStrategy pcmStrategy = Chromasound_Studio::pcmStrategyFromString(settings.value(Chromasound_Studio::PCMStrategyKey, Chromasound_Studio::ChromasoundProPreset.pcmStrategy()).toString());
+    Chromasound_Studio::Profile profile = Chromasound_Studio::Profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
+
+    if (_app->project().playMode() == Project::PlayMode::PATTERN) {
+        QThread* thread = QThread::create([&]() {
+            int currentOffsetData;
+            int currentOffsetSamples = _app->position() / _app->project().tempo() * 60 * 44100;
+            VGMStream vgmStream(profile);
+
+            emit compileStarted();
+            QByteArray vgm = vgmStream.compile(_app->project(), _app->project().getFrontPattern(), false, nullptr, -1, -1, _app->position(), &currentOffsetData);
+            emit compileFinished();
+
+            quint32 dataOffset = *(quint32*)&vgm.constData()[0x34] + 0x34;
+
+            if (vgm[dataOffset] == 0x67) {
+                quint32 size = *(quint32*)&vgm.constData()[dataOffset + 3];
+                QByteArray pcmBlock = vgm.mid(dataOffset, 7 + size);
+
+                _app->uploadPCM(pcmBlock);
+            }
+        });
+
+        connect(thread, &QThread::finished, this, [=]() {
+            delete thread;
+        });
+
+        thread->start();
+    } else {
+        QThread* thread = QThread::create([&]() {
+            int loopOffsetData;
+            int currentOffsetData;
+            int currentOffsetSamples = _app->position() / _app->project().tempo() * 60 * 44100;
+            VGMStream vgmStream(profile);
+
+
+            emit compileStarted();
+            QByteArray vgm = vgmStream.compile(_app->project(), false, &loopOffsetData, -1, -1, _app->position(), &currentOffsetData);
+            emit compileFinished();
+
+            quint32 dataOffset = *(quint32*)&vgm.constData()[0x34] + 0x34;
+
+            if (vgm[dataOffset] == 0x67) {
+                quint32 size = *(quint32*)&vgm.constData()[dataOffset + 3];
+                QByteArray pcmBlock = vgm.mid(dataOffset, 7 + size);
+
+                _app->uploadPCM(pcmBlock);
+            }
+        });
+
+        connect(thread, &QThread::finished, this, [=]() {
+            delete thread;
+        });
+
+        thread->start();
     }
 }
 

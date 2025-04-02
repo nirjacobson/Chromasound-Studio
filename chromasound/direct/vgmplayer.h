@@ -26,6 +26,8 @@ class VGMPlayer : public QThread
         void addVGM(const QByteArray& vgm);
         void setMode(const Mode mode);
 
+        void uploadPCM(const QByteArray& pcm);
+
         bool isPlaying() const;
         bool isPaused() const;
 
@@ -105,6 +107,9 @@ class VGMPlayer : public QThread
 
         void runInteractive();
         void runPlayback();
+
+
+        void uploadPCMInner(const QByteArray& pcm);
 
         // QThread interface
     protected:

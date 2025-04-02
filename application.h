@@ -38,6 +38,8 @@ class Application : public QApplication
         void play(const float loopStart, const float loopEnd);
         void stop();
 
+        void uploadPCM(const QByteArray& pcm);
+
         void record();
 
         float position() const;

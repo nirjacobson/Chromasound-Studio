@@ -90,6 +90,65 @@ void VGMPlayer::setMode(const Mode mode)
     }
 }
 
+void VGMPlayer::uploadPCMInner(const QByteArray &pcm) {
+    uint8_t rx, tx;
+    uint16_t space;
+
+    emit pcmUploadStarted();
+    uint32_t position = 0;
+    while (true) {
+        _stopLock.lock();
+        bool stop = _stop;
+        _stopLock.unlock();
+        if (stop) {
+            return;
+        }
+
+        spi_write_wait(REPORT_SPACE);
+        spi_xfer_wait(&tx, &rx);
+        space = rx;
+        spi_xfer_wait(&tx, &rx);
+        space |= (int)rx << 8;
+
+        if (space > 0) {
+            int remaining = pcm.size() - position;
+            long count = space < remaining ? space : remaining;
+
+            if (count > 0) {
+                spi_write_wait(RECEIVE_DATA);
+
+                for (int i = 0; i < 4; i++) {
+                    spi_write_wait(((char*)&count)[i]);
+                }
+
+                for (int i = 0; i < count; i++) {
+                    spi_write_wait(pcm[position++]);
+                }
+            }
+
+            if (count == remaining) {
+                break;
+            }
+        }
+    }
+
+    _lastPCMBlockChecksum = fletcher32(pcm);
+    emit pcmUploadFinished();
+}
+
+void VGMPlayer::uploadPCM(const QByteArray &pcm)
+{
+    stop();
+    quit();
+    wait();
+
+    _stop = false;
+
+    uploadPCMInner(pcm);
+
+    start();
+}
+
 bool VGMPlayer::isPlaying() const
 {
     return _playing && isRunning();
@@ -304,44 +363,7 @@ void VGMPlayer::runPlayback()
             _lastPCMBlockChecksum = fletcher32(_pcmBlock);
 
             if (lastPCMBlockChecksum != _lastPCMBlockChecksum) {
-                emit pcmUploadStarted();
-                uint32_t position = 0;
-                while (true) {
-                    _stopLock.lock();
-                    bool stop = _stop;
-                    _stopLock.unlock();
-                    if (stop) {
-                        return;
-                    }
-
-                    spi_write_wait(REPORT_SPACE);
-                    spi_xfer_wait(&tx, &rx);
-                    space = rx;
-                    spi_xfer_wait(&tx, &rx);
-                    space |= (int)rx << 8;
-
-                    if (space > 0) {
-                        int remaining = _pcmBlock.size() - position;
-                        long count = space < remaining ? space : remaining;
-
-                        if (count > 0) {
-                            spi_write_wait(RECEIVE_DATA);
-
-                            for (int i = 0; i < 4; i++) {
-                                spi_write_wait(((char*)&count)[i]);
-                            }
-
-                            for (int i = 0; i < count; i++) {
-                                spi_write_wait(_pcmBlock[position++]);
-                            }
-                        }
-
-                        if (count == remaining) {
-                            break;
-                        }
-                    }
-                }
-                emit pcmUploadFinished();
+                uploadPCMInner(_pcmBlock);
             }
         }
     }

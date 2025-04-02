@@ -24,18 +24,35 @@ TopWidget::TopWidget(QWidget *parent, Application* app)
     ui->recordButton->setIcon(recordIcon);
     ui->playButton->setIcon(ui->playButton->style()->standardIcon(QStyle::SP_MediaPlay));
     ui->stopButton->setIcon(ui->stopButton->style()->standardIcon(QStyle::SP_MediaStop));
+    ui->uploadButton->setIcon(ui->stopButton->style()->standardIcon(QStyle::SP_ArrowUp));
 
     connect(ui->deviceComboBox, &QComboBox::currentIndexChanged, this, &TopWidget::midiDeviceSet);
     connect(ui->patRadioButton, &QRadioButton::clicked, this, &TopWidget::patModeSelected);
     connect(ui->songRadioButton, &QRadioButton::clicked, this, &TopWidget::songModeSelected);
     connect(ui->playButton, &QPushButton::clicked, this, &TopWidget::playPauseClicked);
     connect(ui->stopButton, &QPushButton::clicked, this, &TopWidget::stopClicked);
+    connect(ui->uploadButton, &QPushButton::clicked, this, &TopWidget::uploadClicked);
     connect(ui->patSpinBox, SIGNAL(valueChanged(int)), this, SIGNAL(patternChanged(int)));
     connect(ui->tempoSpinBox, SIGNAL(valueChanged(int)), this, SIGNAL(tempoChanged(int)));
     connect(ui->tempoSpinBox, SIGNAL(valueChanged(int)), this, SLOT(tempoDidChange(int)));
     connect(ui->beatsPerBarSpinBox, SIGNAL(valueChanged(int)), this, SIGNAL(beatsPerBarChanged(int)));
     connect(ui->beatsPerBarSpinBox, SIGNAL(valueChanged(int)), this, SLOT(beatsPerBarDidChange(int)));
     connect(ui->seekWidget, &SeekWidget::clicked, this, &TopWidget::seekClicked);
+
+#ifdef Q_OS_WIN
+    QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
+#else
+    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+#endif
+
+    int quantity = settings.value(Chromasound_Studio::NumberOfChromasoundsKey, 1).toInt();
+    QString chromasound1 = settings.value(Chromasound_Studio::Chromasound1Key, Chromasound_Studio::Emulator).toString();
+    QString chromasound2 = settings.value(Chromasound_Studio::Chromasound2Key, Chromasound_Studio::Emulator).toString();
+    QString device = settings.value(Chromasound_Studio::DeviceKey, Chromasound_Studio::ChromasoundPro).toString();
+
+    showUploadButton((chromasound1 == Chromasound_Studio::ChromasoundDirect ||
+                      (quantity == 2 && chromasound2 == Chromasound_Studio::ChromasoundDirect)) &&
+                     device == Chromasound_Studio::ChromasoundProDirect);
 }
 
 TopWidget::~TopWidget()
@@ -88,6 +105,12 @@ void TopWidget::doUpdate(const float position)
     updateFromProject(_app->project());
     ui->seekWidget->doUpdate(position);
     ui->positionDisplay->doUpdate(position);
+}
+
+void TopWidget::showUploadButton(bool show)
+{
+    ui->uploadButton->setVisible(show);
+    ui->uploadLine->setVisible(show);
 }
 
 void TopWidget::playPauseClicked()

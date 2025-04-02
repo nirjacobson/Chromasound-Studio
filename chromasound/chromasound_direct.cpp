@@ -145,6 +145,11 @@ bool Chromasound_Direct::isPaused() const
     return _vgmPlayer->isPaused();
 }
 
+void Chromasound_Direct::uploadPCM(const QByteArray &pcm)
+{
+    _vgmPlayer->uploadPCM(pcm);
+}
+
 void Chromasound_Direct::keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity)
 {
     if (isPlaying()) return;
@@ -326,10 +331,10 @@ void Chromasound_Direct::sync()
                 pcmBlock.append(0x80);
 
                 data.prepend(pcmBlock);
-
-                _vgmPlayer->fillWithPCM(true);
             }
         }
+
+        _vgmPlayer->fillWithPCM(true);
     }
 
     for (VGMStream::StreamItem* item : _items) {

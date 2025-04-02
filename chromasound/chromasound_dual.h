@@ -24,6 +24,10 @@ class Chromasound_Dual : public Chromasound
         void sync();
 
         void setOPLLPatchset(OPLL::Type type);
+
+        Chromasound* chromasound1();
+        Chromasound* chromasound2();
+
     private:
         Chromasound* _chromasound1;
         Chromasound* _chromasound2;

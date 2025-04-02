@@ -155,6 +155,8 @@ class MainWindow : public QMainWindow
 
         void countoffTimeout();
 
+        void uploadPCM();
+
     private:
         Ui::MainWindow* ui;
         QTreeView* _treeView;

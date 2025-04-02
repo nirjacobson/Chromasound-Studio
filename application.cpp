@@ -207,6 +207,21 @@ void Application::stop()
     _recording = false;
 }
 
+void Application::uploadPCM(const QByteArray &pcm)
+{
+    Chromasound_Dual* dual;
+    Chromasound_Direct* direct;
+    if ((direct = dynamic_cast<Chromasound_Direct*>(_chromasound))) {
+        direct->uploadPCM(pcm);
+    } else if ((dual = dynamic_cast<Chromasound_Dual*>(_chromasound))) {
+        if ((direct = dynamic_cast<Chromasound_Direct*>(dual->chromasound1()))) {
+            direct->uploadPCM(pcm);
+        } else if ((direct = dynamic_cast<Chromasound_Direct*>(dual->chromasound2()))) {
+            direct->uploadPCM(pcm);
+        }
+    }
+}
+
 void Application::record()
 {
     _recording = true;
