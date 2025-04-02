@@ -26,7 +26,7 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, Application* app) :
     ui->actionCopy->setShortcuts(QKeySequence::Copy);
     ui->actionPaste->setShortcuts(QKeySequence::Paste);
     ui->actionSelectAll->setShortcuts(QKeySequence::SelectAll);
-    ui->actionDelete->setShortcuts(QKeySequence::Delete);
+    ui->actionDelete->setShortcut(QKeySequence::fromString("Del"));
 
     ui->ganttWidget->setApplication(_app);
     ui->ganttWidget->setDefaultCellWidth(CellWidth);
