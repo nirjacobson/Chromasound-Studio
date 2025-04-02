@@ -109,6 +109,7 @@ class PianoRollWidget : public QMainWindow
         void doneButtonClicked();
         void removeButtonClicked();
         void velocityDialogAccepted();
+        void quantize116();
 
         // QWidget interface
     protected:

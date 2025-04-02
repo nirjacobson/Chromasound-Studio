@@ -48,6 +48,7 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
     connect(ui->actionPaste, &QAction::triggered, this, &PianoRollWidget::paste);
     connect(ui->actionSelectAll, &QAction::triggered, this, &PianoRollWidget::selectAll);
     connect(ui->actionDelete, &QAction::triggered, this, &PianoRollWidget::deleteTriggered);
+    connect(ui->action116Note, &QAction::triggered, this, &PianoRollWidget::quantize116);
 
     connect(&_velocityAction, &QAction::triggered, this, &PianoRollWidget::velocityTriggered);
 
@@ -440,6 +441,22 @@ void PianoRollWidget::velocityDialogAccepted()
 
         _app->undoStack().push(new EditNoteCommand(_app->window(), item, item->time(), n, selectedItems));
     }
+}
+
+void PianoRollWidget::quantize116()
+{
+    QList<Track::Item*> newItems;
+
+    for (Track::Item* item : _track->items()) {
+        float time = std::round(item->time() / 0.25) * 0.25;
+        float duration = std::round(item->duration() / 0.25) * 0.25;
+
+        Track::Item* newItem = new Track::Item(time, Note(item->note().key(), duration, item->note().velocity()));
+
+        newItems.append(newItem);
+    }
+
+    _app->undoStack().push(new ReplaceTrackItemsCommand(_app->window(), *_track, newItems));
 }
 
 void PianoRollWidget::paintEvent(QPaintEvent* event)

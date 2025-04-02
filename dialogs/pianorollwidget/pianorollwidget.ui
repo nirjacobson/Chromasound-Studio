@@ -41,17 +41,25 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>20</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
      <string>&amp;Edit</string>
     </property>
+    <widget class="QMenu" name="menuQuantize">
+     <property name="title">
+      <string>Quantize</string>
+     </property>
+     <addaction name="action116Note"/>
+    </widget>
     <addaction name="actionCopy"/>
     <addaction name="actionPaste"/>
     <addaction name="separator"/>
     <addaction name="actionSelectAll"/>
+    <addaction name="separator"/>
+    <addaction name="menuQuantize"/>
     <addaction name="separator"/>
     <addaction name="actionDelete"/>
    </widget>
@@ -108,6 +116,11 @@
   <action name="actionClose">
    <property name="text">
     <string>Close</string>
+   </property>
+  </action>
+  <action name="action116Note">
+   <property name="text">
+    <string>1/16 note</string>
    </property>
   </action>
  </widget>

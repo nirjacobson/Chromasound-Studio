@@ -31,6 +31,6 @@ void ReplaceTrackItemsCommand::redo()
 {
     _removeTrackItemsCommand = new RemoveTrackItemsCommand(_mainWindow, _track, _track.items());
     _removeTrackItemsCommand->redo();
-    _addTrackItemsCommand = new AddTrackItemsCommand(_mainWindow, _track, 0, _items);
+    _addTrackItemsCommand = new AddTrackItemsCommand(_mainWindow, _track, 0, _items, false);
     _addTrackItemsCommand->redo();
 }
