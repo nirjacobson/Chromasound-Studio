@@ -48,7 +48,8 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
     connect(ui->actionPaste, &QAction::triggered, this, &PianoRollWidget::paste);
     connect(ui->actionSelectAll, &QAction::triggered, this, &PianoRollWidget::selectAll);
     connect(ui->actionDelete, &QAction::triggered, this, &PianoRollWidget::deleteTriggered);
-    connect(ui->action116Note, &QAction::triggered, this, &PianoRollWidget::quantize116);
+    connect(ui->actionQuantizeKeyOn, &QAction::triggered, this, &PianoRollWidget::quantizeKeyOn);
+    connect(ui->actionQuantizeKeyOnAndDuration, &QAction::triggered, this, &PianoRollWidget::quantizeKeyOnAndDuration);
 
     connect(&_velocityAction, &QAction::triggered, this, &PianoRollWidget::velocityTriggered);
 
@@ -443,20 +444,68 @@ void PianoRollWidget::velocityDialogAccepted()
     }
 }
 
-void PianoRollWidget::quantize116()
+void PianoRollWidget::quantizeKeyOn()
 {
     QList<Track::Item*> newItems;
 
-    for (Track::Item* item : _track->items()) {
-        float time = std::round(item->time() / 0.25) * 0.25;
-        float duration = std::round(item->duration() / 0.25) * 0.25;
+    if (!ui->ganttWidget->selectedItems().empty()) {
+        QList<Track::Item*> selectedItems;
+        for (GanttItem* item : ui->ganttWidget->selectedItems()) {
+            Track::Item* trackItem = dynamic_cast<Track::Item*>(item);
+            selectedItems.append(trackItem);
 
-        Track::Item* newItem = new Track::Item(time, Note(item->note().key(), duration, item->note().velocity()));
+            float time = std::round(item->time() / 0.25) * 0.25;
 
-        newItems.append(newItem);
+            Track::Item* newItem = new Track::Item(time, Note(trackItem->note().key(), trackItem->note().duration(), trackItem->note().velocity()));
+
+            newItems.append(newItem);
+        }
+
+        _app->undoStack().push(new ReplaceTrackItemsCommand(_app->window(), *_track, selectedItems, newItems));
+    } else {
+        for (Track::Item* item : _track->items()) {
+            float time = std::round(item->time() / 0.25) * 0.25;
+
+            Track::Item* newItem = new Track::Item(time, Note(item->note().key(), item->note().duration(), item->note().velocity()));
+
+            newItems.append(newItem);
+        }
+
+        _app->undoStack().push(new ReplaceTrackItemsCommand(_app->window(), *_track, newItems));
     }
+}
 
-    _app->undoStack().push(new ReplaceTrackItemsCommand(_app->window(), *_track, newItems));
+void PianoRollWidget::quantizeKeyOnAndDuration()
+{
+    QList<Track::Item*> newItems;
+
+    if (!ui->ganttWidget->selectedItems().empty()) {
+        QList<Track::Item*> selectedItems;
+        for (GanttItem* item : ui->ganttWidget->selectedItems()) {
+            Track::Item* trackItem = dynamic_cast<Track::Item*>(item);
+            selectedItems.append(trackItem);
+
+            float time = std::round(item->time() / 0.25) * 0.25;
+            float duration = std::round(item->duration() / 0.25) * 0.25;
+
+            Track::Item* newItem = new Track::Item(time, Note(trackItem->note().key(), duration, trackItem->note().velocity()));
+
+            newItems.append(newItem);
+        }
+
+        _app->undoStack().push(new ReplaceTrackItemsCommand(_app->window(), *_track, selectedItems, newItems));
+    } else {
+        for (Track::Item* item : _track->items()) {
+            float time = std::round(item->time() / 0.25) * 0.25;
+            float duration = std::round(item->duration() / 0.25) * 0.25;
+
+            Track::Item* newItem = new Track::Item(time, Note(item->note().key(), duration, item->note().velocity()));
+
+            newItems.append(newItem);
+        }
+
+        _app->undoStack().push(new ReplaceTrackItemsCommand(_app->window(), *_track, newItems));
+    }
 }
 
 void PianoRollWidget::paintEvent(QPaintEvent* event)

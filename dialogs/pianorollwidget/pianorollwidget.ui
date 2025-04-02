@@ -52,7 +52,8 @@
      <property name="title">
       <string>Quantize</string>
      </property>
-     <addaction name="action116Note"/>
+     <addaction name="actionQuantizeKeyOn"/>
+     <addaction name="actionQuantizeKeyOnAndDuration"/>
     </widget>
     <addaction name="actionCopy"/>
     <addaction name="actionPaste"/>
@@ -118,9 +119,14 @@
     <string>Close</string>
    </property>
   </action>
-  <action name="action116Note">
+  <action name="actionQuantizeKeyOn">
    <property name="text">
-    <string>1/16 note</string>
+    <string>Key on</string>
+   </property>
+  </action>
+  <action name="actionQuantizeKeyOnAndDuration">
+   <property name="text">
+    <string>Key on and duration</string>
    </property>
   </action>
  </widget>
