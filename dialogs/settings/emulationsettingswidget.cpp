@@ -15,7 +15,7 @@ EmulationSettingsWidget::EmulationSettingsWidget(QWidget *parent) :
     ui->bassSpinBox->setValue(settings.value(Chromasound_Studio::EqualizerBassKey, 0).toInt());
     ui->trebleSpinBox->setValue(settings.value(Chromasound_Studio::EqualizerTrebleKey, 0).toInt());
     ui->audioBufferSizeSpinBox->setValue(settings.value(Chromasound_Studio::AudioBufferSizeKey, 1024).toInt());
-    ui->playbackReadBufferSizeSpinBox->setValue(settings.value(Chromasound_Studio::PlaybackReadBufferSizeKey, 1).toInt());
+    ui->playbackReadBufferSizeSpinBox->setValue(settings.value(Chromasound_Studio::ReadBufferSizeKey, 1).toInt());
     ui->interactiveReadBufferSizeSpinBox->setValue(settings.value(Chromasound_Studio::InteractiveReadBufferSizeKey, 1).toInt());
 }
 
@@ -39,7 +39,7 @@ int EmulationSettingsWidget::audioBufferSize() const
     return ui->audioBufferSizeSpinBox->value();
 }
 
-int EmulationSettingsWidget::playbackReadBufferSize() const
+int EmulationSettingsWidget::readBufferSize() const
 {
     return ui->playbackReadBufferSizeSpinBox->value();
 }
@@ -51,7 +51,7 @@ int EmulationSettingsWidget::interactiveReadBufferSize() const
 
 void EmulationSettingsWidget::setDual(const bool dual)
 {
-    ui->playbackReadBufferSizeLabel->setText(dual ? "Playback read buffer size" : "Read buffer size");
+    ui->playbackReadBufferSizeLabel->setText(dual ? "Playback read buffer size:" : "Read buffer size:");
     ui->interactiveReadBufferSizeLabel->setVisible(dual);
     ui->interactiveReadBufferSizeSpinBox->setVisible(dual);
     ui->interactiveAudioBuffersLabel->setVisible(dual);

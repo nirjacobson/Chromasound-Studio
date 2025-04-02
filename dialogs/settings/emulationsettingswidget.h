@@ -21,7 +21,7 @@ class EmulationSettingsWidget : public QWidget
         int bass() const;
         int treble() const;
         int audioBufferSize() const;
-        int playbackReadBufferSize() const;
+        int readBufferSize() const;
         int interactiveReadBufferSize() const;
 
         void setDual(const bool dual);

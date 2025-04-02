@@ -46,7 +46,7 @@ class Chromasound_Studio {
         static const QString EqualizerBassKey;
         static const QString EqualizerTrebleKey;
         static const QString AudioBufferSizeKey;
-        static const QString PlaybackReadBufferSizeKey;
+        static const QString ReadBufferSizeKey;
         static const QString InteractiveReadBufferSizeKey;
         static const QString NumberOfChromasoundsKey;
         static const QString Chromasound1Key;

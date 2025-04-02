@@ -341,7 +341,7 @@ void Application::setupChromasound()
     }
 
     if (chromasound1Type == Chromasound_Studio::Emulator) {
-        int readBufferSize = settings.value(Chromasound_Studio::PlaybackReadBufferSizeKey, 1).toInt();
+        int readBufferSize = settings.value(Chromasound_Studio::ReadBufferSizeKey, 1).toInt();
         chromasound1 = new Chromasound_Emu(_project, readBufferSize);
         _output->producer(dynamic_cast<Chromasound_Emu*>(chromasound1));
     } else {
@@ -352,7 +352,7 @@ void Application::setupChromasound()
 
     if (numChromasounds == 2) {
         if (chromasound2Type == Chromasound_Studio::Emulator) {
-            int readBufferSize = settings.value(Chromasound_Studio::InteractiveReadBufferSizeKey, 1).toInt();
+            int readBufferSize = settings.value(chromasound1Type == Chromasound_Studio::Emulator ? Chromasound_Studio::InteractiveReadBufferSizeKey : Chromasound_Studio::ReadBufferSizeKey, 1).toInt();
             chromasound2 = new Chromasound_Emu(_project, readBufferSize);
             _output->producer(dynamic_cast<Chromasound_Emu*>(chromasound2));
         } else {
