@@ -133,7 +133,7 @@
   </action>
   <action name="actionSetDivision">
    <property name="text">
-    <string>&amp;Set division...</string>
+    <string>Set &amp;division...</string>
    </property>
   </action>
  </widget>

@@ -24,6 +24,7 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
     ui->actionPaste->setShortcuts(QKeySequence::Paste);
     ui->actionSelectAll->setShortcuts(QKeySequence::SelectAll);
     ui->actionDelete->setShortcuts(QKeySequence::Delete);
+    ui->actionSetDivision->setShortcut(QKeySequence::fromString("Ctrl+Shift+D"));
     ui->actionQuantizeKeyOn->setShortcut(QKeySequence::fromString("Ctrl+["));
     ui->actionQuantizeKeyOnAndDuration->setShortcut(QKeySequence::fromString("Ctrl+]"));
 
