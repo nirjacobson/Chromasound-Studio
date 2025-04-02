@@ -12,6 +12,7 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
     , _velocityAction("Velocity", this)
     , _editingSettingsChange(nullptr)
     , _velocityDialog(new PianoRollVelocityDialog(this))
+    , _quantDivisionDialog(new PianoRollQuantizationDivisionDialog(this))
 {
     _velocitiesWidget->setApplication(app);
 
@@ -50,6 +51,7 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
     connect(ui->actionPaste, &QAction::triggered, this, &PianoRollWidget::paste);
     connect(ui->actionSelectAll, &QAction::triggered, this, &PianoRollWidget::selectAll);
     connect(ui->actionDelete, &QAction::triggered, this, &PianoRollWidget::deleteTriggered);
+    connect(ui->actionSetDivision, &QAction::triggered, this, &PianoRollWidget::quantizeDivisionTriggered);
     connect(ui->actionQuantizeKeyOn, &QAction::triggered, this, &PianoRollWidget::quantizeKeyOn);
     connect(ui->actionQuantizeKeyOnAndDuration, &QAction::triggered, this, &PianoRollWidget::quantizeKeyOnAndDuration);
 
@@ -81,6 +83,7 @@ PianoRollWidget::~PianoRollWidget()
 {
     delete ui;
 
+    delete _quantDivisionDialog;
     delete _velocityDialog;
     delete _velocitiesWidget;
     delete _keysWidget;
@@ -446,6 +449,22 @@ void PianoRollWidget::velocityDialogAccepted()
     }
 }
 
+void PianoRollWidget::quantizeDivisionTriggered()
+{
+    int denominator = _quantDivisionDialog->denominator();
+
+    bool revert = true;
+    connect(_quantDivisionDialog, &PianoRollQuantizationDivisionDialog::accepted, this, [&](){
+        revert = false;
+    });
+
+    _quantDivisionDialog->exec();
+
+    if (revert) {
+        _quantDivisionDialog->setDenominator(denominator);
+    }
+}
+
 void PianoRollWidget::quantizeKeyOn()
 {
     QList<Track::Item*> newItems;
@@ -456,7 +475,9 @@ void PianoRollWidget::quantizeKeyOn()
             Track::Item* trackItem = dynamic_cast<Track::Item*>(item);
             selectedItems.append(trackItem);
 
-            float time = std::round(item->time() / 0.25) * 0.25;
+            float frac = 4.0f / _quantDivisionDialog->denominator();
+
+            float time = std::round(item->time() / frac) * frac;
 
             Track::Item* newItem = new Track::Item(time, Note(trackItem->note().key(), trackItem->note().duration(), trackItem->note().velocity()));
 
@@ -466,7 +487,9 @@ void PianoRollWidget::quantizeKeyOn()
         _app->undoStack().push(new ReplaceTrackItemsCommand(_app->window(), *_track, selectedItems, newItems));
     } else {
         for (Track::Item* item : _track->items()) {
-            float time = std::round(item->time() / 0.25) * 0.25;
+            float frac = 4.0f / _quantDivisionDialog->denominator();
+
+            float time = std::round(item->time() / frac) * frac;
 
             Track::Item* newItem = new Track::Item(time, Note(item->note().key(), item->note().duration(), item->note().velocity()));
 
@@ -487,8 +510,10 @@ void PianoRollWidget::quantizeKeyOnAndDuration()
             Track::Item* trackItem = dynamic_cast<Track::Item*>(item);
             selectedItems.append(trackItem);
 
-            float time = std::round(item->time() / 0.25) * 0.25;
-            float duration = std::round(item->duration() / 0.25) * 0.25;
+            float frac = 4.0f / _quantDivisionDialog->denominator();
+
+            float time = std::round(item->time() / frac) * frac;
+            float duration = std::round(item->duration() / frac) * frac;
 
             Track::Item* newItem = new Track::Item(time, Note(trackItem->note().key(), duration, trackItem->note().velocity()));
 
@@ -498,8 +523,10 @@ void PianoRollWidget::quantizeKeyOnAndDuration()
         _app->undoStack().push(new ReplaceTrackItemsCommand(_app->window(), *_track, selectedItems, newItems));
     } else {
         for (Track::Item* item : _track->items()) {
-            float time = std::round(item->time() / 0.25) * 0.25;
-            float duration = std::round(item->duration() / 0.25) * 0.25;
+            float frac = 4.0f / _quantDivisionDialog->denominator();
+
+            float time = std::round(item->time() / frac) * frac;
+            float duration = std::round(item->duration() / frac) * frac;
 
             Track::Item* newItem = new Track::Item(time, Note(item->note().key(), duration, item->note().velocity()));
 

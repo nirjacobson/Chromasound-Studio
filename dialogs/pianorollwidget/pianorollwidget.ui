@@ -52,6 +52,8 @@
      <property name="title">
       <string>&amp;Quantize</string>
      </property>
+     <addaction name="actionSetDivision"/>
+     <addaction name="separator"/>
      <addaction name="actionQuantizeKeyOn"/>
      <addaction name="actionQuantizeKeyOnAndDuration"/>
     </widget>
@@ -127,6 +129,11 @@
   <action name="actionQuantizeKeyOnAndDuration">
    <property name="text">
     <string>Key on and &amp;duration</string>
+   </property>
+  </action>
+  <action name="actionSetDivision">
+   <property name="text">
+    <string>&amp;Set division...</string>
    </property>
   </action>
  </widget>

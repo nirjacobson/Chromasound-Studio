@@ -526,6 +526,9 @@ set(PROJECT_SOURCES
     dialogs/settings/profilesettingswidget.ui
     common/recordiconengine.h
     common/recordiconengine.cpp
+    dialogs/pianorollwidget/pianorollquantizationdivisiondialog.h
+    dialogs/pianorollwidget/pianorollquantizationdivisiondialog.cpp
+    dialogs/pianorollwidget/pianorollquantizationdivisiondialog.ui
 )
 
 if (LINUX)

@@ -25,6 +25,7 @@
 #include "formats/midi/midifile.h"
 #include "common/mdiarea/mdisubwindow.h"
 #include "pianorollvelocitydialog.h"
+#include "pianorollquantizationdivisiondialog.h"
 
 namespace Ui {
     class PianoRollWidget;
@@ -86,6 +87,8 @@ class PianoRollWidget : public QMainWindow
 
         PianoRollVelocityDialog* _velocityDialog;
 
+        PianoRollQuantizationDivisionDialog* _quantDivisionDialog;
+
         void loadMIDI(const MIDIFile& file);
 
         const QColor& settingsChangeColor() const;
@@ -109,6 +112,7 @@ class PianoRollWidget : public QMainWindow
         void doneButtonClicked();
         void removeButtonClicked();
         void velocityDialogAccepted();
+        void quantizeDivisionTriggered();
         void quantizeKeyOn();
         void quantizeKeyOnAndDuration();
 
