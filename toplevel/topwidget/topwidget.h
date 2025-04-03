@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QStyle>
+#include <QSettings>
 
 #include "application.h"
 #include "formats/midi/midiinput.h"

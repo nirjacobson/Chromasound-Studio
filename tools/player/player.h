@@ -8,6 +8,7 @@
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QMimeData>
+#include <QSettings>
 
 #include "application.h"
 #include "playlistitem.h"

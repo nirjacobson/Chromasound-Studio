@@ -10,6 +10,8 @@
 #include "project/project.h"
 #include "project/vgmstream.h"
 #include "chromasound/chromasound.h"
+#include "chromasound/emu/audio_output.h"
+
 #include "chromasound/chromasound_standin.h"
 #include "chromasound/chromasound_emu.h"
 #include "chromasound/chromasound_dual.h"

@@ -209,6 +209,7 @@ void Application::stop()
 
 void Application::uploadPCM(const QByteArray &pcm)
 {
+#ifdef Q_OS_LINUX
     Chromasound_Dual* dual;
     Chromasound_Direct* direct;
     if ((direct = dynamic_cast<Chromasound_Direct*>(_chromasound))) {
@@ -220,6 +221,7 @@ void Application::uploadPCM(const QByteArray &pcm)
             direct->uploadPCM(pcm);
         }
     }
+#endif
 }
 
 void Application::record()
