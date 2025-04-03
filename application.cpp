@@ -227,6 +227,7 @@ void Application::uploadPCM(const QByteArray &pcm)
 void Application::record()
 {
     _recording = true;
+    _recordingMap.clear();
     _recordingTrack.clear();
     _recordingTimer.start();
 }
