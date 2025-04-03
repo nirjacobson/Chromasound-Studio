@@ -51,6 +51,7 @@ class Chromasound_Studio {
         static const QString NumberOfChromasoundsKey;
         static const QString Chromasound1Key;
         static const QString Chromasound2Key;
+        static const QString MIDIPadsKey;
 
         static const QString ChromasoundNova;
         static const QString ChromasoundNovaDirect;

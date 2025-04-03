@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _ssgGlobalsWindow(nullptr)
     , _melodyGlobalsWindow(nullptr)
     , _romGlobalsWindow(nullptr)
+    , _midiPadsDialog(nullptr)
     , _treeView(new FilesystemTreeView(this))
     , _mdiArea(new MdiArea(this))
     , _splitter(new QSplitter(this))
@@ -113,6 +114,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(ui->topWidget, &TopWidget::midiDeviceSet, this, &MainWindow::setMIDIDevice);
     connect(ui->topWidget, &TopWidget::seekClicked, this, &MainWindow::seekClicked);
     connect(ui->topWidget, &TopWidget::uploadClicked, this, &MainWindow::uploadPCM);
+    connect(ui->topWidget, &TopWidget::padsClicked, this, &MainWindow::showPadsDialog);
 
     connect(_mdiArea, &MdiArea::viewModeChanged, this, &MainWindow::mdiViewModeChanged);
 
@@ -922,8 +924,10 @@ void MainWindow::padOn(const int pad, const int velocity)
 
     if (channel.type() == Channel::Type::PCM) {
         PCMChannelSettings& settings = dynamic_cast<PCMChannelSettings&>(channel.settings());
-        int key = settings.keySampleMappings().keys().at(pad);
-        _app->keyOn(channel, key, velocity);
+        if (pad < settings.keySampleMappings().count()) {
+            int key = settings.keySampleMappings().keys().at(pad);
+            _app->keyOn(channel, key, velocity);
+        }
     }
 }
 
@@ -941,8 +945,10 @@ void MainWindow::padOff(const int pad)
 
     if (channel.type() == Channel::Type::PCM) {
         PCMChannelSettings& settings = dynamic_cast<PCMChannelSettings&>(channel.settings());
-        int key = settings.keySampleMappings().keys().at(pad);
-        _app->keyOff(channel, key);
+        if (pad < settings.keySampleMappings().count()) {
+            int key = settings.keySampleMappings().keys().at(pad);
+            _app->keyOff(channel, key);
+        }
     }
 }
 
@@ -952,6 +958,20 @@ void MainWindow::handleMIDIMessage(const long message)
     const quint8 data1 = ((message >> 8) & 0xFF);
     const quint8 data2 = ((message >> 16) & 0xFF);
 
+#ifdef Q_OS_WIN
+    QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
+#else
+    QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+#endif
+
+    QString setting = settings.value(Chromasound_Studio::MIDIPadsKey, "").toString();
+    QStringList pads = setting.split(",");
+    QList<int> padsInt;
+
+    for (QString& pad : pads) {
+        padsInt.append(pad.toInt(nullptr, 16));
+    }
+
     switch(status) {
     case 0x90:
         keyOn(data1, qMin((int)data2, 100));
@@ -960,10 +980,16 @@ void MainWindow::handleMIDIMessage(const long message)
         keyOff(data1);
         break;
     case 0x99:
-        padOn(data1 - 0x24, qMin((int)data2, 100));
+        if (_midiPadsDialog) {
+            _midiPadsDialog->pad(data1);
+        } else if (padsInt.contains(data1)){
+            padOn(padsInt.indexOf(data1), qMin((int)data2, 100));
+        }
         break;
     case 0x89:
-        padOff(data1 - 0x24);
+        if (!_midiPadsDialog && padsInt.contains(data1)) {
+            padOff(padsInt.indexOf(data1));
+        }
         break;
     default:
         break;
@@ -984,6 +1010,25 @@ void MainWindow::setMIDIDevice(const int device)
     _midiInput->setDevice(device);
 
     _midiPoller.start();
+}
+
+void MainWindow::showPadsDialog()
+{
+    _midiPadsDialog = new MIDIPadsDialog;
+
+    connect(_midiPadsDialog, &MIDIPadsDialog::accepted, this, [&](){
+#ifdef Q_OS_WIN
+        QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
+#else
+        QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+#endif
+        settings.setValue(Chromasound_Studio::MIDIPadsKey, _midiPadsDialog->setting());
+    });
+
+    _midiPadsDialog->exec();
+
+    delete _midiPadsDialog;
+    _midiPadsDialog = nullptr;
 }
 
 void MainWindow::projectInfoTriggered()
@@ -1024,7 +1069,7 @@ void MainWindow::settingsTriggered()
 #ifdef Q_OS_WIN
             QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
 #else
-             QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
+            QSettings settings(Chromasound_Studio::Organization, Chromasound_Studio::Application);
 #endif
             int quantity = settings.value(Chromasound_Studio::NumberOfChromasoundsKey, 1).toInt();
             QString chromasound1 = settings.value(Chromasound_Studio::Chromasound1Key, Chromasound_Studio::Emulator).toString();

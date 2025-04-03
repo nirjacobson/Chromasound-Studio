@@ -18,6 +18,7 @@
 #include "psg/noisewidget.h"
 #include "toplevel/playlistwidget/playlistwidget.h"
 #include "toplevel/browser/filesystemtreeview.h"
+#include "toplevel/topwidget/midipadsdialog.h"
 #include "dialogs/pianorollwidget/pianorollwidget.h"
 #include "opn/opnwidgetwindow.h"
 #include "pcm/pcmwidgetwindow.h"
@@ -116,6 +117,7 @@ class MainWindow : public QMainWindow
         void handleMIDIMessage(const long msg);
         void handleMIDISync();
         void setMIDIDevice(const int device);
+        void showPadsDialog();
 
         void projectInfoTriggered();
         void settingsTriggered();
@@ -187,6 +189,7 @@ class MainWindow : public QMainWindow
         SSGGlobalsWidget* _ssgGlobalsWidget;
         MelodyGlobalsWidget* _melodyGlobalsWidget;
         PCMGlobalsWindow* _romGlobalsWindow;
+        MIDIPadsDialog* _midiPadsDialog;
 
         MdiSubWindow* _settingsDialogWindow;
         MdiSubWindow* _infoDialogWindow;

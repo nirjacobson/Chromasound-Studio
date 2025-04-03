@@ -40,6 +40,7 @@ class TopWidget : public QWidget
         void userToneTriggered();
         void seekClicked(const float pos);
         void uploadClicked();
+        void padsClicked();
 
     private:
         Ui::TopWidget *ui;

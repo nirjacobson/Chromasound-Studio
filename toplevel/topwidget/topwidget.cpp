@@ -19,6 +19,8 @@ TopWidget::TopWidget(QWidget *parent, Application* app)
 
     ui->deviceComboBox->setCurrentIndex(_midiInput->device());
 
+    ui->padsButton->setEnabled(ui->deviceComboBox->count() > 0);
+
     RecordIconEngine* engine = new RecordIconEngine();
     QIcon recordIcon(engine);
     ui->recordButton->setIcon(recordIcon);
@@ -27,6 +29,7 @@ TopWidget::TopWidget(QWidget *parent, Application* app)
     ui->uploadButton->setIcon(ui->stopButton->style()->standardIcon(QStyle::SP_ArrowUp));
 
     connect(ui->deviceComboBox, &QComboBox::currentIndexChanged, this, &TopWidget::midiDeviceSet);
+    connect(ui->padsButton, &QPushButton::clicked, this, &TopWidget::padsClicked);
     connect(ui->patRadioButton, &QRadioButton::clicked, this, &TopWidget::patModeSelected);
     connect(ui->songRadioButton, &QRadioButton::clicked, this, &TopWidget::songModeSelected);
     connect(ui->playButton, &QPushButton::clicked, this, &TopWidget::playPauseClicked);

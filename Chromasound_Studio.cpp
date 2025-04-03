@@ -17,6 +17,7 @@ const QString Chromasound_Studio::InteractiveReadBufferSizeKey = "buffserSize/re
 const QString Chromasound_Studio::NumberOfChromasoundsKey = "layout/quantity";
 const QString Chromasound_Studio::Chromasound1Key = "layout/chromasound1";
 const QString Chromasound_Studio::Chromasound2Key = "layout/chromasound2";
+const QString Chromasound_Studio::MIDIPadsKey = "midiPads";
 const QString Chromasound_Studio::ChromasoundNova = "nova";
 const QString Chromasound_Studio::ChromasoundNovaDirect = "novaDirect";
 const QString Chromasound_Studio::ChromasoundPro = "pro";

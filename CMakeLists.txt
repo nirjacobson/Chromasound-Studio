@@ -529,6 +529,9 @@ set(PROJECT_SOURCES
     dialogs/pianorollwidget/pianorollquantizationdivisiondialog.h
     dialogs/pianorollwidget/pianorollquantizationdivisiondialog.cpp
     dialogs/pianorollwidget/pianorollquantizationdivisiondialog.ui
+    toplevel/topwidget/midipadsdialog.h
+    toplevel/topwidget/midipadsdialog.cpp
+    toplevel/topwidget/midipadsdialog.ui
 )
 
 if (LINUX)
