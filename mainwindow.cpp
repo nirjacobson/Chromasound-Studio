@@ -1479,21 +1479,23 @@ void MainWindow::countoffTimeout()
         if (!isDual) return;
 
         if (!_app->paused()) {
-            PianoRollWidget* prw;
-            PlaylistWidget* pw;
-            if ((prw = dynamic_cast<PianoRollWidget*>(_mdiArea->activeSubWindow()->widget()))) {
-                if (prw->pattern().tracks().empty()) {
-                    return;
+            if (_app->project().playMode() == Project::PlayMode::PATTERN) {
+                PianoRollWidget* prw;
+                if ((prw = dynamic_cast<PianoRollWidget*>(_mdiArea->activeSubWindow()->widget()))) {
+                    if (prw->pattern().tracks().empty()) {
+                        return;
+                    }
+                    if (prw->hasLoop()) {
+                        _app->play(prw->pattern(), prw->loopStart(), prw->loopEnd());
+                        return;
+                    }
                 }
-                if (prw->hasLoop()) {
-                    _app->play(prw->pattern(), prw->loopStart(), prw->loopEnd());
-                    return;
-                }
-            } else if ((pw = dynamic_cast<PlaylistWidget*>(_mdiArea->activeSubWindow()->widget()))) {
-                if (_app->project().patterns().empty()) {
-                    return;
-                }
-                if (_app->project().playMode() == Project::PlayMode::SONG) {
+            } else {
+                PlaylistWidget* pw;
+                if ((pw = dynamic_cast<PlaylistWidget*>(_mdiArea->activeSubWindow()->widget()))) {
+                    if (_app->project().patterns().empty()) {
+                        return;
+                    }
                     if (pw->hasLoop()) {
                         _app->play(pw->loopStart(), pw->loopEnd());
                         return;
@@ -1501,9 +1503,7 @@ void MainWindow::countoffTimeout()
                 }
             }
         }
-        if (_app->project().playlist().empty()) {
-            return;
-        }
+
         _app->play();
     } else {
         ui->topWidget->setStatusMessage(QString::number(count--));
