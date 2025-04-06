@@ -195,18 +195,6 @@ void Chromasound_Direct::keyOff(int key)
     _vgmStream->releaseChannel(sni->type(), sni->channel());
     sni->setOn(false);
     _items.append(sni);
-
-    bool havePCM = false;
-    for (auto it = _keys.begin(); it != _keys.end(); ++it) {
-        if (it.value()->type() == Channel::Type::PCM) {
-            havePCM = true;
-            break;
-        }
-    }
-
-    if (!havePCM) {
-        _vgmPlayer->fillWithPCM(false);
-    }
 }
 
 void Chromasound_Direct::sync()
@@ -333,9 +321,9 @@ void Chromasound_Direct::sync()
                 data.prepend(pcmBlock);
             }
         }
-
-        _vgmPlayer->fillWithPCM(true);
     }
+
+    _vgmPlayer->fillWithPCM(havePCM);
 
     for (VGMStream::StreamItem* item : _items) {
         VGMStream::StreamNoteItem* sni;

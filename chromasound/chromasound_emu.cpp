@@ -311,18 +311,6 @@ void Chromasound_Emu::keyOff(int key)
     _vgmStream->releaseChannel(sni->type(), sni->channel());
     sni->setOn(false);
     _items.append(sni);
-
-    bool havePCM = false;
-    for (auto it = _keys.begin(); it != _keys.end(); ++it) {
-        if (it.value()->type() == Channel::Type::PCM) {
-            havePCM = true;
-            break;
-        }
-    }
-
-    if (!havePCM) {
-        _emu->set_fill_past_end_with_pcm(false);
-    }
 }
 
 void Chromasound_Emu::sync()
@@ -445,11 +433,11 @@ void Chromasound_Emu::sync()
                 pcmBlock.append(0x80);
 
                 data.prepend(pcmBlock);
-
-                _emu->set_fill_past_end_with_pcm(true);
             }
         }
     }
+
+    _emu->set_fill_past_end_with_pcm(havePCM);
 
     for (VGMStream::StreamItem* item : _items) {
         VGMStream::StreamNoteItem* sni;
