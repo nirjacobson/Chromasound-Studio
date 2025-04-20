@@ -205,6 +205,7 @@ void Chromasound_Direct::pitchBend(float pitch, int pitchRange)
         VGMStream::StreamPitchItem* pitchItem = new VGMStream::StreamPitchItem(0, _keys[key]->type(), nullptr, pitch, pitchRange);
         pitchItem->setChannel(_keys[key]->channel());
         _vgmStream->encodePitchItem(pitchItem, _keys[key]->note(), data);
+        _items.append(pitchItem);
     }
 
     _startedInteractive = true;

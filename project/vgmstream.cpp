@@ -100,6 +100,8 @@ void VGMStream::releaseChannel(const Channel::Type type, const int channel)
 
 void VGMStream::encode(const Project& project, QList<StreamItem*>& items, QByteArray& data)
 {
+    QMap<const Track*, StreamPitchItem*> spis;
+
     for (int i = 0; i < items.size(); i++) {
         StreamSettingsItem* ssi;
         StreamNoteItem* sni;
@@ -112,7 +114,11 @@ void VGMStream::encode(const Project& project, QList<StreamItem*>& items, QByteA
         if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
             encodeSettingsItem(project, ssi, data);
         } else if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
-            encodeNoteItem(project, sni, true, data);
+            if (spis.contains(sni->track())) {
+                encodeNoteItem(project, sni, true, data, spis[sni->track()]);
+            } else {
+                encodeNoteItem(project, sni, true, data);
+            }
         } else if ((sli = dynamic_cast<StreamLFOItem*>(items[i])) != nullptr) {
             encodeLFOItem(sli, data);
         } else if ((snfi = dynamic_cast<StreamNoiseFrequencyItem*>(items[i])) != nullptr) {
@@ -123,6 +129,8 @@ void VGMStream::encode(const Project& project, QList<StreamItem*>& items, QByteA
             encodeEnvelopeShapeItem(sesi, data);
         } else if ((suti = dynamic_cast<StreamUserToneItem*>(items[i])) != nullptr) {
             encodeUserToneItem(suti, data);
+        } else if ((spi = dynamic_cast<StreamPitchItem*>(items[i])) != nullptr) {
+            spis[spi->track()] = spi;
         }
     }
 }
@@ -980,7 +988,7 @@ void VGMStream::assignChannelsAndExpand(const Project& project, QList<StreamItem
 
     ROM pcmROM(project.pcmFile());
 
-    QMap<const Track*, StreamNoteItem*> channelNotes;
+    QMap<const Track*, QList<StreamNoteItem*>> channelNotes;
     QMap<const Track*, StreamPitchItem*> pendingSPIs;
 
     StreamNoteItem* noteItem = nullptr;
@@ -990,7 +998,7 @@ void VGMStream::assignChannelsAndExpand(const Project& project, QList<StreamItem
             assignChannel(project, noteItem, items);
             StreamNoteItem* noteOffItem = new StreamNoteItem(*noteItem);
 
-            channelNotes[noteItem->track()] = noteItem;
+            channelNotes[noteItem->track()].append(noteItem);
 
             if (pendingSPIs.contains(noteItem->track())) {
                 pendingSPIs[noteItem->track()]->setChannel(noteItem->channel());
@@ -1015,8 +1023,14 @@ void VGMStream::assignChannelsAndExpand(const Project& project, QList<StreamItem
             noteOffItem->setOn(false);
             items.append(noteOffItem);
         } else if ((pitchItem = dynamic_cast<StreamPitchItem*>(item))) {
-            if (channelNotes.contains(pitchItem->track())) {
-                pitchItem->setChannel(channelNotes[pitchItem->track()]->channel());
+            if (!channelNotes[pitchItem->track()].empty()) {
+                pitchItem->setChannel(channelNotes[pitchItem->track()].first()->channel());
+                for (int i = 1; i < channelNotes[pitchItem->track()].size(); i++) {
+                    StreamPitchItem* spi = new StreamPitchItem(*pitchItem);
+                    spi->setChannel(channelNotes[pitchItem->track()][i]->channel());
+                    items.append(spi);
+                }
+                channelNotes.remove(pitchItem->track());
             } else {
                 pendingSPIs[pitchItem->track()] = pitchItem;
             }
@@ -1367,7 +1381,6 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
     ROM pcmROM(project.pcmFile());
 
     QMap<Channel::Type, QMap<int, Note>> channelNotes;
-    QMap<Channel::Type, QMap<int, StreamPitchItem*>> pendingSPIs;
     QMap<const Track*, StreamPitchItem*> lastSPIs;
     for (int i = 0; i < items.size(); i++) {
         quint32 fullDelaySamples = (quint32)((items[i]->time() - lastTime) / project.tempo() * 60 * 44100);
@@ -1425,20 +1438,11 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
                 channelNotes[sni->type()].remove(sni->channel());
             }
 
-            bool doFreq = true;
-            if (sni->on() && pendingSPIs[sni->type()].contains(sni->channel())) {
-                Note n(sni->note());
-                n.setVelocity(0);
-                encodePitchItem(spi, n, data);
-                pendingSPIs[sni->type()].remove(sni->channel());
-                doFreq = false;
-            }
-
             StreamPitchItem* lastPitchItem = nullptr;
             if (lastSPIs.contains(sni->track())) {
                 lastPitchItem = lastSPIs[sni->track()];
             }
-            encodeNoteItem(project, sni, doFreq, data, lastPitchItem);
+            encodeNoteItem(project, sni, true, data, lastPitchItem);
 
             if (sni->on() && sni->type() == Channel::Type::PCM) {
                 const PCMChannelSettings* channelSettings = dynamic_cast<const PCMChannelSettings*>(sni->channelSettings());
@@ -1480,8 +1484,6 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
         if ((spi = dynamic_cast<StreamPitchItem*>(items[i])) != nullptr) {
             if (channelNotes[spi->type()].contains(spi->channel())) {
                 encodePitchItem(spi, channelNotes[spi->type()][spi->channel()], data);
-            } else {
-                pendingSPIs[spi->type()][spi->channel()] = spi;
             }
             lastSPIs[spi->track()] = spi;
             continue;
@@ -2056,13 +2058,6 @@ void VGMStream::encodePitchItem(const StreamPitchItem *item, const Note& note, Q
         data.append(0x80 | (addr << 4) | datum1);
         data.append(0x50);
         data.append(datum2);
-
-        addr = (item->channel() * 2) + 1;
-        if (note.velocity() == 0) {
-            int att = 0xF;
-            data.append(0x50);
-            data.append(0x80 | (addr << 4) | att);
-        }
     } else if (item->type() == Channel::Type::FM) {
         int part = 1 + (item->channel() >= 3);
         int channel = item->channel() % 3;
