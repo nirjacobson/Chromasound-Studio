@@ -2,6 +2,8 @@
     <qresource prefix="/">
         <file>templates/empty.csp</file>
         <file>templates/opl-fm.csp</file>
+        <file>templates/opl-fm-rhythm.csp</file>
+        <file>templates/opl-fm-ssg.csp</file>
         <file>templates/opl-full.csp</file>
         <file>templates/opl-ssg.csp</file>
         <file>templates/opn-fm.csp</file>

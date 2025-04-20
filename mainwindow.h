@@ -153,6 +153,8 @@ class MainWindow : public QMainWindow
         void loadSSGTemplate();
         void loadFM2Template();
         void loadFM2SSGTemplate();
+        void loadFM2RhythmTemplate();
+        void loadFM2RhythmSSGTemplate();
 
         void cleanChanged(bool clean);
 
@@ -216,6 +218,8 @@ class MainWindow : public QMainWindow
         QAction _actionSSG;
         QAction _actionFM2;
         QAction _actionFM2SSG;
+        QAction _actionFM2Rhythm;
+        QAction _actionFM2RhythmSSG;
 
         QSize _pianoRollSize;
 

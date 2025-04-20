@@ -31,6 +31,8 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _actionSSG(tr("SSG (Tone + Noise)"))
     , _actionFM2(tr("FM"))
     , _actionFM2SSG(tr("FM + SSG"))
+    , _actionFM2Rhythm(tr("FM + Rhythm"))
+    , _actionFM2RhythmSSG(tr("FM + Rhythm + SSG"))
     , _shownEver(false)
     , _selectedChannel(-1)
 {
@@ -105,6 +107,8 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     ui->menuFromTemplate->addAction(&_actionSSG);
     ui->menuFromTemplate->addAction(&_actionFM2);
     ui->menuFromTemplate->addAction(&_actionFM2SSG);
+    ui->menuFromTemplate->addAction(&_actionFM2Rhythm);
+    ui->menuFromTemplate->addAction(&_actionFM2RhythmSSG);
 
     connect(ui->topWidget, &TopWidget::play, this, &MainWindow::play);
     connect(ui->topWidget, &TopWidget::pause, this, &MainWindow::pause);
@@ -125,6 +129,8 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(&_actionSSG, &QAction::triggered, this, &MainWindow::loadSSGTemplate);
     connect(&_actionFM2, &QAction::triggered, this, &MainWindow::loadFM2Template);
     connect(&_actionFM2SSG, &QAction::triggered, this, &MainWindow::loadFM2SSGTemplate);
+    connect(&_actionFM2Rhythm, &QAction::triggered, this, &MainWindow::loadFM2RhythmTemplate);
+    connect(&_actionFM2RhythmSSG, &QAction::triggered, this, &MainWindow::loadFM2RhythmSSGTemplate);
 
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openTriggered);
     connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveTriggered);
@@ -1478,6 +1484,16 @@ void MainWindow::loadFM2Template()
 }
 
 void MainWindow::loadFM2SSGTemplate()
+{
+    loadTemplate(":/templates/opl-fm-ssg.csp");
+}
+
+void MainWindow::loadFM2RhythmTemplate()
+{
+    loadTemplate(":/templates/opl-fm-rhythm.csp");
+}
+
+void MainWindow::loadFM2RhythmSSGTemplate()
 {
     loadTemplate(":/templates/opl-full.csp");
 }
