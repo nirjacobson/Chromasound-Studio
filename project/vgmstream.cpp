@@ -1024,13 +1024,15 @@ void VGMStream::assignChannelsAndExpand(const Project& project, QList<StreamItem
             items.append(noteOffItem);
         } else if ((pitchItem = dynamic_cast<StreamPitchItem*>(item))) {
             if (!channelNotes[pitchItem->track()].empty()) {
+                channelNotes[pitchItem->track()].erase(std::remove_if(channelNotes[pitchItem->track()].begin(), channelNotes[pitchItem->track()].end(), [&](StreamNoteItem* sni) {
+                                                           return (sni->time() + sni->note().duration()) <= pitchItem->time();
+                                                       }), channelNotes[pitchItem->track()].end());
                 pitchItem->setChannel(channelNotes[pitchItem->track()].first()->channel());
                 for (int i = 1; i < channelNotes[pitchItem->track()].size(); i++) {
                     StreamPitchItem* spi = new StreamPitchItem(*pitchItem);
                     spi->setChannel(channelNotes[pitchItem->track()][i]->channel());
                     items.append(spi);
                 }
-                channelNotes.remove(pitchItem->track());
             } else {
                 pendingSPIs[pitchItem->track()] = pitchItem;
             }
