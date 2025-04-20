@@ -108,10 +108,11 @@ void VGMStream::encode(const Project& project, QList<StreamItem*>& items, QByteA
         StreamEnvelopeFrequencyItem* sefi;
         StreamEnvelopeShapeItem* sesi;
         StreamUserToneItem* suti;
+        StreamPitchItem* spi;
         if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
             encodeSettingsItem(project, ssi, data);
         } else if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
-            encodeNoteItem(project, sni, data);
+            encodeNoteItem(project, sni, true, data);
         } else if ((sli = dynamic_cast<StreamLFOItem*>(items[i])) != nullptr) {
             encodeLFOItem(sli, data);
         } else if ((snfi = dynamic_cast<StreamNoiseFrequencyItem*>(items[i])) != nullptr) {
@@ -881,6 +882,11 @@ void VGMStream::processTrack(const float time, const Channel& channel, const Tra
         return a->time() < b->time();
     });
 
+    QList<Track::PitchChange*> pitchChangesCopy = track->pitchChanges();
+    std::sort(pitchChangesCopy.begin(), pitchChangesCopy.end(), [](const Track::PitchChange* a, const Track::PitchChange* b) {
+        return a->time() < b->time();
+    });
+
     for (Track::Item* item : itemsCopy) {
         Note note = item->note();
         if (loopStart >= 0 && loopEnd >= 0) {
@@ -893,6 +899,10 @@ void VGMStream::processTrack(const float time, const Channel& channel, const Tra
             }
         }
         items.append(new StreamNoteItem(time + item->time(), channel.type(), track, note, &channel.settings()));
+    }
+
+    for (Track::PitchChange* pitchChange : pitchChangesCopy) {
+        items.append(new StreamPitchItem(time + pitchChange->time(), channel.type(), track, pitchChange->pitch(), channel.pitchRange()));
     }
 }
 
@@ -970,31 +980,47 @@ void VGMStream::assignChannelsAndExpand(const Project& project, QList<StreamItem
 
     ROM pcmROM(project.pcmFile());
 
+    QMap<const Track*, StreamNoteItem*> channelNotes;
+    QMap<const Track*, StreamPitchItem*> pendingSPIs;
+
+    StreamNoteItem* noteItem = nullptr;
+    StreamPitchItem* pitchItem = nullptr;
     for (StreamItem* item : itemsCopy) {
-        StreamNoteItem* noteItem = dynamic_cast<StreamNoteItem*>(item);
+        if ((noteItem = dynamic_cast<StreamNoteItem*>(item))) {
+            assignChannel(project, noteItem, items);
+            StreamNoteItem* noteOffItem = new StreamNoteItem(*noteItem);
 
-        if (!noteItem) continue;
+            channelNotes[noteItem->track()] = noteItem;
 
-        assignChannel(project, noteItem, items);
-        StreamNoteItem* noteOffItem = new StreamNoteItem(*noteItem);
-
-        float duration = noteItem->note().duration();
-        if (noteItem->type() == Channel::Type::PCM) {
-            const PCMChannelSettings* channelSettings = dynamic_cast<const PCMChannelSettings*>(noteItem->channelSettings());
-            quint32 size = 0;
-            quint32 durationSamples = duration / tempo * 60 * 44100;
-
-            if (channelSettings->keySampleMappings().contains(noteItem->note().key())) {
-                size = pcmROM.size(channelSettings->keySampleMappings()[noteItem->note().key()]);
+            if (pendingSPIs.contains(noteItem->track())) {
+                pendingSPIs[noteItem->track()]->setChannel(noteItem->channel());
+                pendingSPIs.remove(noteItem->track());
             }
 
-            if (size < durationSamples) {
-                duration = size / 44100.0f / 60 * tempo;
+            float duration = noteItem->note().duration();
+            if (noteItem->type() == Channel::Type::PCM) {
+                const PCMChannelSettings* channelSettings = dynamic_cast<const PCMChannelSettings*>(noteItem->channelSettings());
+                quint32 size = 0;
+                quint32 durationSamples = duration / tempo * 60 * 44100;
+
+                if (channelSettings->keySampleMappings().contains(noteItem->note().key())) {
+                    size = pcmROM.size(channelSettings->keySampleMappings()[noteItem->note().key()]);
+                }
+
+                if (size < durationSamples) {
+                    duration = size / 44100.0f / 60 * tempo;
+                }
+            }
+            noteOffItem->setTime(noteItem->time() + duration);
+            noteOffItem->setOn(false);
+            items.append(noteOffItem);
+        } else if ((pitchItem = dynamic_cast<StreamPitchItem*>(item))) {
+            if (channelNotes.contains(pitchItem->track())) {
+                pitchItem->setChannel(channelNotes[pitchItem->track()]->channel());
+            } else {
+                pendingSPIs[pitchItem->track()] = pitchItem;
             }
         }
-        noteOffItem->setTime(noteItem->time() + duration);
-        noteOffItem->setOn(false);
-        items.append(noteOffItem);
     }
 }
 
@@ -1340,6 +1366,9 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
 
     ROM pcmROM(project.pcmFile());
 
+    QMap<Channel::Type, QMap<int, Note>> channelNotes;
+    QMap<Channel::Type, QMap<int, StreamPitchItem*>> pendingSPIs;
+    QMap<const Track*, StreamPitchItem*> lastSPIs;
     for (int i = 0; i < items.size(); i++) {
         quint32 fullDelaySamples = (quint32)((items[i]->time() - lastTime) / project.tempo() * 60 * 44100);
         lastTime = items[i]->time();
@@ -1383,13 +1412,33 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
         StreamEnvelopeFrequencyItem* sefi;
         StreamEnvelopeShapeItem* sesi;
         StreamUserToneItem* suti;
+        StreamPitchItem* spi;
         if ((ssi = dynamic_cast<StreamSettingsItem*>(items[i])) != nullptr) {
             encodeSettingsItem(project, ssi, data);
             continue;
         }
 
         if ((sni = dynamic_cast<StreamNoteItem*>(items[i])) != nullptr) {
-            encodeNoteItem(project, sni, data);
+            if (sni->on()) {
+                channelNotes[sni->type()][sni->channel()] = sni->note();
+            } else {
+                channelNotes[sni->type()].remove(sni->channel());
+            }
+
+            bool doFreq = true;
+            if (sni->on() && pendingSPIs[sni->type()].contains(sni->channel())) {
+                Note n(sni->note());
+                n.setVelocity(0);
+                encodePitchItem(spi, n, data);
+                pendingSPIs[sni->type()].remove(sni->channel());
+                doFreq = false;
+            }
+
+            StreamPitchItem* lastPitchItem = nullptr;
+            if (lastSPIs.contains(sni->track())) {
+                lastPitchItem = lastSPIs[sni->track()];
+            }
+            encodeNoteItem(project, sni, doFreq, data, lastPitchItem);
 
             if (sni->on() && sni->type() == Channel::Type::PCM) {
                 const PCMChannelSettings* channelSettings = dynamic_cast<const PCMChannelSettings*>(sni->channelSettings());
@@ -1425,6 +1474,16 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
 
         if ((suti = dynamic_cast<StreamUserToneItem*>(items[i])) != nullptr) {
             encodeUserToneItem(suti, data);
+            continue;
+        }
+
+        if ((spi = dynamic_cast<StreamPitchItem*>(items[i])) != nullptr) {
+            if (channelNotes[spi->type()].contains(spi->channel())) {
+                encodePitchItem(spi, channelNotes[spi->type()][spi->channel()], data);
+            } else {
+                pendingSPIs[spi->type()][spi->channel()] = spi;
+            }
+            lastSPIs[spi->track()] = spi;
             continue;
         }
     }
@@ -1645,15 +1704,25 @@ void VGMStream::encodeSettingsItem(const Project& project, const StreamSettingsI
     }
 }
 
-void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* item, QByteArray& data)
+void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* item, bool doFreq, QByteArray& data, const StreamPitchItem* lastPitchChange)
 {
     if (item->channel() < 0) {
         return;
     }
 
+    if (lastPitchChange) {
+        StreamPitchItem* newSPI = new StreamPitchItem(*lastPitchChange);
+        newSPI->setChannel(item->channel());
+        encodePitchItem(newSPI, item->note(), data);
+        delete newSPI;
+
+        encodeNoteItem(project, item, false, data);
+        return;
+    }
+
     int addr;
     if (item->type() == Channel::Type::TONE) {
-        if (item->on()) {
+        if (item->on() && doFreq) {
             addr = (item->channel() * 2);
             int octave = item->note().key() / 12;
             int key = item->note().key() % 12;
@@ -1701,13 +1770,15 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
             int key = item->note().key() % 12;
             int n = (octave << 11) | ym2612_frequencies[key];
 
-            data.append((part == 1) ? 0x52 : 0x53);
-            data.append(0xA4 + channel);
-            data.append((n >> 8) & 0xFF);
+            if (doFreq) {
+                data.append((part == 1) ? 0x52 : 0x53);
+                data.append(0xA4 + channel);
+                data.append((n >> 8) & 0xFF);
 
-            data.append((part == 1) ? 0x52 : 0x53);
-            data.append(0xA0 + channel);
-            data.append(n & 0xFF);
+                data.append((part == 1) ? 0x52 : 0x53);
+                data.append(0xA0 + channel);
+                data.append(n & 0xFF);
+            }
 
             QList<int> sls = slotsByAlg[fmcs->algorithm().algorithm()];
             for (int i = 0; i < sls.size(); i++) {
@@ -1758,7 +1829,7 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
         }
     } else if (item->type() == Channel::Type::SSG) {
         const SSGChannelSettings* settings = dynamic_cast<const SSGChannelSettings*>(item->channelSettings());
-        if (item->on()) {
+        if (item->on() && doFreq) {
             addr = item->channel() * 2;
 
             int octave = item->note().key() / 12;
@@ -1811,13 +1882,15 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
 
             _lastChanVal[item->channel()] = newChanVal;
 
-            data.append(0x51);
-            data.append(0x10 + item->channel());
-            data.append(n & 0xFF);
+            if (doFreq) {
+                data.append(0x51);
+                data.append(0x10 + item->channel());
+                data.append(n & 0xFF);
 
-            data.append(0x51);
-            data.append(0x20 + item->channel());
-            data.append((n >> 8) | (1 << 4));
+                data.append(0x51);
+                data.append(0x20 + item->channel());
+                data.append((n >> 8) | (1 << 4));
+            }
         } else {
             data.append(0x51);
             data.append(0x20 + item->channel());
@@ -1955,6 +2028,127 @@ void VGMStream::encodeUserToneItem(const StreamUserToneItem* item, QByteArray& d
         data.append((quint8)i);
         data.append(d[i]);
     }
+}
+
+void VGMStream::encodePitchItem(const StreamPitchItem *item, const Note& note, QByteArray &data)
+{
+    if (item->channel() < 0) {
+        return;
+    }
+
+    int addr;
+    if (item->type() == Channel::Type::TONE) {
+        addr = (item->channel() * 2);
+        int octave = note.key() / 12;
+        int key = note.key() % 12;
+        float f1 = frequencies[key] * (float)qPow(2, octave);
+        float f2;
+        if (item->pitch() < 0) {
+            f2 = frequencies[(note.key() - item->pitchRange()) % 12] * (float)qPow(2, octave - ((note.key() % 12) < item->pitchRange()));
+        } else {
+            f2 = frequencies[(note.key() + item->pitchRange()) % 12] * (float)qPow(2, octave + ((note.key() % 12) >= 12 - item->pitchRange()));
+        }
+        float f = f1 + (f2 - f1) * std::fabs(item->pitch());
+        int n = 3579545.0f / (32.0f * f);
+        uint8_t datum1 = n & 0xF;
+        uint8_t datum2 = n >> 4;
+        data.append(0x50);
+        data.append(0x80 | (addr << 4) | datum1);
+        data.append(0x50);
+        data.append(datum2);
+
+        addr = (item->channel() * 2) + 1;
+        if (note.velocity() == 0) {
+            int att = 0xF;
+            data.append(0x50);
+            data.append(0x80 | (addr << 4) | att);
+        }
+    } else if (item->type() == Channel::Type::FM) {
+        int part = 1 + (item->channel() >= 3);
+        int channel = item->channel() % 3;
+
+        int octave1 = note.key() / 12;
+        int key1 = note.key() % 12;
+        int octave2;
+        int key2;
+        if (item->pitch() < 0) {
+            octave2 = octave1 - ((note.key() % 12) < item->pitchRange());
+            key2 = (note.key() - item->pitchRange()) % 12;
+        } else {
+            octave2 = octave1 + ((note.key() % 12) >= 12 - item->pitchRange());
+            key2 = (note.key() + item->pitchRange()) % 12;
+        }
+
+        int n;
+        if (octave1 < octave2) {
+            n = (octave2 << 11) | (int)(617 + (ym2612_frequencies[key2] - 617) * std::fabs(item->pitch()));
+        } else if (octave1 > octave2) {
+            n = (octave2 << 11) | (int)(1305 - (1305 - ym2612_frequencies[key2]) * std::fabs(item->pitch()));
+        } else {
+            n = (octave1 << 11) | (int)(ym2612_frequencies[key1] + (ym2612_frequencies[key2] - ym2612_frequencies[key1]) * std::fabs(item->pitch()));
+        }
+
+        data.append((part == 1) ? 0x52 : 0x53);
+        data.append(0xA4 + channel);
+        data.append((n >> 8) & 0xFF);
+
+        data.append((part == 1) ? 0x52 : 0x53);
+        data.append(0xA0 + channel);
+        data.append(n & 0xFF);
+    } else if (item->type() == Channel::Type::SSG) {
+        addr = item->channel() * 2;
+
+        int octave = note.key() / 12;
+        int key = note.key() % 12;
+        float f1 = frequencies[key] * (float)qPow(2, octave);
+        float f2;
+        if (item->pitch() < 0) {
+            f2 = frequencies[(note.key() - item->pitchRange()) % 12] * (float)qPow(2, octave - ((note.key() % 12) < item->pitchRange()));
+        } else {
+            f2 = frequencies[(note.key() + item->pitchRange()) % 12] * (float)qPow(2, octave + ((note.key() % 12) >= 12 - item->pitchRange()));
+        }
+        float f = f1 + (f2 - f1) * std::fabs(item->pitch());
+
+        int n = 3579545.0f / (32.0f * f);
+        uint8_t datum1 = n & 0xFF;
+        uint8_t datum2 = n >> 8;
+        data.append(0xA0);
+        data.append(addr);
+        data.append(datum1);
+        data.append(0xA0);
+        data.append(addr + 1);
+        data.append(datum2);
+    } else if (item->type() == Channel::Type::MELODY) {
+        int octave1 = note.key() / 12;
+        int key1 = note.key() % 12;
+        int octave2;
+        int key2;
+        if (item->pitch() < 0) {
+            octave2 = octave1 - ((note.key() % 12) < item->pitchRange());
+            key2 = (note.key() - item->pitchRange()) % 12;
+        } else {
+            octave2 = octave1 + ((note.key() % 12) >= 12 - item->pitchRange());
+            key2 = (note.key() + item->pitchRange()) % 12;
+        }
+
+        int n;
+        if (octave1 < octave2) {
+            n = (octave2 << 9) | (int)(163 + (ym2413_frequencies[key2] - 163) * std::fabs(item->pitch()));
+        } else if (octave1 > octave2) {
+            n = (octave2 << 9) | (int)(343 - (343 - ym2413_frequencies[key2]) * std::fabs(item->pitch()));
+        } else {
+            n = (octave1 << 9) | (int)(ym2413_frequencies[key1] + (ym2413_frequencies[key2] - ym2413_frequencies[key1]) * std::fabs(item->pitch()));
+        }
+
+        data.append(0x51);
+        data.append(0x10 + item->channel());
+        data.append(n & 0xFF);
+
+        data.append(0x51);
+        data.append(0x20 + item->channel());
+        data.append((n >> 8) | (1 << 4));
+    }
+
 }
 
 QByteArray VGMStream::generateHeader(const Project& project, const QByteArray& data, const int totalSamples, const int loopOffsetData, const int gd3size, const bool selectionLoop)
@@ -2281,4 +2475,45 @@ const OPLSettings& VGMStream::StreamUserToneItem::settings() const
 VGMStream::PCMChannel::PCMChannel()
 {
 
+}
+
+VGMStream::StreamPitchItem::StreamPitchItem(const float time, const Channel::Type type, const Track *track, float pitch, int pitchRange)
+    : StreamItem(time)
+    , _type(type)
+    , _track(track)
+    , _pitch(pitch)
+    , _pitchRange(pitchRange)
+    , _channel(-1)
+{
+
+}
+
+void VGMStream::StreamPitchItem::setChannel(const int channel)
+{
+    _channel = channel;
+}
+
+int VGMStream::StreamPitchItem::channel() const
+{
+    return _channel;
+}
+
+Channel::Type VGMStream::StreamPitchItem::type() const
+{
+    return _type;
+}
+
+float VGMStream::StreamPitchItem::pitch() const
+{
+    return _pitch;
+}
+
+int VGMStream::StreamPitchItem::pitchRange() const
+{
+    return _pitchRange;
+}
+
+const Track *VGMStream::StreamPitchItem::track() const
+{
+    return _track;
 }

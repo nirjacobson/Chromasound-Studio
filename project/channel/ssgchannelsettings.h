@@ -28,6 +28,10 @@ class SSGChannelSettings : public ChannelSettings
         bool _noise;
         bool _tone;
         bool _envelope;
+
+        // ChannelSettings interface
+    public:
+        bool supportsPitchChanges();
 };
 
 #endif // SSGCHANNELSETTINGS_H

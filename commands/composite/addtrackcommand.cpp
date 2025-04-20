@@ -1,9 +1,16 @@
 #include "addtrackcommand.h"
 #include "mainwindow.h"
 
-AddTrackCommand::AddTrackCommand(MainWindow* window, const QList<Track::Item*>& items, const QString& name)
+AddTrackCommand::AddTrackCommand(MainWindow *window, const QList<Track::Item *> &items, const QString &name)
+    : AddTrackCommand(window, items, QList<Track::PitchChange*>(), name)
+{
+
+}
+
+AddTrackCommand::AddTrackCommand(MainWindow* window, const QList<Track::Item*>& items, const QList<Track::PitchChange *> &pitchChanges, const QString& name)
     : _mainWindow(window)
     , _items(items)
+    , _pitchChanges(pitchChanges)
     , _name(name)
     , _addChannelCommand(nullptr)
     , _addTrackItemsCommand(nullptr)
@@ -46,6 +53,7 @@ void AddTrackCommand::redo()
             track,
             0,
             _items,
+            _pitchChanges,
             false);
     _addTrackItemsCommand->redo();
 

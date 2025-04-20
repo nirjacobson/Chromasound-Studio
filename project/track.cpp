@@ -15,24 +15,45 @@ Track::~Track()
 
     for (SettingsChange* sc : _settingsChanges)
         delete sc;
+
+    for (PitchChange* pc : _pitchChanges)
+        delete pc;
 }
 
 Track::Track(Track&& o)
 {
     _items = o._items;
+    _settingsChanges = o._settingsChanges;
+    _pitchChanges = o._pitchChanges;
     _usePianoRoll = o._usePianoRoll;
 
     o.items().clear();
+    o.settingsChanges().clear();
+    o.pitchChanges().clear();
 }
 
 Track& Track::operator=(Track&& o)
 {
     _items = o._items;
+    _settingsChanges = o._settingsChanges;
+    _pitchChanges = o._pitchChanges;
     _usePianoRoll = o._usePianoRoll;
 
     o.items().clear();
+    o.settingsChanges().clear();
+    o.pitchChanges().clear();
 
     return *this;
+}
+
+const QList<Track::PitchChange *> &Track::pitchChanges() const
+{
+    return _pitchChanges;
+}
+
+QList<Track::PitchChange*>& Track::pitchChanges()
+{
+    return _pitchChanges;
 }
 
 QList<Track::Item*>& Track::items()
@@ -139,6 +160,34 @@ void Track::removeSettingsChange(const SettingsChange* sc, const bool keep)
             delete sc;
         }
     }
+}
+
+void Track::addPitchChanges(const QList<Track::PitchChange*>& pitchChanges)
+{
+    _pitchChanges.append(pitchChanges);
+}
+
+void Track::removePitchChange(const PitchChange *pc, const bool keep)
+{
+    if (_pitchChanges.removeAll(pc) > 0) {
+        if (!keep) {
+            delete pc;
+        }
+    }
+}
+
+Track::PitchChange* Track::addPitchChange(const float time, const float pitch)
+{
+    PitchChange* ret = nullptr;
+
+    if (std::find_if(_pitchChanges.begin(), _pitchChanges.end(), [=](PitchChange* const pc) {
+            return pc->time() == time;
+        }) == _pitchChanges.end()) {
+        ret = new PitchChange(time, pitch);
+        _pitchChanges.append(ret);
+    }
+
+    return ret;
 }
 
 void Track::usePianoRoll()
@@ -289,3 +338,32 @@ Track::SettingsChange::SettingsChange()
 
 }
 
+
+Track::PitchChange::PitchChange(const float time, const float pitch)
+    : _time(time)
+    , _pitch(pitch)
+{
+
+}
+
+void Track::PitchChange::setTime(const float time)
+{
+    _time = time;
+}
+
+float Track::PitchChange::time() const
+{
+    return _time;
+}
+
+float Track::PitchChange::pitch() const
+{
+    return _pitch;
+}
+
+Track::PitchChange::PitchChange()
+    : _time(0)
+    , _pitch(0)
+{
+
+}

@@ -15,6 +15,10 @@ class ToneChannelSettings : public ChannelSettings
         // ChannelSettings interface
     public:
         ChannelSettings* copy() const;
+
+        // ChannelSettings interface
+    public:
+        bool supportsPitchChanges();
 };
 
 #endif // TONECHANNELSETTINGS_H

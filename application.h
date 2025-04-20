@@ -57,6 +57,7 @@ class Application : public QApplication
         void keyOn(const Channel& channel, const int key, const int velocity);
         void keyOn(const Channel& channel, const ChannelSettings& settings, const int key, const int velocity);
         void keyOff(const Channel &channel, int key);
+        void pitchChange(const int index, const float pitch, const int pitchRange);
 
         QUndoStack& undoStack();
 

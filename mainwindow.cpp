@@ -429,10 +429,10 @@ void MainWindow::stop()
 
     if (!_app->recording().empty()) {
         if (_selectedChannel < 0) {
-            _app->undoStack().push(new AddTrackCommand(this, _app->recording().items(), "Recording"));
+            _app->undoStack().push(new AddTrackCommand(this, _app->recording().items(), _app->recording().pitchChanges(), "Recording"));
             _app->project().getFrontPattern().getTrack(_app->project().channelCount() - 1).usePianoRoll();
         } else {
-            _app->undoStack().push(new AddTrackItemsCommand(this, _app->project().getFrontPattern().getTrack(_selectedChannel), 0, _app->recording().items(), false));
+            _app->undoStack().push(new AddTrackItemsCommand(this, _app->project().getFrontPattern().getTrack(_selectedChannel), 0, _app->recording().items(), _app->recording().pitchChanges(), false));
             _app->project().getFrontPattern().getTrack(_selectedChannel).usePianoRoll();
         }
         _app->clearRecording();
@@ -952,6 +952,25 @@ void MainWindow::padOff(const int pad)
     }
 }
 
+void MainWindow::pitchChange(const int pitch)
+{
+    int activeChannel;
+    PianoRollWidget* prw;
+    if ((prw = dynamic_cast<PianoRollWidget*>(_mdiArea->activeSubWindow()->widget()))) {
+        activeChannel = prw->channel();
+    } else {
+        activeChannel = qMax(0, _channelsWidget->activeChannel());
+    }
+
+    Channel& channel = _app->project().getChannel(activeChannel);
+
+    float normalizedPitch = -1.0 + 2.0 * (pitch / (std::pow(2, 14) - 1));
+
+    if (channel.type() != Channel::Type::PCM) {
+        _app->pitchChange(activeChannel, normalizedPitch, channel.pitchRange());
+    }
+}
+
 void MainWindow::handleMIDIMessage(const long message)
 {
     const quint8 status = ((message >> 0) & 0xFF);
@@ -968,6 +987,8 @@ void MainWindow::handleMIDIMessage(const long message)
     QStringList pads = setting.split(",");
     QList<int> padsInt;
 
+    int pitchVal;
+    int modVal;
     for (QString& pad : pads) {
         padsInt.append(pad.toInt(nullptr, 16));
     }
@@ -990,6 +1011,13 @@ void MainWindow::handleMIDIMessage(const long message)
         if (!_midiPadsDialog && padsInt.contains(data1)) {
             padOff(padsInt.indexOf(data1));
         }
+        break;
+    case 0xE0:
+        pitchVal = ((int)data2 << 7) | data1;
+        pitchChange(pitchVal);
+        break;
+    case 0xB0:
+        modVal = data2;
         break;
     default:
         break;

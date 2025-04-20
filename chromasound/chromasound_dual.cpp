@@ -69,6 +69,11 @@ void Chromasound_Dual::keyOff(int key)
     _chromasound2->keyOff(key);
 }
 
+void Chromasound_Dual::pitchBend(float pitch, int pitchRange)
+{
+    _chromasound2->pitchBend(pitch, pitchRange);
+}
+
 void Chromasound_Dual::sync()
 {
     _chromasound2->sync();

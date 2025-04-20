@@ -12,6 +12,7 @@
 #include "application.h"
 #include "pianorollkeyswidget.h"
 #include "pianorollvelocitieswidget.h"
+#include "pianorollpitchwidget.h"
 #include "commands/addnotecommand.h"
 #include "commands/removenotecommand.h"
 #include "commands/editnotecommand.h"
@@ -20,6 +21,8 @@
 #include "commands/composite/replacetrackitemscommand.h"
 #include "commands/addtracksettingschangecommand.h"
 #include "commands/removetracksettingschangecommand.h"
+#include "commands/addpitchchangecommand.h"
+#include "commands/removepitchchangecommand.h"
 #include "formats/bson.h"
 #include "formats/midi/midi.h"
 #include "formats/midi/midifile.h"
@@ -73,6 +76,7 @@ class PianoRollWidget : public QMainWindow
         Ui::PianoRollWidget *ui;
         PianoRollKeysWidget* _keysWidget;
         PianoRollVelocitiesWidget* _velocitiesWidget;
+        PianoRollPitchWidget* _pitchWidget;
 
         int _channel;
         Pattern* _pattern;
@@ -115,6 +119,8 @@ class PianoRollWidget : public QMainWindow
         void quantizeDivisionTriggered();
         void quantizeKeyOn();
         void quantizeKeyOnAndDuration();
+        void pitchChangeAdded(float time, float pitch);
+        void pitchChangeRemoved(Track::PitchChange *change);
 
         // QWidget interface
     protected:

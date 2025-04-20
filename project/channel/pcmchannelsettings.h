@@ -29,6 +29,10 @@ public:
     QString type() const;
     ChannelSettings* copy() const;
 
+
+    // ChannelSettings interface
+public:
+    bool supportsPitchChanges();
 };
 
 #endif // PCMCHANNELSETTINGS_H

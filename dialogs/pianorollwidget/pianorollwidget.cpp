@@ -7,6 +7,7 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
     , ui(new Ui::PianoRollWidget)
     , _keysWidget(new PianoRollKeysWidget(this, app))
     , _velocitiesWidget(new PianoRollVelocitiesWidget(this))
+    , _pitchWidget(nullptr)
     , _itemLastClicked(nullptr)
     , _noteMenu(tr("Context menu"), this)
     , _velocityAction("Velocity", this)
@@ -30,7 +31,7 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
 
     ui->ganttWidget->setApplication(_app);
     ui->ganttWidget->setLeftWidget(_keysWidget);
-    ui->ganttWidget->setBottomWidget(_velocitiesWidget);
+    ui->ganttWidget->addBottomWidget(_velocitiesWidget, "Note velocities");
     ui->ganttWidget->setParameters(Rows, RowHeight, CellWidth, 0.25);
     ui->ganttWidget->invertRows(true);
     ui->ganttWidget->setItemsResizable(true);
@@ -87,6 +88,10 @@ PianoRollWidget::~PianoRollWidget()
     delete _quantDivisionDialog;
     delete _velocityDialog;
     delete _velocitiesWidget;
+
+    if (_pitchWidget)
+        delete _pitchWidget;
+
     delete _keysWidget;
 }
 
@@ -117,6 +122,18 @@ void PianoRollWidget::setTrack(const int pattern, const int track)
         const PCMChannelSettings& settings = dynamic_cast<const PCMChannelSettings&>(_app->project().getChannel(_channel).settings());
         _keysWidget->setROMChannelSettings(&settings);
     } catch (std::exception& e) { }
+
+    if (_app->project().getChannel(_channel).settings().supportsPitchChanges()) {
+        _pitchWidget = new PianoRollPitchWidget(this);
+        _pitchWidget->setApplication(_app);
+        connect(_pitchWidget, &PianoRollPitchWidget::pitchChangeAdded, this, &PianoRollWidget::pitchChangeAdded);
+        connect(_pitchWidget, &PianoRollPitchWidget::pitchChangeRemoved, this, &PianoRollWidget::pitchChangeRemoved);
+
+        _pitchWidget->setItems(&_track->pitchChanges(), _app->project().getChannel(_channel).pitchRange());
+
+        ui->ganttWidget->addBottomWidget(_pitchWidget, "Channel pitch");
+        ui->ganttWidget->setParameters(Rows, RowHeight, CellWidth, 0.25);
+    }
 
     update();
 }
@@ -536,6 +553,16 @@ void PianoRollWidget::quantizeKeyOnAndDuration()
 
         _app->undoStack().push(new ReplaceTrackItemsCommand(_app->window(), *_track, newItems));
     }
+}
+
+void PianoRollWidget::pitchChangeAdded(float time, float pitch)
+{
+    _app->undoStack().push(new AddPitchChangeCommand(_app->window(), *_track, time, pitch));
+}
+
+void PianoRollWidget::pitchChangeRemoved(Track::PitchChange* change)
+{
+    _app->undoStack().push(new RemovePitchChangeCommand(_app->window(), *_track, change));
 }
 
 void PianoRollWidget::paintEvent(QPaintEvent* event)

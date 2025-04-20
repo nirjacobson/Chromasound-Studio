@@ -18,6 +18,8 @@ class ChannelSettings : public Settings
 
         virtual ChannelSettings* copy() const = 0;
 
+        virtual bool supportsPitchChanges() = 0;
+
     private:
         int _volume;
 

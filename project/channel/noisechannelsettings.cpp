@@ -122,3 +122,8 @@ ChannelSettings* NoiseChannelSettings::copy() const
 
     return ncs;
 }
+
+bool NoiseChannelSettings::supportsPitchChanges()
+{
+    return false;
+}

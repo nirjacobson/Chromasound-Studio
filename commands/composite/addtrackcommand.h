@@ -13,11 +13,13 @@ class AddTrackCommand : public QUndoCommand
 {
     public:
         AddTrackCommand(MainWindow* window, const QList<Track::Item*>& items, const QString& name);
+        AddTrackCommand(MainWindow* window, const QList<Track::Item*>& items, const QList<Track::PitchChange*>&, const QString& name);
         ~AddTrackCommand();
 
     private:
         MainWindow* _mainWindow;
         QList<Track::Item*> _items;
+        QList<Track::PitchChange*> _pitchChanges;
         QString _name;
 
         AddChannelCommand* _addChannelCommand;

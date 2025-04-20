@@ -197,6 +197,21 @@ void Chromasound_Direct::keyOff(int key)
     _items.append(sni);
 }
 
+void Chromasound_Direct::pitchBend(float pitch, int pitchRange)
+{
+    QByteArray data;
+
+    for (int key : _keys.keys()) {
+        VGMStream::StreamPitchItem* pitchItem = new VGMStream::StreamPitchItem(0, _keys[key]->type(), nullptr, pitch, pitchRange);
+        pitchItem->setChannel(_keys[key]->channel());
+        _vgmStream->encodePitchItem(pitchItem, _keys[key]->note(), data);
+    }
+
+    _startedInteractive = true;
+
+    _vgmPlayer->addVGM(data);
+}
+
 void Chromasound_Direct::sync()
 {
     if (isPlaying()) return;

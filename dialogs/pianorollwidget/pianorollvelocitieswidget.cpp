@@ -6,7 +6,7 @@ PianoRollVelocitiesWidget::PianoRollVelocitiesWidget(QWidget* parent)
     , _items(nullptr)
     , _left(0)
     , _cellWidth(16)
-    , _cellBeats(1)
+    , _cellBeats(0.25)
     , _barColor(192, 192, 255)
 {
     setMinimumHeight(128);

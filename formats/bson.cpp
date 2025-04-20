@@ -142,6 +142,7 @@ void BSON::fromChannel(bson_t* dst, const Channel& channel)
     BSON_APPEND_BOOL(dst, "enabled", channel._enabled);
     BSON_APPEND_UTF8(dst, "name", channel._name.toStdString().c_str());
     BSON_APPEND_UTF8(dst, "type", Channel::channelTypeToString(channel._type).toStdString().c_str());
+    BSON_APPEND_INT32(dst, "pitchRange", channel._pitchRange);
 
     if (channel._settings) {
         bson_t settings = channel._settings->toBSON();
@@ -156,6 +157,7 @@ Channel BSON::toChannel(bson_iter_t& b)
     bson_iter_t enabled;
     bson_iter_t name;
     bson_iter_t type;
+    bson_iter_t pitchRange;
     bson_iter_t settings;
     bson_iter_t settingsInner;
 
@@ -167,6 +169,9 @@ Channel BSON::toChannel(bson_iter_t& b)
     }
     if (bson_iter_find_descendant(&b, "type", &type) && BSON_ITER_HOLDS_UTF8(&type)) {
         c._type = Channel::channelTypeFromString(bson_iter_utf8(&type, nullptr));
+    }
+    if (bson_iter_find_descendant(&b, "pitchRange", &pitchRange) && BSON_ITER_HOLDS_INT32(&pitchRange)) {
+        c._pitchRange = bson_iter_int32(&pitchRange);
     }
     if (bson_iter_find_descendant(&b, "settings", &settings) && BSON_ITER_HOLDS_DOCUMENT(&settings) && bson_iter_recurse(&settings, &settingsInner)) {
         if (c._type == Channel::Type::TONE) {
@@ -262,6 +267,7 @@ void BSON::fromTrack(bson_t* dst, const Track& track)
 {
     bson_t items;
     bson_t settingsChanges;
+    bson_t pitchChanges;
 
     uint32_t i = 0;
 
@@ -295,6 +301,22 @@ void BSON::fromTrack(bson_t* dst, const Track& track)
     }
     bson_append_array_end(dst, &settingsChanges);
 
+    i = 0;
+
+    BSON_APPEND_ARRAY_BEGIN(dst, "pitchChanges", &pitchChanges);
+    for (const Track::PitchChange* const pc : track._pitchChanges) {
+        bson_t b_change;
+        bson_init(&b_change);
+        fromTrackPitchChange(&b_change, pc);
+
+        char keybuff[8];
+        const char* key;
+        bson_uint32_to_string(i++, &key, keybuff, sizeof keybuff);
+
+        BSON_APPEND_DOCUMENT(&pitchChanges, key, &b_change);
+    }
+    bson_append_array_end(dst, &pitchChanges);
+
     BSON_APPEND_BOOL(dst, "usePianoRoll", track.doesUsePianoRoll());
 }
 
@@ -322,6 +344,13 @@ Track BSON::toTrack(bson_iter_t& b)
         while (bson_iter_next(&child)) {
             bson_iter_recurse(&child, &change);
             t._settingsChanges.append(new Track::SettingsChange(toTrackSettingsChange(change)));
+        }
+    }
+
+    if (bson_iter_find_descendant(&b, "pitchChanges", &changes) && BSON_ITER_HOLDS_ARRAY(&changes) && bson_iter_recurse(&changes, &child)) {
+        while (bson_iter_next(&child)) {
+            bson_iter_recurse(&child, &change);
+            t._pitchChanges.append(new Track::PitchChange(toTrackPitchChange(change)));
         }
     }
 
@@ -466,6 +495,29 @@ Track::SettingsChange BSON::toTrackSettingsChange(bson_iter_t& b)
     }
 
     return sc;
+}
+
+void BSON::fromTrackPitchChange(bson_t *dst, const Track::PitchChange * const change)
+{
+    BSON_APPEND_DOUBLE(dst, "time", change->time());
+    BSON_APPEND_DOUBLE(dst, "pitch", change->pitch());
+}
+
+Track::PitchChange BSON::toTrackPitchChange(bson_iter_t &b)
+{
+    Track::PitchChange pc;
+
+    bson_iter_t time;
+    bson_iter_t pitch;
+
+    if (bson_iter_find_descendant(&b, "time", &time) && BSON_ITER_HOLDS_DOUBLE(&time)) {
+        pc._time = bson_iter_double(&time);
+    }
+    if (bson_iter_find_descendant(&b, "pitch", &pitch) && BSON_ITER_HOLDS_DOUBLE(&pitch)) {
+        pc._pitch = bson_iter_double(&pitch);
+    }
+
+    return pc;
 }
 
 void BSON::fromLFOChange(bson_t* dst, const Playlist::LFOChange* const change)

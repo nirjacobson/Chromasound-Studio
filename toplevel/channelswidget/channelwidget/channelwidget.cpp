@@ -22,6 +22,7 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     , _pcmAction("PCM", this)
     , _fillEvery2StepsAction("Every 2 steps")
     , _fillEvery4StepsAction("Every 4 steps")
+    , _pitchRangeAction("Pitch range...")
     , _toneColor(Qt::cyan)
     , _noiseColor(Qt::lightGray)
     , _fmColor(Qt::magenta)
@@ -101,6 +102,8 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     connect(&_rhythmAction, &QAction::triggered, this, &ChannelWidget::rhythmWasTriggered);
     connect(&_pcmAction, &QAction::triggered, this, &ChannelWidget::pcmWasTriggered);
 
+    connect(&_pitchRangeAction, &QAction::triggered, this, &ChannelWidget::pitchRangeWasTriggered);
+
     connect(ui->stepKeys, &StepKeysWidget::clicked, this, &ChannelWidget::pianoKeyClicked);
     connect(ui->stepVelocities, &StepVelocitiesWidget::clicked, this, &ChannelWidget::velocityClicked);
 
@@ -147,6 +150,9 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     _contextMenu.addAction(&_melodyAction);
     _contextMenu.addAction(&_rhythmAction);
     _contextMenu.addAction(&_pcmAction);
+
+    _contextMenu.addSeparator();
+    _contextMenu.addAction(&_pitchRangeAction);
 
     _contextMenu.addSeparator();
     _contextMenu.addAction(&_deleteAction);
@@ -489,6 +495,8 @@ void ChannelWidget::buttonContextMenuRequested(const QPoint& p)
     _rhythmAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::RHYTHM);
     _pcmAction.setChecked(_app->project().getChannel(_index).type() == Channel::Type::PCM);
 
+    _pitchRangeAction.setEnabled(_app->project().getChannel(_index).settings().supportsPitchChanges());
+
     _contextMenu.exec(mapToGlobal(p));
 }
 
@@ -551,6 +559,16 @@ void ChannelWidget::pcmWasTriggered()
     _app->undoStack().push(new SetChannelTypeCommand(_app->window(), _app->project().getChannel(_index), Channel::Type::PCM));
 
     emit selected();
+}
+
+void ChannelWidget::pitchRangeWasTriggered()
+{
+    bool ok;
+    int number = QInputDialog::getInt(this, "Pitch rnage", "Semitones:", _app->project().getChannel(_index).pitchRange(), -12, 12, 1, &ok);
+
+    if (ok) {
+        _app->undoStack().push(new SetChannelPitchRangeCommand(_app->window(), _app->project().getChannel(_index), number));
+    }
 }
 
 void ChannelWidget::volumeDialChanged(const int val)

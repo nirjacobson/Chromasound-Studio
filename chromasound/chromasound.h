@@ -30,6 +30,7 @@ class Chromasound : public QObject
 
         virtual void keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity) = 0;
         virtual void keyOff(int key) = 0;
+        virtual void pitchBend(float pitch, int pitchRange) = 0;
         virtual void sync() = 0;
 
     signals:

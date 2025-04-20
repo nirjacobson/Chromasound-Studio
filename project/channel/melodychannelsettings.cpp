@@ -54,3 +54,8 @@ ChannelSettings* MelodyChannelSettings::copy() const
 
     return mcs;
 }
+
+bool MelodyChannelSettings::supportsPitchChanges()
+{
+    return true;
+}

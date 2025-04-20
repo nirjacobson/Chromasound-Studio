@@ -21,7 +21,6 @@ void ChannelSettings::setVolume(const int volume)
     _volume = volume;
 }
 
-
 bson_t ChannelSettings::toBSON() const
 {
     bson_t bson;

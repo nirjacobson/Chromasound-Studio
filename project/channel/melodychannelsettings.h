@@ -25,6 +25,10 @@ class MelodyChannelSettings : public ChannelSettings
     public:
         QString type() const;
         ChannelSettings* copy() const;
+
+        // ChannelSettings interface
+    public:
+        bool supportsPitchChanges();
 };
 
 #endif // MELODYCHANNELSETTINGS_H

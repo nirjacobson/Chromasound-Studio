@@ -110,3 +110,8 @@ ChannelSettings* FMChannelSettings::copy() const
 
     return fmcs;
 }
+
+bool FMChannelSettings::supportsPitchChanges()
+{
+    return true;
+}

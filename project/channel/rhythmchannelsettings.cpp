@@ -98,3 +98,8 @@ ChannelSettings* RhythmChannelSettings::copy() const
 
     return rcs;
 }
+
+bool RhythmChannelSettings::supportsPitchChanges()
+{
+    return false;
+}

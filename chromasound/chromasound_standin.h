@@ -23,6 +23,7 @@ class Chromasound_Standin : public Chromasound
 
         void keyOn(const Project&, const Channel::Type, const ChannelSettings&, const int, const int);
         void keyOff(int);
+        void pitchBend(float pitch, int pitchRange);
         void sync();
 
     private:

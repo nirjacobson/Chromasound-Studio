@@ -74,3 +74,8 @@ ChannelSettings* PCMChannelSettings::copy() const
 
     return rcs;
 }
+
+bool PCMChannelSettings::supportsPitchChanges()
+{
+    return false;
+}

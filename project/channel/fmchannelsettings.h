@@ -41,6 +41,10 @@ class FMChannelSettings : public ChannelSettings
         // ChannelSettings interface
     public:
         ChannelSettings* copy() const;
+
+        // ChannelSettings interface
+    public:
+        bool supportsPitchChanges();
 };
 
 #endif // FMCHANNELSETTINGS_H

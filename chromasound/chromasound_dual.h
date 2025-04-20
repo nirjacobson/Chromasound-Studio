@@ -21,6 +21,7 @@ class Chromasound_Dual : public Chromasound
         bool isPaused() const;
         void keyOn(const Project& project, const Channel::Type channelType, const ChannelSettings& settings, const int key, const int velocity);
         void keyOff(int key);
+        void pitchBend(float pitch, int pitchRange);
         void sync();
 
         void setOPLLPatchset(OPLL::Type type);

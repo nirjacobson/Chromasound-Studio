@@ -90,3 +90,8 @@ ChannelSettings* SSGChannelSettings::copy() const
 
     return cs;
 }
+
+bool SSGChannelSettings::supportsPitchChanges()
+{
+    return true;
+}

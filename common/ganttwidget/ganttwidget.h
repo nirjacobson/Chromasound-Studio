@@ -24,7 +24,7 @@ class GanttWidget : public QWidget
         ~GanttWidget();
 
         void setLeftWidget(GanttLeftWidget* const widget);
-        void setBottomWidget(GanttBottomWidget* const widget);
+        void addBottomWidget(GanttBottomWidget* const widget, const QString &name);
         void setParameters(int rows, int rowHeight, int cellWidth, float beatsPerCell);
 
         void addMarkers(QList<GanttMarker*>* markers);
@@ -68,13 +68,15 @@ class GanttWidget : public QWidget
         QMap<float, QList<GanttMarker*>> _markersMap;
 
         GanttLeftWidget* _leftWidget;
-        GanttBottomWidget* _bottomWidget;
+        QList<GanttBottomWidget*> _bottomWidgets;
 
         int _rows;
         int _rowHeight;
         int _cellWidth;
         float _cellBeats;
         int _defaultCellWidth;
+
+        QString _bottomWidgetName;
 
         const QColor& cursorColor() const;
         const QColor& selectionColor() const;

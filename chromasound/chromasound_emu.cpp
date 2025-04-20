@@ -313,6 +313,25 @@ void Chromasound_Emu::keyOff(int key)
     _items.append(sni);
 }
 
+void Chromasound_Emu::pitchBend(float pitch, int pitchRange)
+{
+    QByteArray data;
+
+    for (int key : _keys.keys()) {
+        VGMStream::StreamPitchItem* pitchItem = new VGMStream::StreamPitchItem(0, _keys[key]->type(), nullptr, pitch, pitchRange);
+        pitchItem->setChannel(_keys[key]->channel());
+        _vgmStream->encodePitchItem(pitchItem, _keys[key]->note(), data);
+    }
+
+    Mem_File_Reader reader(data.constData(), data.size());
+
+    _startedInteractive = true;
+
+    if (log_err(_emu->append(reader)))
+        return;
+
+}
+
 void Chromasound_Emu::sync()
 {
     if (isPlaying()) return;

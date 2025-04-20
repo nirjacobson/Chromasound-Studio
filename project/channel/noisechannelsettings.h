@@ -50,6 +50,10 @@ class NoiseChannelSettings : public ChannelSettings
         // ChannelSettings interface
     public:
         ChannelSettings* copy() const;
+
+        // ChannelSettings interface
+    public:
+        bool supportsPitchChanges();
 };
 
 #endif // NOISECHANNELSETTINGS_H

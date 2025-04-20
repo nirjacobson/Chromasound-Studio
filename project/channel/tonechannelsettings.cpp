@@ -18,3 +18,8 @@ ChannelSettings* ToneChannelSettings::copy() const
 
     return tcs;
 }
+
+bool ToneChannelSettings::supportsPitchChanges()
+{
+    return true;
+}

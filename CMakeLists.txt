@@ -532,6 +532,16 @@ set(PROJECT_SOURCES
     toplevel/topwidget/midipadsdialog.h
     toplevel/topwidget/midipadsdialog.cpp
     toplevel/topwidget/midipadsdialog.ui
+    dialogs/pianorollwidget/pianorollpitchwidget.h
+    dialogs/pianorollwidget/pianorollpitchwidget.cpp
+    commands/addpitchchangecommand.h
+    commands/addpitchchangecommand.cpp
+    commands/editpitchchangecommand.h
+    commands/editpitchchangecommand.cpp
+    commands/removepitchchangecommand.h
+    commands/removepitchchangecommand.cpp
+    commands/setchannelpitchrangecommand.h
+    commands/setchannelpitchrangecommand.cpp
 )
 
 if (LINUX)

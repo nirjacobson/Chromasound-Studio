@@ -114,6 +114,7 @@ class MainWindow : public QMainWindow
         void keyOffWithSync(const int key);
         void padOn(const int pad, const int velocity);
         void padOff(const int pad);
+        void pitchChange(const int pitch);
         void handleMIDIMessage(const long msg);
         void handleMIDISync();
         void setMIDIDevice(const int device);

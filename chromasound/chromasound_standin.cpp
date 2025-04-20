@@ -58,6 +58,11 @@ void Chromasound_Standin::keyOff(int)
 
 }
 
+void Chromasound_Standin::pitchBend(float pitch, int pitchRange)
+{
+
+}
+
 void Chromasound_Standin::sync()
 {
 

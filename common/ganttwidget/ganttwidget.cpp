@@ -1,12 +1,12 @@
 #include "ganttwidget.h"
 #include "ui_ganttwidget.h"
+#include "dialogs/pianorollwidget/pianorollvelocitieswidget.h"
 
 GanttWidget::GanttWidget(QWidget *parent, Application* app) :
     QWidget(parent),
     ui(new Ui::GanttWidget),
     _app(app),
     _leftWidget(nullptr),
-    _bottomWidget(nullptr),
     _rows(0),
     _rowHeight(16),
     _cellWidth(16),
@@ -54,11 +54,29 @@ void GanttWidget::setLeftWidget(GanttLeftWidget* const widget)
     layout()->replaceWidget(ui->leftWidget, widget);
 }
 
-void GanttWidget::setBottomWidget(GanttBottomWidget* const widget)
+void GanttWidget::addBottomWidget(GanttBottomWidget * const widget, const QString& name)
 {
-    _bottomWidget = widget;
-    _bottomWidget->setScrollPercentage(ui->headerWidget->getScrollPercentage());
-    layout()->replaceWidget(ui->bottomWidget, widget);
+    widget->setScrollPercentage(ui->headerWidget->getScrollPercentage());
+
+    _bottomWidgets.append(widget);
+
+    if (_bottomWidgets.size() > 1) {
+        if (_bottomWidgets.size() == 2) {
+            ui->bottomWidget->removeWidget(ui->bottomWidget->widget(0));
+            ui->bottomWidget->insertWidget(0, new QWidget);
+            ui->tabWidget->addTab(_bottomWidgets.first(), _bottomWidgetName);
+        }
+        ui->tabWidget->addTab(widget, name);
+        ui->tabWidget->setCurrentIndex(ui->tabWidget->count() - 1);
+        ui->bottomWidget->setCurrentIndex(1);
+        ui->tabWidget->setCurrentIndex(0);
+    } else {
+        _bottomWidgetName = name;
+        ui->bottomWidget->removeWidget(ui->bottomWidget->widget(0));
+        ui->bottomWidget->insertWidget(0, widget);
+        ui->bottomWidget->setCurrentIndex(0);
+        ui->bottomWidget->setVisible(true);
+    }
 }
 
 void GanttWidget::setParameters(int rows, int rowHeight, int cellWidth, float beatsPerCell)
@@ -74,8 +92,10 @@ void GanttWidget::setParameters(int rows, int rowHeight, int cellWidth, float be
     if (_leftWidget) _leftWidget->setRows(rows);
     if (_leftWidget) _leftWidget->setRowHeight(_rowHeight);
 
-    if (_bottomWidget) _bottomWidget->setCellWidth(_cellWidth);
-    if (_bottomWidget) _bottomWidget->setCellBeats(_cellBeats);
+    for (GanttBottomWidget* bw : _bottomWidgets) {
+        bw->setCellWidth(_cellWidth);
+        bw->setCellBeats(_cellBeats);
+    }
 
     ui->editorWidget->setRows(rows);
     ui->editorWidget->setRowHeight(_rowHeight);
@@ -92,7 +112,12 @@ void GanttWidget::setItems(QList<GanttItem*>* items)
 {
     ui->headerWidget->setItems(items);
     ui->editorWidget->setItems(items);
-    if (_bottomWidget) _bottomWidget->setItems(items);
+    for (GanttBottomWidget* bw : _bottomWidgets) {
+        PianoRollVelocitiesWidget* w;
+        if ((w = dynamic_cast<PianoRollVelocitiesWidget*>(bw))) {
+            w->setItems(items);
+        }
+    }
 }
 
 void GanttWidget::setApplication(Application* app)
@@ -159,9 +184,13 @@ void GanttWidget::selectAllItems()
 
 void GanttWidget::setCellWidth(const int width)
 {
+    _cellWidth = width;
+
     ui->headerWidget->setCellWidth(width);
     ui->editorWidget->setCellWidth(width);
-    if (_bottomWidget) _bottomWidget->setCellWidth(width);
+    for (GanttBottomWidget* bw : _bottomWidgets) {
+        bw->setCellWidth(width);
+    }
 }
 
 void GanttWidget::setCellMajors(const QList<int>& majors)
@@ -212,8 +241,8 @@ void GanttWidget::doUpdate(bool full)
             leftWidget->setNeedsFullPaint();
         }
 
-        if ((bottomWidget = dynamic_cast<GanttBottomWidget*>(_bottomWidget))) {
-            bottomWidget->setNeedsFullPaint();
+        for (GanttBottomWidget* bw : _bottomWidgets) {
+            bw->setNeedsFullPaint();
         }
     }
     repaint();
@@ -265,8 +294,9 @@ void GanttWidget::horizontalScroll(int amount)
     ui->headerWidget->setScrollPercentage(hscroll);
     ui->editorWidget->setHorizontalScrollPercentage(hscroll);
 
-    if (_bottomWidget)
-        dynamic_cast<GanttBottomWidget*>(_bottomWidget)->setScrollPercentage(hscroll);
+    for (GanttBottomWidget* bw : _bottomWidgets) {
+        bw->setScrollPercentage(hscroll);
+    }
 }
 
 void GanttWidget::snapClicked()
@@ -279,8 +309,9 @@ void GanttWidget::wheelHorizontalScroll(int pixels)
 {
     ui->headerWidget->scrollBy(pixels);
 
-    if (_bottomWidget)
-        dynamic_cast<GanttBottomWidget*>(_bottomWidget)->scrollBy(pixels);
+    for (GanttBottomWidget* bw : _bottomWidgets) {
+        bw->scrollBy(pixels);
+    }
 
     ui->horizontalScrollBar->blockSignals(true);
     ui->horizontalScrollBar->setValue(ui->headerWidget->getScrollPercentage()*ui->horizontalScrollBar->maximum());

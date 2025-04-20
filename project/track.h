@@ -73,10 +73,28 @@ class Track
                 ChannelSettings* _settings;
         };
 
+        class PitchChange {
+            friend class BSON;
+            public:
+                PitchChange(const float time, const float pitch);
+
+                void setTime(const float time);
+                float time() const;
+                float pitch() const;
+
+            private:
+                PitchChange();
+
+                float _time;
+                float _pitch;
+        };
+
         QList<Item*>& items();
         const QList<Item*>& items() const;
 
         QList<SettingsChange*>& settingsChanges();
+        QList<PitchChange*>& pitchChanges();
+        const QList<PitchChange*>& pitchChanges() const;
 
         float length() const;
 
@@ -88,6 +106,10 @@ class Track
 
         SettingsChange* addSettingsChange(const float time, ChannelSettings* settings);
         void removeSettingsChange(const SettingsChange* sc, const bool keep = false);
+
+        PitchChange* addPitchChange(const float time, const float pitch);
+        void addPitchChanges(const QList<PitchChange*>& pitchChanges);
+        void removePitchChange(const PitchChange* pc, const bool keep = false);
 
         void usePianoRoll();
         bool doesUsePianoRoll() const;
@@ -102,6 +124,7 @@ class Track
     private:
         QList<Item*> _items;
         QList<SettingsChange*> _settingsChanges;
+        QList<PitchChange*> _pitchChanges;
         bool _usePianoRoll;
 };
 

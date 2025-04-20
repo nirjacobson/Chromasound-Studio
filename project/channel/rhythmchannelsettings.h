@@ -36,6 +36,10 @@ class RhythmChannelSettings : public ChannelSettings
     public:
         QString type() const;
         ChannelSettings* copy() const;
+
+        // ChannelSettings interface
+    public:
+        bool supportsPitchChanges();
 };
 
 #endif // RHYTHMCHANNELSETTINGS_H

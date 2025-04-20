@@ -313,6 +313,15 @@ void Application::keyOff(const Channel &channel, int key)
     }
 }
 
+void Application::pitchChange(const int index, const float pitch, const int pitchRange)
+{
+    if (_recording) {
+        _recordingTrack.addPitchChange(position(), pitch);
+    }
+
+    _chromasound->pitchBend(pitch, pitchRange);
+}
+
 QUndoStack& Application::undoStack()
 {
     return _undoStack;
