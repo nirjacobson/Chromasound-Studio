@@ -359,17 +359,22 @@ void GanttEditorWidget::mouseReleaseEvent(QMouseEvent* event)
 
 
         if (event->button() == Qt::LeftButton) {
-            _selectedItems.clear();
             if (_itemUnderCursor) {
                 if (!_selectedItems.contains(_itemUnderCursor)) {
                     _selectedItems = QList<GanttItem*>({_itemUnderCursor});
+                    setNeedsFullPaint();
                     update();
                 }
-
                 emit itemReleased(_itemUnderCursor);
-
                 return;
+            } else {
+                bool stop = !_selectedItems.empty();
+                _selectedItems.clear();
+                setNeedsFullPaint();
+                update();
+                if (stop) return;
             }
+
             emit clicked(Qt::LeftButton, row, _snap ? mousePositionSnapped : mousePosition);
         } else {
             if (_itemUnderCursor && Qt::ShiftModifier == QApplication::keyboardModifiers()) {
@@ -378,9 +383,6 @@ void GanttEditorWidget::mouseReleaseEvent(QMouseEvent* event)
             }
             emit clicked(Qt::RightButton, row, _snap ? mousePositionSnapped : mousePosition);
         }
-
-        _selectedItems.removeAll(_itemUnderCursor);
-        _itemUnderCursor = nullptr;
     }
 
     setNeedsFullPaint();

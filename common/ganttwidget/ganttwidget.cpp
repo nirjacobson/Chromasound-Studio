@@ -34,9 +34,9 @@ GanttWidget::GanttWidget(QWidget *parent, Application* app) :
     connect(ui->headerWidget, &GanttHeaderWidget::clicked, this, &GanttWidget::headerClicked);
     connect(ui->editorWidget, &GanttEditorWidget::clicked, this, &GanttWidget::editorClicked);
     connect(ui->editorWidget, &GanttEditorWidget::itemChanged, this, &GanttWidget::itemChanged);
+    connect(ui->editorWidget, &GanttEditorWidget::itemReleased, this, &GanttWidget::itemReleased);
     connect(ui->editorWidget, &GanttEditorWidget::horizontalScroll, this, &GanttWidget::wheelHorizontalScroll);
     connect(ui->editorWidget, &GanttEditorWidget::verticalScroll, this, &GanttWidget::wheelVerticalScroll);
-    connect(ui->editorWidget, &GanttEditorWidget::itemReleased, this, &GanttWidget::itemReleased);
     connect(ui->editorWidget, &GanttEditorWidget::contextMenuRequested, this, &GanttWidget::contextMenuRequested);
     connect(ui->scaleWidget, &GanttScaleWidget::scaleChanged, this, &GanttWidget::scaleChanged);
 }

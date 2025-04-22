@@ -316,14 +316,19 @@ void PianoRollPitchWidget::mouseReleaseEvent(QMouseEvent *event)
 
 
         if (event->button() == Qt::LeftButton) {
-            _selectedItems.clear();
             if (_itemUnderCursor) {
                 if (!_selectedItems.contains(_itemUnderCursor)) {
                     _selectedItems = QList<Track::PitchChange*>({_itemUnderCursor});
+                    setNeedsFullPaint();
                     update();
                 }
-
                 return;
+            } else {
+                bool stop = !_selectedItems.empty();
+                _selectedItems.clear();
+                setNeedsFullPaint();
+                update();
+                if (stop) return;
             }
 
             QList<Track::PitchChange*>::Iterator it;
@@ -337,9 +342,6 @@ void PianoRollPitchWidget::mouseReleaseEvent(QMouseEvent *event)
         } else {
             emit pitchChangeRemoved(_itemUnderCursor);
         }
-
-        _selectedItems.removeAll(_itemUnderCursor);
-        _itemUnderCursor = nullptr;
     }
 
     setNeedsFullPaint();
