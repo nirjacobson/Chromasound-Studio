@@ -369,9 +369,6 @@ void PianoRollKeysWidget::paintPartial(QPaintEvent* event)
         QPoint topLeft;
 
         QPoint thisTopLeft;
-        QRect rect;
-        int whiteKey;
-        int blackKey;
         switch (interval) {
             case 0:
             case 5:

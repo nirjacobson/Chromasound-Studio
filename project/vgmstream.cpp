@@ -204,29 +204,29 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
     if (project.usesRhythm()) {
         QByteArray enableRhythm;
 
-        enableRhythm.append(0x51);
-        enableRhythm.append(0x16);
-        enableRhythm.append(0x20);
+        enableRhythm.append((unsigned char)0x51);
+        enableRhythm.append((unsigned char)0x16);
+        enableRhythm.append((unsigned char)0x20);
 
-        enableRhythm.append(0x51);
-        enableRhythm.append(0x17);
-        enableRhythm.append(0x50);
+        enableRhythm.append((unsigned char)0x51);
+        enableRhythm.append((unsigned char)0x17);
+        enableRhythm.append((unsigned char)0x50);
 
-        enableRhythm.append(0x51);
-        enableRhythm.append(0x18);
-        enableRhythm.append(0xC0);
+        enableRhythm.append((unsigned char)0x51);
+        enableRhythm.append((unsigned char)0x18);
+        enableRhythm.append((unsigned char)0xC0);
 
-        enableRhythm.append(0x51);
-        enableRhythm.append(0x26);
-        enableRhythm.append(0x05);
+        enableRhythm.append((unsigned char)0x51);
+        enableRhythm.append((unsigned char)0x26);
+        enableRhythm.append((unsigned char)0x05);
 
-        enableRhythm.append(0x51);
-        enableRhythm.append(0x27);
-        enableRhythm.append(0x05);
+        enableRhythm.append((unsigned char)0x51);
+        enableRhythm.append((unsigned char)0x27);
+        enableRhythm.append((unsigned char)0x05);
 
-        enableRhythm.append(0x51);
-        enableRhythm.append(0x28);
-        enableRhythm.append(0x01);
+        enableRhythm.append((unsigned char)0x51);
+        enableRhythm.append((unsigned char)0x28);
+        enableRhythm.append((unsigned char)0x01);
 
         _loopOffsetData += enableRhythm.size();
 
@@ -236,9 +236,9 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
     if (project.hasPCM()) {
         if (!_profile.discretePCM()) {
             QByteArray enableDac;
-            enableDac.append(0x52);
-            enableDac.append(0x2B);
-            enableDac.append(0x80);
+            enableDac.append((unsigned char)0x52);
+            enableDac.append((unsigned char)0x2B);
+            enableDac.append((unsigned char)0x80);
 
             data.insert((qsizetype)_currentOffsetData, enableDac);
 
@@ -252,12 +252,12 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
         dataBlockSize = _dataBlock.size();
 
         if (_profile.pcmStrategy() != Chromasound_Studio::PCMStrategy::INLINE) {
-            pcmBlock.append(0x67);
-            pcmBlock.append(0x66);
+            pcmBlock.append((unsigned char)0x67);
+            pcmBlock.append((unsigned char)0x66);
             if (_profile.isChromasound()) {
-                pcmBlock.append((quint8)0x00 | (!_profile.discretePCM() << 1) | !_profile.usePCMSRAM());
+                pcmBlock.append((unsigned char)0x00 | (!_profile.discretePCM() << 1) | !_profile.usePCMSRAM());
             } else {
-                pcmBlock.append((quint8)0x00);
+                pcmBlock.append((unsigned char)0x00);
             }
             pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
             pcmBlock.append(_dataBlock);
@@ -267,11 +267,11 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
         }
 
         if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::SEQUENTIAL) {
-            pcmBlock.append(0xE0);
-            pcmBlock.append((quint8)0x00);
-            pcmBlock.append((quint8)0x00);
-            pcmBlock.append((quint8)0x00);
-            pcmBlock.append((quint8)0x00);
+            pcmBlock.append((unsigned char)0xE0);
+            pcmBlock.append((unsigned char)0x00);
+            pcmBlock.append((unsigned char)0x00);
+            pcmBlock.append((unsigned char)0x00);
+            pcmBlock.append((unsigned char)0x00);
 
             _loopOffsetData += 5;
             _currentOffsetData += 5;
@@ -442,29 +442,29 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
     if (project.usesRhythm()) {
         QByteArray enableRhythm;
 
-        enableRhythm.append(0x51);
-        enableRhythm.append(0x16);
-        enableRhythm.append(0x20);
+        enableRhythm.append((unsigned char)0x51);
+        enableRhythm.append((unsigned char)0x16);
+        enableRhythm.append((unsigned char)0x20);
 
-        enableRhythm.append(0x51);
-        enableRhythm.append(0x17);
-        enableRhythm.append(0x50);
+        enableRhythm.append((unsigned char)0x51);
+        enableRhythm.append((unsigned char)0x17);
+        enableRhythm.append((unsigned char)0x50);
 
-        enableRhythm.append(0x51);
-        enableRhythm.append(0x18);
-        enableRhythm.append(0xC0);
+        enableRhythm.append((unsigned char)0x51);
+        enableRhythm.append((unsigned char)0x18);
+        enableRhythm.append((unsigned char)0xC0);
 
-        enableRhythm.append(0x51);
-        enableRhythm.append(0x26);
-        enableRhythm.append(0x05);
+        enableRhythm.append((unsigned char)0x51);
+        enableRhythm.append((unsigned char)0x26);
+        enableRhythm.append((unsigned char)0x05);
 
-        enableRhythm.append(0x51);
-        enableRhythm.append(0x27);
-        enableRhythm.append(0x05);
+        enableRhythm.append((unsigned char)0x51);
+        enableRhythm.append((unsigned char)0x27);
+        enableRhythm.append((unsigned char)0x05);
 
-        enableRhythm.append(0x51);
-        enableRhythm.append(0x28);
-        enableRhythm.append(0x01);
+        enableRhythm.append((unsigned char)0x51);
+        enableRhythm.append((unsigned char)0x28);
+        enableRhythm.append((unsigned char)0x01);
 
         _loopOffsetData += enableRhythm.size();
 
@@ -474,9 +474,9 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
     if (project.hasPCM()) {
         if (!_profile.discretePCM()) {
             QByteArray enableDac;
-            enableDac.append(0x52);
-            enableDac.append(0x2B);
-            enableDac.append(0x80);
+            enableDac.append((unsigned char)0x52);
+            enableDac.append((unsigned char)0x2B);
+            enableDac.append((unsigned char)0x80);
 
             data.insert((qsizetype)_currentOffsetData, enableDac);
 
@@ -490,12 +490,12 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
         dataBlockSize = _dataBlock.size();
 
         if (_profile.pcmStrategy() != Chromasound_Studio::PCMStrategy::INLINE) {
-            pcmBlock.append(0x67);
-            pcmBlock.append(0x66);
+            pcmBlock.append((unsigned char)0x67);
+            pcmBlock.append((unsigned char)0x66);
             if (_profile.isChromasound()) {
-                pcmBlock.append((quint8)0x00 | (!_profile.discretePCM() << 1) | !_profile.usePCMSRAM());
+                pcmBlock.append((unsigned char)0x00 | (!_profile.discretePCM() << 1) | !_profile.usePCMSRAM());
             } else {
-                pcmBlock.append((quint8)0x00);
+                pcmBlock.append((unsigned char)0x00);
             }
             pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
             pcmBlock.append(_dataBlock);
@@ -505,11 +505,11 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
         }
 
         if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::SEQUENTIAL) {
-            pcmBlock.append(0xE0);
-            pcmBlock.append((quint8)0x00);
-            pcmBlock.append((quint8)0x00);
-            pcmBlock.append((quint8)0x00);
-            pcmBlock.append((quint8)0x00);
+            pcmBlock.append((unsigned char)0xE0);
+            pcmBlock.append((unsigned char)0x00);
+            pcmBlock.append((unsigned char)0x00);
+            pcmBlock.append((unsigned char)0x00);
+            pcmBlock.append((unsigned char)0x00);
 
             _loopOffsetData += 5;
             _currentOffsetData += 5;
@@ -614,7 +614,6 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, QList<StreamItem
     QByteArray data;
 
     int _loopOffsetData = 0;
-    int _currentOffsetData;
 
     QByteArray pcmData;
     QMap<int, int> pcmOffsetsByChannel;
@@ -667,9 +666,9 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, QList<StreamItem
                     if (result < 0) {
                         dataToAppend[j] = 0;
                     } else if (result >= 0xFF) {
-                        dataToAppend[j] = 0xFF;
+                        dataToAppend[j] = (unsigned char)0xFF;
                     } else {
-                        dataToAppend[j] = result;
+                        dataToAppend[j] = (unsigned char)result;
                     }
                 }
                 data.append(dataToAppend);
@@ -1409,7 +1408,7 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
         if (items[i]->time() >= loopTime && !setLoopOffsetData) {
             _loopOffsetData = data.size();
             if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::SEQUENTIAL) {
-                data.append(0xE0);
+                data.append((unsigned char)0xE0);
                 data.append((char*)&pcmWritten, sizeof(pcmWritten));
             }
             setLoopOffsetData = true;
@@ -1491,7 +1490,7 @@ int VGMStream::encode(const Project& project, const QList<StreamItem*>& items,  
             continue;
         }
     }
-    data.append(0x66);
+    data.append((unsigned char)0x66);
 
     if (setLoopOffsetData && loopOffsetData) {
         *loopOffsetData = _loopOffsetData;
@@ -1509,18 +1508,18 @@ int VGMStream::encodeDelay(const quint32 samples, QByteArray& data, const bool p
 
     if (pcm && _profile.isChromasound()) {
         if (_profile.pcmStrategy() != Chromasound_Studio::PCMStrategy::INLINE) {
-            data.append(0x96);
+            data.append((unsigned char)0x96);
             data.append((char*)&samples, sizeof(samples));
         } else {
             QByteArray pcmData;
             quint32 s = samples / 2;
 
-            for (int i = 0; i < s; i++) {
+            for (quint32 i = 0; i < s; i++) {
                 pcmData.append(_dataBlock[i * 2]);
 
             }
-            data.append(0x97);
-            data.append(0xFE);
+            data.append((unsigned char)0x97);
+            data.append((unsigned char)0xFE);
             data.append((char*)&s, sizeof(s));
             data.append(pcmData);
             _dataBlock.remove(0, samples);
@@ -1532,29 +1531,29 @@ int VGMStream::encodeDelay(const quint32 samples, QByteArray& data, const bool p
     while (s > 0) {
         if (pcm) {
             if (_profile.pcmStrategy() != Chromasound_Studio::PCMStrategy::INLINE) {
-                data.append(0x81);
+                data.append((unsigned char)0x81);
             } else {
-                data.append(0x52);
-                data.append(0x2A);
+                data.append((unsigned char)0x52);
+                data.append((unsigned char)0x2A);
                 data.append(_dataBlock.first(1));
-                data.append(0x70);
+                data.append((unsigned char)0x70);
                 _dataBlock.removeFirst();
             }
             s--;
         } else {
             if (s == 735) {
-                data.append(0x62);
+                data.append((unsigned char)0x62);
                 s = 0;
             } else if (s == 882) {
-                data.append(0x63);
+                data.append((unsigned char)0x63);
                 s = 0;
             } else if (s <= 16) {
-                data.append(0x70 | (s-1));
+                data.append((unsigned char)0x70 | (s-1));
                 s = 0;
             } else {
                 int ss = s < 0xFFFF ? s : 0xFFFF;
 
-                data.append(0x61);
+                data.append((unsigned char)0x61);
                 data.append(ss & 0xFF);
                 data.append((ss >> 8) & 0xFF);
 
@@ -1581,22 +1580,22 @@ void VGMStream::encodeSettingsItem(const Project& project, const StreamSettingsI
         att = (30.0f * (float)(100 - item->channelSettings()->volume())/100.0f);
         att += (30.0f - att) * (float)(100 - item->velocity())/100.0f;
         att >>= 1;
-        data.append(0x50);
-        data.append(0x80 | (addr << 4) | att);
+        data.append((unsigned char)0x50);
+        data.append((unsigned char)0x80 | (addr << 4) | att);
     } else if ((ncs = dynamic_cast<const NoiseChannelSettings*>(item->channelSettings())) != nullptr) {
         int fb = ncs->noiseType();
         int nfo = ncs->shiftRate();
         uint8_t datum = 0xE0 | (fb << 2) | nfo;
 
-        data.append(0x50);
+        data.append((unsigned char)0x50);
         data.append(datum);
 
         int att;
         att = (30.0f * (float)(100 - item->channelSettings()->volume())/100.0f);
         att += (30.0f - att) * (float)(100 - item->velocity())/100.0f;
         att >>= 1;
-        data.append(0x50);
-        data.append(0x80 | (7 << 4) | att);
+        data.append((unsigned char)0x50);
+        data.append((unsigned char)0x80 | (7 << 4) | att);
     } else if ((fmcs = dynamic_cast<const FMChannelSettings*>(item->channelSettings())) != nullptr) {
         int part = 1 + (item->channel() >= 3);
         int channel = item->channel() % 3;
@@ -1608,32 +1607,32 @@ void VGMStream::encodeSettingsItem(const Project& project, const StreamSettingsI
 
             datum = (fmcs->operators()[i].dt() << 4) | fmcs->operators()[i].mul();
             data.append((part == 1) ? 0x52 : 0x53);
-            data.append(0x30 + offset);
+            data.append((unsigned char)0x30 + offset);
             data.append(datum);
 
             if (!sls.contains(i)) {
                 data.append((part == 1) ? 0x52 : 0x53);
-                data.append(0x40 + offset);
+                data.append((unsigned char)0x40 + offset);
                 data.append(fmcs->operators()[i].envelopeSettings().t1l());
             }
 
             datum = (fmcs->operators()[i].rs() << 6) | fmcs->operators()[i].envelopeSettings().ar();
             data.append((part == 1) ? 0x52 : 0x53);
-            data.append(0x50 + offset);
+            data.append((unsigned char)0x50 + offset);
             data.append(datum);
 
             datum = (fmcs->operators()[i].am() << 7) | fmcs->operators()[i].envelopeSettings().d1r();
             data.append((part == 1) ? 0x52 : 0x53);
-            data.append(0x60 + offset);
+            data.append((unsigned char)0x60 + offset);
             data.append(datum);
 
             data.append((part == 1) ? 0x52 : 0x53);
-            data.append(0x70 + offset);
+            data.append((unsigned char)0x70 + offset);
             data.append(fmcs->operators()[i].envelopeSettings().d2r());
 
             datum = (fmcs->operators()[i].envelopeSettings().t2l() << 4) | fmcs->operators()[i].envelopeSettings().rr();
             data.append((part == 1) ? 0x52 : 0x53);
-            data.append(0x80 + offset);
+            data.append((unsigned char)0x80 + offset);
             data.append(datum);
         }
 
@@ -1646,24 +1645,24 @@ void VGMStream::encodeSettingsItem(const Project& project, const StreamSettingsI
             int newT1l = t1l + amt;
 
             data.append((part == 1) ? 0x52 : 0x53);
-            data.append(0x40 + offset);
+            data.append((unsigned char)0x40 + offset);
             data.append(newT1l);
         }
 
         datum = (fmcs->algorithm().feedback() << 3) | fmcs->algorithm().algorithm();
         data.append((part == 1) ? 0x52 : 0x53);
-        data.append(0xB0 + channel);
+        data.append((unsigned char)0xB0 + channel);
         data.append(datum);
 
         datum = 0xC0 | (fmcs->lfo().ams() << 4) | fmcs->lfo().fms();
         data.append((part == 1) ? 0x52 : 0x53);
-        data.append(0xB4 + channel);
+        data.append((unsigned char)0xB4 + channel);
         data.append(datum);
     } else if ((rcs = dynamic_cast<const PCMChannelSettings*>(item->channelSettings())) != nullptr) {
         if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::RANDOM) {
             int volume = rcs->volume() * item->velocity() / 100;
             int att = MAX_PCM_ATTENUATION * (float)(100 - volume) / 100;
-            data.append(0xF0 | item->channel());
+            data.append((unsigned char)0xF0 | item->channel());
             data.append(att);
         }
     } else if ((scs = dynamic_cast<const SSGChannelSettings*>(item->channelSettings())) != nullptr) {
@@ -1674,8 +1673,8 @@ void VGMStream::encodeSettingsItem(const Project& project, const StreamSettingsI
         newMixer &= ~mask;
         newMixer |= ((!scs->noise() << 3) | (!scs->tone())) << item->channel();
 
-        data.append(0xA0);
-        data.append(0x7);
+        data.append((unsigned char)0xA0);
+        data.append((unsigned char)0x7);
         data.append(newMixer);
 
         _lastSSGMixer = newMixer;
@@ -1685,8 +1684,8 @@ void VGMStream::encodeSettingsItem(const Project& project, const StreamSettingsI
         datum &= ~mask;
         datum |= scs->envelope() << 4;
 
-        data.append(0xA0);
-        data.append(0x8 + item->channel());
+        data.append((unsigned char)0xA0);
+        data.append((unsigned char)0x8 + item->channel());
         data.append(datum);
 
         _lastSSGLevel[item->channel()] = datum;
@@ -1698,8 +1697,8 @@ void VGMStream::encodeSettingsItem(const Project& project, const StreamSettingsI
         newChanVal &= ~mask;
         newChanVal |= (mcs->patch() << 4);
 
-        data.append(0x51);
-        data.append(0x30 + item->channel());
+        data.append((unsigned char)0x51);
+        data.append((unsigned char)0x30 + item->channel());
         data.append(newChanVal);
 
         _lastChanVal[item->channel()] = newChanVal;
@@ -1734,9 +1733,9 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
             int n = 3579545.0f / (32.0f * f);
             uint8_t datum1 = n & 0xF;
             uint8_t datum2 = n >> 4;
-            data.append(0x50);
-            data.append(0x80 | (addr << 4) | datum1);
-            data.append(0x50);
+            data.append((unsigned char)0x50);
+            data.append((unsigned char)0x80 | (addr << 4) | datum1);
+            data.append((unsigned char)0x50);
             data.append(datum2);
         }
 
@@ -1749,8 +1748,8 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
         } else {
             att = 0xF;
         }
-        data.append(0x50);
-        data.append(0x80 | (addr << 4) | att);
+        data.append((unsigned char)0x50);
+        data.append((unsigned char)0x80 | (addr << 4) | att);
     } else if (item->type() == Channel::Type::NOISE) {
         addr = 7;
         int att;
@@ -1761,8 +1760,8 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
         } else {
             att = 0xF;
         }
-        data.append(0x50);
-        data.append(0x80 | (addr << 4) | att);
+        data.append((unsigned char)0x50);
+        data.append((unsigned char)0x80 | (addr << 4) | att);
 
     } else if (item->type() == Channel::Type::FM) {
         const FMChannelSettings* fmcs = dynamic_cast<const FMChannelSettings*>(item->channelSettings());
@@ -1776,11 +1775,11 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
 
             if (doFreq) {
                 data.append((part == 1) ? 0x52 : 0x53);
-                data.append(0xA4 + channel);
+                data.append((unsigned char)0xA4 + channel);
                 data.append((n >> 8) & 0xFF);
 
                 data.append((part == 1) ? 0x52 : 0x53);
-                data.append(0xA0 + channel);
+                data.append((unsigned char)0xA0 + channel);
                 data.append(n & 0xFF);
             }
 
@@ -1794,14 +1793,14 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
                 int newT1l = t1l + amt;
 
                     data.append((part == 1) ? 0x52 : 0x53);
-                data.append(0x40 + offset);
+                data.append((unsigned char)0x40 + offset);
                 data.append(newT1l);
             }
         }
 
-        data.append(0x52);
+        data.append((unsigned char)0x52);
         int c = (item->channel() < 3) ? item->channel() : (1 + item->channel());
-        data.append(0x28);
+        data.append((unsigned char)0x28);
         data.append(((item->on() ? 0xF : 0x0) << 4) | c);
     } else if (item->type() == Channel::Type::PCM) {
         ROM rom(project.pcmFile());
@@ -1813,21 +1812,21 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
                 if (rcs->keySampleMappings().contains(item->note().key())) {
                     int volume = rcs->volume() * item->note().velocity() / 100;
                     int att = MAX_PCM_ATTENUATION * (float)(100 - volume) / 100;
-                    data.append(0xF0 | item->channel());
+                    data.append((unsigned char)0xF0 | item->channel());
                     data.append(att);
 
                     quint32 offset = rom.offsets()[rcs->keySampleMappings()[item->note().key()]];
                     quint16 size = rom.size(rcs->keySampleMappings()[item->note().key()]);
 
-                    data.append(0xD0 | item->channel());
+                    data.append((unsigned char)0xD0 | item->channel());
                     data.append((char*)&size, sizeof(size));
-                    data.append(0xE0 | item->channel());
+                    data.append((unsigned char)0xE0 | item->channel());
                     data.append((char*)&offset, sizeof(offset));
                 }
             } else {
                 quint32 offset = -1;
 
-                data.append(0xE0 | item->channel());
+                data.append((unsigned char)0xE0 | item->channel());
                 data.append((char*)&offset, sizeof(offset));
             }
         }
@@ -1842,10 +1841,10 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
             int n = 3579545.0f / (32.0f * f);
             uint8_t datum1 = n & 0xFF;
             uint8_t datum2 = n >> 8;
-            data.append(0xA0);
+            data.append((unsigned char)0xA0);
             data.append(addr);
             data.append(datum1);
-            data.append(0xA0);
+            data.append((unsigned char)0xA0);
             data.append(addr + 1);
             data.append(datum2);
         }
@@ -1860,7 +1859,7 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
         } else {
             datum = 0;
         }
-        data.append(0xA0);
+        data.append((unsigned char)0xA0);
         data.append(addr);
         data.append(datum);
         _lastSSGLevel[item->channel()] = datum;
@@ -1880,24 +1879,24 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
             newChanVal &= ~mask;
             newChanVal |= att;
 
-            data.append(0x51);
-            data.append(0x30 + item->channel());
+            data.append((unsigned char)0x51);
+            data.append((unsigned char)0x30 + item->channel());
             data.append(newChanVal);
 
             _lastChanVal[item->channel()] = newChanVal;
 
             if (doFreq) {
-                data.append(0x51);
-                data.append(0x10 + item->channel());
+                data.append((unsigned char)0x51);
+                data.append((unsigned char)0x10 + item->channel());
                 data.append(n & 0xFF);
 
-                data.append(0x51);
-                data.append(0x20 + item->channel());
+                data.append((unsigned char)0x51);
+                data.append((unsigned char)0x20 + item->channel());
                 data.append((n >> 8) | (1 << 4));
             }
         } else {
-            data.append(0x51);
-            data.append(0x20 + item->channel());
+            data.append((unsigned char)0x51);
+            data.append((unsigned char)0x20 + item->channel());
             data.append((quint8)0);
         }
     } else if (item->type() == Channel::Type::RHYTHM) {
@@ -1940,20 +1939,20 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
             newChanVal &= ~mask;
             newChanVal |= att << (4 * high);
 
-            data.append(0x51);
-            data.append(0x36 + offset);
+            data.append((unsigned char)0x51);
+            data.append((unsigned char)0x36 + offset);
             data.append(newChanVal);
 
             _lastChanVal[6 + offset] = newChanVal;
 
-            data.append(0x51);
-            data.append(0x0E);
+            data.append((unsigned char)0x51);
+            data.append((unsigned char)0x0E);
             data.append((1 << 5) | newRhythm);
         } else {
             newRhythm &= ~mask;
 
-            data.append(0x51);
-            data.append(0x0E);
+            data.append((unsigned char)0x51);
+            data.append((unsigned char)0x0E);
             data.append(((newRhythm > 0) << 5) |newRhythm);
         }
         _lastRhythm = newRhythm;
@@ -1962,41 +1961,41 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
 
 void VGMStream::encodeLFOItem(const StreamLFOItem* item, QByteArray& data)
 {
-    data.append(0x52);
-    data.append(0x22);
+    data.append((unsigned char)0x52);
+    data.append((unsigned char)0x22);
     if (item->mode() > 0) {
-        data.append(0x8 | (item->mode() - 1));
+        data.append((unsigned char)0x8 | (item->mode() - 1));
     } else {
-        data.append((quint8)0x00);
+        data.append((unsigned char)0x00);
     }
 }
 
 void VGMStream::encodeNoiseFrequencyItem(const StreamNoiseFrequencyItem* item, QByteArray& data)
 {
-    data.append(0xA0);
-    data.append(0x6);
+    data.append((unsigned char)0xA0);
+    data.append((unsigned char)0x6);
     data.append(item->freq());
 }
 
 void VGMStream::encodeEnvelopeFrequencyItem(const StreamEnvelopeFrequencyItem* item, QByteArray& data)
 {
-    data.append(0xA0);
-    data.append(0xB);
+    data.append((unsigned char)0xA0);
+    data.append((unsigned char)0xB);
     data.append(item->freq() & 0xFF);
 
-    data.append(0xA0);
-    data.append(0xC);
+    data.append((unsigned char)0xA0);
+    data.append((unsigned char)0xC);
     data.append(item->freq() >> 8);
 }
 
 void VGMStream::encodeEnvelopeShapeItem(const StreamEnvelopeShapeItem* item, QByteArray& data)
 {
-    data.append(0xA0);
-    data.append(0xD);
+    data.append((unsigned char)0xA0);
+    data.append((unsigned char)0xD);
     data.append((item->settings().cont() << 3) |
-                (item->settings().att() << 2) |
-                (item->settings().alt() << 1) |
-                item->settings().hold());
+                (item->settings().att() << 2)  |
+                (item->settings().alt() << 1)  |
+                (item->settings().hold() << 0));
 }
 
 void VGMStream::encodeUserToneItem(const StreamUserToneItem* item, QByteArray& data)
@@ -2028,7 +2027,7 @@ void VGMStream::encodeUserToneItem(const StreamUserToneItem* item, QByteArray& d
     QList<quint8> d = {{ data00, data01, data02, data03, data04, data05, data06, data07 }};
 
     for (int i = 0; i < d.size(); i++) {
-        data.append(0x51);
+        data.append((unsigned char)0x51);
         data.append((quint8)i);
         data.append(d[i]);
     }
@@ -2056,9 +2055,9 @@ void VGMStream::encodePitchItem(const StreamPitchItem *item, const Note& note, Q
         int n = 3579545.0f / (32.0f * f);
         uint8_t datum1 = n & 0xF;
         uint8_t datum2 = n >> 4;
-        data.append(0x50);
-        data.append(0x80 | (addr << 4) | datum1);
-        data.append(0x50);
+        data.append((unsigned char)0x50);
+        data.append((unsigned char)0x80 | (addr << 4) | datum1);
+        data.append((unsigned char)0x50);
         data.append(datum2);
     } else if (item->type() == Channel::Type::FM) {
         int part = 1 + (item->channel() >= 3);
@@ -2086,11 +2085,11 @@ void VGMStream::encodePitchItem(const StreamPitchItem *item, const Note& note, Q
         }
 
         data.append((part == 1) ? 0x52 : 0x53);
-        data.append(0xA4 + channel);
+        data.append((unsigned char)0xA4 + channel);
         data.append((n >> 8) & 0xFF);
 
         data.append((part == 1) ? 0x52 : 0x53);
-        data.append(0xA0 + channel);
+        data.append((unsigned char)0xA0 + channel);
         data.append(n & 0xFF);
     } else if (item->type() == Channel::Type::SSG) {
         addr = item->channel() * 2;
@@ -2109,10 +2108,10 @@ void VGMStream::encodePitchItem(const StreamPitchItem *item, const Note& note, Q
         int n = 3579545.0f / (32.0f * f);
         uint8_t datum1 = n & 0xFF;
         uint8_t datum2 = n >> 8;
-        data.append(0xA0);
+        data.append((unsigned char)0xA0);
         data.append(addr);
         data.append(datum1);
-        data.append(0xA0);
+        data.append((unsigned char)0xA0);
         data.append(addr + 1);
         data.append(datum2);
     } else if (item->type() == Channel::Type::MELODY) {
@@ -2137,12 +2136,12 @@ void VGMStream::encodePitchItem(const StreamPitchItem *item, const Note& note, Q
             n = (octave1 << 9) | (int)(ym2413_frequencies[key1] + (ym2413_frequencies[key2] - ym2413_frequencies[key1]) * std::fabs(item->pitch()));
         }
 
-        data.append(0x51);
-        data.append(0x10 + item->channel());
+        data.append((unsigned char)0x51);
+        data.append((unsigned char)0x10 + item->channel());
         data.append(n & 0xFF);
 
-        data.append(0x51);
-        data.append(0x20 + item->channel());
+        data.append((unsigned char)0x51);
+        data.append((unsigned char)0x20 + item->channel());
         data.append((n >> 8) | (1 << 4));
     }
 

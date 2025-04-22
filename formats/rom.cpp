@@ -15,13 +15,13 @@ ROM::ROM(const QString& path)
         file.read((char*)&offset, sizeof(offset));
 
         QString name;
-        char c = 0xFF;
-        while (c != 0x00) {
+        char c;
+        do {
             file.read(&c, 1);
             if (c != 0x00) {
                 name.append(c);
             }
-        }
+        } while (c != 0x00);
 
         _offsets.append(offset);
         _names.append(name);

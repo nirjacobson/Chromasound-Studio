@@ -364,7 +364,6 @@ void PianoRollPitchWidget::mouseMoveEvent(QMouseEvent *event)
     float pitch = 1.0f - 2 * (float)event->pos().y() / height();
 
     float time;
-    float end;
     float newPitch;
 
     float timeDelta;

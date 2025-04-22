@@ -235,8 +235,6 @@ void GanttWidget::doUpdate(bool full)
         ui->editorWidget->setNeedsFullPaint();
 
         GanttLeftWidget* leftWidget;
-        GanttBottomWidget* bottomWidget;
-
         if ((leftWidget = dynamic_cast<GanttLeftWidget*>(_leftWidget))) {
             leftWidget->setNeedsFullPaint();
         }

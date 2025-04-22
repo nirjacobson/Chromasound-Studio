@@ -358,29 +358,29 @@ void Chromasound_Emu::sync()
     if (!_startedInteractive && _project.usesRhythm()) {
         QByteArray enableRhythm;
 
-        enableRhythm.append(0x51);
-        enableRhythm.append(0x16);
-        enableRhythm.append(0x20);
+        enableRhythm.append((unsigned char)0x51);
+        enableRhythm.append((unsigned char)0x16);
+        enableRhythm.append((unsigned char)0x20);
 
-        enableRhythm.append(0x51);
-        enableRhythm.append(0x17);
-        enableRhythm.append(0x50);
+        enableRhythm.append((unsigned char)0x51);
+        enableRhythm.append((unsigned char)0x17);
+        enableRhythm.append((unsigned char)0x50);
 
-        enableRhythm.append(0x51);
-        enableRhythm.append(0x18);
-        enableRhythm.append(0xC0);
+        enableRhythm.append((unsigned char)0x51);
+        enableRhythm.append((unsigned char)0x18);
+        enableRhythm.append((unsigned char)0xC0);
 
-        enableRhythm.append(0x51);
-        enableRhythm.append(0x26);
-        enableRhythm.append(0x05);
+        enableRhythm.append((unsigned char)0x51);
+        enableRhythm.append((unsigned char)0x26);
+        enableRhythm.append((unsigned char)0x05);
 
-        enableRhythm.append(0x51);
-        enableRhythm.append(0x27);
-        enableRhythm.append(0x05);
+        enableRhythm.append((unsigned char)0x51);
+        enableRhythm.append((unsigned char)0x27);
+        enableRhythm.append((unsigned char)0x05);
 
-        enableRhythm.append(0x51);
-        enableRhythm.append(0x28);
-        enableRhythm.append(0x01);
+        enableRhythm.append((unsigned char)0x51);
+        enableRhythm.append((unsigned char)0x28);
+        enableRhythm.append((unsigned char)0x01);
 
         data.prepend(enableRhythm);
     }
@@ -393,12 +393,12 @@ void Chromasound_Emu::sync()
             QByteArray pcmData;
             quint32 s = pcm.size() / 2;
 
-            for (int i = 0; i < s; i++) {
+            for (quint32 i = 0; i < s; i++) {
                 pcmData.append(pcm[i * 2]);
 
             }
-            data.append(0x97);
-            data.append(0xFE);
+            data.append((unsigned char)0x97);
+            data.append((unsigned char)0xFE);
             data.append((char*)&s, sizeof(s));
             data.append(pcmData);
         } else if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::SEQUENTIAL) {
@@ -408,29 +408,29 @@ void Chromasound_Emu::sync()
 
             if (dataBlockSize > 0) {
                 QByteArray pcmBlock;
-                pcmBlock.append(0x67);
-                pcmBlock.append(0x66);
-                pcmBlock.append((quint8)0x00);
+                pcmBlock.append((unsigned char)0x67);
+                pcmBlock.append((unsigned char)0x66);
+                pcmBlock.append((unsigned char)0x00);
                 pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
                 pcmBlock.append(pcm);
-                pcmBlock.append(0x52);
-                pcmBlock.append(0x2B);
-                pcmBlock.append(0x80);
+                pcmBlock.append((unsigned char)0x52);
+                pcmBlock.append((unsigned char)0x2B);
+                pcmBlock.append((unsigned char)0x80);
 
                 data.prepend(pcmBlock);
 
-                data.append(0xE0);
-                data.append((quint8)0x00);
-                data.append((quint8)0x00);
-                data.append((quint8)0x00);
-                data.append((quint8)0x00);
+                data.append((unsigned char)0xE0);
+                data.append((unsigned char)0x00);
+                data.append((unsigned char)0x00);
+                data.append((unsigned char)0x00);
+                data.append((unsigned char)0x00);
 
                 if (_profile.isChromasound()) {
-                    data.append(0x96);
+                    data.append((unsigned char)0x96);
                     data.append((char*)&dataBlockSize, sizeof(dataBlockSize));
                 } else {
                     for (quint32 i = 0; i < dataBlockSize; i++) {
-                        data.append(0x81);
+                        data.append((unsigned char)0x81);
                     }
                 }
             }
@@ -443,14 +443,14 @@ void Chromasound_Emu::sync()
 
             if (dataBlockSize > 0) {
                 QByteArray pcmBlock;
-                pcmBlock.append(0x67);
-                pcmBlock.append(0x66);
-                pcmBlock.append((quint8)0x00);
+                pcmBlock.append((unsigned char)0x67);
+                pcmBlock.append((unsigned char)0x66);
+                pcmBlock.append((unsigned char)0x00);
                 pcmBlock.append((char*)&dataBlockSize, sizeof(dataBlockSize));
                 pcmBlock.append(dataBlock);
-                pcmBlock.append(0x52);
-                pcmBlock.append(0x2B);
-                pcmBlock.append(0x80);
+                pcmBlock.append((unsigned char)0x52);
+                pcmBlock.append((unsigned char)0x2B);
+                pcmBlock.append((unsigned char)0x80);
 
                 data.prepend(pcmBlock);
             }

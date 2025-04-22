@@ -273,7 +273,7 @@ void PianoWidget::paintPartial(QPaintEvent* event)
         int octave = onKey / 12;
         int interval = onKey % 12;
 
-        if (_baseOctave <= octave < (_baseOctave + octaves)) {
+        if (_baseOctave <= octave && octave < (_baseOctave + octaves)) {
             QPoint topLeft;
 
             int whiteWidth;
@@ -341,9 +341,6 @@ void PianoWidget::paintPartial(QPaintEvent* event)
         QPoint topLeft;
 
         QPoint thisTopLeft;
-        QRect rect;
-        int whiteKey;
-        int blackKey;
         switch (interval) {
         case 0:
         case 5:

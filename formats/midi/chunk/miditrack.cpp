@@ -65,7 +65,7 @@ QString MIDITrack::name(const int channel) const
             if (metaEvent.type() == 3) {
                 return QString(metaEvent.data());
             }
-        } catch (std::exception& e) { }
+        } catch (std::exception&) { }
 
         try {
             const MIDIEvent& midiEvent = dynamic_cast<const MIDIEvent&>(trackEvent->event());
@@ -79,7 +79,7 @@ QString MIDITrack::name(const int channel) const
                     return MIDI::programName(lastPCEvent->data1());
                 }
             }
-        } catch (std::exception& e) {
+        } catch (std::exception&) {
 
         }
     }

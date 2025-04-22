@@ -21,9 +21,9 @@ class GanttScaleWidget : public QWidget
         void paintEvent(QPaintEvent* event);
 
     private:
-        static constexpr float MinScale = 0.1;
-        static constexpr float MaxScale = 4.0;
-        static constexpr float ScalePerPixel = 0.1;
+        static constexpr float MinScale = 0.1f;
+        static constexpr float MaxScale = 4.0f;
+        static constexpr float ScalePerPixel = 0.1f;
 
         float _scale;
 };

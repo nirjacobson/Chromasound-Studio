@@ -274,32 +274,32 @@ QByteArray Player::pcmToVgm(const QString& path)
     QByteArray vgm;
 
     QByteArray enableDac;
-    enableDac.append(0x52);
-    enableDac.append(0x2B);
-    enableDac.append(0x80);
+    enableDac.append((unsigned char)0x52);
+    enableDac.append((unsigned char)0x2B);
+    enableDac.append((unsigned char)0x80);
 
     vgm.append(enableDac);
 
     quint32 pcmSize = pcm.size();
 
     QByteArray pcmBlock;
-    pcmBlock.append(0x67);
-    pcmBlock.append(0x66);
-    pcmBlock.append((quint8)0x00);
+    pcmBlock.append((unsigned char)0x67);
+    pcmBlock.append((unsigned char)0x66);
+    pcmBlock.append((unsigned char)0x00);
     pcmBlock.append((char*)&pcmSize, sizeof(pcmSize));
     pcmBlock.append(pcm);
 
-    pcmBlock.append(0xE0);
-    pcmBlock.append((quint8)0x00);
-    pcmBlock.append((quint8)0x00);
-    pcmBlock.append((quint8)0x00);
-    pcmBlock.append((quint8)0x00);
+    pcmBlock.append((unsigned char)0xE0);
+    pcmBlock.append((unsigned char)0x00);
+    pcmBlock.append((unsigned char)0x00);
+    pcmBlock.append((unsigned char)0x00);
+    pcmBlock.append((unsigned char)0x00);
 
     vgm.prepend(pcmBlock);
 
-    vgm.append(0x96);
+    vgm.append((unsigned char)0x96);
     vgm.append((char*)&pcmSize, sizeof(pcmSize));
-    vgm.append(0x66);
+    vgm.append((unsigned char)0x66);
 
     QByteArray headerData = VGMStream().generateHeader(Project(), vgm, pcmSize, 0, 0, false);
     vgm.prepend(headerData);

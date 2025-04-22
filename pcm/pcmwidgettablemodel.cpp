@@ -111,8 +111,6 @@ Qt::ItemFlags PCMWidgetTableModel::flags(const QModelIndex& index) const
 
 bool PCMWidgetTableModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
-    int keyBefore;
-    int keyAfter;
     switch (index.column()) {
     case 0:
         _keys[index.row()] = value.toString();

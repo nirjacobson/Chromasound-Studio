@@ -8,8 +8,6 @@ SysexEvent::SysexEvent(quint8 event)
 
 SysexEvent& SysexEvent::operator<<(QDataStream& stream)
 {
-    quint8 datum;
-
     _length = Util::getVariableLengthQuantity(stream);
 
     _data.resize(_length);

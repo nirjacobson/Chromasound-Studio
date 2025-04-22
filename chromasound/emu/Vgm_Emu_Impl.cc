@@ -168,7 +168,7 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
     byte const* pos = this->pos;
 
     if (samples > 0) {
-        for (uint32_t i = samples_offset; i < samples && vgm_time < end_time; i++) {
+        for (int i = samples_offset; i < samples && vgm_time < end_time; i++) {
             if (inlinePCMPos) {
                 write_pcm( vgm_time, *inlinePCMPos++ );
                 vgm_time += 2;
@@ -280,7 +280,7 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
                 samples = *(uint32_t*)pos;
                 samples_offset = 0;
                 inlinePCMPos = NULL;
-                for (uint32_t i = 0; i < samples && vgm_time < end_time; i++) {
+                for (int i = 0; i < samples && vgm_time < end_time; i++) {
                     write_pcm( vgm_time++, pcm_read() );
                     samples_offset++;
                 }
@@ -290,7 +290,7 @@ blip_time_t Vgm_Emu_Impl::run_commands( vgm_time_t end_time )
                 samples = *(uint32_t*)&pos[1];
                 samples_offset = 0;
                 inlinePCMPos = &pos[5];
-                for (uint32_t i = 0; i < samples && vgm_time < end_time; i++) {
+                for (int i = 0; i < samples && vgm_time < end_time; i++) {
                     write_pcm( vgm_time, pos[5 + i] );
                     vgm_time += 2;
                     samples_offset++;

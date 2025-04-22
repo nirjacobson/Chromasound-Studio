@@ -58,7 +58,7 @@ int MIDIFile::tempo() const
 
                         return (float)(1e6f / usPerBeat) * 60;
                     }
-                } catch (std::exception& e) {}
+                } catch (std::exception&) {}
 
             }
             break;

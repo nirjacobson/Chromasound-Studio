@@ -121,7 +121,7 @@ void PianoRollWidget::setTrack(const int pattern, const int track)
     try {
         const PCMChannelSettings& settings = dynamic_cast<const PCMChannelSettings&>(_app->project().getChannel(_channel).settings());
         _keysWidget->setROMChannelSettings(&settings);
-    } catch (std::exception& e) { }
+    } catch (std::exception&) { }
 
     if (_app->project().getChannel(_channel).settings().supportsPitchChanges()) {
         _pitchWidget = new PianoRollPitchWidget(this);
