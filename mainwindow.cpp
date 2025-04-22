@@ -1789,7 +1789,7 @@ void MainWindow::channelSettingsUpdated()
             } else if ((rw = dynamic_cast<RhythmWidget*>(window->widget()))) {
                 rw->doUpdate();
             } else if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
-                prw->doUpdate(0);
+                prw->doUpdate(_app->position(), true);
             }
         }
     }

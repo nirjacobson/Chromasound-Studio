@@ -266,6 +266,7 @@ void PianoRollWidget::ganttEditorClicked(Qt::MouseButton button, int row, float 
 void PianoRollWidget::ganttItemChanged(GanttItem* item, const float toTime, const int toRow, const float toDuration)
 {
     _app->undoStack().push(new EditNoteCommand(_app->window(), dynamic_cast<Track::Item*>(item), toTime, Note(toRow, toDuration, item->velocity()), reinterpret_cast<const QList<Track::Item*>&>(ui->ganttWidget->selectedItems())));
+    doUpdate(_app->position(), true);
 }
 
 void PianoRollWidget::ganttItemReleased(const GanttItem* item)
@@ -415,7 +416,13 @@ void PianoRollWidget::selectAll()
 
 void PianoRollWidget::deleteTriggered()
 {
-    _app->undoStack().push(new RemoveTrackItemsCommand(_app->window(), *_track, reinterpret_cast<const QList<Track::Item*>&>(ui->ganttWidget->selectedItems())));
+    if (!ui->ganttWidget->selectedItems().empty()) {
+        _app->undoStack().push(new RemoveTrackItemsCommand(_app->window(), *_track, reinterpret_cast<const QList<Track::Item*>&>(ui->ganttWidget->selectedItems())));
+    }
+
+    if (_pitchWidget && !_pitchWidget->selectedItems().empty()) {
+        _app->undoStack().push(new RemoveTrackPitchChangesCommand(_app->window(), *_track, _pitchWidget->selectedItems()));
+    }
 }
 
 void PianoRollWidget::doneButtonClicked()

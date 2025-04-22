@@ -12,6 +12,7 @@ class GanttBottomWidget : public ScrollableWidget
 
         virtual void setCellWidth(const int width) = 0;
         virtual void setCellBeats(const float beats) = 0;
+        virtual void setSnap(const bool enabled) = 0;
 };
 
 #endif // GANTTBOTTOMWIDGET_H

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>508</width>
-    <height>408</height>
+    <width>462</width>
+    <height>265</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,9 +17,6 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <item row="1" column="2">
-    <widget class="GanttScaleWidget" name="scaleWidget" native="true"/>
-   </item>
    <item row="2" column="2">
     <widget class="QScrollBar" name="verticalScrollBar">
      <property name="minimumSize">
@@ -33,29 +30,6 @@
      </property>
      <property name="orientation">
       <enum>Qt::Orientation::Vertical</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QScrollBar" name="horizontalScrollBar">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>24</height>
-      </size>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QCheckBox" name="snapCheckBox">
-     <property name="text">
-      <string>Snap</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -75,6 +49,25 @@
      </property>
     </widget>
    </item>
+   <item row="1" column="2">
+    <widget class="GanttScaleWidget" name="scaleWidget" native="true"/>
+   </item>
+   <item row="2" column="1">
+    <widget class="GanttEditorWidget" name="editorWidget" native="true"/>
+   </item>
+   <item row="0" column="1">
+    <widget class="QScrollBar" name="horizontalScrollBar">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>24</height>
+      </size>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
    <item row="2" column="0">
     <widget class="QWidget" name="leftWidget" native="true">
      <property name="minimumSize">
@@ -91,8 +84,15 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="GanttEditorWidget" name="editorWidget" native="true"/>
+   <item row="1" column="0">
+    <widget class="QCheckBox" name="snapCheckBox">
+     <property name="text">
+      <string>Snap</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
    <item row="3" column="1">
     <widget class="QStackedWidget" name="bottomWidget">
@@ -142,6 +142,9 @@
          </property>
          <property name="currentIndex">
           <number>-1</number>
+         </property>
+         <property name="documentMode">
+          <bool>true</bool>
          </property>
         </widget>
        </item>

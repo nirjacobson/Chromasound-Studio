@@ -15,6 +15,8 @@ class EditNoteCommand : public QUndoCommand
     private:
         MainWindow* _mainWindow;
 
+        bool _performed;
+
         float _toTime;
         Note _note;
 
@@ -29,6 +31,8 @@ class EditNoteCommand : public QUndoCommand
     public:
         void undo();
         void redo();
+        void undoNoUpdate();
+        void redoNoUpdate();
         int id() const;
         bool mergeWith(const QUndoCommand* other);
 };

@@ -5,12 +5,20 @@ PianoRollPitchWidget::PianoRollPitchWidget(QWidget *parent)
     , _left(0)
     , _cellWidth(16)
     , _cellBeats(1)
-    , _color(192, 192, 255)
+    , _color(QColor(128, 128, 255))
     , _app(nullptr)
     , _items(nullptr)
+    , _itemUnderCursor(nullptr)
+    , _backgroundColor(Qt::white)
+    , _borderColor(Qt::gray)
+    , _areaSelectionColor(QColor(192, 192, 255))
+    , _selectionColor(QColor(255, 192, 0))
+    , _selecting(false)
+    , _snap(true)
 {
     setMinimumHeight(128);
     setMaximumHeight(128);
+    setMouseTracking(true);
 }
 
 void PianoRollPitchWidget::setApplication(Application *app)
@@ -23,25 +31,41 @@ void PianoRollPitchWidget::paintFull(QPaintEvent *event)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
+    painter.fillRect(rect(), QBrush(_backgroundColor));
+
     painter.drawLine(QPoint(0, height()/2), QPoint(width(), height() / 2));
 
-    painter.setPen(_color.darker());
-    painter.setBrush(_color);
+    painter.setPen(_borderColor);
+    painter.drawRect(rect());
 
-    int pointRadius = 4;
+    int firstCell = _left / _cellWidth;
+    int firstCellStart = firstCell * _cellWidth - _left;
+    int numCells = qCeil((float)width()/_cellWidth);
 
-    float beatsPerPixel = _cellBeats / _cellWidth;
-    float leftPosition = _left * beatsPerPixel;
-    float rightPosition = leftPosition + (width() * beatsPerPixel);
+    QPoint topLeft(firstCellStart, 0);
 
-    int fullHeight = height()/2 - 8;
+    for (int i = 0; i < numCells; i++) {
+        QPoint thisTopRight = topLeft + QPoint((i + 1) * _cellWidth, 0);
+        QPoint thisBottomRight = thisTopRight + QPoint(0, height());
+
+        painter.setPen(_borderColor.lighter(120));
+        painter.drawLine(thisTopRight, thisBottomRight);
+    }
 
     if (_items) {
+        int pointRadius = 4;
+
+        float beatsPerPixel = _cellBeats / _cellWidth;
+        float leftPosition = _left * beatsPerPixel;
+        float rightPosition = leftPosition + (width() * beatsPerPixel);
+
+        int fullHeight = height()/2 - 8;
+
         std::sort(_items->begin(), _items->end(), [](const Track::PitchChange* a, const Track::PitchChange* b) {
             return a->time() < b->time();
         });
 
-        QList<QRect> rects;
+        QList<QPair<const Track::PitchChange*, QRect>> rects;
         const Track::PitchChange* onLeft = nullptr;
         float onLeftDiff = 100;
         const Track::PitchChange* onRight = nullptr;
@@ -57,7 +81,7 @@ void PianoRollPitchWidget::paintFull(QPaintEvent *event)
             if (leftPosition <= item->time() && item->time() <= rightPosition) {
                 int positionPixel = (item->time() - leftPosition) / beatsPerPixel;
                 QPoint topLeft = QPoint(positionPixel - pointRadius, height()/2 - fullHeight * item->pitch() - pointRadius);
-                rects.append(QRect(topLeft, topLeft + QPoint(pointRadius * 2, pointRadius * 2)));
+                rects.append(QPair<const Track::PitchChange*, QRect>(item, QRect(topLeft, topLeft + QPoint(pointRadius * 2, pointRadius * 2))));
             }
             if (item->time() > rightPosition) {
                 float rightDiff = item->time() - rightPosition;
@@ -69,11 +93,11 @@ void PianoRollPitchWidget::paintFull(QPaintEvent *event)
         }
 
         const QRect* lastRect = nullptr;
-        for (const QRect& rect : rects) {
+        for (const auto& rect : rects) {
             if (lastRect) {
-                painter.drawLine(lastRect->center(), rect.center());
+                painter.drawLine(lastRect->center(), QPoint(rect.second.center().x(), lastRect->center().y()));
             }
-            lastRect = &rect;
+            lastRect = &rect.second;
         }
 
         if (onLeft) {
@@ -82,13 +106,13 @@ void PianoRollPitchWidget::paintFull(QPaintEvent *event)
             QRect onLeftRect(leftTopLeft, leftTopLeft + QPoint(pointRadius * 2, pointRadius * 2));
 
             if (!rects.empty()) {
-                painter.drawLine(onLeftRect.center(), rects.first().center());
+                painter.drawLine(onLeftRect.center(), QPoint(rects.first().second.center().x(), onLeftRect.center().y()));
             } else if (onRight) {
                 int onRightPositionPixel = (onRight->time() - leftPosition) / beatsPerPixel;
                 QPoint rightTopLeft = QPoint(onRightPositionPixel - pointRadius, height()/2 - fullHeight * onRight->pitch() - pointRadius);
                 QRect onRightRect(rightTopLeft, rightTopLeft + QPoint(pointRadius * 2, pointRadius * 2));
 
-                painter.drawLine(onLeftRect.center(), onRightRect.center());
+                painter.drawLine(onLeftRect.center(), QPoint(onRightRect.center().x(), onLeftRect.center().y()));
             } else {
                 painter.drawLine(onLeftRect.center(), QPoint(width(), onLeftRect.center().y()));
             }
@@ -101,15 +125,28 @@ void PianoRollPitchWidget::paintFull(QPaintEvent *event)
             QRect onRightRect(rightTopLeft, rightTopLeft + QPoint(pointRadius * 2, pointRadius * 2));
 
             if (!rects.empty()) {
-                painter.drawLine(rects.last().center(), onRightRect.center());
+                painter.drawLine(rects.last().second.center(), QPoint(onRightRect.center().x(), rects.last().second.center().y()));
             }
         } else if (!rects.empty()) {
-            painter.drawLine(rects.last().center(), QPoint(width(), rects.last().center().y()));
+            painter.drawLine(rects.last().second.center(), QPoint(width(), rects.last().second.center().y()));
         }
 
-        for (const QRect& rect : rects) {
-            painter.drawEllipse(rect);
+        for (const auto& rect : rects) {
+            QColor color = _selectedItems.contains(rect.first) ? _areaSelectionColor : _color;
+            painter.setBrush(color);
+            painter.setPen(color.darker());
+            painter.drawEllipse(rect.second);
         }
+    }
+
+    if (_selecting) {
+        QRect rect(_fromPoint, QSize(_toPoint.x() - _fromPoint.x(), _toPoint.y() - _fromPoint.y()));
+        QColor selectionColorWithAlpha = _areaSelectionColor;
+        selectionColorWithAlpha.setAlpha(128);
+        painter.setPen(selectionColorWithAlpha.darker());
+        painter.setBrush(selectionColorWithAlpha);
+
+        painter.drawRect(rect);
     }
 }
 
@@ -179,28 +216,201 @@ void PianoRollPitchWidget::setCellBeats(const float beats)
     _cellBeats = beats;
 }
 
+const QList<Track::PitchChange *> &PianoRollPitchWidget::selectedItems()
+{
+    return _selectedItems;
+}
+
+const QColor &PianoRollPitchWidget::backgroundColor() const
+{
+    return _backgroundColor;
+}
+
+const QColor &PianoRollPitchWidget::borderColor() const
+{
+    return _borderColor;
+}
+
+const QColor &PianoRollPitchWidget::itemColor() const
+{
+    return _color;
+}
+
+const QColor &PianoRollPitchWidget::areaSelectionColor() const
+{
+    return _areaSelectionColor;
+}
+
+void PianoRollPitchWidget::setBackgroundColor(const QColor &color)
+{
+    _backgroundColor = color;
+}
+
+void PianoRollPitchWidget::setBorderColor(const QColor &color)
+{
+    _borderColor = color;
+}
+
+void PianoRollPitchWidget::setItemColor(const QColor &color)
+{
+    _color = color;
+}
+
+void PianoRollPitchWidget::setAreaSelectionColor(const QColor &color)
+{
+    _areaSelectionColor = color;
+}
+
 void PianoRollPitchWidget::mousePressEvent(QMouseEvent *event)
 {
-    int pointRadius = 4;
+    _fromPoint = event->pos();
+}
 
-    int fullHeight = height()/2 - 8;
-    float beatsPerPixel = _cellBeats / _cellWidth;
+void PianoRollPitchWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (_selecting) {
+        _selecting = false;
 
-    float mousePosition = (_left + event->position().x()) * beatsPerPixel;
-    float y = height()/2 - event->position().y();
-    float pitchClicked = y / (height()/2);
+        float fromPitch = 1.0f - 2 * (float)_fromPoint.y() / height();
+        float toPitch = 1.0f - 2 * (float)_toPoint.y() / height();
 
-    auto it = std::find_if(_items->begin(), _items->end(), [=](Track::PitchChange* const item) {
-        return item->time() <= mousePosition && mousePosition <= item->time() + 2*pointRadius * beatsPerPixel;
-    });
+        if (fromPitch > toPitch) {
+            float temp = fromPitch;
+            fromPitch = toPitch;
+            toPitch = temp;
+        }
 
-    if (it != _items->end()) {
-        if (event->button() == Qt::LeftButton) {
-            _app->undoStack().push(new EditPitchChangeCommand(_app->window(), *it, pitchClicked));
+        float beatsPerPixel = _cellBeats / _cellWidth;
+        float leftPosition = _left * beatsPerPixel;
+        float fromPosition = leftPosition + (_fromPoint.x() * beatsPerPixel);
+        float toPosition = leftPosition + (_toPoint.x() * beatsPerPixel);
+
+        if (fromPosition > toPosition) {
+            float a = fromPosition;
+            fromPosition = toPosition;
+            toPosition = a;
+        }
+
+        QList<Track::PitchChange*> selectedItems = *_items;
+        selectedItems.erase(std::remove_if(selectedItems.begin(), selectedItems.end(), [=](Track::PitchChange* item) {
+                                return (item->pitch() < fromPitch || item->pitch() > toPitch) ||
+                                       (item->time() < fromPosition || item->time() >= toPosition);
+                            }), selectedItems.end());
+
+        if (Qt::ShiftModifier == QApplication::keyboardModifiers()) {
+            std::for_each(selectedItems.begin(), selectedItems.end(), [&](Track::PitchChange* item) {
+                if (!_selectedItems.contains(item)) {
+                    _selectedItems.append(item);
+                }
+            });
         } else {
-            emit pitchChangeRemoved(*it);
+            _selectedItems = selectedItems;
         }
     } else {
-        emit pitchChangeAdded(mousePosition, pitchClicked);
+        float pitch = 1.0f - 2 * (float)event->pos().y() / height();
+
+        float beatsPerPixel = _cellBeats / _cellWidth;
+        float leftPosition = _left * beatsPerPixel;
+        float mousePosition = leftPosition + (event->pos().x() * beatsPerPixel);
+        float mousePositionSnapped = (int)(mousePosition / _cellBeats) * _cellBeats;
+
+
+        if (event->button() == Qt::LeftButton) {
+            _selectedItems.clear();
+            if (_itemUnderCursor) {
+                if (!_selectedItems.contains(_itemUnderCursor)) {
+                    _selectedItems = QList<Track::PitchChange*>({_itemUnderCursor});
+                    update();
+                }
+
+                return;
+            }
+
+            QList<Track::PitchChange*>::Iterator it;
+            if ((it = std::find_if(_items->begin(), _items->end(), [=](Track::PitchChange* const pc) {
+                    return pc->time() == (_snap ? mousePositionSnapped : mousePosition);
+                })) == _items->end()) {
+                emit pitchChangeAdded(_snap ? mousePositionSnapped : mousePosition, pitch);
+            } else {
+                _app->undoStack().push(new EditPitchChangeCommand(_app->window(), *it, (*it)->time(), pitch));
+            }
+        } else {
+            emit pitchChangeRemoved(_itemUnderCursor);
+        }
+
+        _selectedItems.removeAll(_itemUnderCursor);
+        _itemUnderCursor = nullptr;
     }
+
+    setNeedsFullPaint();
+    update();
+}
+
+void PianoRollPitchWidget::mouseMoveEvent(QMouseEvent *event)
+{
+
+    float beatsPerPixel = _cellBeats / _cellWidth;
+    float leftPosition = _left * beatsPerPixel;
+    float mousePosition = qMax(leftPosition + (event->pos().x() * beatsPerPixel), 0.0f);
+    float mousePositionSnapped = (int)(mousePosition / _cellBeats) * _cellBeats;
+
+    _mousePosition = (_snap ? mousePositionSnapped : mousePosition);
+
+    if (!_items)
+        return;
+
+    float pitch = 1.0f - 2 * (float)event->pos().y() / height();
+
+    float time;
+    float end;
+    float newPitch;
+
+    float timeDelta;
+    float pitchDelta;
+    if (event->buttons() & Qt::LeftButton) {
+        if (_itemUnderCursor && !_selectedItems.contains(_itemUnderCursor)) {
+            _selectedItems = QList({ _itemUnderCursor });
+        }
+
+        if (_selectedItems.contains(_itemUnderCursor)) {
+            timeDelta = (_snap ? mousePositionSnapped : mousePosition) - _itemUnderCursor->time();
+            pitchDelta = pitch - _itemUnderCursor->pitch();
+
+            for (Track::PitchChange* item : _selectedItems) {
+                time = item->time();
+                newPitch = item->pitch();
+                time = time + timeDelta;
+                newPitch = newPitch + pitchDelta;
+
+                _app->undoStack().push(new EditPitchChangeCommand(_app->window(), item, time, newPitch, _selectedItems));
+                setNeedsFullPaint();
+                update();
+            }
+        } else {
+            _selecting = true;
+            _toPoint = event->pos();
+            setNeedsFullPaint();
+            update();
+        }
+    } else {
+        _itemUnderCursor = nullptr;
+        for (Track::PitchChange* item : *_items) {
+            if (qAbs(mousePosition - (item->time())) < (8 * beatsPerPixel) &&
+                qAbs(pitch - (item->pitch())) < (8 * (2.0f/height()))) {
+                _itemUnderCursor = item;
+                break;
+            }
+        }
+
+        if (_itemUnderCursor) {
+            setCursor(Qt::SizeAllCursor);
+        } else {
+            unsetCursor();
+        }
+    }
+}
+
+void PianoRollPitchWidget::setSnap(const bool enabled)
+{
+    _snap = enabled;
 }

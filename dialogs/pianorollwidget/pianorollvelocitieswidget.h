@@ -52,6 +52,10 @@ class PianoRollVelocitiesWidget : public GanttBottomWidget
     private:
         void paintFull(QPaintEvent* event);
         void paintPartial(QPaintEvent* event);
+
+        // GanttBottomWidget interface
+    public:
+        void setSnap(const bool enabled);
 };
 
 #endif // PIANOROLLVELOCITIESWIDGET_H

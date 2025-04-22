@@ -110,6 +110,7 @@ class Track
         PitchChange* addPitchChange(const float time, const float pitch);
         void addPitchChanges(const QList<PitchChange*>& pitchChanges);
         void removePitchChange(const PitchChange* pc, const bool keep = false);
+        void removePitchChanges(const QList<PitchChange*>& changes);
 
         void usePianoRoll();
         bool doesUsePianoRoll() const;

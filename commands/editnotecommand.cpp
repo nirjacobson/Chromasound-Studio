@@ -9,32 +9,47 @@ EditNoteCommand::EditNoteCommand(MainWindow* window, Track::Item* item, const fl
     , _item(item)
     , _fromTime(_item->time())
     , _fromNote(_item->note())
+    , _performed(false)
 {
     setText("edit note");
 }
 
 void EditNoteCommand::undo()
 {
-    for (auto it = _groupCommands.begin(); it != _groupCommands.end(); ++it) {
-        (*it)->undo();
-    }
-
-    _item->setTime(_fromTime);
-    _item->note() = _fromNote;
+    undoNoUpdate();
 
     _mainWindow->doUpdate();
 }
 
 void EditNoteCommand::redo()
 {
+    redoNoUpdate();
+
+    if (_performed) {
+        _mainWindow->doUpdate();
+    }
+
+    _performed = true;
+}
+
+void EditNoteCommand::undoNoUpdate()
+{
+    for (auto it = _groupCommands.begin(); it != _groupCommands.end(); ++it) {
+        (*it)->undoNoUpdate();
+    }
+
+    _item->setTime(_fromTime);
+    _item->note() = _fromNote;
+}
+
+void EditNoteCommand::redoNoUpdate()
+{
     _item->setTime(_toTime);
     _item->note() = _note;
 
     for (auto it = _groupCommands.begin(); it != _groupCommands.end(); ++it) {
-        (*it)->redo();
+        (*it)->redoNoUpdate();
     }
-
-    _mainWindow->doUpdate();
 }
 
 int EditNoteCommand::id() const

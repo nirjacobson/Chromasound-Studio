@@ -542,6 +542,8 @@ set(PROJECT_SOURCES
     commands/removepitchchangecommand.cpp
     commands/setchannelpitchrangecommand.h
     commands/setchannelpitchrangecommand.cpp
+    commands/removetrackpitchchangescommand.h
+    commands/removetrackpitchchangescommand.cpp
 )
 
 if (LINUX)

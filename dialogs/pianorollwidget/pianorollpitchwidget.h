@@ -9,36 +9,45 @@
 class PianoRollPitchWidget : public GanttBottomWidget
 {
     Q_OBJECT
+    Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
+    Q_PROPERTY(QColor borderColor READ borderColor WRITE setBorderColor)
+    Q_PROPERTY(QColor itemColor READ itemColor WRITE setItemColor)
+    Q_PROPERTY(QColor areaSelectionColor READ areaSelectionColor WRITE setAreaSelectionColor)
+
+
+protected:
+    int length() const;
 
 public:
     PianoRollPitchWidget(QWidget* parent = nullptr);
 
     void setApplication(Application* app);
 
-    // DamageWidget interface
-private:
-    void paintFull(QPaintEvent *event);
-    void paintPartial(QPaintEvent *event);
+    const QList<Track::PitchChange*>& selectedItems();
 
-    // ScrollableWidget interface
-public:
     float getScrollPercentage();
     void setScrollPercentage(const float percent);
     void scrollBy(const int pixels);
 
-protected:
-    int length() const;
-
-    // GanttBottomWidget interface
-public:
     void setItems(QList<Track::PitchChange*>* items, const int pitchRange);
     void setCellWidth(const int width);
     void setCellBeats(const float beats);
 
 private:
+    void paintFull(QPaintEvent *event);
+    void paintPartial(QPaintEvent *event);
+
+    QColor _backgroundColor;
+    QColor _borderColor;
     QColor _color;
+    QColor _areaSelectionColor;
+    QColor _selectionColor;
+
+    float _mousePosition;
 
     int _left;
+
+    bool _snap;
 
     int _cellWidth;
     float _cellBeats;
@@ -47,13 +56,35 @@ private:
     QList<Track::PitchChange*>* _items;
     int _pitchRange;
 
+    Track::PitchChange* _itemUnderCursor;
+
+    bool _selecting;
+    QPoint _fromPoint;
+    QPoint _toPoint;
+    QList<Track::PitchChange*> _selectedItems;
+
+    const QColor& backgroundColor() const;
+    const QColor& borderColor() const;
+    const QColor& itemColor() const;
+    const QColor& areaSelectionColor() const;
+
+    void setBackgroundColor(const QColor& color);
+    void setBorderColor(const QColor& color);
+    void setItemColor(const QColor& color);
+    void setAreaSelectionColor(const QColor& color);
     // QWidget interface
 protected:
     void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
 
 signals:
     void pitchChangeAdded(float time, float pitch);
     void pitchChangeRemoved(Track::PitchChange* change);
+
+    // GanttBottomWidget interface
+public:
+    void setSnap(const bool enabled);
 };
 
 #endif // PIANOROLLPITCHWIDGET_H

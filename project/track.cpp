@@ -176,6 +176,13 @@ void Track::removePitchChange(const PitchChange *pc, const bool keep)
     }
 }
 
+void Track::removePitchChanges(const QList<PitchChange *> &changes)
+{
+    _pitchChanges.erase(std::remove_if(_pitchChanges.begin(), _pitchChanges.end(), [&](const Track::PitchChange* change) {
+         return changes.contains(change);
+     }), _pitchChanges.end());
+}
+
 Track::PitchChange* Track::addPitchChange(const float time, const float pitch)
 {
     PitchChange* ret = nullptr;

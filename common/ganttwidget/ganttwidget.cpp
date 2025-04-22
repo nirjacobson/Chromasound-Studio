@@ -245,8 +245,7 @@ void GanttWidget::doUpdate(bool full)
             bw->setNeedsFullPaint();
         }
     }
-    repaint();
-    repaint();
+    update();
 }
 
 const QColor& GanttWidget::cursorColor() const
@@ -303,6 +302,9 @@ void GanttWidget::snapClicked()
 {
     ui->headerWidget->setSnap(ui->snapCheckBox->isChecked());
     ui->editorWidget->setSnap(ui->snapCheckBox->isChecked());
+    for (GanttBottomWidget* bw : _bottomWidgets) {
+        bw->setSnap(ui->snapCheckBox->isChecked());
+    }
 }
 
 void GanttWidget::wheelHorizontalScroll(int pixels)

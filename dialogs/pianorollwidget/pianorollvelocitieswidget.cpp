@@ -158,3 +158,8 @@ void PianoRollVelocitiesWidget::paintPartial(QPaintEvent* event)
 {
 
 }
+
+void PianoRollVelocitiesWidget::setSnap(const bool enabled)
+{
+
+}
