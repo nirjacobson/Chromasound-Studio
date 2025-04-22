@@ -10,12 +10,16 @@ class MainWindow;
 class RemoveTrackItemsCommand : public QUndoCommand
 {
     public:
-        RemoveTrackItemsCommand(MainWindow* window, Track& track, const QList<Track::Item*>& items);
+        RemoveTrackItemsCommand(MainWindow* window, Track& track, const QList<Track::Item*>& notes, const QList<Track::PitchChange*>& pitchChanges);
+        ~RemoveTrackItemsCommand();
     private:
         MainWindow* _mainWindow;
 
         Track& _track;
-        QList<Track::Item*> _items;
+        QList<Track::Item*> _notes;
+        QList<Track::PitchChange*> _pitchChanges;
+
+        bool _performed;
 
         // QUndoCommand interface
     public:

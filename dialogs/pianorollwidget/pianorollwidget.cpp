@@ -289,7 +289,7 @@ void PianoRollWidget::velocityTriggered()
 
 void PianoRollWidget::newTriggered()
 {
-    _app->undoStack().push(new RemoveTrackItemsCommand(_app->window(), *_track, _track->items()));
+    _app->undoStack().push(new RemoveTrackItemsCommand(_app->window(), *_track, _track->items(), QList<Track::PitchChange*>()));
 }
 
 void PianoRollWidget::openTriggered()
@@ -416,12 +416,8 @@ void PianoRollWidget::selectAll()
 
 void PianoRollWidget::deleteTriggered()
 {
-    if (!ui->ganttWidget->selectedItems().empty()) {
-        _app->undoStack().push(new RemoveTrackItemsCommand(_app->window(), *_track, reinterpret_cast<const QList<Track::Item*>&>(ui->ganttWidget->selectedItems())));
-    }
-
-    if (_pitchWidget && !_pitchWidget->selectedItems().empty()) {
-        _app->undoStack().push(new RemoveTrackPitchChangesCommand(_app->window(), *_track, _pitchWidget->selectedItems()));
+    if (!ui->ganttWidget->selectedItems().empty() || (_pitchWidget && !_pitchWidget->selectedItems().empty())) {
+        _app->undoStack().push(new RemoveTrackItemsCommand(_app->window(), *_track, reinterpret_cast<const QList<Track::Item*>&>(ui->ganttWidget->selectedItems()), _pitchWidget->selectedItems()));
     }
 }
 

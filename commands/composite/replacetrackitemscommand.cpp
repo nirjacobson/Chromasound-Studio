@@ -41,7 +41,7 @@ void ReplaceTrackItemsCommand::undo()
 
 void ReplaceTrackItemsCommand::redo()
 {
-    _removeTrackItemsCommand = new RemoveTrackItemsCommand(_mainWindow, _track, _items);
+    _removeTrackItemsCommand = new RemoveTrackItemsCommand(_mainWindow, _track, _items, QList<Track::PitchChange*>());
     _removeTrackItemsCommand->redo();
     _addTrackItemsCommand = new AddTrackItemsCommand(_mainWindow, _track, 0, _newItems, false);
     _addTrackItemsCommand->redo();

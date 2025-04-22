@@ -18,7 +18,6 @@
 #include "commands/editnotecommand.h"
 #include "commands/addtrackitemscommand.h"
 #include "commands/removetrackitemscommand.h"
-#include "commands/removetrackpitchchangescommand.h"
 #include "commands/composite/replacetrackitemscommand.h"
 #include "commands/addtracksettingschangecommand.h"
 #include "commands/removetracksettingschangecommand.h"
