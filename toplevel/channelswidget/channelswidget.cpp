@@ -48,20 +48,20 @@ void ChannelsWidget::rebuild()
 
     for (ChannelWidget* channelWidget : _channelWidgets) {
         ui->verticalLayout->addWidget(channelWidget);
-        connect(channelWidget, &ChannelWidget::ledShiftClicked, this, [=]() {
+        connect(channelWidget, &ChannelWidget::ledShiftClicked, this, [=,this]() {
             toggleSolo(channelWidget);
         });
-        connect(channelWidget, &ChannelWidget::toggled, this, [=](bool selected) {
+        connect(channelWidget, &ChannelWidget::toggled, this, [=,this](bool selected) {
             handleToggle(channelWidget, selected);
         });
-        connect(channelWidget, &ChannelWidget::rectLedClicked, this, [=]() {
+        connect(channelWidget, &ChannelWidget::rectLedClicked, this, [=,this]() {
             handleSelect(channelWidget);
         });
         connect(channelWidget, &ChannelWidget::rectLedDoubleClicked, this, &ChannelsWidget::handleSelectAll);
-        connect(channelWidget, &ChannelWidget::pianoRollTriggered, this, [=](bool on) {
+        connect(channelWidget, &ChannelWidget::pianoRollTriggered, this, [=,this](bool on) {
             emit pianoRollTriggered(channelWidget->index(), on);
         });
-        connect(channelWidget, &ChannelWidget::selected, this, [=]() {
+        connect(channelWidget, &ChannelWidget::selected, this, [=,this]() {
             select(channelWidget->index());
         });
         connect(channelWidget, &ChannelWidget::pianoKeyClicked, this, &ChannelsWidget::pianoKeyClicked);
@@ -98,20 +98,20 @@ void ChannelsWidget::remove(const int index)
 void ChannelsWidget::add(const int index)
 {
     ChannelWidget* cw = new ChannelWidget(this, _app, index);
-    connect(cw, &ChannelWidget::ledShiftClicked, this, [=]() {
+    connect(cw, &ChannelWidget::ledShiftClicked, this, [=,this]() {
         toggleSolo(cw);
     });
-    connect(cw, &ChannelWidget::toggled, this, [=](bool selected) {
+    connect(cw, &ChannelWidget::toggled, this, [=,this](bool selected) {
         handleToggle(cw, selected);
     });
-    connect(cw, &ChannelWidget::rectLedClicked, this, [=]() {
+    connect(cw, &ChannelWidget::rectLedClicked, this, [=,this]() {
         handleSelect(cw);
     });
     connect(cw, &ChannelWidget::rectLedDoubleClicked, this, &ChannelsWidget::handleSelectAll);
-    connect(cw, &ChannelWidget::pianoRollTriggered, this, [=](bool on) {
+    connect(cw, &ChannelWidget::pianoRollTriggered, this, [=,this](bool on) {
         emit pianoRollTriggered(cw->index(), on);
     });
-    connect(cw, &ChannelWidget::selected, this, [=]() {
+    connect(cw, &ChannelWidget::selected, this, [=,this]() {
         select(cw->index());
     });
     connect(cw, &ChannelWidget::pianoKeyClicked, this, &ChannelsWidget::pianoKeyClicked);

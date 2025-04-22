@@ -150,7 +150,7 @@ void Playlist::removeItems(const QList<Item*>& items)
 
 void Playlist::removeItem(const float time, const int pattern)
 {
-    auto it = std::remove_if(_items.begin(), _items.end(), [=](Playlist::Item* const item) {
+    auto it = std::remove_if(_items.begin(), _items.end(), [=,this](Playlist::Item* const item) {
         return (item->pattern() == pattern) && (item->time() <= time) && (time < (item->time() + _project->getPatternBarLength(item->pattern())));
     });
     _items.erase(it, _items.end());
@@ -174,7 +174,7 @@ QMap<int, float> Playlist::activePatternsAtTime(const float time) const
     QMap<int, float> result;
 
     QList<Playlist::Item*>::ConstIterator it = _items.begin();
-    while ((it = std::find_if(it, _items.end(), [=](const Playlist::Item* item) {
+    while ((it = std::find_if(it, _items.end(), [=,this](const Playlist::Item* item) {
     return (item->time() <= time) && ((item->time() + _project->getPatternBarLength(item->pattern())) >= time);
     })) != _items.end()) {
         result.insert((*it)->pattern(), (*it)->time());

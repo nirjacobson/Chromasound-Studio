@@ -537,11 +537,11 @@ void MainWindow::pianoRollTriggered(const int index, const bool on)
         pianoRollWindow->setAttribute(Qt::WA_DeleteOnClose);
         _mdiArea->addSubWindow(pianoRollWindow);
 
-        connect(pianoRollWindow, &MdiSubWindow::closed, this, [=]() {
+        connect(pianoRollWindow, &MdiSubWindow::closed, this, [=,this]() {
             windowClosed(pianoRollWindow);
         });
 
-        connect(pianoRollWidget, &PianoRollWidget::sizeUpNeeded, this, [=]() {
+        connect(pianoRollWidget, &PianoRollWidget::sizeUpNeeded, this, [=,this]() {
             QSize size;
             size.setWidth(qMax(pianoRollWindow->size().width(), pianoRollWindow->minimumSizeHint().width()));
             size.setHeight(qMax(pianoRollWindow->size().height(), pianoRollWindow->minimumSizeHint().height()));
@@ -551,7 +551,7 @@ void MainWindow::pianoRollTriggered(const int index, const bool on)
             pianoRollWindow->resize(size);
         });
 
-        connect(pianoRollWidget, &PianoRollWidget::sizeDownNeeded, this, [=]() {
+        connect(pianoRollWidget, &PianoRollWidget::sizeDownNeeded, this, [=,this]() {
             pianoRollWindow->resize(_pianoRollSize);
         });
 
@@ -604,7 +604,7 @@ void MainWindow::channelSelected(const int index)
                     channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
                 }
                 _channelWindows[index].append(channelWindow);
-                connect(channelWindow, &MdiSubWindow::closed, this, [=]() {
+                connect(channelWindow, &MdiSubWindow::closed, this, [=,this]() {
                     windowClosed(channelWindow);
                 });
             }
@@ -627,7 +627,7 @@ void MainWindow::channelSelected(const int index)
                     channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
                 }
                 _channelWindows[index].append(channelWindow);
-                connect(channelWindow, &MdiSubWindow::closed, this, [=]() {
+                connect(channelWindow, &MdiSubWindow::closed, this, [=,this]() {
                     windowClosed(channelWindow);
                 });
             }
@@ -651,7 +651,7 @@ void MainWindow::channelSelected(const int index)
                     channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
                 }
                 _channelWindows[index].append(channelWindow);
-                connect(channelWindow, &MdiSubWindow::closed, this, [=]() {
+                connect(channelWindow, &MdiSubWindow::closed, this, [=,this]() {
                     windowClosed(channelWindow);
                 });
             }
@@ -672,7 +672,7 @@ void MainWindow::channelSelected(const int index)
                     channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
                 }
                 _channelWindows[index].append(channelWindow);
-                connect(channelWindow, &MdiSubWindow::closed, this, [=]() {
+                connect(channelWindow, &MdiSubWindow::closed, this, [=,this]() {
                     windowClosed(channelWindow);
                 });
             }
@@ -694,7 +694,7 @@ void MainWindow::channelSelected(const int index)
                     channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
                 }
                 _channelWindows[index].append(channelWindow);
-                connect(channelWindow, &MdiSubWindow::closed, this, [=]() {
+                connect(channelWindow, &MdiSubWindow::closed, this, [=,this]() {
                     windowClosed(channelWindow);
                 });
             }
@@ -716,7 +716,7 @@ void MainWindow::channelSelected(const int index)
                     channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
                 }
                 _channelWindows[index].append(channelWindow);
-                connect(channelWindow, &MdiSubWindow::closed, this, [=]() {
+                connect(channelWindow, &MdiSubWindow::closed, this, [=,this]() {
                     windowClosed(channelWindow);
                 });
             }

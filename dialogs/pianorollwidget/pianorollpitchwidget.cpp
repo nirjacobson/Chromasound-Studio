@@ -332,7 +332,7 @@ void PianoRollPitchWidget::mouseReleaseEvent(QMouseEvent *event)
             }
 
             QList<Track::PitchChange*>::Iterator it;
-            if ((it = std::find_if(_items->begin(), _items->end(), [=](Track::PitchChange* const pc) {
+            if ((it = std::find_if(_items->begin(), _items->end(), [=,this](Track::PitchChange* const pc) {
                     return pc->time() == (_snap ? mousePositionSnapped : mousePosition);
                 })) == _items->end()) {
                 emit pitchChangeAdded(_snap ? mousePositionSnapped : mousePosition, pitch);
