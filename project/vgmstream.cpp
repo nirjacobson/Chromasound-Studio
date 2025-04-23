@@ -909,6 +909,11 @@ void VGMStream::processTrack(const float time, const Channel& channel, const Tra
     }
 
     for (Track::PitchChange* pitchChange : pitchChangesCopy) {
+        if (loopStart >= 0 && loopEnd >= 0) {
+            if ((time + pitchChange->time()) < loopStart || (time + pitchChange->time()) >= loopEnd) {
+                continue;
+            }
+        }
         items.append(new StreamPitchItem(time + pitchChange->time(), channel.type(), track, pitchChange->pitch(), channel.pitchRange()));
     }
 }
