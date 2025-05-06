@@ -42,7 +42,6 @@ class VGMPlayer : public QThread
         void setTime(const uint32_t time);
 
         void fillWithPCM(const bool enable);
-        void discretePCM(const bool enable);
 
         void setProfile(const Chromasound_Studio::Profile& profile);
 

@@ -220,11 +220,6 @@ void VGMPlayer::fillWithPCM(const bool enable)
     _fillWithPCM = enable;
 }
 
-void VGMPlayer::discretePCM(const bool enable)
-{
-    _discretePCM = enable;
-}
-
 void VGMPlayer::setProfile(const Chromasound_Studio::Profile& profile)
 {
     _profile = profile;
