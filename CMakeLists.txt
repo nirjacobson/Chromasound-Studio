@@ -657,6 +657,8 @@ if (LINUX)
   install(FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/unix_install/chromasound-studio.png DESTINATION /usr/share/icons)
   install(FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/unix_install/chromasound.directory DESTINATION /usr/share/desktop-directories)
+  install(FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/unix_install/ChromasoundStudio.desktop DESTINATION /usr/share/applications)
 endif()
 

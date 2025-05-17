@@ -4,7 +4,7 @@ Icon=chromasound-studio
 Exec=Chromasound-Studio
 StartupWMClass=Chromasound-Studio
 Terminal=false
-Categories=AudioVideo;Audio;Midi;Sequencer;
+Categories=AudioVideo;Audio;Midi;Sequencer;Chromasound;
 Actions=Dropdown;
 
 Name=Chromasound Studio
