@@ -4,8 +4,7 @@ Icon=chromasound-studio
 Exec=Chromasound-Studio
 StartupWMClass=Chromasound-Studio
 Terminal=false
-Categories=AudioVideo;Audio;Midi;Sequencer;Chromasound;
-Actions=Dropdown;
+Categories=AudioVideo;Audio;Midi;Sequencer;X-Chromasound;
 
 Name=Chromasound Studio
 GenericName=VGM composer
