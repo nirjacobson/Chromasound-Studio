@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Icon=chromasound-studio
+Exec=Chromasound-Studio
+StartupWMClass=Chromasound-Studio
+Terminal=false
+Categories=AudioVideo;Audio;Midi;Sequencer;
+Actions=Dropdown;
+
+Name=Chromasound Studio
+GenericName=VGM composer
+Comment=VGM composer

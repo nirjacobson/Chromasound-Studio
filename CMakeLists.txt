@@ -605,10 +605,10 @@ endif()
 
 if (LINUX)
     target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
-                                                /usr/lib64/libbson-1.0.so
-                                                /usr/lib64/libportaudio.so
-                                                /usr/lib64/libportmidi.so
-                                                /usr/lib64/libz.so)
+                                                    bson-1.0
+                                                    portaudio
+                                                    portmidi
+                                                    z)
 elseif (WIN32)
     if (WIN32_ARM)
         target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
@@ -652,6 +652,13 @@ install(TARGETS Chromasound-Studio
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+if (LINUX)
+  install(FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/unix_install/chromasound-studio.png DESTINATION /usr/share/icons)
+  install(FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/unix_install/ChromasoundStudio.desktop DESTINATION /usr/share/applications)
+endif()
 
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(Chromasound-Studio)
