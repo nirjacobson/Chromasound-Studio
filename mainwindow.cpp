@@ -1876,6 +1876,9 @@ void MainWindow::dropEvent(QDropEvent* event)
     QByteArray data = event->mimeData()->data("text/uri-list");
     QStringList paths = QString(data).split("\r\n");
     QString path = paths.first().mid(QString("file://").length()).replace("%20", " ");
+#ifdef WIN32
+    path.insert(1, ':');
+#endif
 
     QFile file(path);
     QFileInfo fileInfo(file);

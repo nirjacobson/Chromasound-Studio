@@ -158,6 +158,9 @@ void ROMBuilderDialog::dropEvent(QDropEvent* event)
     for (QString& str : paths) {
         str = str.mid(QString("file://").length());
         str = str.replace("%20", " ");
+#ifdef WIN32
+        str.insert(1, ':');
+#endif
     }
 
     for (auto it = paths.begin(); it != paths.end(); ++it) {

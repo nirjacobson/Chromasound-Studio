@@ -596,6 +596,9 @@ void PianoRollWidget::dropEvent(QDropEvent* event)
     path = path.mid(QString("file://").length());
     path = path.replace("%20", " ");
     path = path.split("\r\n").at(0);
+#ifdef WIN32
+    path.insert(1, ':');
+#endif
 
     QFile file(path);
     QFileInfo fileInfo(file);

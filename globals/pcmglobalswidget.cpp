@@ -85,10 +85,15 @@ void PCMGlobalsWidget::dropEvent(QDropEvent* event)
         str = str.replace("%20", " ");
     }
 
-    QFile file(paths.first());
+    QString path = paths.first();
+#ifdef WIN32
+    path.insert(1, ':');
+#endif
+
+    QFile file(path);
     QFileInfo fileInfo(file);
 
     if (fileInfo.suffix() == "rom") {
-        setROMFile(paths.first());
+        setROMFile(path);
     }
 }
