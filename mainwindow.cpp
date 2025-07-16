@@ -576,7 +576,7 @@ void MainWindow::channelSelected(const int index)
     channelWindow->setAttribute(Qt::WA_DeleteOnClose);
 
     NoiseWidget* noiseWidget;
-    FMWidgetWindow* fmWidget;
+    OPNWidgetWindow* opnWidget;
     SSGWidget* ssgWidget;
     MelodyWidget* melodyWidget;
     RhythmWidget* rhythmWidget;
@@ -611,18 +611,18 @@ void MainWindow::channelSelected(const int index)
             break;
         case Channel::Type::FM:
             it = std::find_if(_channelWindows[index].begin(), _channelWindows[index].end(), [](MdiSubWindow* window) {
-                return dynamic_cast<FMWidgetWindow*>(window->widget());
+                return dynamic_cast<OPNWidgetWindow*>(window->widget());
             });
             if (it != _channelWindows[index].end()) {
                 _mdiArea->setActiveSubWindow(*it);
             } else {
-                fmWidget = new FMWidgetWindow(this, _app);
-                connect(fmWidget, &FMWidgetWindow::keyPressed, this, &MainWindow::keyOn);
-                connect(fmWidget, &FMWidgetWindow::keyReleased, this, &MainWindow::keyOff);
-                fmWidget->setSettings(dynamic_cast<FMChannelSettings*>(&_app->project().getChannel(index).settings()));
-                fmWidget->setWindowTitle(QString("%1: FM").arg(_app->project().getChannel(index).name()));
+                opnWidget = new OPNWidgetWindow(this, _app);
+                connect(opnWidget, &OPNWidgetWindow::keyPressed, this, &MainWindow::keyOnWithSync);
+                connect(opnWidget, &OPNWidgetWindow::keyReleased, this, &MainWindow::keyOffWithSync);
+                opnWidget->setSettings(dynamic_cast<FMChannelSettings*>(&_app->project().getChannel(index).settings()));
+                opnWidget->setWindowTitle(QString("%1: FM").arg(_app->project().getChannel(index).name()));
 
-                channelWindow->setWidget(fmWidget);
+                channelWindow->setWidget(opnWidget);
                 if (_mdiArea->viewMode() == QMdiArea::SubWindowView) {
                     channelWindow->layout()->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
                 }
@@ -867,14 +867,14 @@ void MainWindow::keyOn(const int key, const int velocity)
 
     Channel& channel = _app->project().getChannel(activeChannel);
 
-    FMWidgetWindow* fmw;
+    OPNWidgetWindow* opnw;
     if (_channelWindows[activeChannel].contains(_mdiArea->activeSubWindow())) {
         if (prw) {
             prw->pressKey(key);
             _app->keyOn(channel, prw->currentSettings(), key, velocity);
             return;
-        } else if ((fmw = dynamic_cast<FMWidgetWindow*>(_mdiArea->activeSubWindow()->widget()))) {
-            fmw->pressKey(key);
+        } else if ((opnw = dynamic_cast<OPNWidgetWindow*>(_mdiArea->activeSubWindow()->widget()))) {
+            opnw->pressKey(key);
         }
     }
     _app->keyOn(channel, key, velocity);
@@ -895,10 +895,10 @@ void MainWindow::keyOff(const int key)
     _app->keyOff(channel, key);
     for (MdiSubWindow* window : _channelWindows[activeChannel]) {
         PianoRollWidget* prw;
-        FMWidgetWindow* fmw;
+        OPNWidgetWindow* fmw;
         if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
             prw->releaseKey(key);
-        } else if ((fmw = dynamic_cast<FMWidgetWindow*>(window->widget()))) {
+        } else if ((fmw = dynamic_cast<OPNWidgetWindow*>(window->widget()))) {
             fmw->releaseKey(key);
         }
     }
@@ -1747,7 +1747,7 @@ void MainWindow::doUpdate()
                 tail = "Piano Roll";
             } else if (dynamic_cast<NoiseWidget*>(window->widget())) {
                 tail = "Noise";
-            } else if (dynamic_cast<FMWidgetWindow*>(window->widget())) {
+            } else if (dynamic_cast<OPNWidgetWindow*>(window->widget())) {
                 tail = "FM";
             } else if (dynamic_cast<SSGWidget*>(window->widget())) {
                 tail = "SSG";
@@ -1769,7 +1769,7 @@ void MainWindow::channelSettingsUpdated()
     for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
         for (MdiSubWindow* window : (*it)) {
             NoiseWidget* nw;
-            FMWidgetWindow* fmw;
+            OPNWidgetWindow* fmw;
             SSGWidget* sw;
             PianoRollWidget* prw;
             MelodyWidget* mw;
@@ -1778,7 +1778,7 @@ void MainWindow::channelSettingsUpdated()
 
             if ((nw = dynamic_cast<NoiseWidget*>(window->widget()))) {
                 nw->doUpdate();
-            } else if ((fmw = dynamic_cast<FMWidgetWindow*>(window->widget()))) {
+            } else if ((fmw = dynamic_cast<OPNWidgetWindow*>(window->widget()))) {
                 fmw->doUpdate();
             } else if ((romw = dynamic_cast<PCMWidgetWindow*>(window->widget()))) {
                 romw->doUpdate();

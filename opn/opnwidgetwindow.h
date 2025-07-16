@@ -6,16 +6,16 @@
 #include "application.h"
 
 namespace Ui {
-    class FMWidgetWindow;
+    class OPNWidgetWindow;
 }
 
-class FMWidgetWindow : public QMainWindow
+class OPNWidgetWindow : public QMainWindow
 {
         Q_OBJECT
 
     public:
-        explicit FMWidgetWindow(QWidget *parent = nullptr, Application* app = nullptr);
-        ~FMWidgetWindow();
+        explicit OPNWidgetWindow(QWidget *parent = nullptr, Application* app = nullptr);
+        ~OPNWidgetWindow();
 
         void setSettings(FMChannelSettings* settings);
 
@@ -29,7 +29,7 @@ class FMWidgetWindow : public QMainWindow
         void keyReleased(const int key);
 
     private:
-        Ui::FMWidgetWindow *ui;
+        Ui::OPNWidgetWindow *ui;
 
         // QWidget interface
     protected:
