@@ -28,6 +28,7 @@ GanttEditorWidget::GanttEditorWidget(QWidget *parent)
 , _areaSelectionColor(QColor(192, 192, 255))
 , _selectionColor(QColor(255, 192, 0))
 , _selecting(false)
+, _selectedItems(QList<GanttItem*>())
 , _cellMajors({ 4 })
 {
     setMouseTracking(true);

@@ -14,6 +14,7 @@ PianoRollPitchWidget::PianoRollPitchWidget(QWidget *parent)
     , _areaSelectionColor(QColor(192, 192, 255))
     , _selectionColor(QColor(255, 192, 0))
     , _selecting(false)
+    , _selectedItems(QList<Track::PitchChange*>())
     , _snap(true)
 {
     setMinimumHeight(128);

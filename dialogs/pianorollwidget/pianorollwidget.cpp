@@ -417,7 +417,7 @@ void PianoRollWidget::selectAll()
 void PianoRollWidget::deleteTriggered()
 {
     if (!ui->ganttWidget->selectedItems().empty() || (_pitchWidget && !_pitchWidget->selectedItems().empty())) {
-        _app->undoStack().push(new RemoveTrackItemsCommand(_app->window(), *_track, reinterpret_cast<const QList<Track::Item*>&>(ui->ganttWidget->selectedItems()), _pitchWidget->selectedItems()));
+        _app->undoStack().push(new RemoveTrackItemsCommand(_app->window(), *_track, reinterpret_cast<const QList<Track::Item*>&>(ui->ganttWidget->selectedItems()), _pitchWidget ? _pitchWidget->selectedItems() : QList<Track::PitchChange*>()));
     }
 }
 
