@@ -676,7 +676,7 @@ void ChannelWidget::dropEvent(QDropEvent* event)
         str = str.mid(QString("file://").length());
         str = str.replace("%20", " ");
 #ifdef WIN32
-        str.insert(1, ':');
+        str = str.startsWith('/') ? str.mid(1) : str.insert(1, ':');
 #endif
     }
 

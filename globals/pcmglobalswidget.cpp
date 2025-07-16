@@ -87,7 +87,7 @@ void PCMGlobalsWidget::dropEvent(QDropEvent* event)
 
     QString path = paths.first();
 #ifdef WIN32
-    path.insert(1, ':');
+    path = path.startsWith('/') ? path.mid(1) : path.insert(1, ':');
 #endif
 
     QFile file(path);
