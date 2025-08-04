@@ -973,7 +973,7 @@ void MainWindow::pitchChange(const int pitch)
     float normalizedPitch = -1.0 + 2.0 * (pitch / (std::pow(2, 14) - 1));
 
     if (channel.type() != Channel::Type::PCM) {
-        _app->pitchChange(activeChannel, normalizedPitch, channel.pitchRange());
+        _app->pitchChange(activeChannel, normalizedPitch, channel.settings().pitchRange());
     }
 }
 

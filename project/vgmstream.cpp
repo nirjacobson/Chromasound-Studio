@@ -914,7 +914,7 @@ void VGMStream::processTrack(const float time, const Channel& channel, const Tra
                 continue;
             }
         }
-        items.append(new StreamPitchItem(time + pitchChange->time(), channel.type(), track, pitchChange->pitch(), channel.pitchRange()));
+        items.append(new StreamPitchItem(time + pitchChange->time(), channel.type(), track, pitchChange->pitch(), channel.settings().pitchRange()));
     }
 }
 
@@ -1732,7 +1732,7 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
     if (item->type() == Channel::Type::TONE) {
         if (item->on() && doFreq) {
             addr = (item->channel() * 2);
-            int octave = item->note().key() / 12;
+            int octave = item->note().key() / 12 + item->channelSettings()->octaveOffset();
             int key = item->note().key() % 12;
             float f = frequencies[key] * (float)qPow(2, octave);
             int n = 3579545.0f / (32.0f * f);
@@ -1774,7 +1774,7 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
         int channel = item->channel() % 3;
 
         if (item->on()) {
-            int octave = item->note().key() / 12;
+            int octave = item->note().key() / 12 + fmcs->octaveOffset();
             int key = item->note().key() % 12;
             int n = (octave << 11) | ym2612_frequencies[key];
 
@@ -1840,7 +1840,7 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
         if (item->on() && doFreq) {
             addr = item->channel() * 2;
 
-            int octave = item->note().key() / 12;
+            int octave = item->note().key() / 12 + settings->octaveOffset();
             int key = item->note().key() % 12;
             float f = frequencies[key] * (float)qPow(2, octave);
             int n = 3579545.0f / (32.0f * f);
@@ -1857,7 +1857,7 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
         addr = 0x8 + item->channel();
         uint8_t datum;
         if (item->on()) {
-            int vol = 30.0f * (float)item->channelSettings()->volume()/100.0f
+            int vol = 30.0f * (float)settings->volume()/100.0f
                       * (float)item->note().velocity()/100.0f;
             datum = vol >> 1;
             datum |= (settings->envelope() << 4);
@@ -1871,7 +1871,7 @@ void VGMStream::encodeNoteItem(const Project& project, const StreamNoteItem* ite
     } else if (item->type() == Channel::Type::MELODY) {
         const MelodyChannelSettings* settings = dynamic_cast<const MelodyChannelSettings*>(item->channelSettings());
         if (item->on()) {
-            int octave = item->note().key() / 12;
+            int octave = item->note().key() / 12 + settings->octaveOffset();
             int key = item->note().key() % 12;
             int n = (octave << 9) | ym2413_frequencies[key];
 

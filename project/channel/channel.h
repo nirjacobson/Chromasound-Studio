@@ -42,9 +42,6 @@ class Channel
         ChannelSettings& settings();
         const ChannelSettings& settings() const;
 
-        int pitchRange() const;
-        void setPitchRange(const int semitones);
-
         static QString channelTypeToString(const Channel::Type type);
         static Channel::Type channelTypeFromString(const QString& str);
 
@@ -52,7 +49,6 @@ class Channel
         bool _enabled;
         Type _type;
         QString _name;
-        int _pitchRange;
 
         ChannelSettings* _settings;
 };

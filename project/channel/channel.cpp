@@ -4,7 +4,6 @@ Channel::Channel()
     : _enabled(true)
     , _name("Channel")
     , _settings(nullptr)
-    , _pitchRange(1)
 {
     setType(Type::TONE);
 }
@@ -13,7 +12,6 @@ Channel::Channel(const QString& name)
     : _enabled(true)
     , _name(name)
     , _settings(nullptr)
-    , _pitchRange(1)
 {
     setType(Type::TONE);
 }
@@ -89,15 +87,6 @@ const ChannelSettings& Channel::settings() const
     return *_settings;
 }
 
-int Channel::pitchRange() const
-{
-    return _pitchRange;
-}
-
-void Channel::setPitchRange(const int semitones)
-{
-    _pitchRange = semitones;
-}
 
 QString Channel::channelTypeToString(const Type type)
 {

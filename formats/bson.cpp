@@ -142,7 +142,6 @@ void BSON::fromChannel(bson_t* dst, const Channel& channel)
     BSON_APPEND_BOOL(dst, "enabled", channel._enabled);
     BSON_APPEND_UTF8(dst, "name", channel._name.toStdString().c_str());
     BSON_APPEND_UTF8(dst, "type", Channel::channelTypeToString(channel._type).toStdString().c_str());
-    BSON_APPEND_INT32(dst, "pitchRange", channel._pitchRange);
 
     if (channel._settings) {
         bson_t settings = channel._settings->toBSON();
@@ -169,9 +168,6 @@ Channel BSON::toChannel(bson_iter_t& b)
     }
     if (bson_iter_find_descendant(&b, "type", &type) && BSON_ITER_HOLDS_UTF8(&type)) {
         c._type = Channel::channelTypeFromString(bson_iter_utf8(&type, nullptr));
-    }
-    if (bson_iter_find_descendant(&b, "pitchRange", &pitchRange) && BSON_ITER_HOLDS_INT32(&pitchRange)) {
-        c._pitchRange = bson_iter_int32(&pitchRange);
     }
     if (bson_iter_find_descendant(&b, "settings", &settings) && BSON_ITER_HOLDS_DOCUMENT(&settings) && bson_iter_recurse(&settings, &settingsInner)) {
         if (c._type == Channel::Type::TONE) {

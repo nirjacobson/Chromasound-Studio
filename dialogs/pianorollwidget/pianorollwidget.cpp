@@ -129,7 +129,7 @@ void PianoRollWidget::setTrack(const int pattern, const int track)
         connect(_pitchWidget, &PianoRollPitchWidget::pitchChangeAdded, this, &PianoRollWidget::pitchChangeAdded);
         connect(_pitchWidget, &PianoRollPitchWidget::pitchChangeRemoved, this, &PianoRollWidget::pitchChangeRemoved);
 
-        _pitchWidget->setItems(&_track->pitchChanges(), _app->project().getChannel(_channel).pitchRange());
+        _pitchWidget->setItems(&_track->pitchChanges(), _app->project().getChannel(_channel).settings().pitchRange());
 
         ui->ganttWidget->addBottomWidget(_pitchWidget, "Channel pitch");
         ui->ganttWidget->setParameters(Rows, RowHeight, CellWidth, 0.25);

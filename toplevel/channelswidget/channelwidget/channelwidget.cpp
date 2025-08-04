@@ -22,6 +22,7 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     , _pcmAction("PCM", this)
     , _fillEvery2StepsAction("Every 2 steps")
     , _fillEvery4StepsAction("Every 4 steps")
+    , _octaveOffsetAction("Octave offset...")
     , _pitchRangeAction("Pitch range...")
     , _toneColor(Qt::cyan)
     , _noiseColor(Qt::lightGray)
@@ -102,6 +103,7 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     connect(&_rhythmAction, &QAction::triggered, this, &ChannelWidget::rhythmWasTriggered);
     connect(&_pcmAction, &QAction::triggered, this, &ChannelWidget::pcmWasTriggered);
 
+    connect(&_octaveOffsetAction, &QAction::triggered, this, &ChannelWidget::octaveOffsetWasTriggered);
     connect(&_pitchRangeAction, &QAction::triggered, this, &ChannelWidget::pitchRangeWasTriggered);
 
     connect(ui->stepKeys, &StepKeysWidget::clicked, this, &ChannelWidget::pianoKeyClicked);
@@ -152,6 +154,7 @@ ChannelWidget::ChannelWidget(QWidget *parent, Application* app, int index)
     _contextMenu.addAction(&_pcmAction);
 
     _contextMenu.addSeparator();
+    _contextMenu.addAction(&_octaveOffsetAction);
     _contextMenu.addAction(&_pitchRangeAction);
 
     _contextMenu.addSeparator();
@@ -561,10 +564,20 @@ void ChannelWidget::pcmWasTriggered()
     emit selected();
 }
 
+void ChannelWidget::octaveOffsetWasTriggered()
+{
+    bool ok;
+    int number = QInputDialog::getInt(this, "Octave offset", "Octaves:", _app->project().getChannel(_index).settings().octaveOffset(), -4, 4, 1, &ok);
+
+    if (ok) {
+        _app->undoStack().push(new SetChannelOctaveOffsetCommand(_app->window(), _app->project().getChannel(_index), number));
+    }
+}
+
 void ChannelWidget::pitchRangeWasTriggered()
 {
     bool ok;
-    int number = QInputDialog::getInt(this, "Pitch rnage", "Semitones:", _app->project().getChannel(_index).pitchRange(), -12, 12, 1, &ok);
+    int number = QInputDialog::getInt(this, "Pitch range", "Semitones:", _app->project().getChannel(_index).settings().pitchRange(), -12, 12, 1, &ok);
 
     if (ok) {
         _app->undoStack().push(new SetChannelPitchRangeCommand(_app->window(), _app->project().getChannel(_index), number));

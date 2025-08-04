@@ -20,8 +20,16 @@ class ChannelSettings : public Settings
 
         virtual bool supportsPitchChanges() = 0;
 
+        int pitchRange() const;
+        void setPitchRange(const int semitones);
+
+        int octaveOffset() const;
+        void setOctaveOffset(const int offset);
+
     private:
         int _volume;
+        int _octaveOffset;
+        int _pitchRange;
 
         // Settings interface
     public:

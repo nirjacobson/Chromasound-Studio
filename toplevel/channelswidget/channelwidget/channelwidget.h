@@ -24,6 +24,7 @@
 #include "commands/setchanneltypecommand.h"
 #include "commands/setchannelnamecommand.h"
 #include "commands/setchannelenabledcommand.h"
+#include "commands/setchanneloctaveoffsetcommand.h"
 #include "commands/setchannelpitchrangecommand.h"
 #include "formats/bson.h"
 #include "formats/midi/midi.h"
@@ -94,6 +95,7 @@ class ChannelWidget : public QWidget
         QAction _fillEvery2StepsAction;
         QAction _fillEvery4StepsAction;
 
+        QAction _octaveOffsetAction;
         QAction _pitchRangeAction;
 
         QColor _fmColor;
@@ -146,6 +148,7 @@ class ChannelWidget : public QWidget
         void melodyWasTriggered();
         void rhythmWasTriggered();
         void pcmWasTriggered();
+        void octaveOffsetWasTriggered();
         void pitchRangeWasTriggered();
         void volumeDialChanged(const int val);
 
