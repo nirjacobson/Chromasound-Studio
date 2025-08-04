@@ -832,7 +832,7 @@ void MainWindow::renderTriggered()
     Chromasound_Studio::Profile profile(pcmStrategy, isChromasound, discretePCM, usePCMSRAM);
 
     if (!path.isNull()) {
-        QThread* thread = QThread::create([&](const QString path) {
+        QThread* thread = QThread::create([=, this](const QString path) {
             QFile file(path);
             file.open(QIODevice::WriteOnly);
 
