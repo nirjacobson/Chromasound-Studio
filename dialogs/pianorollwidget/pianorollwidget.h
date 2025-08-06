@@ -23,6 +23,7 @@
 #include "commands/removetracksettingschangecommand.h"
 #include "commands/addpitchchangecommand.h"
 #include "commands/removepitchchangecommand.h"
+#include "commands/composite/updategroupcommand.h"
 #include "formats/bson.h"
 #include "formats/midi/midi.h"
 #include "formats/midi/midifile.h"

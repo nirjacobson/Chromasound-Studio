@@ -299,7 +299,7 @@ void ChannelsWidget::pianoKeyClicked(const Qt::MouseButton button, const int ste
         if (existingItem == track.items().end()) {
             _app->undoStack().push(new AddNoteCommand(_app->window(), track, step * beatsPerStep, Note(key, beatsPerStep)));
         } else {
-            _app->undoStack().push(new EditNoteCommand(_app->window(), *existingItem, step * beatsPerStep, Note(key, beatsPerStep), QList<Track::Item*>()));
+            _app->undoStack().push(new EditNoteCommand(_app->window(), *existingItem, step * beatsPerStep, Note(key, beatsPerStep), false));
         }
     } else {
         _app->undoStack().push(new RemoveNoteCommand(_app->window(), track, step * beatsPerStep, Note(key, beatsPerStep)));
@@ -318,7 +318,7 @@ void ChannelsWidget::velocityClicked(const int step, const int velocity)
     if (existingItem != track.items().end()) {
         Note newNote = (*existingItem)->note();
         newNote.setVelocity(velocity);
-        _app->undoStack().push(new EditNoteCommand(_app->window(), *existingItem, step * beatsPerStep, newNote, QList<Track::Item*>()));
+        _app->undoStack().push(new EditNoteCommand(_app->window(), *existingItem, step * beatsPerStep, newNote, false));
     }
 }
 

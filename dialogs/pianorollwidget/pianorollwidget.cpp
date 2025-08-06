@@ -1,4 +1,5 @@
 #include "pianorollwidget.h"
+#include "commands/composite/updategroupcommand.h"
 #include "ui_pianorollwidget.h"
 
 PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
@@ -265,7 +266,7 @@ void PianoRollWidget::ganttEditorClicked(Qt::MouseButton button, int row, float 
 
 void PianoRollWidget::ganttItemChanged(GanttItem* item, const float toTime, const int toRow, const float toDuration)
 {
-    _app->undoStack().push(new EditNoteCommand(_app->window(), dynamic_cast<Track::Item*>(item), toTime, Note(toRow, toDuration, item->velocity()), reinterpret_cast<const QList<Track::Item*>&>(ui->ganttWidget->selectedItems())));
+    _app->undoStack().push(new EditNoteCommand(_app->window(), dynamic_cast<Track::Item*>(item), toTime, Note(toRow, toDuration, item->velocity()), true));
     doUpdate(_app->position(), true);
 }
 
@@ -448,6 +449,7 @@ void PianoRollWidget::velocityDialogAccepted()
         selectedItems.append(_contextItem);
     }
 
+    QList<QUndoCommand*> commands;
     for (Track::Item* item : selectedItems) {
         Note n = item->note();
 
@@ -466,8 +468,9 @@ void PianoRollWidget::velocityDialogAccepted()
         n.setVelocity(qMax(0, n.velocity()));
         n.setVelocity(qMin(100, n.velocity()));
 
-        _app->undoStack().push(new EditNoteCommand(_app->window(), item, item->time(), n, selectedItems));
+        commands.push_back(new EditNoteCommand(_app->window(), item, item->time(), n, true));
     }
+    _app->undoStack().push(new UpdateGroupCommand(_app->window(), commands));
 }
 
 void PianoRollWidget::quantizeDivisionTriggered()

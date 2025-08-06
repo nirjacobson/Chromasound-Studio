@@ -10,12 +10,10 @@ class MainWindow;
 class EditNoteCommand : public QUndoCommand
 {
     public:
-        EditNoteCommand(MainWindow* window, Track::Item* item, const float toTime, const Note& note, const QList<Track::Item*>& group);
+    EditNoteCommand(MainWindow* window, Track::Item* item, const float toTime, const Note& note, const bool group);
 
     private:
         MainWindow* _mainWindow;
-
-        bool _performed;
 
         float _toTime;
         Note _note;
@@ -24,9 +22,7 @@ class EditNoteCommand : public QUndoCommand
         float _fromTime;
         Note _fromNote;
 
-        QMap<Track::Item*, EditNoteCommand*> _groupCommands;
-        QList<Track::Item*> _group;
-
+        bool _group;
         // QUndoCommand interface
     public:
         void undo();

@@ -88,7 +88,7 @@ void PianoRollVelocitiesWidget::mousePressEvent(QMouseEvent* event)
             Track::Item* item = dynamic_cast<Track::Item*>(*it);
             Note n = item->note();
             n.setVelocity(velocityClicked);
-            _app->undoStack().push(new EditNoteCommand(_app->window(), item, item->time(), n, QList<Track::Item*>()));
+            _app->undoStack().push(new EditNoteCommand(_app->window(), item, item->time(), n, false));
         }
     }
 }

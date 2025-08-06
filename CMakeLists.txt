@@ -544,6 +544,8 @@ set(PROJECT_SOURCES
     commands/setchannelpitchrangecommand.cpp
     commands/setchanneloctaveoffsetcommand.h
     commands/setchanneloctaveoffsetcommand.cpp
+    commands/composite/updategroupcommand.h
+    commands/composite/updategroupcommand.cpp
 )
 
 if (LINUX)
