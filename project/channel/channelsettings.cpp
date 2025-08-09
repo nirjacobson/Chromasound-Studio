@@ -50,7 +50,7 @@ bson_t ChannelSettings::toBSON() const
     bson_init(&bson);
 
     BSON_APPEND_INT32(&bson, "volume", _volume);
-    BSON_APPEND_UTF8(&bson, "_type", type().toStdString().c_str());
+    BSON_APPEND_UTF8(&bson,  "type", type().toStdString().c_str());
     BSON_APPEND_INT32(&bson, "pitchRange", _pitchRange);
     BSON_APPEND_INT32(&bson, "octaveOffset", _octaveOffset);
 
@@ -66,10 +66,10 @@ void ChannelSettings::fromBSON(bson_iter_t& bson)
     if (bson_iter_find_descendant(&bson, "volume", &volume) && BSON_ITER_HOLDS_INT(&volume)) {
         _volume = bson_iter_int32(&volume);
     }
-    if (bson_iter_find_descendant(&bson, "octaveOffset", &octaveOffset) && BSON_ITER_HOLDS_INT32(&octaveOffset)) {
-        _octaveOffset = bson_iter_int32(&octaveOffset);
-    }
-    if (bson_iter_find_descendant(&bson, "pitchRange", &pitchRange) && BSON_ITER_HOLDS_INT32(&pitchRange)) {
+    if (bson_iter_find_descendant(&bson, "pitchRange", &pitchRange)) {
         _pitchRange = bson_iter_int32(&pitchRange);
+    }
+    if (bson_iter_find_descendant(&bson, "octaveOffset", &octaveOffset) && BSON_ITER_HOLDS_INT(&octaveOffset)) {
+        _octaveOffset = bson_iter_int32(&octaveOffset);
     }
 }

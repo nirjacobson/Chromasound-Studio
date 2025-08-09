@@ -1925,6 +1925,10 @@ void MainWindow::closeEvent(QCloseEvent* event)
             saveTriggered();
         }
     }
+
+    if (_app->isPlaying()) {
+        _app->stop();
+    }
 }
 
 
