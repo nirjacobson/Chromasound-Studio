@@ -148,6 +148,9 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
     applySettingsChanges(0, pattern, items);
     assignChannelsAndExpand(project, items, project.tempo());
     applySettingsChanges2(0, pattern, items);
+
+    sortItems(items);
+
     addSettingsAtCurrentOffset(items, currentOffset);
 
     if (project.hasPCM()) {
@@ -157,7 +160,7 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
             _dataBlock = romFile.readAll();
             romFile.close();
         } else {
-            _dataBlock = encodeStandardPCM(project, pattern, loopStart, loopEnd);
+            _dataBlock = encodeStandardPCM(project, items, loopStart, loopEnd);
         }
     }
 
@@ -176,7 +179,6 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
             items.prepend(new StreamUserToneItem(loopStart, project.userTone()));
         }
 
-        sortItems(items);
         totalSamples = encode(project, items, data, loopStart, nullptr, currentOffset, &_currentOffsetData, true);
     } else {
         pad(items, project.getPatternBarLength(pattern));
@@ -193,7 +195,6 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
             items.prepend(new StreamUserToneItem(0, project.userTone()));
         }
 
-        sortItems(items);
         totalSamples = encode(project, items, data, 0, nullptr, currentOffset, &_currentOffsetData, true);
     }
 
@@ -316,8 +317,10 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
     applySettingsChanges(project, items);
     assignChannelsAndExpand(project, items, project.tempo());
     applySettingsChanges2(project, items);
-    addSettingsAtCurrentOffset(items, currentOffset);
 
+    sortItems(items);
+
+    addSettingsAtCurrentOffset(items, currentOffset);
 
     if (project.hasPCM()) {
         if (_profile.pcmStrategy() == Chromasound_Studio::PCMStrategy::RANDOM) {
@@ -326,7 +329,7 @@ QByteArray VGMStream::compile(Project& project, bool gd3, int* loopOffsetData, c
             _dataBlock = romFile.readAll();
             romFile.close();
         } else {
-            _dataBlock = encodeStandardPCM(project, loopStart, loopEnd);
+            _dataBlock = encodeStandardPCM(project, items, loopStart, loopEnd);
         }
     }
 
@@ -583,32 +586,6 @@ void VGMStream::reset()
     _lastRhythm = 0;
 }
 
-QByteArray VGMStream::encodeStandardPCM(const Project& project, const Pattern& pattern, const float loopStart, const float loopEnd)
-{
-    QList<StreamItem*> items;
-
-    processPattern(0, project, pattern, items, loopStart, loopEnd);
-    applySettingsChanges(0, pattern, items);
-    assignChannelsAndExpand(project, items, project.tempo());
-    applySettingsChanges2(0, pattern, items);
-    addSettingsAtCurrentOffset(items, qMax(0.0f, loopStart));
-
-    return encodeStandardPCM(project, items, loopStart, loopEnd);
-}
-
-QByteArray VGMStream::encodeStandardPCM(const Project& project, const float loopStart, const float loopEnd)
-{
-    QList<StreamItem*> items;
-
-    processProject(project, items, loopStart, loopEnd);
-    applySettingsChanges(project, items);
-    assignChannelsAndExpand(project, items, project.tempo());
-    applySettingsChanges2(project, items);
-    addSettingsAtCurrentOffset(items, qMax(0.0f, loopStart));
-
-    return encodeStandardPCM(project, items, loopStart, loopEnd);
-}
-
 QByteArray VGMStream::encodeStandardPCM(const Project& project, QList<StreamItem*>& items, const float loopStart, const float loopEnd)
 {
     QByteArray data;
@@ -627,7 +604,7 @@ QByteArray VGMStream::encodeStandardPCM(const Project& project, QList<StreamItem
         romFile.close();
     }
 
-    sortItems(items);
+    // Precondition: items are sorted
 
     ROM pcmROM(project.pcmFile());
 
@@ -1137,11 +1114,7 @@ void VGMStream::applySettingsChanges2(const Project& project, QList<StreamItem*>
 
 void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const float currentTime)
 {
-    if (currentTime == 0) {
-        return;
-    }
-
-    sortItems(items);
+    // Precondition: items are sorted
 
     for (int i = 0; i < TONE_CHANNELS; i++) {
         auto it = std::find_if(items.rbegin(), items.rend(), [&](StreamItem* si) {

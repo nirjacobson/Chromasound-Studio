@@ -131,8 +131,6 @@ class VGMStream
 
         void reset();
 
-        QByteArray encodeStandardPCM(const Project& project, const Pattern& pattern, const float loopStart = -1, const float loopEnd = -1);
-        QByteArray encodeStandardPCM(const Project& project, const float loopStart = -1, const float loopEnd = -1);
         QByteArray encodeStandardPCM(const Project& project, QList<StreamItem*>& items, const float loopStart = -1, const float loopEnd = -1);
 
         QByteArray generateHeader(const Project& project, const QByteArray& data, const int totalSamples, const int loopOffsetData, const int gd3size, const bool selectionLoop);
