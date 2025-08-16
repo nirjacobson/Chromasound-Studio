@@ -92,8 +92,6 @@ class Application : public QApplication
 
         bool _recording;
 
-        Chromasound_Studio::Profile _profile;
-
         QElapsedTimer _recordingTimer;
 
         QMap<int, QPair<float, int>> _recordingMap;
