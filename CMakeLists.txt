@@ -546,6 +546,12 @@ set(PROJECT_SOURCES
     commands/setchanneloctaveoffsetcommand.cpp
     commands/composite/updategroupcommand.h
     commands/composite/updategroupcommand.cpp
+    commands/setprojecttempocommand.h
+    commands/setprojecttempocommand.cpp
+    commands/setprojectbeatsperbarcommand.h
+    commands/setprojectbeatsperbarcommand.cpp
+    commands/setprojectmodecommand.h
+    commands/setprojectmodecommand.cpp
 )
 
 if (LINUX)

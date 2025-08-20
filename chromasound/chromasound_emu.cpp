@@ -231,26 +231,7 @@ void Chromasound_Emu::stop()
 
     _vgmStream->reset();
 
-    QByteArray data;
-    data.prepend(_vgmStream->generateHeader(_project, data, -1, 0, 0, false));
-    data.append(0x66);
-    Mem_File_Reader reader(data.constData(), data.size());
-
-    if (log_err(_emu->load(reader)))
-        return;
-
-    log_warning(_emu);
-
-    Vgm_Emu_Impl* impl = dynamic_cast<Vgm_Emu_Impl*>(_emu);
-    impl->reset();
-
-    // start track
-    if (log_err(_emu->start_track(0)))
-        return;
-
-    log_warning(_emu);
-
-    setEqualizer();
+    deactivate();
 
     emit stopped();
 }
@@ -318,7 +299,7 @@ void Chromasound_Emu::pitchBend(float pitch, int pitchRange)
     QByteArray data;
 
     for (int key : _keys.keys()) {
-        VGMStream::StreamPitchItem* pitchItem = new VGMStream::StreamPitchItem(0, _keys[key]->type(), nullptr, pitch, pitchRange);
+        VGMStream::StreamPitchItem* pitchItem = new VGMStream::StreamPitchItem(0, _keys[key]->type(), nullptr, pitch, pitchRange, _keys[key]->channelSettings()->octaveOffset());
         pitchItem->setChannel(_keys[key]->channel());
         _vgmStream->encodePitchItem(pitchItem, _keys[key]->note(), data);
         _items.append(pitchItem);
@@ -497,6 +478,7 @@ void Chromasound_Emu::sync()
 
     if (!_startedInteractive) {
         _startedInteractive = true;
+        activate();
     }
 }
 

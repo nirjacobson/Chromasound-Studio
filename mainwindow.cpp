@@ -114,6 +114,8 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(ui->topWidget, &TopWidget::pause, this, &MainWindow::pause);
     connect(ui->topWidget, &TopWidget::stop, this, &MainWindow::stop);
     connect(ui->topWidget, &TopWidget::patternChanged, this, &MainWindow::patternChanged);
+    connect(ui->topWidget, &TopWidget::tempoChanged, this, &MainWindow::tempoChanged);
+    connect(ui->topWidget, &TopWidget::playModeChanged, this, &MainWindow::playModeChanged);
     connect(ui->topWidget, &TopWidget::beatsPerBarChanged, this, &MainWindow::beatsPerBarChanged);
     connect(ui->topWidget, &TopWidget::midiDeviceSet, this, &MainWindow::setMIDIDevice);
     connect(ui->topWidget, &TopWidget::seekClicked, this, &MainWindow::seekClicked);
@@ -403,12 +405,12 @@ void MainWindow::play(bool record)
         if (!_app->paused()) {
             PianoRollWidget* prw;
             PlaylistWidget* pw;
-            if ((prw = dynamic_cast<PianoRollWidget*>(_mdiArea->activeSubWindow()->widget()))) {
+            if ((prw = dynamic_cast<PianoRollWidget*>(ensuredActiveSubWindow()->widget()))) {
                 if (prw->hasLoop()) {
                     _app->play(prw->pattern(), prw->loopStart(), prw->loopEnd());
                     return;
                 }
-            } else if ((pw = dynamic_cast<PlaylistWidget*>(_mdiArea->activeSubWindow()->widget()))) {
+            } else if ((pw = dynamic_cast<PlaylistWidget*>(ensuredActiveSubWindow()->widget()))) {
                 if (_app->project().playMode() == Project::PlayMode::SONG) {
                     if (pw->hasLoop()) {
                         _app->play(pw->loopStart(), pw->loopEnd());
@@ -457,24 +459,17 @@ void MainWindow::patternChanged(int num)
 
 void MainWindow::beatsPerBarChanged(int beatsPerBar)
 {
-    if (_channelsWindow) {
-        _channelsWidget->update();
-    }
+    _app->undoStack().push(new SetProjectBeatsPerBarCommand(this, _app->project().beatsPerBar(), beatsPerBar));
+}
 
-    for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
-        for (MdiSubWindow* window : (*it)) {
-            PianoRollWidget* prw;
-            if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
-                prw->setCellMajors({ beatsPerBar });
-                prw->update();
-            }
-        }
-    }
+void MainWindow::tempoChanged(int tempo)
+{
+    _app->undoStack().push(new SetProjectTempoCommand(this, _app->project().tempo(), tempo));
+}
 
-    if (_playlistWindow) {
-        _playlistWidget->setCellMajors({ beatsPerBar });
-        _playlistWidget->update();
-    }
+void MainWindow::playModeChanged(Project::PlayMode playMode)
+{
+    _app->undoStack().push(new SetProjectModeCommand(this, _app->project().playMode(), playMode));
 }
 
 void MainWindow::frame()
@@ -859,7 +854,7 @@ void MainWindow::keyOn(const int key, const int velocity)
 {
     int activeChannel;
     PianoRollWidget* prw;
-    if ((prw = dynamic_cast<PianoRollWidget*>(_mdiArea->activeSubWindow()->widget()))) {
+    if ((prw = dynamic_cast<PianoRollWidget*>(ensuredActiveSubWindow()->widget()))) {
         activeChannel = prw->channel();
     } else {
         activeChannel = qMax(0, _channelsWidget->activeChannel());
@@ -868,12 +863,12 @@ void MainWindow::keyOn(const int key, const int velocity)
     Channel& channel = _app->project().getChannel(activeChannel);
 
     OPNWidgetWindow* opnw;
-    if (_channelWindows[activeChannel].contains(_mdiArea->activeSubWindow())) {
+    if (_channelWindows[activeChannel].contains(ensuredActiveSubWindow())) {
         if (prw) {
             prw->pressKey(key);
             _app->keyOn(channel, prw->currentSettings(), key, velocity);
             return;
-        } else if ((opnw = dynamic_cast<OPNWidgetWindow*>(_mdiArea->activeSubWindow()->widget()))) {
+        } else if ((opnw = dynamic_cast<OPNWidgetWindow*>(ensuredActiveSubWindow()->widget()))) {
             opnw->pressKey(key);
         }
     }
@@ -884,7 +879,7 @@ void MainWindow::keyOff(const int key)
 {
     int activeChannel;
     PianoRollWidget* prw;
-    if ((prw = dynamic_cast<PianoRollWidget*>(_mdiArea->activeSubWindow()->widget()))) {
+    if ((prw = dynamic_cast<PianoRollWidget*>(ensuredActiveSubWindow()->widget()))) {
         activeChannel = prw->channel();
     } else {
         activeChannel = qMax(0, _channelsWidget->activeChannel());
@@ -920,7 +915,7 @@ void MainWindow::padOn(const int pad, const int velocity)
 {
     int activeChannel;
     PianoRollWidget* prw;
-    if ((prw = dynamic_cast<PianoRollWidget*>(_mdiArea->activeSubWindow()->widget()))) {
+    if ((prw = dynamic_cast<PianoRollWidget*>(ensuredActiveSubWindow()->widget()))) {
         activeChannel = prw->channel();
     } else {
         activeChannel = qMax(0, _channelsWidget->activeChannel());
@@ -941,7 +936,7 @@ void MainWindow::padOff(const int pad)
 {
     int activeChannel;
     PianoRollWidget* prw;
-    if ((prw = dynamic_cast<PianoRollWidget*>(_mdiArea->activeSubWindow()->widget()))) {
+    if ((prw = dynamic_cast<PianoRollWidget*>(ensuredActiveSubWindow()->widget()))) {
         activeChannel = prw->channel();
     } else {
         activeChannel = qMax(0, _channelsWidget->activeChannel());
@@ -962,7 +957,7 @@ void MainWindow::pitchChange(const int pitch)
 {
     int activeChannel;
     PianoRollWidget* prw;
-    if ((prw = dynamic_cast<PianoRollWidget*>(_mdiArea->activeSubWindow()->widget()))) {
+    if ((prw = dynamic_cast<PianoRollWidget*>(ensuredActiveSubWindow()->widget()))) {
         activeChannel = prw->channel();
     } else {
         activeChannel = qMax(0, _channelsWidget->activeChannel());
@@ -1525,7 +1520,7 @@ void MainWindow::countoffTimeout()
         if (!_app->paused()) {
             if (_app->project().playMode() == Project::PlayMode::PATTERN) {
                 PianoRollWidget* prw;
-                if ((prw = dynamic_cast<PianoRollWidget*>(_mdiArea->activeSubWindow()->widget()))) {
+                if ((prw = dynamic_cast<PianoRollWidget*>(ensuredActiveSubWindow()->widget()))) {
                     if (prw->pattern().tracks().empty()) {
                         return;
                     }
@@ -1536,7 +1531,7 @@ void MainWindow::countoffTimeout()
                 }
             } else {
                 PlaylistWidget* pw;
-                if ((pw = dynamic_cast<PlaylistWidget*>(_mdiArea->activeSubWindow()->widget()))) {
+                if ((pw = dynamic_cast<PlaylistWidget*>(ensuredActiveSubWindow()->widget()))) {
                     if (_app->project().patterns().empty()) {
                         return;
                     }
@@ -1621,6 +1616,18 @@ void MainWindow::uploadPCM()
 
         thread->start();
     }
+}
+
+QMdiSubWindow* MainWindow::ensuredActiveSubWindow()
+{
+    QMdiSubWindow* window = _mdiArea->activeSubWindow();
+
+    if (window == nullptr) {
+        showChannelsWindow();
+        window = _channelsWindow;
+    }
+
+    return window;
 }
 
 void MainWindow::windowClosed(MdiSubWindow* window)
@@ -1761,6 +1768,21 @@ void MainWindow::doUpdate()
 
             window->setWindowTitle(QString("%1: %2").arg(_app->project().getChannel(it.key()).name()).arg(tail));
         }
+    }
+
+    for (auto it = _channelWindows.begin(); it != _channelWindows.end(); ++it) {
+        for (MdiSubWindow* window : (*it)) {
+            PianoRollWidget* prw;
+            if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
+                prw->setCellMajors({ _app->project().beatsPerBar() });
+                prw->update();
+            }
+        }
+    }
+
+    if (_playlistWindow) {
+        _playlistWidget->setCellMajors({ _app->project().beatsPerBar() });
+        _playlistWidget->update();
     }
 }
 

@@ -49,6 +49,9 @@
 #include "commands/addchannelcommand.h"
 #include "commands/setchanneltypecommand.h"
 #include "commands/composite/loadmultitrackmidicommand.h"
+#include "commands/setprojecttempocommand.h"
+#include "commands/setprojectbeatsperbarcommand.h"
+#include "commands/setprojectmodecommand.h"
 
 #include "toplevel/browser/filesystemmodel.h"
 #include "toplevel/browser/sortfilterproxymodel.h"
@@ -96,6 +99,8 @@ class MainWindow : public QMainWindow
 
         void patternChanged(int num);
         void beatsPerBarChanged(int beatsPerBar);
+        void tempoChanged(int tempo);
+        void playModeChanged(Project::PlayMode playMode);
 
         void frame();
 
@@ -227,6 +232,8 @@ class MainWindow : public QMainWindow
         QTimer _countoffTimer;
 
         bool _shownEver;
+
+        QMdiSubWindow* ensuredActiveSubWindow();
 
         void windowClosed(MdiSubWindow* window);
 

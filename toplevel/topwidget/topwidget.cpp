@@ -37,9 +37,7 @@ TopWidget::TopWidget(QWidget *parent, Application* app)
     connect(ui->uploadButton, &QPushButton::clicked, this, &TopWidget::uploadClicked);
     connect(ui->patSpinBox, SIGNAL(valueChanged(int)), this, SIGNAL(patternChanged(int)));
     connect(ui->tempoSpinBox, SIGNAL(valueChanged(int)), this, SIGNAL(tempoChanged(int)));
-    connect(ui->tempoSpinBox, SIGNAL(valueChanged(int)), this, SLOT(tempoDidChange(int)));
     connect(ui->beatsPerBarSpinBox, SIGNAL(valueChanged(int)), this, SIGNAL(beatsPerBarChanged(int)));
-    connect(ui->beatsPerBarSpinBox, SIGNAL(valueChanged(int)), this, SLOT(beatsPerBarDidChange(int)));
     connect(ui->seekWidget, &SeekWidget::clicked, this, &TopWidget::seekClicked);
 
 #ifdef Q_OS_WIN
@@ -138,24 +136,14 @@ void TopWidget::stopClicked()
     emit stop();
 }
 
-void TopWidget::tempoDidChange(int bpm)
-{
-    _app->project().setTempo(bpm);
-}
-
-void TopWidget::beatsPerBarDidChange(int beats)
-{
-    _app->project().setBeatsPerBar(beats);
-}
-
 void TopWidget::patModeSelected()
 {
-    _app->project().setPlayMode(Project::PlayMode::PATTERN);
+    emit playModeChanged(Project::PlayMode::PATTERN);
 }
 
 void TopWidget::songModeSelected()
 {
-    _app->project().setPlayMode(Project::PlayMode::SONG);
+    emit playModeChanged(Project::PlayMode::SONG);
 }
 
 void TopWidget::chromasoundStopped()

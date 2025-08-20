@@ -36,6 +36,7 @@ class TopWidget : public QWidget
         void patternChanged(int);
         void tempoChanged(int);
         void beatsPerBarChanged(int);
+        void playModeChanged(Project::PlayMode);
         void midiDeviceSet(int);
         void userToneTriggered();
         void seekClicked(const float pos);
@@ -55,8 +56,6 @@ class TopWidget : public QWidget
         void playPauseClicked();
         void stopClicked();
 
-        void tempoDidChange(int bpm);
-        void beatsPerBarDidChange(int beats);
         void patModeSelected();
         void songModeSelected();
         void chromasoundStopped();

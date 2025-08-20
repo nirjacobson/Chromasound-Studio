@@ -49,19 +49,21 @@ class VGMStream
 
         class StreamPitchItem : public StreamItem {
         public:
-            StreamPitchItem(const float time, const Channel::Type type, const Track* track, float pitch, int pitchRange);
+            StreamPitchItem(const float time, const Channel::Type type, const Track* track, float pitch, int pitchRange, int octaveOffset);
             void setChannel(const int channel);
             int channel() const;
             Channel::Type type() const;
             float pitch() const;
             int pitchRange() const;
             const Track* track() const;
+            int octaveOffset() const;
         private:
             Channel::Type _type;
             const Track* _track;
             int _channel;
             float _pitch;
             int _pitchRange;
+            int _octaveOffset;
         };
 
         class StreamLFOItem : public StreamItem {

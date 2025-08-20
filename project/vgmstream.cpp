@@ -891,7 +891,7 @@ void VGMStream::processTrack(const float time, const Channel& channel, const Tra
                 continue;
             }
         }
-        items.append(new StreamPitchItem(time + pitchChange->time(), channel.type(), track, pitchChange->pitch(), channel.settings().pitchRange()));
+        items.append(new StreamPitchItem(time + pitchChange->time(), channel.type(), track, pitchChange->pitch(), channel.settings().pitchRange(), channel.settings().octaveOffset()));
     }
 }
 
@@ -2020,7 +2020,7 @@ void VGMStream::encodePitchItem(const StreamPitchItem *item, const Note& note, Q
     int addr;
     if (item->type() == Channel::Type::TONE) {
         addr = (item->channel() * 2);
-        int octave = note.key() / 12;
+        int octave = note.key() / 12 + item->octaveOffset();
         int key = note.key() % 12;
         float f1 = frequencies[key] * (float)qPow(2, octave);
         float f2;
@@ -2041,7 +2041,7 @@ void VGMStream::encodePitchItem(const StreamPitchItem *item, const Note& note, Q
         int part = 1 + (item->channel() >= 3);
         int channel = item->channel() % 3;
 
-        int octave1 = note.key() / 12;
+        int octave1 = note.key() / 12 + item->octaveOffset();
         int key1 = note.key() % 12;
         int octave2;
         int key2;
@@ -2072,7 +2072,7 @@ void VGMStream::encodePitchItem(const StreamPitchItem *item, const Note& note, Q
     } else if (item->type() == Channel::Type::SSG) {
         addr = item->channel() * 2;
 
-        int octave = note.key() / 12;
+        int octave = note.key() / 12 + item->octaveOffset();
         int key = note.key() % 12;
         float f1 = frequencies[key] * (float)qPow(2, octave);
         float f2;
@@ -2093,7 +2093,7 @@ void VGMStream::encodePitchItem(const StreamPitchItem *item, const Note& note, Q
         data.append(addr + 1);
         data.append(datum2);
     } else if (item->type() == Channel::Type::MELODY) {
-        int octave1 = note.key() / 12;
+        int octave1 = note.key() / 12 + item->octaveOffset();
         int key1 = note.key() % 12;
         int octave2;
         int key2;
@@ -2451,13 +2451,14 @@ VGMStream::PCMChannel::PCMChannel()
 
 }
 
-VGMStream::StreamPitchItem::StreamPitchItem(const float time, const Channel::Type type, const Track *track, float pitch, int pitchRange)
+VGMStream::StreamPitchItem::StreamPitchItem(const float time, const Channel::Type type, const Track *track, float pitch, int pitchRange, int octaveOffset)
     : StreamItem(time)
     , _type(type)
     , _track(track)
     , _pitch(pitch)
     , _pitchRange(pitchRange)
     , _channel(-1)
+    , _octaveOffset(octaveOffset)
 {
 
 }
@@ -2490,4 +2491,9 @@ int VGMStream::StreamPitchItem::pitchRange() const
 const Track *VGMStream::StreamPitchItem::track() const
 {
     return _track;
+}
+
+int VGMStream::StreamPitchItem::octaveOffset() const
+{
+    return _octaveOffset;
 }
