@@ -93,6 +93,8 @@ void PCMWidgetTableModel::removeRow(const int index)
 
 void PCMWidgetTableModel::clear()
 {
+    if (rowCount() == 0) return;
+
     beginRemoveRows(QModelIndex(), 0, rowCount() - 1);
     _keys.clear();
     _samples.clear();

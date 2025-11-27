@@ -91,6 +91,8 @@ void PlaylistTableModel::removeRow(const int index)
 
 void PlaylistTableModel::clear()
 {
+    if (rowCount() == 0) return;
+
     beginRemoveRows(QModelIndex(), 0, rowCount() - 1);
     _items.clear();
     endRemoveRows();

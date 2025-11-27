@@ -110,6 +110,8 @@ void ROMBuilderTableModel::removeRow(const int index)
 
 void ROMBuilderTableModel::clear()
 {
+    if (rowCount() == 0) return;
+
     beginRemoveRows(QModelIndex(), 0, rowCount() - 1);
     _names.clear();
     _paths.clear();
