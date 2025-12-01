@@ -167,6 +167,13 @@ void GanttWidget::scrollVertically(const float percentage)
     ui->horizontalScrollBar->blockSignals(false);
 }
 
+void GanttWidget::setDefaultPlaylength(const float length)
+{
+    ui->headerWidget->setDefaultPlaylength(length);
+    ui->editorWidget->setDefaultPlaylength(length);
+    doUpdate(true);
+}
+
 const QList<GanttItem*>& GanttWidget::selectedItems() const
 {
     return ui->editorWidget->selectedItems();

@@ -101,6 +101,10 @@ void PianoRollWidget::setTrack(const int pattern, const int track)
     _pattern = &_app->project().getPattern(pattern);
     _channel = track;
     _track = &_app->project().getPattern(pattern).getTrack(track);
+
+    ui->ganttWidget->setDefaultPlaylength(_pattern->getLength());
+    _velocitiesWidget->setDefaultPlaylength(_pattern->getLength());
+
     ui->ganttWidget->setItems(reinterpret_cast<QList<GanttItem*>*>(&_track->items()));
     ui->ganttWidget->addMarkers(reinterpret_cast<QList<GanttMarker*>*>(&_track->settingsChanges()));
     ui->ganttWidget->setPositionFunction([&]() {
@@ -127,6 +131,7 @@ void PianoRollWidget::setTrack(const int pattern, const int track)
     if (_app->project().getChannel(_channel).settings().supportsPitchChanges()) {
         _pitchWidget = new PianoRollPitchWidget(this);
         _pitchWidget->setApplication(_app);
+        _pitchWidget->setDefaultPlaylength(_pattern->getLength());
         connect(_pitchWidget, &PianoRollPitchWidget::pitchChangeAdded, this, &PianoRollWidget::pitchChangeAdded);
         connect(_pitchWidget, &PianoRollPitchWidget::pitchChangeRemoved, this, &PianoRollWidget::pitchChangeRemoved);
 

@@ -41,6 +41,8 @@ class GanttWidget : public QWidget
 
         void scrollVertically(const float percentage);
 
+        void setDefaultPlaylength(const float length);
+
         const QList<GanttItem*>& selectedItems() const;
         void selectItems(const QList<GanttItem*>& items);
         void selectAllItems();

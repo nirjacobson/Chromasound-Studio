@@ -32,6 +32,8 @@ class GanttEditorWidget : public DamageWidget
         void setSnap(const bool snap);
         void invertRows(const bool invert);
 
+        void setDefaultPlaylength(const float length);
+
         void setCellWidth(int width);
         void setCellBeats(float beats);
         void setRows(int rows);
@@ -113,6 +115,8 @@ class GanttEditorWidget : public DamageWidget
         bool _snap;
         bool _invertRows;
 
+        float _defaultPlaylength;
+
         QList<GanttItem*>* _items;
         QMap<float, QList<GanttMarker*>>* _markers;
 
@@ -130,7 +134,7 @@ class GanttEditorWidget : public DamageWidget
 
         std::function<float(void)> _positionFunction;
 
-        float length() const;
+        float playlength() const;
         float visibleLength() const;
 
         // DamageWidget interface

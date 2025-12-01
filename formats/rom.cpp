@@ -8,6 +8,8 @@ ROM::ROM(const QString& path)
     QFile file(path);
     file.open(QIODevice::ReadOnly);
 
+    if (!file.isOpen()) return;
+
     quint16 count;
     file.read((char*)&count, sizeof(count));
     for (int i = 0; i < count; i++) {

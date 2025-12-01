@@ -12,6 +12,7 @@ GanttEditorWidget::GanttEditorWidget(QWidget *parent)
     , _cellBeats(1)
     , _snap(true)
     , _invertRows(false)
+    , _defaultPlaylength(0)
     , _items(nullptr)
     , _itemUnderCursor(nullptr)
     , _itemsResizable(false)
@@ -79,6 +80,11 @@ void GanttEditorWidget::invertRows(const bool invert)
     _invertRows = invert;
 }
 
+void GanttEditorWidget::setDefaultPlaylength(const float length)
+{
+    _defaultPlaylength = length;
+}
+
 void GanttEditorWidget::setCellWidth(int width)
 {
     _cellWidth = width;
@@ -102,7 +108,7 @@ void GanttEditorWidget::setRowHeight(int height)
     _rowHeight = height;
 }
 
-float GanttEditorWidget::length() const
+float GanttEditorWidget::playlength() const
 {
     float end = 0;
     if (_items) {
@@ -114,12 +120,12 @@ float GanttEditorWidget::length() const
         }
     }
 
-    return end;
+    return qMax(end, _defaultPlaylength);
 }
 
 float GanttEditorWidget::visibleLength() const
 {
-    return ((int)(length() / _app->project().beatsPerBar()) + 1) * _app->project().beatsPerBar();
+    return ((int)(playlength() / _app->project().beatsPerBar()) + 1) * _app->project().beatsPerBar();
 }
 
 void GanttEditorWidget::paintFull(QPaintEvent* event)

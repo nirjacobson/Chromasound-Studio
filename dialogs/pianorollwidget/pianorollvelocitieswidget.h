@@ -28,6 +28,8 @@ class PianoRollVelocitiesWidget : public GanttBottomWidget
         void setCellWidth(int width);
         void setCellBeats(float beats);
 
+        void setDefaultPlaylength(const float length);
+
     protected:
         int length() const;
         void mousePressEvent(QMouseEvent* event);
@@ -42,6 +44,8 @@ class PianoRollVelocitiesWidget : public GanttBottomWidget
         Application* _app;
         QList<GanttItem*>* _items;
         int _left;
+
+        float _defaultPlaylength;
 
         int _cellWidth;
         float _cellBeats;

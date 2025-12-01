@@ -7,6 +7,7 @@ PianoRollVelocitiesWidget::PianoRollVelocitiesWidget(QWidget* parent)
     , _left(0)
     , _cellWidth(16)
     , _cellBeats(0.25)
+    , _defaultPlaylength(0)
     , _barColor(192, 192, 255)
 {
     setMinimumHeight(128);
@@ -59,6 +60,11 @@ void PianoRollVelocitiesWidget::setCellWidth(int width)
 void PianoRollVelocitiesWidget::setCellBeats(float beats)
 {
     _cellBeats = beats;
+}
+
+void PianoRollVelocitiesWidget::setDefaultPlaylength(const float length)
+{
+    _defaultPlaylength = length;
 }
 
 int PianoRollVelocitiesWidget::length() const
@@ -115,7 +121,7 @@ float PianoRollVelocitiesWidget::playlength() const
         }
     }
 
-    return end;
+    return qMax(end, _defaultPlaylength);
 }
 
 void PianoRollVelocitiesWidget::paintFull(QPaintEvent* event)

@@ -39,6 +39,8 @@ class GanttHeaderWidget : public ScrollableWidget
 
         void setSnap(const bool snap);
 
+        void setDefaultPlaylength(const float length);
+
         bool hasLoop() const;
         float loopStart() const;
         float loopEnd() const;
@@ -74,6 +76,8 @@ class GanttHeaderWidget : public ScrollableWidget
         int _cellWidth;
         float _cellBeats;
         bool _snap;
+
+        float _defaultPlaylength;
 
         QColor _activeColor;
         QColor _inactiveColor;

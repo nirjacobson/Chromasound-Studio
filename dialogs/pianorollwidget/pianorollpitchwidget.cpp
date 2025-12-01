@@ -15,6 +15,7 @@ PianoRollPitchWidget::PianoRollPitchWidget(QWidget *parent)
     , _selectionColor(QColor(255, 192, 0))
     , _selecting(false)
     , _selectedItems(QList<Track::PitchChange*>())
+    , _defaultPlaylength(0)
     , _snap(true)
 {
     setMinimumHeight(128);
@@ -181,6 +182,11 @@ void PianoRollPitchWidget::scrollBy(const int pixels)
     update();
 }
 
+void PianoRollPitchWidget::setDefaultPlaylength(const float length)
+{
+    _defaultPlaylength = length;
+}
+
 int PianoRollPitchWidget::length() const
 {
     float end = 0;
@@ -191,6 +197,8 @@ int PianoRollPitchWidget::length() const
             }
         }
     }
+
+    end = qMax(end, _defaultPlaylength);
 
     int visibleLength = ((int)(end / _app->project().beatsPerBar()) + 1) * _app->project().beatsPerBar();
     int totalWidth = _cellWidth * visibleLength / _cellBeats;

@@ -29,6 +29,8 @@ public:
     void setScrollPercentage(const float percent);
     void scrollBy(const int pixels);
 
+    void setDefaultPlaylength(const float length);
+
     void setItems(QList<Track::PitchChange*>* items, const int pitchRange);
     void setCellWidth(const int width);
     void setCellBeats(const float beats);
@@ -48,6 +50,8 @@ private:
     int _left;
 
     bool _snap;
+
+    float _defaultPlaylength;
 
     int _cellWidth;
     float _cellBeats;

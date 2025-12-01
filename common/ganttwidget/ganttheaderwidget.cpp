@@ -9,6 +9,7 @@ GanttHeaderWidget::GanttHeaderWidget(QWidget *parent)
     , _cellWidth(16)
     , _cellBeats(1)
     , _snap(true)
+    , _defaultPlaylength(0)
     , _markers(nullptr)
     , _positionFunction([]() {
     return -1;
@@ -92,6 +93,11 @@ void GanttHeaderWidget::setSnap(const bool snap)
     _snap = snap;
 }
 
+void GanttHeaderWidget::setDefaultPlaylength(const float length)
+{
+    _defaultPlaylength = length;
+}
+
 bool GanttHeaderWidget::hasLoop() const
 {
     return _loopStart >=0 && _loopEnd >=0;
@@ -119,7 +125,7 @@ float GanttHeaderWidget::playlength() const
         }
     }
 
-    return end;
+    return qMax(end, _defaultPlaylength);
 }
 
 void GanttHeaderWidget::paintFull(QPaintEvent* event)
