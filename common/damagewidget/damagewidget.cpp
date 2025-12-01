@@ -43,6 +43,7 @@ void DamageWidget::paintEvent(QPaintEvent* event)
 
             _lastFullRender = getFullRender();
             _needsFullPaint = false;
+            update();
         }
     } else {
         QPainter painter(this);
