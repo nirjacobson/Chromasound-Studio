@@ -39,7 +39,7 @@ PianoRollWidget::PianoRollWidget(QWidget *parent, Application* app)
     ui->ganttWidget->setItemsMovableX(true);
     ui->ganttWidget->setItemsMovableY(true);
     ui->ganttWidget->scrollVertically(0.25);
-    ui->ganttWidget->setCellMajors({ 4, static_cast<int>(_app->project().beatsPerBar() / 0.25)});
+    ui->ganttWidget->setCellMajors({ 4, 4 * _app->project().beatsPerBar()});
     ui->ganttWidget->setRowMajors({ 12 });
 
     _noteMenu.addAction(&_velocityAction);

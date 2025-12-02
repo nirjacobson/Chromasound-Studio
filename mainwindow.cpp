@@ -1774,7 +1774,7 @@ void MainWindow::doUpdate()
         for (MdiSubWindow* window : (*it)) {
             PianoRollWidget* prw;
             if ((prw = dynamic_cast<PianoRollWidget*>(window->widget()))) {
-                prw->setCellMajors({ _app->project().beatsPerBar() });
+                prw->setCellMajors({ 4, 4 * _app->project().beatsPerBar() });
                 prw->update();
             }
         }
