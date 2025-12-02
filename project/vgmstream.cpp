@@ -179,6 +179,8 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
             items.prepend(new StreamUserToneItem(loopStart, project.userTone()));
         }
 
+        sortItems(items);
+
         totalSamples = encode(project, items, data, loopStart, nullptr, currentOffset, &_currentOffsetData, true);
     } else {
         pad(items, project.getPatternBarLength(pattern));
@@ -194,6 +196,8 @@ QByteArray VGMStream::compile(Project& project, const Pattern& pattern, bool gd3
         if (project.usesOPL()) {
             items.prepend(new StreamUserToneItem(0, project.userTone()));
         }
+
+        sortItems(items);
 
         totalSamples = encode(project, items, data, 0, nullptr, currentOffset, &_currentOffsetData, true);
     }
