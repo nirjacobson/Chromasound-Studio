@@ -1125,10 +1125,10 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
             StreamNoteItem* sni;
             return (sni = dynamic_cast<StreamNoteItem*>(si)) &&
                    sni->type() == Channel::Type::TONE &&
-                   sni->channel() == i && sni->time() <= currentTime;
+                   sni->channel() == i && sni->time() < currentTime && (sni->time() + sni->note().duration()) > currentTime;
         });
 
-        if (it != items.rend() && (*it)->time() != currentTime) {
+        if (it != items.rend()) {
             StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamNoteItem*>(*it)->channelSettings());
             items.insert(items.indexOf(*it), ssi);
         } else {
@@ -1136,10 +1136,10 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
                 StreamSettingsItem* ssi;
                 return (ssi = dynamic_cast<StreamSettingsItem*>(si)) &&
                        dynamic_cast<const ToneChannelSettings*>(ssi->channelSettings()) &&
-                       ssi->channel() == i && ssi->time() <= currentTime;
+                       ssi->channel() == i && ssi->time() < currentTime;
             });
 
-            if (it2 != items.rend()&& (*it2)->time() != currentTime) {
+            if (it2 != items.rend()) {
                 StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamSettingsItem*>(*it2)->channelSettings());
                 items.insert(items.indexOf(*it2), ssi);
             }
@@ -1151,10 +1151,10 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
             StreamNoteItem* sni;
             return (sni = dynamic_cast<StreamNoteItem*>(si)) &&
                    sni->type() == Channel::Type::NOISE &&
-                   sni->channel() == i && sni->time() <= currentTime;
+                   sni->channel() == i && sni->time() < currentTime && (sni->time() + sni->note().duration()) > currentTime;
         });
 
-        if (it != items.rend() && (*it)->time() != currentTime) {
+        if (it != items.rend()) {
             StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(*it);
             StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, sni->channelSettings(), sni->note().velocity());
             items.insert(items.indexOf(*it), ssi);
@@ -1163,10 +1163,10 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
                 StreamSettingsItem* ssi;
                 return (ssi = dynamic_cast<StreamSettingsItem*>(si)) &&
                        dynamic_cast<const NoiseChannelSettings*>(ssi->channelSettings()) &&
-                       ssi->channel() == i && ssi->time() <= currentTime;
+                       ssi->channel() == i && ssi->time() < currentTime;
             });
 
-            if (it2 != items.rend() && (*it2)->time() != currentTime) {
+            if (it2 != items.rend()) {
                 StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamSettingsItem*>(*it2)->channelSettings());
                 items.insert(items.indexOf(*it2), ssi);
             }
@@ -1178,10 +1178,10 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
             StreamNoteItem* sni;
             return (sni = dynamic_cast<StreamNoteItem*>(si)) &&
                    sni->type() == Channel::Type::FM &&
-                   sni->channel() == i && sni->time() <= currentTime;
+                   sni->channel() == i && sni->time() < currentTime && (sni->time() + sni->note().duration()) > currentTime;
         });
 
-        if (it != items.rend() && (*it)->time() != currentTime) {
+        if (it != items.rend()) {
             StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(*it);
             StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, sni->channelSettings(), sni->note().velocity());
             items.insert(items.indexOf(*it), ssi);
@@ -1190,10 +1190,10 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
                 StreamSettingsItem* ssi;
                 return (ssi = dynamic_cast<StreamSettingsItem*>(si)) &&
                        dynamic_cast<const FMChannelSettings*>(ssi->channelSettings()) &&
-                       ssi->channel() == i && ssi->time() <= currentTime;
+                       ssi->channel() == i && ssi->time() < currentTime;
             });
 
-            if (it2 != items.rend() && (*it2)->time() != currentTime) {
+            if (it2 != items.rend()) {
                 StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamSettingsItem*>(*it2)->channelSettings());
                 items.insert(items.indexOf(*it2), ssi);
             }
@@ -1205,10 +1205,10 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
             StreamNoteItem* sni;
             return (sni = dynamic_cast<StreamNoteItem*>(si)) &&
                    sni->type() == Channel::Type::SSG &&
-                   sni->channel() == i && sni->time() <= currentTime;
+                   sni->channel() == i && sni->time() < currentTime && (sni->time() + sni->note().duration()) > currentTime;
         });
 
-        if (it != items.rend() && (*it)->time() != currentTime) {
+        if (it != items.rend()) {
             StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(*it);
             StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, sni->channelSettings(), sni->note().velocity());
             items.insert(items.indexOf(*it), ssi);
@@ -1217,10 +1217,10 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
                 StreamSettingsItem* ssi;
                 return (ssi = dynamic_cast<StreamSettingsItem*>(si)) &&
                        dynamic_cast<const SSGChannelSettings*>(ssi->channelSettings()) &&
-                       ssi->channel() == i && ssi->time() <= currentTime;
+                       ssi->channel() == i && ssi->time() < currentTime;
             });
 
-            if (it2 != items.rend() && (*it2)->time() != currentTime) {
+            if (it2 != items.rend()) {
                 StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamSettingsItem*>(*it2)->channelSettings());
                 items.insert(items.indexOf(*it2), ssi);
             }
@@ -1232,10 +1232,10 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
             StreamNoteItem* sni;
             return (sni = dynamic_cast<StreamNoteItem*>(si)) &&
                    sni->type() == Channel::Type::MELODY &&
-                   sni->channel() == i && sni->time() <= currentTime;
+                   sni->channel() == i && sni->time() < currentTime && (sni->time() + sni->note().duration()) > currentTime;
         });
 
-        if (it != items.rend() && (*it)->time() != currentTime) {
+        if (it != items.rend()) {
             StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(*it);
             StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, sni->channelSettings(), sni->note().velocity());
             items.insert(items.indexOf(*it), ssi);
@@ -1244,10 +1244,10 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
                 StreamSettingsItem* ssi;
                 return (ssi = dynamic_cast<StreamSettingsItem*>(si)) &&
                        dynamic_cast<const MelodyChannelSettings*>(ssi->channelSettings()) &&
-                       ssi->channel() == i && ssi->time() <= currentTime;
+                       ssi->channel() == i && ssi->time() < currentTime;
             });
 
-            if (it2 != items.rend() && (*it2)->time() != currentTime) {
+            if (it2 != items.rend()) {
                 StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamSettingsItem*>(*it2)->channelSettings());
                 items.insert(items.indexOf(*it2), ssi);
             }
@@ -1259,10 +1259,10 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
             StreamNoteItem* sni;
             return (sni = dynamic_cast<StreamNoteItem*>(si)) &&
                    sni->type() == Channel::Type::RHYTHM &&
-                   sni->channel() == i && sni->time() <= currentTime;
+                   sni->channel() == i && sni->time() < currentTime && (sni->time() + sni->note().duration()) > currentTime;
         });
 
-        if (it != items.rend() && (*it)->time() != currentTime) {
+        if (it != items.rend()) {
             StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(*it);
             StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, sni->channelSettings(), sni->note().velocity());
             items.insert(items.indexOf(*it), ssi);
@@ -1271,10 +1271,10 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
                 StreamSettingsItem* ssi;
                 return (ssi = dynamic_cast<StreamSettingsItem*>(si)) &&
                        dynamic_cast<const RhythmChannelSettings*>(ssi->channelSettings()) &&
-                       ssi->channel() == i && ssi->time() <= currentTime;
+                       ssi->channel() == i && ssi->time() < currentTime;
             });
 
-            if (it2 != items.rend() && (*it2)->time() != currentTime) {
+            if (it2 != items.rend()) {
                 StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamSettingsItem*>(*it2)->channelSettings());
                 items.insert(items.indexOf(*it2), ssi);
             }
@@ -1286,10 +1286,10 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
             StreamNoteItem* sni;
             return (sni = dynamic_cast<StreamNoteItem*>(si)) &&
                    sni->type() == Channel::Type::PCM &&
-                   sni->channel() == i && sni->time() <= currentTime;
+                   sni->channel() == i && sni->time() < currentTime && (sni->time() + sni->note().duration()) > currentTime;
         });
 
-        if (it != items.rend() && (*it)->time() != currentTime) {
+        if (it != items.rend()) {
             StreamNoteItem* sni = dynamic_cast<StreamNoteItem*>(*it);
             StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, sni->channelSettings(), sni->note().velocity());
             items.insert(items.indexOf(*it), ssi);
@@ -1298,10 +1298,10 @@ void VGMStream::addSettingsAtCurrentOffset(QList<StreamItem*>& items, const floa
                 StreamSettingsItem* ssi;
                 return (ssi = dynamic_cast<StreamSettingsItem*>(si)) &&
                        dynamic_cast<const PCMChannelSettings*>(ssi->channelSettings()) &&
-                       ssi->channel() == i && ssi->time() <= currentTime;
+                       ssi->channel() == i && ssi->time() < currentTime;
             });
 
-            if (it2 != items.rend() && (*it2)->time() != currentTime) {
+            if (it2 != items.rend()) {
                 StreamSettingsItem* ssi = new StreamSettingsItem(currentTime, i, dynamic_cast<StreamSettingsItem*>(*it2)->channelSettings());
                 items.insert(items.indexOf(*it2), ssi);
             }
