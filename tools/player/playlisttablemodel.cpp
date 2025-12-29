@@ -77,7 +77,7 @@ QVariant PlaylistTableModel::data(const QModelIndex &index, int role) const
 
 void PlaylistTableModel::insertRow(const PlaylistItem& item)
 {
-    beginRemoveRows(QModelIndex(), rowCount(), rowCount());
+    beginInsertRows(QModelIndex(), rowCount(), rowCount());
     _items.append(item);
     endInsertRows();
 }
