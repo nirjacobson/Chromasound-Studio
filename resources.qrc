@@ -9,5 +9,1178 @@
         <file>templates/opn-fm.csp</file>
         <file>templates/opn-full.csp</file>
         <file>templates/opn-psg.csp</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 01 (Imaj7-IVmaj9-iim7-V9-iiim7-vim7add11-iim9-V6).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 02 (Imaj9-IVmaj7sus-bIIImaj7-bVImaj7-Imaj9-IVmaj7sus-bIIImaj7-bIImaj9).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 03 (bIIImaj7-iim7-bIImaj7-Imaj7-Iadd9-ivm7-bVIIadd9-bIImaj7-I-bVIIadd9).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 04 (Iadd9-III7-IVmaj7-ivm6(9)-Iadd9-III7-IVmaj7-V11-Vadd9).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 05 (Imaj9-bVII6(9)-vim7add11-iim7b5add11-Vsus6(9)-#ivm7b5-IV6-bII6(9)).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 06 (I6(9)-bIImaj7sus-Imaj9-ivm7add11-ivm7-I6(9)-bIImaj7sus-iim9-ivm9-bIIImaj7).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 07 (Iadd9-bVImaj7sus-IV6-bIIImaj9-Iadd9-bIIImaj7sus-bVIIadd9).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 08 (vim11-bVImaj9-bVIImaj9-Iadd9).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 09 (Imaj9-Imaj7-bIII6(9)-bVIadd9-bVImaj9-bVIIadd9-bVII6(9)).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 10 (Isus-I-bIIIadd9-bVII6(9)-ivm7-bIIImaj7sus-Isus-I-bIIImaj7-bVII6(9)-ivm7-bIIImaj7sus-IV9).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 11 (iim6(9)-bII9(13)-I6(9)add#11-iv6(9)-bIII9(13)).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 12 (Iadd9-bIImaj7#11-bIIIadd9-bIImaj7-Iadd9-bIImaj7#11-bIIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 13 (Imaj9-vm7-IVmaj7-bVII9-vim7add11-#ivm7b5-IVmaj7-iim9).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 14 (iiim7add11-iim9-Imaj9-IVmaj7-IV6).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 15 (I-Imaj7sus-bVII6(9)-IVmaj9-IV6-bVImaj7sus-bVII6(9)).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 16 (IVmaj7-iiim7add11-iim9-Imaj9-bIIImaj9-bIImaj9-V11-Imaj9-I9).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 17 (I-vm7-bVImaj7-vim7add11-bVIIsus#11-bVII#11-iim9-V7sus).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 18 (Iadd9-IVmaj7-IIadd9-iim9-Iadd9-IVmaj7-IIadd9-IVmaj9).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 19 (bIIIadd9-IIadd9-IVadd9-Iadd9-bIIIadd9-IIadd9-bIIadd9-Iadd9).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 20 (Iadd9-bIIIadd9-bVII6(9)-vim7add11-bVImaj7-vm7-ivm9-bIIadd9#11).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 21 (I-iiim7-bVIIadd9-IV6-iiim7-II9).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 22 (iiadd9-IVmaj9-I6(9)-iiim7add11-iim9-IVmaj9-bVImaj7-V11).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 23 (Isus-I-V-IV6(9)-iim7-Isus-I-V-vim7add11-IV6(9)).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/major/Major Prog 24 (iim9-V7b9-iiim7-IVmaj7-viim7b5-III7alt-vim7add11-VI7).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 01 (iim7b5-V7b9-im9-VImaj7-ivm9-bII9-im9).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 02 (im9-VIIadd9-VImaj9-V7alt-im9-IIImaj9-VIadd9-bIImaj7#11).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 03 (vm7-im7add11-VII6-ivm9-VII9(13)-VIIadd9).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 04 (im9-ivm7-VImaj9-V7alt-im9-ivm6(9)-VImaj7-V7alt).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 05 (ivm9-im7add11-vm7add11-ivm9-im9-VImaj9).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 06 (im11-VImaj9-IIImaj9-ivm9-im11-VImaj9-IIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 07 (VImaj9-VII6(9)-vm7add11-im7-IIImaj7).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 08 (im9-#vim9-VImaj9-IVadd9-i11-#vim7add11-VImaj9).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 09 (iimin7b5-V7alt-im9-IV9(13)-VImaj9-V7alt-im7-IV9(13)).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 10 (i-VII-III-v-VI-VII-bvii-VI).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 11 (VIadd9-IV-IV7-VIIadd9-V-V7-im7-vm7-iv-V7).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 12 (im9-im6-VI-im6-ivm9-IIIadd9-VImaj7-V7b9).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 13 (vm7add11-bII6-im7-bII#11-iim7add11-Valt-im9-III6).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 14 (i-VII6(9)-VImaj7-vm7add11-ivm7-VImaj7-VIIadd9-V7).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 15 (isus-VImaj7-IV9-III6-i-VImaj9-IVadd9-im7).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 16 (VImaj7-VIIadd11-iv7sus-IIIadd9-VImaj7-VIIadd11-im7-vm7).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 17 (iadd9-#viidim7-ivm6-V7-iadd9-iidim7-III6(9)-V7b13).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 18 (im9-bIImaj9-iim7-bIIImaj9-i-bIIadd9-iim7add11-V7sus).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 19 (i-VI-#vidim-VI-i-VI-IV7-VI-VIIadd11).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 20 (im9-#III13-IIImaj9-im9-bIImaj9-ivm7-V7b9).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 21 (ivm7-im11-iim7b5-i-ivm7-IIImaj7-V7b9-i).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 22 (iadd9-vm7-VImaj7-ivm7-i-V7).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 23 (vm7-VImaj7-VII6-im9-VII6(9)-VI6).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/advanced/minor/Minor Prog 24 (ivm9-im9-IIImaj9-ivm9-im7-VImaj7-vm7add11).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 01 (IV-I-vi-V-IV-I-iii-IV).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 02 (vi-I-IV-ii-vi-Isus-Vsus-V).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 03 (I-iii-vi-I-iii-IV-I-ii-I-ii-Vsus).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 04 (I-ii-vi-IV-I-ii-vi-V).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 05 (iii-vi-IV-IVsus-IV-I-ii-IV-I).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 06 (ii-I-IV-I-V).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 07 (IV-I-iii-IV-I-I-ii-vi-V).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 08 (IVsus-IV-V-I-IV-IVsus-IV-V-vi-Isus).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 09 (Isus-V-vi-Vsus-IV-I-ii-vi).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 10 (V-I-IV-vi-Isus-V-I-IV-vi-V-IV).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 11 (V-vi-IV-I-V-vi-I-IV-I).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 12 (vi-IV-I-V-vi-IV-ii-I-iii).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 13 (IV-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 14 (ii-IV-I-V-iii-IV-vi-iii-I).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 15 (I-iii-vi-ii-vi-Vsus).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 16 (IV-I-ii-I-ii-vi-V-I).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 17 (I-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 18 (vi-IVsus-I-Vsus-V).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 19 (I-ii-vi-IV-I-ii-I-IV).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 20 (I-IV-V-I-vi-IV-I-IV-V-vi-V).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 21 (Isus-V-visus-vi-ii-I-ii-V).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 22 (I-IV-V-vi-I-IV-iii-ii).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 23 (I-iii-vi-IV-V-IV-V-vi-ii-IV-V).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/major/Major Prog 24 (IV-V-vi-iii-ii-V-I-iii).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 01 (i-v-VI-III-VII).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 02 (ivsus-iv-III-VII-VI-i).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 03 (i-VII-i-VII-VI-iv-v).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 04 (v-VI-VIIsus-i-v-VI-i-VIIsus).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 05 (i-v-VI-iv-VI-v-i-VII-III-iv-VII).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 06 (v-VI-iv-III-i-v-VI-iv-i-IIIsus).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 07 (VI-i-VII-v-VI-III-iv-v).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 08 (i-VI-v-i-VI-v).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 09 (VII-VI-iv-i-VI-iv-isus-i).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 10 (isus-i-VIIsus-VII-VI-VIIsus-VII).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 11 (i-VI-iv-VII-v-i).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 12 (i-vsus-v-VI-v-v).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 13 (i-III-iv-v-i-v-iv-v).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 14 (iv-i-VII-III-VII-VI-i-iv-i-VI-VII).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 15 (i-III-VII-VIIsus-VI).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 16 (i-VII-III-iv-VI-VII).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 17 (VI-vsus-i).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 18 (i-isus-VIIsus-VII-VI-Vsus-V-VII).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 19 (i-VII-VI-VII).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 20 (iv-IIIsus-i-VII-III-VII-VI).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 21 (isus-v-VIsus-III-isus-i-v-III-iv-III-VII).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 22 (VI-i-VII-i-iv-i-VII-i).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 23 (i-iv-VII).mid</file>
+        <file>unison/progressions/01 - C Major - A Minor/diatonic triads/minor/Minor Prog 24 (i-iv-III-VII-i-iv-VI-VII).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 01 (Imaj7-IVmaj9-iim7-V9-iiim7-vim7add11-iim9-V6).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 02 (Imaj9-IVmaj7sus-bIIImaj7-bVImaj7-Imaj9-IVmaj7sus-bIIImaj7-bIImaj9).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 03 (bIIImaj7-iim7-bIImaj7-Imaj7-Iadd9-ivm7-bVIIadd9-bIImaj7-I-bVIIadd9).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 04 (Iadd9-III7-IVmaj7-ivm6(9)-Iadd9-III7-IVmaj7-V11-Vadd9).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 05 (Imaj9-bVII6(9)-vim7add11-iim7b5add11-Vsus6(9)-#ivm7b5-IV6-bII6(9)).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 06 (I6(9)-bIImaj7sus-Imaj9-ivm7add11-ivm7-I6(9)-bIImaj7sus-iim9-ivm9-bIIImaj7).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 07 (Iadd9-bVImaj7sus-IV6-bIIImaj9-Iadd9-bIIImaj7sus-bVIIadd9).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 08 (vim11-bVImaj9-bVIImaj9-Iadd9).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 09 (Imaj9-Imaj7-bIII6(9)-bVIadd9-bVImaj9-bVIIadd9-bVII6(9)).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 10 (Isus-I-bIIIadd9-bVII6(9)-ivm7-bIIImaj7sus-Isus-I-bIIImaj7-bVII6(9)-ivm7-bIIImaj7sus-IV9).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 11 (iim6(9)-bII9(13)-I6(9)add#11-iv6(9)-bIII9(13)).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 12 (Iadd9-bIImaj7#11-bIIIadd9-bIImaj7-Iadd9-bIImaj7#11-bIIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 13 (Imaj9-vm7-IVmaj7-bVII9-vim7add11-#ivm7b5-IVmaj7-iim9).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 14 (iiim7add11-iim9-Imaj9-IVmaj7-IV6).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 15 (I-Imaj7sus-bVII6(9)-IVmaj9-IV6-bVImaj7sus-bVII6(9)).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 16 (IVmaj7-iiim7add11-iim9-Imaj9-bIIImaj9-bIImaj9-V11-Imaj9-I9).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 17 (I-vm7-bVImaj7-vim7add11-bVIIsus#11-bVII#11-iim9-V7sus).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 18 (Iadd9-IVmaj7-IIadd9-iim9-Iadd9-IVmaj7-IIadd9-IVmaj9).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 19 (bIIIadd9-IIadd9-IVadd9-Iadd9-bIIIadd9-IIadd9-bIIadd9-Iadd9).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 20 (Iadd9-bIIIadd9-bVII6(9)-vim7add11-bVImaj7-vm7-ivm9-bIIadd9#11).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 21 (I-iiim7-bVIIadd9-IV6-iiim7-II9).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 22 (iiadd9-IVmaj9-I6(9)-iiim7add11-iim9-IVmaj9-bVImaj7-V11).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 23 (Isus-I-V-IV6(9)-iim7-Isus-I-V-vim7add11-IV6(9)).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/major/Major Prog 24 (iim9-V7b9-iiim7-IVmaj7-viim7b5-III7alt-vim7add11-VI7).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 01 (iim7b5-V7b9-im9-VImaj7-ivm9-bII9-im9).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 02 (im9-VIIadd9-VImaj9-V7alt-im9-IIImaj9-VIadd9-bIImaj7#11).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 03 (vm7-im7add11-VII6-ivm9-VII9(13)-VIIadd9).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 04 (im9-ivm7-VImaj9-V7alt-im9-ivm6(9)-VImaj7-V7alt).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 05 (ivm9-im7add11-vm7add11-ivm9-im9-VImaj9).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 06 (im11-VImaj9-IIImaj9-ivm9-im11-VImaj9-IIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 07 (VImaj9-VII6(9)-vm7add11-im7-IIImaj7).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 08 (im9-#vim9-VImaj9-IVadd9-i11-#vim7add11-VImaj9).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 09 (iimin7b5-V7alt-im9-IV9(13)-VImaj9-V7alt-im7-IV9(13)).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 10 (i-VII-III-v-VI-VII-bvii-VI).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 11 (VIadd9-IV-IV7-VIIadd9-V-V7-im7-vm7-iv-V7).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 12 (im9-im6-VI-im6-ivm9-IIIadd9-VImaj7-V7b9).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 13 (vm7add11-bII6-im7-bII#11-iim7add11-Valt-im9-III6).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 14 (i-VII6(9)-VImaj7-vm7add11-ivm7-VImaj7-VIIadd9-V7).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 15 (isus-VImaj7-IV9-III6-i-VImaj9-IVadd9-im7).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 16 (VImaj7-VIIadd11-iv7sus-IIIadd9-VImaj7-VIIadd11-im7-vm7).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 17 (iadd9-#viidim7-ivm6-V7-iadd9-iidim7-III6(9)-V7b13).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 18 (im9-bIImaj9-iim7-bIIImaj9-i-bIIadd9-iim7add11-V7sus).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 19 (i-VI-#vidim-VI-i-VI-IV7-VI-VIIadd11).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 20 (im9-#III13-IIImaj9-im9-bIImaj9-ivm7-V7b9).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 21 (ivm7-im11-iim7b5-i-ivm7-IIImaj7-V7b9-i).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 22 (iadd9-vm7-VImaj7-ivm7-i-V7).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 23 (vm7-VImaj7-VII6-im9-VII6(9)-VI6).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/advanced/minor/Minor Prog 24 (ivm9-im9-IIImaj9-ivm9-im7-VImaj7-vm7add11).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 01 (IV-I-vi-V-IV-I-iii-IV).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 02 (vi-I-IV-ii-vi-Isus-Vsus-V).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 03 (I-iii-vi-I-iii-IV-I-ii-I-ii-Vsus).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 04 (I-ii-vi-IV-I-ii-vi-V).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 05 (iii-vi-IV-IVsus-IV-I-ii-IV-I).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 06 (ii-I-IV-I-V).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 07 (IV-I-iii-IV-I-I-ii-vi-V).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 08 (IVsus-IV-V-I-IV-IVsus-IV-V-vi-Isus).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 09 (Isus-V-vi-Vsus-IV-I-ii-vi).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 10 (V-I-IV-vi-Isus-V-I-IV-vi-V-IV).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 11 (V-vi-IV-I-V-vi-I-IV-I).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 12 (vi-IV-I-V-vi-IV-ii-I-iii).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 13 (IV-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 14 (ii-IV-I-V-iii-IV-vi-iii-I).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 15 (I-iii-vi-ii-vi-Vsus).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 16 (IV-I-ii-I-ii-vi-V-I).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 17 (I-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 18 (vi-IVsus-I-Vsus-V).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 19 (I-ii-vi-IV-I-ii-I-IV).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 20 (I-IV-V-I-vi-IV-I-IV-V-vi-V).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 21 (Isus-V-visus-vi-ii-I-ii-V).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 22 (I-IV-V-vi-I-IV-iii-ii).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 23 (I-iii-vi-IV-V-IV-V-vi-ii-IV-V).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/major/Major Prog 24 (IV-V-vi-iii-ii-V-I-iii).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 01 (i-v-VI-III-VII).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 02 (ivsus-iv-III-VII-VI-i).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 03 (i-VII-i-VII-VI-iv-v).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 04 (v-VI-VIIsus-i-v-VI-i-VIIsus).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 05 (i-v-VI-iv-VI-v-i-VII-III-iv-VII).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 06 (v-VI-iv-III-i-v-VI-iv-i-IIIsus).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 07 (VI-i-VII-v-VI-III-iv-v).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 08 (i-VI-v-i-VI-v).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 09 (VII-VI-iv-i-VI-iv-isus-i).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 10 (isus-i-VIIsus-VII-VI-VIIsus-VII).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 11 (i-VI-iv-VII-v-i).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 12 (i-vsus-v-VI-v-v).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 13 (i-III-iv-v-i-v-iv-v).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 14 (iv-i-VII-III-VII-VI-i-iv-i-VI-VII).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 15 (i-III-VII-VIIsus-VI).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 16 (i-VII-III-iv-VI-VII).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 17 (VI-vsus-i).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 18 (i-isus-VIIsus-VII-VI-Vsus-V-VII).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 19 (i-VII-VI-VII).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 20 (iv-IIIsus-i-VII-III-VII-VI).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 21 (isus-v-VIsus-III-isus-i-v-III-iv-III-VII).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 22 (VI-i-VII-i-iv-i-VII-i).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 23 (i-iv-VII).mid</file>
+        <file>unison/progressions/02 - Db Major - Bb Minor/diatonic triads/minor/Minor Prog 24 (i-iv-III-VII-i-iv-VI-VII).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 01 (Imaj7-IVmaj9-iim7-V9-iiim7-vim7add11-iim9-V6).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 02 (Imaj9-IVmaj7sus-bIIImaj7-bVImaj7-Imaj9-IVmaj7sus-bIIImaj7-bIImaj9).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 03 (bIIImaj7-iim7-bIImaj7-Imaj7-Iadd9-ivm7-bVIIadd9-bIImaj7-I-bVIIadd9).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 04 (Iadd9-III7-IVmaj7-ivm6(9)-Iadd9-III7-IVmaj7-V11-Vadd9).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 05 (Imaj9-bVII6(9)-vim7add11-iim7b5add11-Vsus6(9)-#ivm7b5-IV6-bII6(9)).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 06 (I6(9)-bIImaj7sus-Imaj9-ivm7add11-ivm7-I6(9)-bIImaj7sus-iim9-ivm9-bIIImaj7).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 07 (Iadd9-bVImaj7sus-IV6-bIIImaj9-Iadd9-bIIImaj7sus-bVIIadd9).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 08 (vim11-bVImaj9-bVIImaj9-Iadd9).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 09 (Imaj9-Imaj7-bIII6(9)-bVIadd9-bVImaj9-bVIIadd9-bVII6(9)).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 10 (Isus-I-bIIIadd9-bVII6(9)-ivm7-bIIImaj7sus-Isus-I-bIIImaj7-bVII6(9)-ivm7-bIIImaj7sus-IV9).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 11 (iim6(9)-bII9(13)-I6(9)add#11-iv6(9)-bIII9(13)).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 12 (Iadd9-bIImaj7#11-bIIIadd9-bIImaj7-Iadd9-bIImaj7#11-bIIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 13 (Imaj9-vm7-IVmaj7-bVII9-vim7add11-#ivm7b5-IVmaj7-iim9).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 14 (iiim7add11-iim9-Imaj9-IVmaj7-IV6).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 15 (I-Imaj7sus-bVII6(9)-IVmaj9-IV6-bVImaj7sus-bVII6(9)).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 16 (IVmaj7-iiim7add11-iim9-Imaj9-bIIImaj9-bIImaj9-V11-Imaj9-I9).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 17 (I-vm7-bVImaj7-vim7add11-bVIIsus#11-bVII#11-iim9-V7sus).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 18 (Iadd9-IVmaj7-IIadd9-iim9-Iadd9-IVmaj7-IIadd9-IVmaj9).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 19 (bIIIadd9-IIadd9-IVadd9-Iadd9-bIIIadd9-IIadd9-bIIadd9-Iadd9).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 20 (Iadd9-bIIIadd9-bVII6(9)-vim7add11-bVImaj7-vm7-ivm9-bIIadd9#11).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 21 (I-iiim7-bVIIadd9-IV6-iiim7-II9).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 22 (iiadd9-IVmaj9-I6(9)-iiim7add11-iim9-IVmaj9-bVImaj7-V11).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 23 (Isus-I-V-IV6(9)-iim7-Isus-I-V-vim7add11-IV6(9)).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/major/Major Prog 24 (iim9-V7b9-iiim7-IVmaj7-viim7b5-III7alt-vim7add11-VI7).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 01 (iim7b5-V7b9-im9-VImaj7-ivm9-bII9-im9).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 02 (im9-VIIadd9-VImaj9-V7alt-im9-IIImaj9-VIadd9-bIImaj7#11).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 03 (vm7-im7add11-VII6-ivm9-VII9(13)-VIIadd9).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 04 (im9-ivm7-VImaj9-V7alt-im9-ivm6(9)-VImaj7-V7alt).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 05 (ivm9-im7add11-vm7add11-ivm9-im9-VImaj9).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 06 (im11-VImaj9-IIImaj9-ivm9-im11-VImaj9-IIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 07 (VImaj9-VII6(9)-vm7add11-im7-IIImaj7).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 08 (im9-#vim9-VImaj9-IVadd9-i11-#vim7add11-VImaj9).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 09 (iimin7b5-V7alt-im9-IV9(13)-VImaj9-V7alt-im7-IV9(13)).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 10 (i-VII-III-v-VI-VII-bvii-VI).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 11 (VIadd9-IV-IV7-VIIadd9-V-V7-im7-vm7-iv-V7).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 12 (im9-im6-VI-im6-ivm9-IIIadd9-VImaj7-V7b9).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 13 (vm7add11-bII6-im7-bII#11-iim7add11-Valt-im9-III6).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 14 (i-VII6(9)-VImaj7-vm7add11-ivm7-VImaj7-VIIadd9-V7).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 15 (isus-VImaj7-IV9-III6-i-VImaj9-IVadd9-im7).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 16 (VImaj7-VIIadd11-iv7sus-IIIadd9-VImaj7-VIIadd11-im7-vm7).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 17 (iadd9-#viidim7-ivm6-V7-iadd9-iidim7-III6(9)-V7b13).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 18 (im9-bIImaj9-iim7-bIIImaj9-i-bIIadd9-iim7add11-V7sus).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 19 (i-VI-#vidim-VI-i-VI-IV7-VI-VIIadd11).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 20 (im9-#III13-IIImaj9-im9-bIImaj9-ivm7-V7b9).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 21 (ivm7-im11-iim7b5-i-ivm7-IIImaj7-V7b9-i).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 22 (iadd9-vm7-VImaj7-ivm7-i-V7).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 23 (vm7-VImaj7-VII6-im9-VII6(9)-VI6).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/advanced/minor/Minor Prog 24 (ivm9-im9-IIImaj9-ivm9-im7-VImaj7-vm7add11).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 01 (IV-I-vi-V-IV-I-iii-IV).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 02 (vi-I-IV-ii-vi-Isus-Vsus-V).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 03 (I-iii-vi-I-iii-IV-I-ii-I-ii-Vsus).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 04 (I-ii-vi-IV-I-ii-vi-V).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 05 (iii-vi-IV-IVsus-IV-I-ii-IV-I).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 06 (ii-I-IV-I-V).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 07 (IV-I-iii-IV-I-I-ii-vi-V).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 08 (IVsus-IV-V-I-IV-IVsus-IV-V-vi-Isus).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 09 (Isus-V-vi-Vsus-IV-I-ii-vi).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 10 (V-I-IV-vi-Isus-V-I-IV-vi-V-IV).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 11 (V-vi-IV-I-V-vi-I-IV-I).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 12 (vi-IV-I-V-vi-IV-ii-I-iii).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 13 (IV-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 14 (ii-IV-I-V-iii-IV-vi-iii-I).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 15 (I-iii-vi-ii-vi-Vsus).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 16 (IV-I-ii-I-ii-vi-V-I).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 17 (I-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 18 (vi-IVsus-I-Vsus-V).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 19 (I-ii-vi-IV-I-ii-I-IV).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 20 (I-IV-V-I-vi-IV-I-IV-V-vi-V).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 21 (Isus-V-visus-vi-ii-I-ii-V).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 22 (I-IV-V-vi-I-IV-iii-ii).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 23 (I-iii-vi-IV-V-IV-V-vi-ii-IV-V).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/major/Major Prog 24 (IV-V-vi-iii-ii-V-I-iii).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 01 (i-v-VI-III-VII).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 02 (ivsus-iv-III-VII-VI-i).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 03 (i-VII-i-VII-VI-iv-v).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 04 (v-VI-VIIsus-i-v-VI-i-VIIsus).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 05 (i-v-VI-iv-VI-v-i-VII-III-iv-VII).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 06 (v-VI-iv-III-i-v-VI-iv-i-IIIsus).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 07 (VI-i-VII-v-VI-III-iv-v).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 08 (i-VI-v-i-VI-v).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 09 (VII-VI-iv-i-VI-iv-isus-i).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 10 (isus-i-VIIsus-VII-VI-VIIsus-VII).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 11 (i-VI-iv-VII-v-i).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 12 (i-vsus-v-VI-v-v).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 13 (i-III-iv-v-i-v-iv-v).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 14 (iv-i-VII-III-VII-VI-i-iv-i-VI-VII).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 15 (i-III-VII-VIIsus-VI).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 16 (i-VII-III-iv-VI-VII).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 17 (VI-vsus-i).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 18 (i-isus-VIIsus-VII-VI-Vsus-V-VII).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 19 (i-VII-VI-VII).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 20 (iv-IIIsus-i-VII-III-VII-VI).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 21 (isus-v-VIsus-III-isus-i-v-III-iv-III-VII).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 22 (VI-i-VII-i-iv-i-VII-i).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 23 (i-iv-VII).mid</file>
+        <file>unison/progressions/03 - D Major - B Minor/diatonic triads/minor/Minor Prog 24 (i-iv-III-VII-i-iv-VI-VII).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 01 (Imaj7-IVmaj9-iim7-V9-iiim7-vim7add11-iim9-V6).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 02 (Imaj9-IVmaj7sus-bIIImaj7-bVImaj7-Imaj9-IVmaj7sus-bIIImaj7-bIImaj9).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 03 (bIIImaj7-iim7-bIImaj7-Imaj7-Iadd9-ivm7-bVIIadd9-bIImaj7-I-bVIIadd9).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 04 (Iadd9-III7-IVmaj7-ivm6(9)-Iadd9-III7-IVmaj7-V11-Vadd9).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 05 (Imaj9-bVII6(9)-vim7add11-iim7b5add11-Vsus6(9)-#ivm7b5-IV6-bII6(9)).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 06 (I6(9)-bIImaj7sus-Imaj9-ivm7add11-ivm7-I6(9)-bIImaj7sus-iim9-ivm9-bIIImaj7).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 07 (Iadd9-bVImaj7sus-IV6-bIIImaj9-Iadd9-bIIImaj7sus-bVIIadd9).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 08 (vim11-bVImaj9-bVIImaj9-Iadd9).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 09 (Imaj9-Imaj7-bIII6(9)-bVIadd9-bVImaj9-bVIIadd9-bVII6(9)).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 10 (Isus-I-bIIIadd9-bVII6(9)-ivm7-bIIImaj7sus-Isus-I-bIIImaj7-bVII6(9)-ivm7-bIIImaj7sus-IV9).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 11 (iim6(9)-bII9(13)-I6(9)add#11-iv6(9)-bIII9(13)).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 12 (Iadd9-bIImaj7#11-bIIIadd9-bIImaj7-Iadd9-bIImaj7#11-bIIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 13 (Imaj9-vm7-IVmaj7-bVII9-vim7add11-#ivm7b5-IVmaj7-iim9).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 14 (iiim7add11-iim9-Imaj9-IVmaj7-IV6).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 15 (I-Imaj7sus-bVII6(9)-IVmaj9-IV6-bVImaj7sus-bVII6(9)).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 16 (IVmaj7-iiim7add11-iim9-Imaj9-bIIImaj9-bIImaj9-V11-Imaj9-I9).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 17 (I-vm7-bVImaj7-vim7add11-bVIIsus#11-bVII#11-iim9-V7sus).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 18 (Iadd9-IVmaj7-IIadd9-iim9-Iadd9-IVmaj7-IIadd9-IVmaj9).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 19 (bIIIadd9-IIadd9-IVadd9-Iadd9-bIIIadd9-IIadd9-bIIadd9-Iadd9).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 20 (Iadd9-bIIIadd9-bVII6(9)-vim7add11-bVImaj7-vm7-ivm9-bIIadd9#11).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 21 (I-iiim7-bVIIadd9-IV6-iiim7-II9).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 22 (iiadd9-IVmaj9-I6(9)-iiim7add11-iim9-IVmaj9-bVImaj7-V11).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 23 (Isus-I-V-IV6(9)-iim7-Isus-I-V-vim7add11-IV6(9)).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/major/Major Prog 24 (iim9-V7b9-iiim7-IVmaj7-viim7b5-III7alt-vim7add11-VI7).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 01 (iim7b5-V7b9-im9-VImaj7-ivm9-bII9-im9).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 02 (im9-VIIadd9-VImaj9-V7alt-im9-IIImaj9-VIadd9-bIImaj7#11).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 03 (vm7-im7add11-VII6-ivm9-VII9(13)-VIIadd9).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 04 (im9-ivm7-VImaj9-V7alt-im9-ivm6(9)-VImaj7-V7alt).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 05 (ivm9-im7add11-vm7add11-ivm9-im9-VImaj9).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 06 (im11-VImaj9-IIImaj9-ivm9-im11-VImaj9-IIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 07 (VImaj9-VII6(9)-vm7add11-im7-IIImaj7).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 08 (im9-#vim9-VImaj9-IVadd9-i11-#vim7add11-VImaj9).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 09 (iimin7b5-V7alt-im9-IV9(13)-VImaj9-V7alt-im7-IV9(13)).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 10 (i-VII-III-v-VI-VII-bvii-VI).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 11 (VIadd9-IV-IV7-VIIadd9-V-V7-im7-vm7-iv-V7).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 12 (im9-im6-VI-im6-ivm9-IIIadd9-VImaj7-V7b9).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 13 (vm7add11-bII6-im7-bII#11-iim7add11-Valt-im9-III6).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 14 (i-VII6(9)-VImaj7-vm7add11-ivm7-VImaj7-VIIadd9-V7).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 15 (isus-VImaj7-IV9-III6-i-VImaj9-IVadd9-im7).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 16 (VImaj7-VIIadd11-iv7sus-IIIadd9-VImaj7-VIIadd11-im7-vm7).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 17 (iadd9-#viidim7-ivm6-V7-iadd9-iidim7-III6(9)-V7b13).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 18 (im9-bIImaj9-iim7-bIIImaj9-i-bIIadd9-iim7add11-V7sus).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 19 (i-VI-#vidim-VI-i-VI-IV7-VI-VIIadd11).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 20 (im9-#III13-IIImaj9-im9-bIImaj9-ivm7-V7b9).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 21 (ivm7-im11-iim7b5-i-ivm7-IIImaj7-V7b9-i).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 22 (iadd9-vm7-VImaj7-ivm7-i-V7).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 23 (vm7-VImaj7-VII6-im9-VII6(9)-VI6).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/advanced/minor/Minor Prog 24 (ivm9-im9-IIImaj9-ivm9-im7-VImaj7-vm7add11).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 01 (IV-I-vi-V-IV-I-iii-IV).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 02 (vi-I-IV-ii-vi-Isus-Vsus-V).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 03 (I-iii-vi-I-iii-IV-I-ii-I-ii-Vsus).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 04 (I-ii-vi-IV-I-ii-vi-V).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 05 (iii-vi-IV-IVsus-IV-I-ii-IV-I).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 06 (ii-I-IV-I-V).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 07 (IV-I-iii-IV-I-I-ii-vi-V).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 08 (IVsus-IV-V-I-IV-IVsus-IV-V-vi-Isus).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 09 (Isus-V-vi-Vsus-IV-I-ii-vi).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 10 (V-I-IV-vi-Isus-V-I-IV-vi-V-IV).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 11 (V-vi-IV-I-V-vi-I-IV-I).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 12 (vi-IV-I-V-vi-IV-ii-I-iii).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 13 (IV-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 14 (ii-IV-I-V-iii-IV-vi-iii-I).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 15 (I-iii-vi-ii-vi-Vsus).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 16 (IV-I-ii-I-ii-vi-V-I).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 17 (I-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 18 (vi-IVsus-I-Vsus-V).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 19 (I-ii-vi-IV-I-ii-I-IV).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 20 (I-IV-V-I-vi-IV-I-IV-V-vi-V).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 21 (Isus-V-visus-vi-ii-I-ii-V).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 22 (I-IV-V-vi-I-IV-iii-ii).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 23 (I-iii-vi-IV-V-IV-V-vi-ii-IV-V).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/major/Major Prog 24 (IV-V-vi-iii-ii-V-I-iii).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 01 (i-v-VI-III-VII).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 02 (ivsus-iv-III-VII-VI-i).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 03 (i-VII-i-VII-VI-iv-v).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 04 (v-VI-VIIsus-i-v-VI-i-VIIsus).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 05 (i-v-VI-iv-VI-v-i-VII-III-iv-VII).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 06 (v-VI-iv-III-i-v-VI-iv-i-IIIsus).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 07 (VI-i-VII-v-VI-III-iv-v).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 08 (i-VI-v-i-VI-v).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 09 (VII-VI-iv-i-VI-iv-isus-i).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 10 (isus-i-VIIsus-VII-VI-VIIsus-VII).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 11 (i-VI-iv-VII-v-i).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 12 (i-vsus-v-VI-v-v).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 13 (i-III-iv-v-i-v-iv-v).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 14 (iv-i-VII-III-VII-VI-i-iv-i-VI-VII).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 15 (i-III-VII-VIIsus-VI).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 16 (i-VII-III-iv-VI-VII).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 17 (VI-vsus-i).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 18 (i-isus-VIIsus-VII-VI-Vsus-V-VII).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 19 (i-VII-VI-VII).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 20 (iv-IIIsus-i-VII-III-VII-VI).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 21 (isus-v-VIsus-III-isus-i-v-III-iv-III-VII).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 22 (VI-i-VII-i-iv-i-VII-i).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 23 (i-iv-VII).mid</file>
+        <file>unison/progressions/04 - Eb Major - C Minor/diatonic triads/minor/Minor Prog 24 (i-iv-III-VII-i-iv-VI-VII).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 01 (Imaj7-IVmaj9-iim7-V9-iiim7-vim7add11-iim9-V6).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 02 (Imaj9-IVmaj7sus-bIIImaj7-bVImaj7-Imaj9-IVmaj7sus-bIIImaj7-bIImaj9).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 03 (bIIImaj7-iim7-bIImaj7-Imaj7-Iadd9-ivm7-bVIIadd9-bIImaj7-I-bVIIadd9).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 04 (Iadd9-III7-IVmaj7-ivm6(9)-Iadd9-III7-IVmaj7-V11-Vadd9).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 05 (Imaj9-bVII6(9)-vim7add11-iim7b5add11-Vsus6(9)-#ivm7b5-IV6-bII6(9)).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 06 (I6(9)-bIImaj7sus-Imaj9-ivm7add11-ivm7-I6(9)-bIImaj7sus-iim9-ivm9-bIIImaj7).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 07 (Iadd9-bVImaj7sus-IV6-bIIImaj9-Iadd9-bIIImaj7sus-bVIIadd9).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 08 (vim11-bVImaj9-bVIImaj9-Iadd9).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 09 (Imaj9-Imaj7-bIII6(9)-bVIadd9-bVImaj9-bVIIadd9-bVII6(9)).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 10 (Isus-I-bIIIadd9-bVII6(9)-ivm7-bIIImaj7sus-Isus-I-bIIImaj7-bVII6(9)-ivm7-bIIImaj7sus-IV9).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 11 (iim6(9)-bII9(13)-I6(9)add#11-iv6(9)-bIII9(13)).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 12 (Iadd9-bIImaj7#11-bIIIadd9-bIImaj7-Iadd9-bIImaj7#11-bIIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 13 (Imaj9-vm7-IVmaj7-bVII9-vim7add11-#ivm7b5-IVmaj7-iim9).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 14 (iiim7add11-iim9-Imaj9-IVmaj7-IV6).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 15 (I-Imaj7sus-bVII6(9)-IVmaj9-IV6-bVImaj7sus-bVII6(9)).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 16 (IVmaj7-iiim7add11-iim9-Imaj9-bIIImaj9-bIImaj9-V11-Imaj9-I9).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 17 (I-vm7-bVImaj7-vim7add11-bVIIsus#11-bVII#11-iim9-V7sus).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 18 (Iadd9-IVmaj7-IIadd9-iim9-Iadd9-IVmaj7-IIadd9-IVmaj9).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 19 (bIIIadd9-IIadd9-IVadd9-Iadd9-bIIIadd9-IIadd9-bIIadd9-Iadd9).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 20 (Iadd9-bIIIadd9-bVII6(9)-vim7add11-bVImaj7-vm7-ivm9-bIIadd9#11).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 21 (I-iiim7-bVIIadd9-IV6-iiim7-II9).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 22 (iiadd9-IVmaj9-I6(9)-iiim7add11-iim9-IVmaj9-bVImaj7-V11).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 23 (Isus-I-V-IV6(9)-iim7-Isus-I-V-vim7add11-IV6(9)).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/major/Major Prog 24 (iim9-V7b9-iiim7-IVmaj7-viim7b5-III7alt-vim7add11-VI7).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 01 (iim7b5-V7b9-im9-VImaj7-ivm9-bII9-im9).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 02 (im9-VIIadd9-VImaj9-V7alt-im9-IIImaj9-VIadd9-bIImaj7#11).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 03 (vm7-im7add11-VII6-ivm9-VII9(13)-VIIadd9).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 04 (im9-ivm7-VImaj9-V7alt-im9-ivm6(9)-VImaj7-V7alt).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 05 (ivm9-im7add11-vm7add11-ivm9-im9-VImaj9).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 06 (im11-VImaj9-IIImaj9-ivm9-im11-VImaj9-IIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 07 (VImaj9-VII6(9)-vm7add11-im7-IIImaj7).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 08 (im9-#vim9-VImaj9-IVadd9-i11-#vim7add11-VImaj9).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 09 (iimin7b5-V7alt-im9-IV9(13)-VImaj9-V7alt-im7-IV9(13)).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 10 (i-VII-III-v-VI-VII-bvii-VI).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 11 (VIadd9-IV-IV7-VIIadd9-V-V7-im7-vm7-iv-V7).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 12 (im9-im6-VI-im6-ivm9-IIIadd9-VImaj7-V7b9).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 13 (vm7add11-bII6-im7-bII#11-iim7add11-Valt-im9-III6).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 14 (i-VII6(9)-VImaj7-vm7add11-ivm7-VImaj7-VIIadd9-V7).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 15 (isus-VImaj7-IV9-III6-i-VImaj9-IVadd9-im7).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 16 (VImaj7-VIIadd11-iv7sus-IIIadd9-VImaj7-VIIadd11-im7-vm7).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 17 (iadd9-#viidim7-ivm6-V7-iadd9-iidim7-III6(9)-V7b13).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 18 (im9-bIImaj9-iim7-bIIImaj9-i-bIIadd9-iim7add11-V7sus).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 19 (i-VI-#vidim-VI-i-VI-IV7-VI-VIIadd11).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 20 (im9-#III13-IIImaj9-im9-bIImaj9-ivm7-V7b9).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 21 (ivm7-im11-iim7b5-i-ivm7-IIImaj7-V7b9-i).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 22 (iadd9-vm7-VImaj7-ivm7-i-V7).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 23 (vm7-VImaj7-VII6-im9-VII6(9)-VI6).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/advanced/minor/Minor Prog 24 (ivm9-im9-IIImaj9-ivm9-im7-VImaj7-vm7add11).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 01 (IV-I-vi-V-IV-I-iii-IV).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 02 (vi-I-IV-ii-vi-Isus-Vsus-V).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 03 (I-iii-vi-I-iii-IV-I-ii-I-ii-Vsus).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 04 (I-ii-vi-IV-I-ii-vi-V).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 05 (iii-vi-IV-IVsus-IV-I-ii-IV-I).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 06 (ii-I-IV-I-V).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 07 (IV-I-iii-IV-I-I-ii-vi-V).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 08 (IVsus-IV-V-I-IV-IVsus-IV-V-vi-Isus).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 09 (Isus-V-vi-Vsus-IV-I-ii-vi).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 10 (V-I-IV-vi-Isus-V-I-IV-vi-V-IV).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 11 (V-vi-IV-I-V-vi-I-IV-I).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 12 (vi-IV-I-V-vi-IV-ii-I-iii).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 13 (IV-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 14 (ii-IV-I-V-iii-IV-vi-iii-I).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 15 (I-iii-vi-ii-vi-Vsus).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 16 (IV-I-ii-I-ii-vi-V-I).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 17 (I-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 18 (vi-IVsus-I-Vsus-V).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 19 (I-ii-vi-IV-I-ii-I-IV).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 20 (I-IV-V-I-vi-IV-I-IV-V-vi-V).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 21 (Isus-V-visus-vi-ii-I-ii-V).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 22 (I-IV-V-vi-I-IV-iii-ii).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 23 (I-iii-vi-IV-V-IV-V-vi-ii-IV-V).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/major/Major Prog 24 (IV-V-vi-iii-ii-V-I-iii).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 01 (i-v-VI-III-VII).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 02 (ivsus-iv-III-VII-VI-i).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 03 (i-VII-i-VII-VI-iv-v).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 04 (v-VI-VIIsus-i-v-VI-i-VIIsus).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 05 (i-v-VI-iv-VI-v-i-VII-III-iv-VII).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 06 (v-VI-iv-III-i-v-VI-iv-i-IIIsus).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 07 (VI-i-VII-v-VI-III-iv-v).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 08 (i-VI-v-i-VI-v).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 09 (VII-VI-iv-i-VI-iv-isus-i).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 10 (isus-i-VIIsus-VII-VI-VIIsus-VII).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 11 (i-VI-iv-VII-v-i).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 12 (i-vsus-v-VI-v-v).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 13 (i-III-iv-v-i-v-iv-v).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 14 (iv-i-VII-III-VII-VI-i-iv-i-VI-VII).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 15 (i-III-VII-VIIsus-VI).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 16 (i-VII-III-iv-VI-VII).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 17 (VI-vsus-i).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 18 (i-isus-VIIsus-VII-VI-Vsus-V-VII).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 19 (i-VII-VI-VII).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 20 (iv-IIIsus-i-VII-III-VII-VI).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 21 (isus-v-VIsus-III-isus-i-v-III-iv-III-VII).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 22 (VI-i-VII-i-iv-i-VII-i).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 23 (i-iv-VII).mid</file>
+        <file>unison/progressions/05 - E Major - C# Minor/diatonic triads/minor/Minor Prog 24 (i-iv-III-VII-i-iv-VI-VII).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 01 (Imaj7-IVmaj9-iim7-V9-iiim7-vim7add11-iim9-V6).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 02 (Imaj9-IVmaj7sus-bIIImaj7-bVImaj7-Imaj9-IVmaj7sus-bIIImaj7-bIImaj9).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 03 (bIIImaj7-iim7-bIImaj7-Imaj7-Iadd9-ivm7-bVIIadd9-bIImaj7-I-bVIIadd9).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 04 (Iadd9-III7-IVmaj7-ivm6(9)-Iadd9-III7-IVmaj7-V11-Vadd9).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 05 (Imaj9-bVII6(9)-vim7add11-iim7b5add11-Vsus6(9)-#ivm7b5-IV6-bII6(9)).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 06 (I6(9)-bIImaj7sus-Imaj9-ivm7add11-ivm7-I6(9)-bIImaj7sus-iim9-ivm9-bIIImaj7).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 07 (Iadd9-bVImaj7sus-IV6-bIIImaj9-Iadd9-bIIImaj7sus-bVIIadd9).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 08 (vim11-bVImaj9-bVIImaj9-Iadd9).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 09 (Imaj9-Imaj7-bIII6(9)-bVIadd9-bVImaj9-bVIIadd9-bVII6(9)).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 10 (Isus-I-bIIIadd9-bVII6(9)-ivm7-bIIImaj7sus-Isus-I-bIIImaj7-bVII6(9)-ivm7-bIIImaj7sus-IV9).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 11 (iim6(9)-bII9(13)-I6(9)add#11-iv6(9)-bIII9(13)).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 12 (Iadd9-bIImaj7#11-bIIIadd9-bIImaj7-Iadd9-bIImaj7#11-bIIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 13 (Imaj9-vm7-IVmaj7-bVII9-vim7add11-#ivm7b5-IVmaj7-iim9).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 14 (iiim7add11-iim9-Imaj9-IVmaj7-IV6).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 15 (I-Imaj7sus-bVII6(9)-IVmaj9-IV6-bVImaj7sus-bVII6(9)).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 16 (IVmaj7-iiim7add11-iim9-Imaj9-bIIImaj9-bIImaj9-V11-Imaj9-I9).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 17 (I-vm7-bVImaj7-vim7add11-bVIIsus#11-bVII#11-iim9-V7sus).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 18 (Iadd9-IVmaj7-IIadd9-iim9-Iadd9-IVmaj7-IIadd9-IVmaj9).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 19 (bIIIadd9-IIadd9-IVadd9-Iadd9-bIIIadd9-IIadd9-bIIadd9-Iadd9).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 20 (Iadd9-bIIIadd9-bVII6(9)-vim7add11-bVImaj7-vm7-ivm9-bIIadd9#11).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 21 (I-iiim7-bVIIadd9-IV6-iiim7-II9).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 22 (iiadd9-IVmaj9-I6(9)-iiim7add11-iim9-IVmaj9-bVImaj7-V11).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 23 (Isus-I-V-IV6(9)-iim7-Isus-I-V-vim7add11-IV6(9)).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/major/Major Prog 24 (iim9-V7b9-iiim7-IVmaj7-viim7b5-III7alt-vim7add11-VI7).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 01 (iim7b5-V7b9-im9-VImaj7-ivm9-bII9-im9).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 02 (im9-VIIadd9-VImaj9-V7alt-im9-IIImaj9-VIadd9-bIImaj7#11).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 03 (vm7-im7add11-VII6-ivm9-VII9(13)-VIIadd9).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 04 (im9-ivm7-VImaj9-V7alt-im9-ivm6(9)-VImaj7-V7alt).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 05 (ivm9-im7add11-vm7add11-ivm9-im9-VImaj9).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 06 (im11-VImaj9-IIImaj9-ivm9-im11-VImaj9-IIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 07 (VImaj9-VII6(9)-vm7add11-im7-IIImaj7).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 08 (im9-#vim9-VImaj9-IVadd9-i11-#vim7add11-VImaj9).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 09 (iimin7b5-V7alt-im9-IV9(13)-VImaj9-V7alt-im7-IV9(13)).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 10 (i-VII-III-v-VI-VII-bvii-VI).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 11 (VIadd9-IV-IV7-VIIadd9-V-V7-im7-vm7-iv-V7).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 12 (im9-im6-VI-im6-ivm9-IIIadd9-VImaj7-V7b9).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 13 (vm7add11-bII6-im7-bII#11-iim7add11-Valt-im9-III6).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 14 (i-VII6(9)-VImaj7-vm7add11-ivm7-VImaj7-VIIadd9-V7).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 15 (isus-VImaj7-IV9-III6-i-VImaj9-IVadd9-im7).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 16 (VImaj7-VIIadd11-iv7sus-IIIadd9-VImaj7-VIIadd11-im7-vm7).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 17 (iadd9-#viidim7-ivm6-V7-iadd9-iidim7-III6(9)-V7b13).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 18 (im9-bIImaj9-iim7-bIIImaj9-i-bIIadd9-iim7add11-V7sus).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 19 (i-VI-#vidim-VI-i-VI-IV7-VI-VIIadd11).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 20 (im9-#III13-IIImaj9-im9-bIImaj9-ivm7-V7b9).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 21 (ivm7-im11-iim7b5-i-ivm7-IIImaj7-V7b9-i).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 22 (iadd9-vm7-VImaj7-ivm7-i-V7).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 23 (vm7-VImaj7-VII6-im9-VII6(9)-VI6).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/advanced/minor/Minor Prog 24 (ivm9-im9-IIImaj9-ivm9-im7-VImaj7-vm7add11).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 01 (IV-I-vi-V-IV-I-iii-IV).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 02 (vi-I-IV-ii-vi-Isus-Vsus-V).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 03 (I-iii-vi-I-iii-IV-I-ii-I-ii-Vsus).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 04 (I-ii-vi-IV-I-ii-vi-V).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 05 (iii-vi-IV-IVsus-IV-I-ii-IV-I).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 06 (ii-I-IV-I-V).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 07 (IV-I-iii-IV-I-I-ii-vi-V).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 08 (IVsus-IV-V-I-IV-IVsus-IV-V-vi-Isus).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 09 (Isus-V-vi-Vsus-IV-I-ii-vi).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 10 (V-I-IV-vi-Isus-V-I-IV-vi-V-IV).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 11 (V-vi-IV-I-V-vi-I-IV-I).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 12 (vi-IV-I-V-vi-IV-ii-I-iii).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 13 (IV-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 14 (ii-IV-I-V-iii-IV-vi-iii-I).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 15 (I-iii-vi-ii-vi-Vsus).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 16 (IV-I-ii-I-ii-vi-V-I).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 17 (I-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 18 (vi-IVsus-I-Vsus-V).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 19 (I-ii-vi-IV-I-ii-I-IV).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 20 (I-IV-V-I-vi-IV-I-IV-V-vi-V).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 21 (Isus-V-visus-vi-ii-I-ii-V).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 22 (I-IV-V-vi-I-IV-iii-ii).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 23 (I-iii-vi-IV-V-IV-V-vi-ii-IV-V).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/major/Major Prog 24 (IV-V-vi-iii-ii-V-I-iii).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 01 (i-v-VI-III-VII).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 02 (ivsus-iv-III-VII-VI-i).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 03 (i-VII-i-VII-VI-iv-v).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 04 (v-VI-VIIsus-i-v-VI-i-VIIsus).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 05 (i-v-VI-iv-VI-v-i-VII-III-iv-VII).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 06 (v-VI-iv-III-i-v-VI-iv-i-IIIsus).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 07 (VI-i-VII-v-VI-III-iv-v).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 08 (i-VI-v-i-VI-v).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 09 (VII-VI-iv-i-VI-iv-isus-i).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 10 (isus-i-VIIsus-VII-VI-VIIsus-VII).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 11 (i-VI-iv-VII-v-i).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 12 (i-vsus-v-VI-v-v).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 13 (i-III-iv-v-i-v-iv-v).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 14 (iv-i-VII-III-VII-VI-i-iv-i-VI-VII).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 15 (i-III-VII-VIIsus-VI).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 16 (i-VII-III-iv-VI-VII).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 17 (VI-vsus-i).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 18 (i-isus-VIIsus-VII-VI-Vsus-V-VII).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 19 (i-VII-VI-VII).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 20 (iv-IIIsus-i-VII-III-VII-VI).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 21 (isus-v-VIsus-III-isus-i-v-III-iv-III-VII).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 22 (VI-i-VII-i-iv-i-VII-i).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 23 (i-iv-VII).mid</file>
+        <file>unison/progressions/06 - F Major - D Minor/diatonic triads/minor/Minor Prog 24 (i-iv-III-VII-i-iv-VI-VII).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 01 (Imaj7-IVmaj9-iim7-V9-iiim7-vim7add11-iim9-V6).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 02 (Imaj9-IVmaj7sus-bIIImaj7-bVImaj7-Imaj9-IVmaj7sus-bIIImaj7-bIImaj9).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 03 (bIIImaj7-iim7-bIImaj7-Imaj7-Iadd9-ivm7-bVIIadd9-bIImaj7-I-bVIIadd9).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 04 (Iadd9-III7-IVmaj7-ivm6(9)-Iadd9-III7-IVmaj7-V11-Vadd9).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 05 (Imaj9-bVII6(9)-vim7add11-iim7b5add11-Vsus6(9)-#ivm7b5-IV6-bII6(9)).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 06 (I6(9)-bIImaj7sus-Imaj9-ivm7add11-ivm7-I6(9)-bIImaj7sus-iim9-ivm9-bIIImaj7).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 07 (Iadd9-bVImaj7sus-IV6-bIIImaj9-Iadd9-bIIImaj7sus-bVIIadd9).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 08 (vim11-bVImaj9-bVIImaj9-Iadd9).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 09 (Imaj9-Imaj7-bIII6(9)-bVIadd9-bVImaj9-bVIIadd9-bVII6(9)).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 10 (Isus-I-bIIIadd9-bVII6(9)-ivm7-bIIImaj7sus-Isus-I-bIIImaj7-bVII6(9)-ivm7-bIIImaj7sus-IV9).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 11 (iim6(9)-bII9(13)-I6(9)add#11-iv6(9)-bIII9(13)).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 12 (Iadd9-bIImaj7#11-bIIIadd9-bIImaj7-Iadd9-bIImaj7#11-bIIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 13 (Imaj9-vm7-IVmaj7-bVII9-vim7add11-#ivm7b5-IVmaj7-iim9).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 14 (iiim7add11-iim9-Imaj9-IVmaj7-IV6).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 15 (I-Imaj7sus-bVII6(9)-IVmaj9-IV6-bVImaj7sus-bVII6(9)).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 16 (IVmaj7-iiim7add11-iim9-Imaj9-bIIImaj9-bIImaj9-V11-Imaj9-I9).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 17 (I-vm7-bVImaj7-vim7add11-bVIIsus#11-bVII#11-iim9-V7sus).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 18 (Iadd9-IVmaj7-IIadd9-iim9-Iadd9-IVmaj7-IIadd9-IVmaj9).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 19 (bIIIadd9-IIadd9-IVadd9-Iadd9-bIIIadd9-IIadd9-bIIadd9-Iadd9).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 20 (Iadd9-bIIIadd9-bVII6(9)-vim7add11-bVImaj7-vm7-ivm9-bIIadd9#11).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 21 (I-iiim7-bVIIadd9-IV6-iiim7-II9).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 22 (iiadd9-IVmaj9-I6(9)-iiim7add11-iim9-IVmaj9-bVImaj7-V11).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 23 (Isus-I-V-IV6(9)-iim7-Isus-I-V-vim7add11-IV6(9)).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/major/Major Prog 24 (iim9-V7b9-iiim7-IVmaj7-viim7b5-III7alt-vim7add11-VI7).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 01 (iim7b5-V7b9-im9-VImaj7-ivm9-bII9-im9).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 02 (im9-VIIadd9-VImaj9-V7alt-im9-IIImaj9-VIadd9-bIImaj7#11).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 03 (vm7-im7add11-VII6-ivm9-VII9(13)-VIIadd9).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 04 (im9-ivm7-VImaj9-V7alt-im9-ivm6(9)-VImaj7-V7alt).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 05 (ivm9-im7add11-vm7add11-ivm9-im9-VImaj9).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 06 (im11-VImaj9-IIImaj9-ivm9-im11-VImaj9-IIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 07 (VImaj9-VII6(9)-vm7add11-im7-IIImaj7).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 08 (im9-#vim9-VImaj9-IVadd9-i11-#vim7add11-VImaj9).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 09 (iimin7b5-V7alt-im9-IV9(13)-VImaj9-V7alt-im7-IV9(13)).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 10 (i-VII-III-v-VI-VII-bvii-VI).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 11 (VIadd9-IV-IV7-VIIadd9-V-V7-im7-vm7-iv-V7).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 12 (im9-im6-VI-im6-ivm9-IIIadd9-VImaj7-V7b9).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 13 (vm7add11-bII6-im7-bII#11-iim7add11-Valt-im9-III6).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 14 (i-VII6(9)-VImaj7-vm7add11-ivm7-VImaj7-VIIadd9-V7).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 15 (isus-VImaj7-IV9-III6-i-VImaj9-IVadd9-im7).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 16 (VImaj7-VIIadd11-iv7sus-IIIadd9-VImaj7-VIIadd11-im7-vm7).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 17 (iadd9-#viidim7-ivm6-V7-iadd9-iidim7-III6(9)-V7b13).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 18 (im9-bIImaj9-iim7-bIIImaj9-i-bIIadd9-iim7add11-V7sus).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 19 (i-VI-#vidim-VI-i-VI-IV7-VI-VIIadd11).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 20 (im9-#III13-IIImaj9-im9-bIImaj9-ivm7-V7b9).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 21 (ivm7-im11-iim7b5-i-ivm7-IIImaj7-V7b9-i).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 22 (iadd9-vm7-VImaj7-ivm7-i-V7).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 23 (vm7-VImaj7-VII6-im9-VII6(9)-VI6).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/advanced/minor/Minor Prog 24 (ivm9-im9-IIImaj9-ivm9-im7-VImaj7-vm7add11).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 01 (IV-I-vi-V-IV-I-iii-IV).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 02 (vi-I-IV-ii-vi-Isus-Vsus-V).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 03 (I-iii-vi-I-iii-IV-I-ii-I-ii-Vsus).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 04 (I-ii-vi-IV-I-ii-vi-V).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 05 (iii-vi-IV-IVsus-IV-I-ii-IV-I).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 06 (ii-I-IV-I-V).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 07 (IV-I-iii-IV-I-I-ii-vi-V).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 08 (IVsus-IV-V-I-IV-IVsus-IV-V-vi-Isus).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 09 (Isus-V-vi-Vsus-IV-I-ii-vi).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 10 (V-I-IV-vi-Isus-V-I-IV-vi-V-IV).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 11 (V-vi-IV-I-V-vi-I-IV-I).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 12 (vi-IV-I-V-vi-IV-ii-I-iii).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 13 (IV-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 14 (ii-IV-I-V-iii-IV-vi-iii-I).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 15 (I-iii-vi-ii-vi-Vsus).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 16 (IV-I-ii-I-ii-vi-V-I).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 17 (I-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 18 (vi-IVsus-I-Vsus-V).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 19 (I-ii-vi-IV-I-ii-I-IV).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 20 (I-IV-V-I-vi-IV-I-IV-V-vi-V).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 21 (Isus-V-visus-vi-ii-I-ii-V).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 22 (I-IV-V-vi-I-IV-iii-ii).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 23 (I-iii-vi-IV-V-IV-V-vi-ii-IV-V).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/major/Major Prog 24 (IV-V-vi-iii-ii-V-I-iii).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 01 (i-v-VI-III-VII).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 02 (ivsus-iv-III-VII-VI-i).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 03 (i-VII-i-VII-VI-iv-v).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 04 (v-VI-VIIsus-i-v-VI-i-VIIsus).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 05 (i-v-VI-iv-VI-v-i-VII-III-iv-VII).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 06 (v-VI-iv-III-i-v-VI-iv-i-IIIsus).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 07 (VI-i-VII-v-VI-III-iv-v).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 08 (i-VI-v-i-VI-v).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 09 (VII-VI-iv-i-VI-iv-isus-i).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 10 (isus-i-VIIsus-VII-VI-VIIsus-VII).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 11 (i-VI-iv-VII-v-i).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 12 (i-vsus-v-VI-v-v).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 13 (i-III-iv-v-i-v-iv-v).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 14 (iv-i-VII-III-VII-VI-i-iv-i-VI-VII).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 15 (i-III-VII-VIIsus-VI).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 16 (i-VII-III-iv-VI-VII).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 17 (VI-vsus-i).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 18 (i-isus-VIIsus-VII-VI-Vsus-V-VII).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 19 (i-VII-VI-VII).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 20 (iv-IIIsus-i-VII-III-VII-VI).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 21 (isus-v-VIsus-III-isus-i-v-III-iv-III-VII).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 22 (VI-i-VII-i-iv-i-VII-i).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 23 (i-iv-VII).mid</file>
+        <file>unison/progressions/07 - Gb Major - Eb Minor/diatonic triads/minor/Minor Prog 24 (i-iv-III-VII-i-iv-VI-VII).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 01 (Imaj7-IVmaj9-iim7-V9-iiim7-vim7add11-iim9-V6).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 02 (Imaj9-IVmaj7sus-bIIImaj7-bVImaj7-Imaj9-IVmaj7sus-bIIImaj7-bIImaj9).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 03 (bIIImaj7-iim7-bIImaj7-Imaj7-Iadd9-ivm7-bVIIadd9-bIImaj7-I-bVIIadd9).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 04 (Iadd9-III7-IVmaj7-ivm6(9)-Iadd9-III7-IVmaj7-V11-Vadd9).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 05 (Imaj9-bVII6(9)-vim7add11-iim7b5add11-Vsus6(9)-#ivm7b5-IV6-bII6(9)).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 06 (I6(9)-bIImaj7sus-Imaj9-ivm7add11-ivm7-I6(9)-bIImaj7sus-iim9-ivm9-bIIImaj7).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 07 (Iadd9-bVImaj7sus-IV6-bIIImaj9-Iadd9-bIIImaj7sus-bVIIadd9).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 08 (vim11-bVImaj9-bVIImaj9-Iadd9).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 09 (Imaj9-Imaj7-bIII6(9)-bVIadd9-bVImaj9-bVIIadd9-bVII6(9)).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 10 (Isus-I-bIIIadd9-bVII6(9)-ivm7-bIIImaj7sus-Isus-I-bIIImaj7-bVII6(9)-ivm7-bIIImaj7sus-IV9).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 11 (iim6(9)-bII9(13)-I6(9)add#11-iv6(9)-bIII9(13)).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 12 (Iadd9-bIImaj7#11-bIIIadd9-bIImaj7-Iadd9-bIImaj7#11-bIIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 13 (Imaj9-vm7-IVmaj7-bVII9-vim7add11-#ivm7b5-IVmaj7-iim9).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 14 (iiim7add11-iim9-Imaj9-IVmaj7-IV6).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 15 (I-Imaj7sus-bVII6(9)-IVmaj9-IV6-bVImaj7sus-bVII6(9)).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 16 (IVmaj7-iiim7add11-iim9-Imaj9-bIIImaj9-bIImaj9-V11-Imaj9-I9).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 17 (I-vm7-bVImaj7-vim7add11-bVIIsus#11-bVII#11-iim9-V7sus).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 18 (Iadd9-IVmaj7-IIadd9-iim9-Iadd9-IVmaj7-IIadd9-IVmaj9).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 19 (bIIIadd9-IIadd9-IVadd9-Iadd9-bIIIadd9-IIadd9-bIIadd9-Iadd9).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 20 (Iadd9-bIIIadd9-bVII6(9)-vim7add11-bVImaj7-vm7-ivm9-bIIadd9#11).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 21 (I-iiim7-bVIIadd9-IV6-iiim7-II9).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 22 (iiadd9-IVmaj9-I6(9)-iiim7add11-iim9-IVmaj9-bVImaj7-V11).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 23 (Isus-I-V-IV6(9)-iim7-Isus-I-V-vim7add11-IV6(9)).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/major/Major Prog 24 (iim9-V7b9-iiim7-IVmaj7-viim7b5-III7alt-vim7add11-VI7).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 01 (iim7b5-V7b9-im9-VImaj7-ivm9-bII9-im9).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 02 (im9-VIIadd9-VImaj9-V7alt-im9-IIImaj9-VIadd9-bIImaj7#11).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 03 (vm7-im7add11-VII6-ivm9-VII9(13)-VIIadd9).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 04 (im9-ivm7-VImaj9-V7alt-im9-ivm6(9)-VImaj7-V7alt).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 05 (ivm9-im7add11-vm7add11-ivm9-im9-VImaj9).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 06 (im11-VImaj9-IIImaj9-ivm9-im11-VImaj9-IIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 07 (VImaj9-VII6(9)-vm7add11-im7-IIImaj7).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 08 (im9-#vim9-VImaj9-IVadd9-i11-#vim7add11-VImaj9).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 09 (iimin7b5-V7alt-im9-IV9(13)-VImaj9-V7alt-im7-IV9(13)).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 10 (i-VII-III-v-VI-VII-bvii-VI).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 11 (VIadd9-IV-IV7-VIIadd9-V-V7-im7-vm7-iv-V7).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 12 (im9-im6-VI-im6-ivm9-IIIadd9-VImaj7-V7b9).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 13 (vm7add11-bII6-im7-bII#11-iim7add11-Valt-im9-III6).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 14 (i-VII6(9)-VImaj7-vm7add11-ivm7-VImaj7-VIIadd9-V7).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 15 (isus-VImaj7-IV9-III6-i-VImaj9-IVadd9-im7).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 16 (VImaj7-VIIadd11-iv7sus-IIIadd9-VImaj7-VIIadd11-im7-vm7).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 17 (iadd9-#viidim7-ivm6-V7-iadd9-iidim7-III6(9)-V7b13).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 18 (im9-bIImaj9-iim7-bIIImaj9-i-bIIadd9-iim7add11-V7sus).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 19 (i-VI-#vidim-VI-i-VI-IV7-VI-VIIadd11).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 20 (im9-#III13-IIImaj9-im9-bIImaj9-ivm7-V7b9).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 21 (ivm7-im11-iim7b5-i-ivm7-IIImaj7-V7b9-i).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 22 (iadd9-vm7-VImaj7-ivm7-i-V7).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 23 (vm7-VImaj7-VII6-im9-VII6(9)-VI6).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/advanced/minor/Minor Prog 24 (ivm9-im9-IIImaj9-ivm9-im7-VImaj7-vm7add11).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 01 (IV-I-vi-V-IV-I-iii-IV).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 02 (vi-I-IV-ii-vi-Isus-Vsus-V).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 03 (I-iii-vi-I-iii-IV-I-ii-I-ii-Vsus).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 04 (I-ii-vi-IV-I-ii-vi-V).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 05 (iii-vi-IV-IVsus-IV-I-ii-IV-I).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 06 (ii-I-IV-I-V).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 07 (IV-I-iii-IV-I-I-ii-vi-V).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 08 (IVsus-IV-V-I-IV-IVsus-IV-V-vi-Isus).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 09 (Isus-V-vi-Vsus-IV-I-ii-vi).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 10 (V-I-IV-vi-Isus-V-I-IV-vi-V-IV).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 11 (V-vi-IV-I-V-vi-I-IV-I).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 12 (vi-IV-I-V-vi-IV-ii-I-iii).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 13 (IV-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 14 (ii-IV-I-V-iii-IV-vi-iii-I).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 15 (I-iii-vi-ii-vi-Vsus).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 16 (IV-I-ii-I-ii-vi-V-I).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 17 (I-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 18 (vi-IVsus-I-Vsus-V).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 19 (I-ii-vi-IV-I-ii-I-IV).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 20 (I-IV-V-I-vi-IV-I-IV-V-vi-V).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 21 (Isus-V-visus-vi-ii-I-ii-V).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 22 (I-IV-V-vi-I-IV-iii-ii).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 23 (I-iii-vi-IV-V-IV-V-vi-ii-IV-V).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/major/Major Prog 24 (IV-V-vi-iii-ii-V-I-iii).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 01 (i-v-VI-III-VII).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 02 (ivsus-iv-III-VII-VI-i).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 03 (i-VII-i-VII-VI-iv-v).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 04 (v-VI-VIIsus-i-v-VI-i-VIIsus).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 05 (i-v-VI-iv-VI-v-i-VII-III-iv-VII).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 06 (v-VI-iv-III-i-v-VI-iv-i-IIIsus).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 07 (VI-i-VII-v-VI-III-iv-v).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 08 (i-VI-v-i-VI-v).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 09 (VII-VI-iv-i-VI-iv-isus-i).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 10 (isus-i-VIIsus-VII-VI-VIIsus-VII).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 11 (i-VI-iv-VII-v-i).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 12 (i-vsus-v-VI-v-v).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 13 (i-III-iv-v-i-v-iv-v).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 14 (iv-i-VII-III-VII-VI-i-iv-i-VI-VII).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 15 (i-III-VII-VIIsus-VI).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 16 (i-VII-III-iv-VI-VII).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 17 (VI-vsus-i).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 18 (i-isus-VIIsus-VII-VI-Vsus-V-VII).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 19 (i-VII-VI-VII).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 20 (iv-IIIsus-i-VII-III-VII-VI).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 21 (isus-v-VIsus-III-isus-i-v-III-iv-III-VII).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 22 (VI-i-VII-i-iv-i-VII-i).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 23 (i-iv-VII).mid</file>
+        <file>unison/progressions/08 - G Major - E Minor/diatonic triads/minor/Minor Prog 24 (i-iv-III-VII-i-iv-VI-VII).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 01 (Imaj7-IVmaj9-iim7-V9-iiim7-vim7add11-iim9-V6).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 02 (Imaj9-IVmaj7sus-bIIImaj7-bVImaj7-Imaj9-IVmaj7sus-bIIImaj7-bIImaj9).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 03 (bIIImaj7-iim7-bIImaj7-Imaj7-Iadd9-ivm7-bVIIadd9-bIImaj7-I-bVIIadd9).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 04 (Iadd9-III7-IVmaj7-ivm6(9)-Iadd9-III7-IVmaj7-V11-Vadd9).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 05 (Imaj9-bVII6(9)-vim7add11-iim7b5add11-Vsus6(9)-#ivm7b5-IV6-bII6(9)).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 06 (I6(9)-bIImaj7sus-Imaj9-ivm7add11-ivm7-I6(9)-bIImaj7sus-iim9-ivm9-bIIImaj7).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 07 (Iadd9-bVImaj7sus-IV6-bIIImaj9-Iadd9-bIIImaj7sus-bVIIadd9).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 08 (vim11-bVImaj9-bVIImaj9-Iadd9).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 09 (Imaj9-Imaj7-bIII6(9)-bVIadd9-bVImaj9-bVIIadd9-bVII6(9)).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 10 (Isus-I-bIIIadd9-bVII6(9)-ivm7-bIIImaj7sus-Isus-I-bIIImaj7-bVII6(9)-ivm7-bIIImaj7sus-IV9).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 11 (iim6(9)-bII9(13)-I6(9)add#11-iv6(9)-bIII9(13)).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 12 (Iadd9-bIImaj7#11-bIIIadd9-bIImaj7-Iadd9-bIImaj7#11-bIIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 13 (Imaj9-vm7-IVmaj7-bVII9-vim7add11-#ivm7b5-IVmaj7-iim9).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 14 (iiim7add11-iim9-Imaj9-IVmaj7-IV6).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 15 (I-Imaj7sus-bVII6(9)-IVmaj9-IV6-bVImaj7sus-bVII6(9)).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 16 (IVmaj7-iiim7add11-iim9-Imaj9-bIIImaj9-bIImaj9-V11-Imaj9-I9).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 17 (I-vm7-bVImaj7-vim7add11-bVIIsus#11-bVII#11-iim9-V7sus).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 18 (Iadd9-IVmaj7-IIadd9-iim9-Iadd9-IVmaj7-IIadd9-IVmaj9).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 19 (bIIIadd9-IIadd9-IVadd9-Iadd9-bIIIadd9-IIadd9-bIIadd9-Iadd9).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 20 (Iadd9-bIIIadd9-bVII6(9)-vim7add11-bVImaj7-vm7-ivm9-bIIadd9#11).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 21 (I-iiim7-bVIIadd9-IV6-iiim7-II9).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 22 (iiadd9-IVmaj9-I6(9)-iiim7add11-iim9-IVmaj9-bVImaj7-V11).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 23 (Isus-I-V-IV6(9)-iim7-Isus-I-V-vim7add11-IV6(9)).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/major/Major Prog 24 (iim9-V7b9-iiim7-IVmaj7-viim7b5-III7alt-vim7add11-VI7).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 01 (iim7b5-V7b9-im9-VImaj7-ivm9-bII9-im9).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 02 (im9-VIIadd9-VImaj9-V7alt-im9-IIImaj9-VIadd9-bIImaj7#11).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 03 (vm7-im7add11-VII6-ivm9-VII9(13)-VIIadd9).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 04 (im9-ivm7-VImaj9-V7alt-im9-ivm6(9)-VImaj7-V7alt).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 05 (ivm9-im7add11-vm7add11-ivm9-im9-VImaj9).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 06 (im11-VImaj9-IIImaj9-ivm9-im11-VImaj9-IIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 07 (VImaj9-VII6(9)-vm7add11-im7-IIImaj7).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 08 (im9-#vim9-VImaj9-IVadd9-i11-#vim7add11-VImaj9).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 09 (iimin7b5-V7alt-im9-IV9(13)-VImaj9-V7alt-im7-IV9(13)).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 10 (i-VII-III-v-VI-VII-bvii-VI).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 11 (VIadd9-IV-IV7-VIIadd9-V-V7-im7-vm7-iv-V7).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 12 (im9-im6-VI-im6-ivm9-IIIadd9-VImaj7-V7b9).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 13 (vm7add11-bII6-im7-bII#11-iim7add11-Valt-im9-III6).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 14 (i-VII6(9)-VImaj7-vm7add11-ivm7-VImaj7-VIIadd9-V7).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 15 (isus-VImaj7-IV9-III6-i-VImaj9-IVadd9-im7).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 16 (VImaj7-VIIadd11-iv7sus-IIIadd9-VImaj7-VIIadd11-im7-vm7).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 17 (iadd9-#viidim7-ivm6-V7-iadd9-iidim7-III6(9)-V7b13).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 18 (im9-bIImaj9-iim7-bIIImaj9-i-bIIadd9-iim7add11-V7sus).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 19 (i-VI-#vidim-VI-i-VI-IV7-VI-VIIadd11).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 20 (im9-#III13-IIImaj9-im9-bIImaj9-ivm7-V7b9).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 21 (ivm7-im11-iim7b5-i-ivm7-IIImaj7-V7b9-i).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 22 (iadd9-vm7-VImaj7-ivm7-i-V7).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 23 (vm7-VImaj7-VII6-im9-VII6(9)-VI6).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/advanced/minor/Minor Prog 24 (ivm9-im9-IIImaj9-ivm9-im7-VImaj7-vm7add11).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 01 (IV-I-vi-V-IV-I-iii-IV).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 02 (vi-I-IV-ii-vi-Isus-Vsus-V).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 03 (I-iii-vi-I-iii-IV-I-ii-I-ii-Vsus).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 04 (I-ii-vi-IV-I-ii-vi-V).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 05 (iii-vi-IV-IVsus-IV-I-ii-IV-I).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 06 (ii-I-IV-I-V).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 07 (IV-I-iii-IV-I-I-ii-vi-V).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 08 (IVsus-IV-V-I-IV-IVsus-IV-V-vi-Isus).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 09 (Isus-V-vi-Vsus-IV-I-ii-vi).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 10 (V-I-IV-vi-Isus-V-I-IV-vi-V-IV).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 11 (V-vi-IV-I-V-vi-I-IV-I).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 12 (vi-IV-I-V-vi-IV-ii-I-iii).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 13 (IV-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 14 (ii-IV-I-V-iii-IV-vi-iii-I).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 15 (I-iii-vi-ii-vi-Vsus).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 16 (IV-I-ii-I-ii-vi-V-I).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 17 (I-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 18 (vi-IVsus-I-Vsus-V).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 19 (I-ii-vi-IV-I-ii-I-IV).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 20 (I-IV-V-I-vi-IV-I-IV-V-vi-V).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 21 (Isus-V-visus-vi-ii-I-ii-V).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 22 (I-IV-V-vi-I-IV-iii-ii).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 23 (I-iii-vi-IV-V-IV-V-vi-ii-IV-V).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/major/Major Prog 24 (IV-V-vi-iii-ii-V-I-iii).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 01 (i-v-VI-III-VII).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 02 (ivsus-iv-III-VII-VI-i).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 03 (i-VII-i-VII-VI-iv-v).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 04 (v-VI-VIIsus-i-v-VI-i-VIIsus).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 05 (i-v-VI-iv-VI-v-i-VII-III-iv-VII).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 06 (v-VI-iv-III-i-v-VI-iv-i-IIIsus).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 07 (VI-i-VII-v-VI-III-iv-v).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 08 (i-VI-v-i-VI-v).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 09 (VII-VI-iv-i-VI-iv-isus-i).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 10 (isus-i-VIIsus-VII-VI-VIIsus-VII).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 11 (i-VI-iv-VII-v-i).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 12 (i-vsus-v-VI-v-v).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 13 (i-III-iv-v-i-v-iv-v).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 14 (iv-i-VII-III-VII-VI-i-iv-i-VI-VII).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 15 (i-III-VII-VIIsus-VI).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 16 (i-VII-III-iv-VI-VII).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 17 (VI-vsus-i).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 18 (i-isus-VIIsus-VII-VI-Vsus-V-VII).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 19 (i-VII-VI-VII).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 20 (iv-IIIsus-i-VII-III-VII-VI).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 21 (isus-v-VIsus-III-isus-i-v-III-iv-III-VII).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 22 (VI-i-VII-i-iv-i-VII-i).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 23 (i-iv-VII).mid</file>
+        <file>unison/progressions/09 - Ab Major - F Minor/diatonic triads/minor/Minor Prog 24 (i-iv-III-VII-i-iv-VI-VII).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 01 (Imaj7-IVmaj9-iim7-V9-iiim7-vim7add11-iim9-V6).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 02 (Imaj9-IVmaj7sus-bIIImaj7-bVImaj7-Imaj9-IVmaj7sus-bIIImaj7-bIImaj9).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 03 (bIIImaj7-iim7-bIImaj7-Imaj7-Iadd9-ivm7-bVIIadd9-bIImaj7-I-bVIIadd9).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 04 (Iadd9-III7-IVmaj7-ivm6(9)-Iadd9-III7-IVmaj7-V11-Vadd9).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 05 (Imaj9-bVII6(9)-vim7add11-iim7b5add11-Vsus6(9)-#ivm7b5-IV6-bII6(9)).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 06 (I6(9)-bIImaj7sus-Imaj9-ivm7add11-ivm7-I6(9)-bIImaj7sus-iim9-ivm9-bIIImaj7).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 07 (Iadd9-bVImaj7sus-IV6-bIIImaj9-Iadd9-bIIImaj7sus-bVIIadd9).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 08 (vim11-bVImaj9-bVIImaj9-Iadd9).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 09 (Imaj9-Imaj7-bIII6(9)-bVIadd9-bVImaj9-bVIIadd9-bVII6(9)).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 10 (Isus-I-bIIIadd9-bVII6(9)-ivm7-bIIImaj7sus-Isus-I-bIIImaj7-bVII6(9)-ivm7-bIIImaj7sus-IV9).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 11 (iim6(9)-bII9(13)-I6(9)add#11-iv6(9)-bIII9(13)).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 12 (Iadd9-bIImaj7#11-bIIIadd9-bIImaj7-Iadd9-bIImaj7#11-bIIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 13 (Imaj9-vm7-IVmaj7-bVII9-vim7add11-#ivm7b5-IVmaj7-iim9).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 14 (iiim7add11-iim9-Imaj9-IVmaj7-IV6).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 15 (I-Imaj7sus-bVII6(9)-IVmaj9-IV6-bVImaj7sus-bVII6(9)).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 16 (IVmaj7-iiim7add11-iim9-Imaj9-bIIImaj9-bIImaj9-V11-Imaj9-I9).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 17 (I-vm7-bVImaj7-vim7add11-bVIIsus#11-bVII#11-iim9-V7sus).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 18 (Iadd9-IVmaj7-IIadd9-iim9-Iadd9-IVmaj7-IIadd9-IVmaj9).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 19 (bIIIadd9-IIadd9-IVadd9-Iadd9-bIIIadd9-IIadd9-bIIadd9-Iadd9).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 20 (Iadd9-bIIIadd9-bVII6(9)-vim7add11-bVImaj7-vm7-ivm9-bIIadd9#11).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 21 (I-iiim7-bVIIadd9-IV6-iiim7-II9).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 22 (iiadd9-IVmaj9-I6(9)-iiim7add11-iim9-IVmaj9-bVImaj7-V11).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 23 (Isus-I-V-IV6(9)-iim7-Isus-I-V-vim7add11-IV6(9)).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/major/Major Prog 24 (iim9-V7b9-iiim7-IVmaj7-viim7b5-III7alt-vim7add11-VI7).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 01 (iim7b5-V7b9-im9-VImaj7-ivm9-bII9-im9).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 02 (im9-VIIadd9-VImaj9-V7alt-im9-IIImaj9-VIadd9-bIImaj7#11).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 03 (vm7-im7add11-VII6-ivm9-VII9(13)-VIIadd9).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 04 (im9-ivm7-VImaj9-V7alt-im9-ivm6(9)-VImaj7-V7alt).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 05 (ivm9-im7add11-vm7add11-ivm9-im9-VImaj9).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 06 (im11-VImaj9-IIImaj9-ivm9-im11-VImaj9-IIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 07 (VImaj9-VII6(9)-vm7add11-im7-IIImaj7).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 08 (im9-#vim9-VImaj9-IVadd9-i11-#vim7add11-VImaj9).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 09 (iimin7b5-V7alt-im9-IV9(13)-VImaj9-V7alt-im7-IV9(13)).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 10 (i-VII-III-v-VI-VII-bvii-VI).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 11 (VIadd9-IV-IV7-VIIadd9-V-V7-im7-vm7-iv-V7).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 12 (im9-im6-VI-im6-ivm9-IIIadd9-VImaj7-V7b9).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 13 (vm7add11-bII6-im7-bII#11-iim7add11-Valt-im9-III6).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 14 (i-VII6(9)-VImaj7-vm7add11-ivm7-VImaj7-VIIadd9-V7).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 15 (isus-VImaj7-IV9-III6-i-VImaj9-IVadd9-im7).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 16 (VImaj7-VIIadd11-iv7sus-IIIadd9-VImaj7-VIIadd11-im7-vm7).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 17 (iadd9-#viidim7-ivm6-V7-iadd9-iidim7-III6(9)-V7b13).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 18 (im9-bIImaj9-iim7-bIIImaj9-i-bIIadd9-iim7add11-V7sus).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 19 (i-VI-#vidim-VI-i-VI-IV7-VI-VIIadd11).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 20 (im9-#III13-IIImaj9-im9-bIImaj9-ivm7-V7b9).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 21 (ivm7-im11-iim7b5-i-ivm7-IIImaj7-V7b9-i).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 22 (iadd9-vm7-VImaj7-ivm7-i-V7).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 23 (vm7-VImaj7-VII6-im9-VII6(9)-VI6).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/advanced/minor/Minor Prog 24 (ivm9-im9-IIImaj9-ivm9-im7-VImaj7-vm7add11).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 01 (IV-I-vi-V-IV-I-iii-IV).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 02 (vi-I-IV-ii-vi-Isus-Vsus-V).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 03 (I-iii-vi-I-iii-IV-I-ii-I-ii-Vsus).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 04 (I-ii-vi-IV-I-ii-vi-V).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 05 (iii-vi-IV-IVsus-IV-I-ii-IV-I).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 06 (ii-I-IV-I-V).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 07 (IV-I-iii-IV-I-I-ii-vi-V).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 08 (IVsus-IV-V-I-IV-IVsus-IV-V-vi-Isus).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 09 (Isus-V-vi-Vsus-IV-I-ii-vi).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 10 (V-I-IV-vi-Isus-V-I-IV-vi-V-IV).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 11 (V-vi-IV-I-V-vi-I-IV-I).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 12 (vi-IV-I-V-vi-IV-ii-I-iii).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 13 (IV-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 14 (ii-IV-I-V-iii-IV-vi-iii-I).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 15 (I-iii-vi-ii-vi-Vsus).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 16 (IV-I-ii-I-ii-vi-V-I).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 17 (I-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 18 (vi-IVsus-I-Vsus-V).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 19 (I-ii-vi-IV-I-ii-I-IV).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 20 (I-IV-V-I-vi-IV-I-IV-V-vi-V).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 21 (Isus-V-visus-vi-ii-I-ii-V).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 22 (I-IV-V-vi-I-IV-iii-ii).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 23 (I-iii-vi-IV-V-IV-V-vi-ii-IV-V).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/major/Major Prog 24 (IV-V-vi-iii-ii-V-I-iii).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 01 (i-v-VI-III-VII).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 02 (ivsus-iv-III-VII-VI-i).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 03 (i-VII-i-VII-VI-iv-v).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 04 (v-VI-VIIsus-i-v-VI-i-VIIsus).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 05 (i-v-VI-iv-VI-v-i-VII-III-iv-VII).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 06 (v-VI-iv-III-i-v-VI-iv-i-IIIsus).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 07 (VI-i-VII-v-VI-III-iv-v).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 08 (i-VI-v-i-VI-v).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 09 (VII-VI-iv-i-VI-iv-isus-i).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 10 (isus-i-VIIsus-VII-VI-VIIsus-VII).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 11 (i-VI-iv-VII-v-i).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 12 (i-vsus-v-VI-v-v).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 13 (i-III-iv-v-i-v-iv-v).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 14 (iv-i-VII-III-VII-VI-i-iv-i-VI-VII).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 15 (i-III-VII-VIIsus-VI).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 16 (i-VII-III-iv-VI-VII).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 17 (VI-vsus-i).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 18 (i-isus-VIIsus-VII-VI-Vsus-V-VII).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 19 (i-VII-VI-VII).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 20 (iv-IIIsus-i-VII-III-VII-VI).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 21 (isus-v-VIsus-III-isus-i-v-III-iv-III-VII).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 22 (VI-i-VII-i-iv-i-VII-i).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 23 (i-iv-VII).mid</file>
+        <file>unison/progressions/10 - A Major - F# Minor/diatonic triads/minor/Minor Prog 24 (i-iv-III-VII-i-iv-VI-VII).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 01 (Imaj7-IVmaj9-iim7-V9-iiim7-vim7add11-iim9-V6).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 02 (Imaj9-IVmaj7sus-bIIImaj7-bVImaj7-Imaj9-IVmaj7sus-bIIImaj7-bIImaj9).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 03 (bIIImaj7-iim7-bIImaj7-Imaj7-Iadd9-ivm7-bVIIadd9-bIImaj7-I-bVIIadd9).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 04 (Iadd9-III7-IVmaj7-ivm6(9)-Iadd9-III7-IVmaj7-V11-Vadd9).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 05 (Imaj9-bVII6(9)-vim7add11-iim7b5add11-Vsus6(9)-#ivm7b5-IV6-bII6(9)).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 06 (I6(9)-bIImaj7sus-Imaj9-ivm7add11-ivm7-I6(9)-bIImaj7sus-iim9-ivm9-bIIImaj7).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 07 (Iadd9-bVImaj7sus-IV6-bIIImaj9-Iadd9-bIIImaj7sus-bVIIadd9).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 08 (vim11-bVImaj9-bVIImaj9-Iadd9).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 09 (Imaj9-Imaj7-bIII6(9)-bVIadd9-bVImaj9-bVIIadd9-bVII6(9)).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 10 (Isus-I-bIIIadd9-bVII6(9)-ivm7-bIIImaj7sus-Isus-I-bIIImaj7-bVII6(9)-ivm7-bIIImaj7sus-IV9).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 11 (iim6(9)-bII9(13)-I6(9)add#11-iv6(9)-bIII9(13)).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 12 (Iadd9-bIImaj7#11-bIIIadd9-bIImaj7-Iadd9-bIImaj7#11-bIIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 13 (Imaj9-vm7-IVmaj7-bVII9-vim7add11-#ivm7b5-IVmaj7-iim9).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 14 (iiim7add11-iim9-Imaj9-IVmaj7-IV6).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 15 (I-Imaj7sus-bVII6(9)-IVmaj9-IV6-bVImaj7sus-bVII6(9)).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 16 (IVmaj7-iiim7add11-iim9-Imaj9-bIIImaj9-bIImaj9-V11-Imaj9-I9).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 17 (I-vm7-bVImaj7-vim7add11-bVIIsus#11-bVII#11-iim9-V7sus).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 18 (Iadd9-IVmaj7-IIadd9-iim9-Iadd9-IVmaj7-IIadd9-IVmaj9).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 19 (bIIIadd9-IIadd9-IVadd9-Iadd9-bIIIadd9-IIadd9-bIIadd9-Iadd9).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 20 (Iadd9-bIIIadd9-bVII6(9)-vim7add11-bVImaj7-vm7-ivm9-bIIadd9#11).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 21 (I-iiim7-bVIIadd9-IV6-iiim7-II9).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 22 (iiadd9-IVmaj9-I6(9)-iiim7add11-iim9-IVmaj9-bVImaj7-V11).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 23 (Isus-I-V-IV6(9)-iim7-Isus-I-V-vim7add11-IV6(9)).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/major/Major Prog 24 (iim9-V7b9-iiim7-IVmaj7-viim7b5-III7alt-vim7add11-VI7).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 01 (iim7b5-V7b9-im9-VImaj7-ivm9-bII9-im9).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 02 (im9-VIIadd9-VImaj9-V7alt-im9-IIImaj9-VIadd9-bIImaj7#11).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 03 (vm7-im7add11-VII6-ivm9-VII9(13)-VIIadd9).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 04 (im9-ivm7-VImaj9-V7alt-im9-ivm6(9)-VImaj7-V7alt).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 05 (ivm9-im7add11-vm7add11-ivm9-im9-VImaj9).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 06 (im11-VImaj9-IIImaj9-ivm9-im11-VImaj9-IIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 07 (VImaj9-VII6(9)-vm7add11-im7-IIImaj7).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 08 (im9-#vim9-VImaj9-IVadd9-i11-#vim7add11-VImaj9).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 09 (iimin7b5-V7alt-im9-IV9(13)-VImaj9-V7alt-im7-IV9(13)).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 10 (i-VII-III-v-VI-VII-bvii-VI).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 11 (VIadd9-IV-IV7-VIIadd9-V-V7-im7-vm7-iv-V7).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 12 (im9-im6-VI-im6-ivm9-IIIadd9-VImaj7-V7b9).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 13 (vm7add11-bII6-im7-bII#11-iim7add11-Valt-im9-III6).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 14 (i-VII6(9)-VImaj7-vm7add11-ivm7-VImaj7-VIIadd9-V7).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 15 (isus-VImaj7-IV9-III6-i-VImaj9-IVadd9-im7).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 16 (VImaj7-VIIadd11-iv7sus-IIIadd9-VImaj7-VIIadd11-im7-vm7).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 17 (iadd9-#viidim7-ivm6-V7-iadd9-iidim7-III6(9)-V7b13).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 18 (im9-bIImaj9-iim7-bIIImaj9-i-bIIadd9-iim7add11-V7sus).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 19 (i-VI-#vidim-VI-i-VI-IV7-VI-VIIadd11).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 20 (im9-#III13-IIImaj9-im9-bIImaj9-ivm7-V7b9).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 21 (ivm7-im11-iim7b5-i-ivm7-IIImaj7-V7b9-i).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 22 (iadd9-vm7-VImaj7-ivm7-i-V7).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 23 (vm7-VImaj7-VII6-im9-VII6(9)-VI6).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/advanced/minor/Minor Prog 24 (ivm9-im9-IIImaj9-ivm9-im7-VImaj7-vm7add11).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 01 (IV-I-vi-V-IV-I-iii-IV).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 02 (vi-I-IV-ii-vi-Isus-Vsus-V).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 03 (I-iii-vi-I-iii-IV-I-ii-I-ii-Vsus).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 04 (I-ii-vi-IV-I-ii-vi-V).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 05 (iii-vi-IV-IVsus-IV-I-ii-IV-I).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 06 (ii-I-IV-I-V).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 07 (IV-I-iii-IV-I-I-ii-vi-V).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 08 (IVsus-IV-V-I-IV-IVsus-IV-V-vi-Isus).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 09 (Isus-V-vi-Vsus-IV-I-ii-vi).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 10 (V-I-IV-vi-Isus-V-I-IV-vi-V-IV).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 11 (V-vi-IV-I-V-vi-I-IV-I).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 12 (vi-IV-I-V-vi-IV-ii-I-iii).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 13 (IV-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 14 (ii-IV-I-V-iii-IV-vi-iii-I).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 15 (I-iii-vi-ii-vi-Vsus).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 16 (IV-I-ii-I-ii-vi-V-I).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 17 (I-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 18 (vi-IVsus-I-Vsus-V).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 19 (I-ii-vi-IV-I-ii-I-IV).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 20 (I-IV-V-I-vi-IV-I-IV-V-vi-V).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 21 (Isus-V-visus-vi-ii-I-ii-V).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 22 (I-IV-V-vi-I-IV-iii-ii).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 23 (I-iii-vi-IV-V-IV-V-vi-ii-IV-V).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/major/Major Prog 24 (IV-V-vi-iii-ii-V-I-iii).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 01 (i-v-VI-III-VII).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 02 (ivsus-iv-III-VII-VI-i).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 03 (i-VII-i-VII-VI-iv-v).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 04 (v-VI-VIIsus-i-v-VI-i-VIIsus).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 05 (i-v-VI-iv-VI-v-i-VII-III-iv-VII).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 06 (v-VI-iv-III-i-v-VI-iv-i-IIIsus).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 07 (VI-i-VII-v-VI-III-iv-v).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 08 (i-VI-v-i-VI-v).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 09 (VII-VI-iv-i-VI-iv-isus-i).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 10 (isus-i-VIIsus-VII-VI-VIIsus-VII).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 11 (i-VI-iv-VII-v-i).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 12 (i-vsus-v-VI-v-v).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 13 (i-III-iv-v-i-v-iv-v).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 14 (iv-i-VII-III-VII-VI-i-iv-i-VI-VII).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 15 (i-III-VII-VIIsus-VI).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 16 (i-VII-III-iv-VI-VII).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 17 (VI-vsus-i).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 18 (i-isus-VIIsus-VII-VI-Vsus-V-VII).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 19 (i-VII-VI-VII).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 20 (iv-IIIsus-i-VII-III-VII-VI).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 21 (isus-v-VIsus-III-isus-i-v-III-iv-III-VII).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 22 (VI-i-VII-i-iv-i-VII-i).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 23 (i-iv-VII).mid</file>
+        <file>unison/progressions/11 - Bb Major - G Minor/diatonic triads/minor/Minor Prog 24 (i-iv-III-VII-i-iv-VI-VII).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 01 (Imaj7-IVmaj9-iim7-V9-iiim7-vim7add11-iim9-V6).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 02 (Imaj9-IVmaj7sus-bIIImaj7-bVImaj7-Imaj9-IVmaj7sus-bIIImaj7-bIImaj9).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 03 (bIIImaj7-iim7-bIImaj7-Imaj7-Iadd9-ivm7-bVIIadd9-bIImaj7-I-bVIIadd9).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 04 (Iadd9-III7-IVmaj7-ivm6(9)-Iadd9-III7-IVmaj7-V11-Vadd9).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 05 (Imaj9-bVII6(9)-vim7add11-iim7b5add11-Vsus6(9)-#ivm7b5-IV6-bII6(9)).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 06 (I6(9)-bIImaj7sus-Imaj9-ivm7add11-ivm7-I6(9)-bIImaj7sus-iim9-ivm9-bIIImaj7).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 07 (Iadd9-bVImaj7sus-IV6-bIIImaj9-Iadd9-bIIImaj7sus-bVIIadd9).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 08 (vim11-bVImaj9-bVIImaj9-Iadd9).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 09 (Imaj9-Imaj7-bIII6(9)-bVIadd9-bVImaj9-bVIIadd9-bVII6(9)).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 10 (Isus-I-bIIIadd9-bVII6(9)-ivm7-bIIImaj7sus-Isus-I-bIIImaj7-bVII6(9)-ivm7-bIIImaj7sus-IV9).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 11 (iim6(9)-bII9(13)-I6(9)add#11-iv6(9)-bIII9(13)).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 12 (Iadd9-bIImaj7#11-bIIIadd9-bIImaj7-Iadd9-bIImaj7#11-bIIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 13 (Imaj9-vm7-IVmaj7-bVII9-vim7add11-#ivm7b5-IVmaj7-iim9).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 14 (iiim7add11-iim9-Imaj9-IVmaj7-IV6).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 15 (I-Imaj7sus-bVII6(9)-IVmaj9-IV6-bVImaj7sus-bVII6(9)).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 16 (IVmaj7-iiim7add11-iim9-Imaj9-bIIImaj9-bIImaj9-V11-Imaj9-I9).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 17 (I-vm7-bVImaj7-vim7add11-bVIIsus#11-bVII#11-iim9-V7sus).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 18 (Iadd9-IVmaj7-IIadd9-iim9-Iadd9-IVmaj7-IIadd9-IVmaj9).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 19 (bIIIadd9-IIadd9-IVadd9-Iadd9-bIIIadd9-IIadd9-bIIadd9-Iadd9).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 20 (Iadd9-bIIIadd9-bVII6(9)-vim7add11-bVImaj7-vm7-ivm9-bIIadd9#11).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 21 (I-iiim7-bVIIadd9-IV6-iiim7-II9).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 22 (iiadd9-IVmaj9-I6(9)-iiim7add11-iim9-IVmaj9-bVImaj7-V11).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 23 (Isus-I-V-IV6(9)-iim7-Isus-I-V-vim7add11-IV6(9)).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/major/Major Prog 24 (iim9-V7b9-iiim7-IVmaj7-viim7b5-III7alt-vim7add11-VI7).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 01 (iim7b5-V7b9-im9-VImaj7-ivm9-bII9-im9).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 02 (im9-VIIadd9-VImaj9-V7alt-im9-IIImaj9-VIadd9-bIImaj7#11).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 03 (vm7-im7add11-VII6-ivm9-VII9(13)-VIIadd9).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 04 (im9-ivm7-VImaj9-V7alt-im9-ivm6(9)-VImaj7-V7alt).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 05 (ivm9-im7add11-vm7add11-ivm9-im9-VImaj9).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 06 (im11-VImaj9-IIImaj9-ivm9-im11-VImaj9-IIImaj9-bIImaj9).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 07 (VImaj9-VII6(9)-vm7add11-im7-IIImaj7).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 08 (im9-#vim9-VImaj9-IVadd9-i11-#vim7add11-VImaj9).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 09 (iimin7b5-V7alt-im9-IV9(13)-VImaj9-V7alt-im7-IV9(13)).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 10 (i-VII-III-v-VI-VII-bvii-VI).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 11 (VIadd9-IV-IV7-VIIadd9-V-V7-im7-vm7-iv-V7).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 12 (im9-im6-VI-im6-ivm9-IIIadd9-VImaj7-V7b9).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 13 (vm7add11-bII6-im7-bII#11-iim7add11-Valt-im9-III6).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 14 (i-VII6(9)-VImaj7-vm7add11-ivm7-VImaj7-VIIadd9-V7).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 15 (isus-VImaj7-IV9-III6-i-VImaj9-IVadd9-im7).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 16 (VImaj7-VIIadd11-iv7sus-IIIadd9-VImaj7-VIIadd11-im7-vm7).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 17 (iadd9-#viidim7-ivm6-V7-iadd9-iidim7-III6(9)-V7b13).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 18 (im9-bIImaj9-iim7-bIIImaj9-i-bIIadd9-iim7add11-V7sus).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 19 (i-VI-#vidim-VI-i-VI-IV7-VI-VIIadd11).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 20 (im9-#III13-IIImaj9-im9-bIImaj9-ivm7-V7b9).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 21 (ivm7-im11-iim7b5-i-ivm7-IIImaj7-V7b9-i).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 22 (iadd9-vm7-VImaj7-ivm7-i-V7).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 23 (vm7-VImaj7-VII6-im9-VII6(9)-VI6).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/advanced/minor/Minor Prog 24 (ivm9-im9-IIImaj9-ivm9-im7-VImaj7-vm7add11).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 01 (IV-I-vi-V-IV-I-iii-IV).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 02 (vi-I-IV-ii-vi-Isus-Vsus-V).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 03 (I-iii-vi-I-iii-IV-I-ii-I-ii-Vsus).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 04 (I-ii-vi-IV-I-ii-vi-V).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 05 (iii-vi-IV-IVsus-IV-I-ii-IV-I).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 06 (ii-I-IV-I-V).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 07 (IV-I-iii-IV-I-I-ii-vi-V).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 08 (IVsus-IV-V-I-IV-IVsus-IV-V-vi-Isus).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 09 (Isus-V-vi-Vsus-IV-I-ii-vi).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 10 (V-I-IV-vi-Isus-V-I-IV-vi-V-IV).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 11 (V-vi-IV-I-V-vi-I-IV-I).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 12 (vi-IV-I-V-vi-IV-ii-I-iii).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 13 (IV-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 14 (ii-IV-I-V-iii-IV-vi-iii-I).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 15 (I-iii-vi-ii-vi-Vsus).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 16 (IV-I-ii-I-ii-vi-V-I).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 17 (I-V-vi-iii-IV-I-ii-V).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 18 (vi-IVsus-I-Vsus-V).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 19 (I-ii-vi-IV-I-ii-I-IV).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 20 (I-IV-V-I-vi-IV-I-IV-V-vi-V).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 21 (Isus-V-visus-vi-ii-I-ii-V).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 22 (I-IV-V-vi-I-IV-iii-ii).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 23 (I-iii-vi-IV-V-IV-V-vi-ii-IV-V).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/major/Major Prog 24 (IV-V-vi-iii-ii-V-I-iii).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 01 (i-v-VI-III-VII).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 02 (ivsus-iv-III-VII-VI-i).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 03 (i-VII-i-VII-VI-iv-v).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 04 (v-VI-VIIsus-i-v-VI-i-VIIsus).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 05 (i-v-VI-iv-VI-v-i-VII-III-iv-VII).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 06 (v-VI-iv-III-i-v-VI-iv-i-IIIsus).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 07 (VI-i-VII-v-VI-III-iv-v).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 08 (i-VI-v-i-VI-v).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 09 (VII-VI-iv-i-VI-iv-isus-i).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 10 (isus-i-VIIsus-VII-VI-VIIsus-VII).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 11 (i-VI-iv-VII-v-i).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 12 (i-vsus-v-VI-v-v).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 13 (i-III-iv-v-i-v-iv-v).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 14 (iv-i-VII-III-VII-VI-i-iv-i-VI-VII).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 15 (i-III-VII-VIIsus-VI).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 16 (i-VII-III-iv-VI-VII).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 17 (VI-vsus-i).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 18 (i-isus-VIIsus-VII-VI-Vsus-V-VII).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 19 (i-VII-VI-VII).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 20 (iv-IIIsus-i-VII-III-VII-VI).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 21 (isus-v-VIsus-III-isus-i-v-III-iv-III-VII).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 22 (VI-i-VII-i-iv-i-VII-i).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 23 (i-iv-VII).mid</file>
+        <file>unison/progressions/12 - B Major - G# Minor/diatonic triads/minor/Minor Prog 24 (i-iv-III-VII-i-iv-VI-VII).mid</file>
+        <file>unison/melodies/Confused_Cm_120.mid</file>
+        <file>unison/melodies/Dry_Dm_100.mid</file>
+        <file>unison/melodies/Extra_F#m_128.mid</file>
+        <file>unison/melodies/Frost_F#m_140.mid</file>
+        <file>unison/melodies/Gaza_Bbm_80.mid</file>
+        <file>unison/melodies/Groove_Bm_90.mid</file>
+        <file>unison/melodies/Holiday_F#m_120.mid</file>
+        <file>unison/melodies/Seismic_G#m_125.mid</file>
+        <file>unison/melodies/Struck_F#m_140.mid</file>
+        <file>unison/melodies/Sunny_Eb_80.mid</file>
+        <file>unison/melodies/Twin_C#m_100.mid</file>
+        <file>unison/melodies/Work_Fm_160.mid</file>
+        <file>unison/drumkits/Crown.mid</file>
+        <file>unison/drumkits/Deity.mid</file>
+        <file>unison/drumkits/Prevail.mid</file>
+        <file>unison/drumkits/Savage.mid</file>
+        <file>unison/drumkits/Truth.mid</file>
+        <file>factory/dx100_1_1.opm</file>
+        <file>factory/dx100_3_2.opm</file>
+        <file>factory/drums.lay</file>
+        <file>factory/drums.rom</file>
     </qresource>
 </RCC>

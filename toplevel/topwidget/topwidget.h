@@ -29,6 +29,8 @@ class TopWidget : public QWidget
 
         void showUploadButton(bool show);
 
+        void setPlayMode(const Project::PlayMode mode);
+
     signals:
         void play(bool record);
         void pause();

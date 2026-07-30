@@ -31,6 +31,7 @@
 #include "tools/fmimport/opnimportdialog.h"
 #include "tools/fmimport/oplimportdialog.h"
 #include "tools/rombuilder/rombuilderdialog.h"
+#include "tools/songmaker/songmakerdialog.h"
 #include "dialogs/info/projectinfodialog.h"
 #include "dialogs/info/projectinfoscreendialog.h"
 #include "dialogs/settings/settingsdialog.h"
@@ -65,6 +66,8 @@ QT_END_NAMESPACE
 class MainWindow : public QMainWindow
 {
         Q_OBJECT
+
+    friend class SongMakerDialog;
 
     public:
         MainWindow(QWidget *parent = nullptr, Application* app = nullptr);
@@ -132,6 +135,7 @@ class MainWindow : public QMainWindow
         void oplImportTriggered();
         void playerTriggered();
         void romBuilderTriggered();
+        void songMakerTriggered();
         void fmGlobalsTriggered();
         void ssgGlobalsTriggered();
         void melodyGlobalsTriggered();
@@ -192,6 +196,7 @@ class MainWindow : public QMainWindow
         OPNImportDialog* _opnImportDialog;
         OPLImportDialog* _oplImportDialog;
         ROMBuilderDialog* _romBuilderDialog;
+        SongMakerDialog* _songMakerDialog;
         Player* _player;
         FMGlobalsWidget* _fmGlobalsWidget;
         SSGGlobalsWidget* _ssgGlobalsWidget;
@@ -207,6 +212,7 @@ class MainWindow : public QMainWindow
         MdiSubWindow* _oplImportDialogWindow;
         MdiSubWindow* _playerDialogWindow;
         MdiSubWindow* _romBuilderDialogWindow;
+        MdiSubWindow* _songMakerDialogWindow;
         MdiSubWindow* _fmGlobalsWindow;
         MdiSubWindow* _ssgGlobalsWindow;
         MdiSubWindow* _melodyGlobalsWindow;
@@ -243,6 +249,8 @@ class MainWindow : public QMainWindow
         void postLoad();
 
         void updateWindowTitle();
+        void setStatusMessage(const QString& message);
+        void setPlayMode(const Project::PlayMode mode);
 
         // QWidget interface
     protected:

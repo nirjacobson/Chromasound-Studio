@@ -1,15 +1,20 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(Chromasound-Studio VERSION 0.1 LANGUAGES CXX)
+project(Chromasound-Studio VERSION 0.1 LANGUAGES CXX CUDA)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CUDA_TOOLKIT_ROOT_DIR "/usr/local/cuda")
+set(CMAKE_CUDA_COMPILER "/usr/local/cuda/bin/nvcc")
+
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(WIN32_ARM OFF)
 
+find_package(CUDAToolkit REQUIRED)
+find_package(Torch REQUIRED)
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
@@ -582,6 +587,12 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
             MANUAL_FINALIZATION
             ${PROJECT_SOURCES}
             resources.qrc
+            tools/songmaker/songmakerdialog.h tools/songmaker/songmakerdialog.cpp tools/songmaker/songmakerdialog.ui
+            formats/opm.h formats/opm.cpp
+            tools/songmaker/modeldisplaywidget.h tools/songmaker/modeldisplaywidget.cpp
+            tools/songmaker/modelwidget.h tools/songmaker/modelwidget.cpp tools/songmaker/modelwidget.ui
+
+
         )
     elseif (APPLE)
         set(MACOSX_BUNDLE_ICON_FILE chromasound-studio.icns)
@@ -618,6 +629,8 @@ if (LINUX)
                                                     bson-1.0
                                                     portaudio
                                                     portmidi
+                                                    ${TORCH_LIBRARIES}
+                                                    CUDA::cudart
                                                     z)
 elseif (WIN32)
     if (WIN32_ARM)

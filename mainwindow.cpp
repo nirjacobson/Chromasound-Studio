@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _infoScreenDialogWindow(nullptr)
     , _playerDialogWindow(nullptr)
     , _romBuilderDialogWindow(nullptr)
+    , _songMakerDialogWindow(nullptr)
     , _fmGlobalsWindow(nullptr)
     , _ssgGlobalsWindow(nullptr)
     , _melodyGlobalsWindow(nullptr)
@@ -54,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     ui->actionSave->setShortcuts(QKeySequence::Save);
     ui->actionSaveAs->setShortcuts(QKeySequence::SaveAs);
     ui->actionExit->setShortcuts(QKeySequence::Quit);
+    ui->actionSongmaker->setShortcuts({QKeySequence("Alt+S")});;
 
     QAction* menuEditFirstAction = ui->menuEdit->actions()[0];
 
@@ -84,6 +86,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     filters << "*.vgm";
     filters << "*.rom";
     filters << "*.lay";
+    filters << "*.mdl";
     _filesystemModel.setNameFilters(filters);
     _filesystemModel.setNameFilterDisables(false);
     _filesystemModel.setRootPath(QDir::currentPath());
@@ -149,6 +152,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(ui->actionOPL, &QAction::triggered, this, &MainWindow::oplImportTriggered);
     connect(ui->actionMediaPlayer, &QAction::triggered, this, &MainWindow::playerTriggered);
     connect(ui->actionROMBuilder, &QAction::triggered, this, &MainWindow::romBuilderTriggered);
+    connect(ui->actionSongmaker, &QAction::triggered, this, &MainWindow::songMakerTriggered);
 
     connect(_app, &Application::pcmUploadStarted, this, &MainWindow::pcmUploadStarted);
     connect(_app, &Application::pcmUploadFinished, this, &MainWindow::pcmUploadFinished);
@@ -446,7 +450,7 @@ void MainWindow::stop()
         _app->clearRecording();
     }
 
-    ui->topWidget->setStatusMessage("Ready.");
+    setStatusMessage("Ready.");
     doUpdate();
 }
 
@@ -743,7 +747,7 @@ void MainWindow::openTriggered()
 
         _playlistWidget->update();
 
-        ui->topWidget->setStatusMessage(QString("Opened %1.").arg(QFileInfo(path).fileName()));
+        setStatusMessage(QString("Opened %1.").arg(QFileInfo(path).fileName()));
     }
 }
 
@@ -759,7 +763,7 @@ void MainWindow::saveTriggered()
 
         _app->undoStack().setClean();
 
-        ui->topWidget->setStatusMessage(QString("Saved %1.").arg(QFileInfo(_app->project().path()).fileName()));
+        setStatusMessage(QString("Saved %1.").arg(QFileInfo(_app->project().path()).fileName()));
     }
 }
 
@@ -777,7 +781,7 @@ void MainWindow::saveAsTriggered()
 
         _app->undoStack().setClean();
 
-        ui->topWidget->setStatusMessage(QString("Saved %1.").arg(QFileInfo(path).fileName()));
+        setStatusMessage(QString("Saved %1.").arg(QFileInfo(path).fileName()));
 
         updateWindowTitle();
     }
@@ -807,7 +811,7 @@ void MainWindow::publishTriggered()
         file.write(BSON::encode(_app->project()));
         file.close();
 
-        ui->topWidget->setStatusMessage(QString("Published %1.").arg(projectFileName));
+        setStatusMessage(QString("Published %1.").arg(projectFileName));
     }
 }
 
@@ -839,7 +843,7 @@ void MainWindow::renderTriggered()
             file.write(data);
             file.close();
 
-            ui->topWidget->setStatusMessage(QString("Saved %1.").arg(QFileInfo(path).fileName()));
+            setStatusMessage(QString("Saved %1.").arg(QFileInfo(path).fileName()));
         }, path);
 
         connect(thread, &QThread::finished, this, [=]() {
@@ -1229,6 +1233,27 @@ void MainWindow::romBuilderTriggered()
     }
 }
 
+void MainWindow::songMakerTriggered()
+{
+    if (_songMakerDialogWindow == nullptr) {
+        _songMakerDialog = new SongMakerDialog(this);
+
+        MdiSubWindow* window = new MdiSubWindow(_mdiArea);
+        connect(window, &MdiSubWindow::closed, this, [&](){
+            _songMakerDialogWindow = nullptr;
+        });
+        window->setAttribute(Qt::WA_DeleteOnClose);
+        window->setWidget(_songMakerDialog);
+        _songMakerDialogWindow = window;
+        _mdiArea->addSubWindow(window);
+
+        window->layout()->setSizeConstraint(QLayout::SizeConstraint::SetMinimumSize);
+        window->show();
+    } else {
+        _mdiArea->setActiveSubWindow(_songMakerDialogWindow);
+    }
+}
+
 void MainWindow::fmGlobalsTriggered()
 {
     if (_fmGlobalsWindow == nullptr) {
@@ -1392,22 +1417,22 @@ void MainWindow::mdiViewModeChanged(const QString& viewMode)
 
 void MainWindow::pcmUploadStarted()
 {
-    ui->topWidget->setStatusMessage("Uploading PCM...");
+    setStatusMessage("Uploading PCM...");
 }
 
 void MainWindow::pcmUploadFinished()
 {
-    ui->topWidget->setStatusMessage("Ready.");
+    setStatusMessage("Ready.");
 }
 
 void MainWindow::compileStarted()
 {
-    ui->topWidget->setStatusMessage("Compiling song...");
+    setStatusMessage("Compiling song...");
 }
 
 void MainWindow::compileFinished()
 {
-    ui->topWidget->setStatusMessage("Ready.");
+    setStatusMessage("Ready.");
 }
 
 void MainWindow::splitterMoved(int, int)
@@ -1506,7 +1531,7 @@ void MainWindow::countoffTimeout()
 
         _app->record();
 
-        ui->topWidget->setStatusMessage("Ready.");
+        setStatusMessage("Ready.");
 
 #ifdef Q_OS_WIN
         QSettings settings(Chromasound_Studio::SettingsFile, QSettings::IniFormat);
@@ -1545,7 +1570,7 @@ void MainWindow::countoffTimeout()
 
         _app->play();
     } else {
-        ui->topWidget->setStatusMessage(QString::number(count--));
+        setStatusMessage(QString::number(count--));
         _countoffTimer.start(1000);
     }
 }
@@ -1711,7 +1736,7 @@ void MainWindow::postLoad()
 
     _playlistWidget->doUpdate(_app->position(), true);
 
-    ui->topWidget->setStatusMessage("Template loaded.");
+    setStatusMessage("Template loaded.");
 }
 
 void MainWindow::updateWindowTitle()
@@ -1719,6 +1744,16 @@ void MainWindow::updateWindowTitle()
     setWindowTitle(QString("Chromasound Studio [%1%2]")
                        .arg((_app->project().path().isNull() || _app->project().path().startsWith(".")) ? "untitled" : QFileInfo(_app->project().path()).fileName())
                        .arg(_app->undoStack().isClean() ? "" : "*"));
+}
+
+void MainWindow::setStatusMessage(const QString &message)
+{
+    ui->topWidget->setStatusMessage(message);
+}
+
+void MainWindow::setPlayMode(const Project::PlayMode mode)
+{
+    ui->topWidget->setPlayMode(mode);
 }
 
 void MainWindow::doUpdate()
@@ -1920,14 +1955,14 @@ void MainWindow::dropEvent(QDropEvent* event)
         if (_channelsWindow) _channelsWidget->rebuild();
         if (_playlistWindow) _playlistWidget->update();
 
-        ui->topWidget->setStatusMessage(QString("Opened %1.").arg(fileInfo.fileName()));
+        setStatusMessage(QString("Opened %1.").arg(fileInfo.fileName()));
     } else if (fileInfo.suffix() == "mid") {
         _app->undoStack().push(new LoadMultiTrackMIDICommand(this, path));
 
         if (_channelsWindow) _channelsWidget->rebuild();
         doUpdate();
 
-        ui->topWidget->setStatusMessage(QString("Opened %1.").arg(fileInfo.fileName()));
+        setStatusMessage(QString("Opened %1.").arg(fileInfo.fileName()));
     }
 }
 

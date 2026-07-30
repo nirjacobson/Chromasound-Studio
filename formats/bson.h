@@ -16,6 +16,13 @@
 #include "project/project.h"
 #include "project/playlist.h"
 
+#undef slots
+#include <torch/torch.h>
+#define slots Q_SLOTS
+
+typedef std::vector<torch::Tensor> Tensors;
+typedef std::tuple<Tensors, Tensors, Tensors, Tensors, Tensors, Tensors, Tensors, Tensors> Model;
+
 class BSON
 {
     public:
@@ -35,6 +42,12 @@ class BSON
 
         static void fromPlaylistItem(bson_t* dst, const Playlist::Item* const item);
         static Playlist::Item toPlaylistItem(bson_iter_t& b, Project* project = nullptr);
+
+        static void fromTensor(bson_t* dst, const torch::Tensor& tensor);
+        static torch::Tensor toTensor(bson_iter_t& b);
+
+        static void fromModel(bson_t* dst, const Model& model);
+        static Model toModel(bson_iter_t& bson);
 
     private:
         static void fromTrackSettingsChange(bson_t* dst, const Track::SettingsChange* const change);

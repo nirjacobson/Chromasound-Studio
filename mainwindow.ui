@@ -29,7 +29,7 @@
      <x>0</x>
      <y>0</y>
      <width>1900</width>
-     <height>20</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -101,6 +101,7 @@
     <addaction name="menuImportFMPatches"/>
     <addaction name="actionMediaPlayer"/>
     <addaction name="actionROMBuilder"/>
+    <addaction name="actionSongmaker"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -209,6 +210,11 @@
   <action name="actionRender">
    <property name="text">
     <string>&amp;Render</string>
+   </property>
+  </action>
+  <action name="actionSongmaker">
+   <property name="text">
+    <string>AI &amp;Songmaker</string>
    </property>
   </action>
  </widget>

@@ -1088,3 +1088,262 @@ Project::Info BSON::toProjectInfo(bson_iter_t& b)
 
     return info;
 }
+
+void BSON::fromTensor(bson_t *dst, const at::Tensor &tensor)
+{
+    bson_t outer;
+
+    if (tensor.sizes().size() > 1) {
+        for (int i = 0; i < tensor.size(0); i++) {
+            bson_t b_tensor;
+            bson_init(&b_tensor);
+            fromTensor(&b_tensor, tensor[i]);
+
+            char keybuff[8];
+            const char* key;
+            bson_uint32_to_string(i, &key, keybuff, sizeof keybuff);
+            BSON_APPEND_ARRAY(dst, key, &b_tensor);
+        }
+    } else {
+        for (int i = 0; i < tensor.size(0); i++) {
+            char keybuff[8];
+            const char* key;
+            bson_uint32_to_string(i, &key, keybuff, sizeof keybuff);
+            BSON_APPEND_DOUBLE(dst, key, tensor[i].item().toDouble());
+        }
+    }
+
+}
+
+torch::Tensor BSON::toTensor(bson_iter_t &b)
+{
+    torch::Tensor tensor;
+
+    bson_iter_t b_inner;
+    bson_iter_t b_inner_child;
+
+    if (BSON_ITER_HOLDS_ARRAY(&b)) {
+        bson_iter_recurse(&b, &b_inner);
+        while (bson_iter_next(&b_inner)) {
+            if (tensor.size(0) == 0) {
+                tensor = torch::unsqueeze(toTensor(b_inner), 0);
+            } else {
+                tensor = torch::cat({tensor, torch::unsqueeze(toTensor(b_inner), 0)}, 0);
+            }
+        }
+    } else if (BSON_ITER_HOLDS_DOUBLE(&b)) {
+        tensor = torch::tensor(bson_iter_double(&b));
+    }
+
+    return tensor;
+}
+
+void BSON::fromModel(bson_t *dst, const Model &model)
+{
+    const Tensors& W1 = std::get<0>(model);
+    const Tensors& b1 = std::get<1>(model);
+    const Tensors& W = std::get<2>(model);
+    const Tensors& b = std::get<3>(model);
+    const Tensors& W2 = std::get<4>(model);
+    const Tensors& b2 = std::get<5>(model);
+    const Tensors& classes = std::get<6>(model);
+    const Tensors& layerSizes = std::get<7>(model);
+
+    bson_t b_W1;
+    bson_init(&b_W1);
+
+    bson_t b_b1;
+    bson_init(&b_b1);
+
+    bson_t b_W;
+    bson_init(&b_W);
+
+    bson_t b_b;
+    bson_init(&b_b);
+
+    bson_t b_W2;
+    bson_init(&b_W2);
+
+    bson_t b_b2;
+    bson_init(&b_b2);
+
+    bson_t b_classes;
+    bson_init(&b_classes);
+
+    bson_t b_layerSizes;
+    bson_init(&b_layerSizes);
+
+    bson_t b_tensor;
+
+    BSON_APPEND_ARRAY_BEGIN(dst, "W1", &b_W1);
+    for (int i = 0; i < W1.size(); i++) {
+        bson_init(&b_tensor);
+        fromTensor(&b_tensor, W1[i]);
+        char keybuff[8];
+        const char* key;
+        bson_uint32_to_string(i, &key, keybuff, sizeof keybuff);
+        BSON_APPEND_ARRAY(&b_W1, key, &b_tensor);
+    }
+    bson_append_array_end(dst, &b_W1);
+
+    BSON_APPEND_ARRAY_BEGIN(dst, "b1", &b_b1);
+    for (int i = 0; i < b1.size(); i++) {
+        bson_init(&b_tensor);
+        fromTensor(&b_tensor, b1[i]);
+        char keybuff[8];
+        const char* key;
+        bson_uint32_to_string(i, &key, keybuff, sizeof keybuff);
+        BSON_APPEND_ARRAY(&b_b1, key, &b_tensor);
+    }
+    bson_append_array_end(dst, &b_b1);
+
+    BSON_APPEND_ARRAY_BEGIN(dst, "W", &b_W);
+    for (int i = 0; i < W.size(); i++) {
+        bson_init(&b_tensor);
+        fromTensor(&b_tensor, W[i]);
+        char keybuff[8];
+        const char* key;
+        bson_uint32_to_string(i, &key, keybuff, sizeof keybuff);
+        BSON_APPEND_ARRAY(&b_W, key, &b_tensor);
+    }
+    bson_append_array_end(dst, &b_W);
+
+    BSON_APPEND_ARRAY_BEGIN(dst, "b", &b_b);
+    for (int i = 0; i < b.size(); i++) {
+        bson_init(&b_tensor);
+        fromTensor(&b_tensor, b[i]);
+        char keybuff[8];
+        const char* key;
+        bson_uint32_to_string(i, &key, keybuff, sizeof keybuff);
+        BSON_APPEND_ARRAY(&b_b, key, &b_tensor);
+    }
+    bson_append_array_end(dst, &b_b);
+
+    BSON_APPEND_ARRAY_BEGIN(dst, "W2", &b_W2);
+    for (int i = 0; i < W2.size(); i++) {
+        bson_init(&b_tensor);
+        fromTensor(&b_tensor, W2[i]);
+        char keybuff[8];
+        const char* key;
+        bson_uint32_to_string(i, &key, keybuff, sizeof keybuff);
+        BSON_APPEND_ARRAY(&b_W2, key, &b_tensor);
+    }
+    bson_append_array_end(dst, &b_W2);
+
+    BSON_APPEND_ARRAY_BEGIN(dst, "b2", &b_b2);
+    for (int i = 0; i < b2.size(); i++) {
+        bson_init(&b_tensor);
+        fromTensor(&b_tensor, b2[i]);
+        char keybuff[8];
+        const char* key;
+        bson_uint32_to_string(i, &key, keybuff, sizeof keybuff);
+        BSON_APPEND_ARRAY(&b_b2, key, &b_tensor);
+    }
+    bson_append_array_end(dst, &b_b2);
+
+    BSON_APPEND_ARRAY_BEGIN(dst, "classes", &b_classes);
+    for (int i = 0; i < classes.size(); i++) {
+        bson_t _classes;
+        bson_init(&_classes);
+        fromTensor(&_classes, classes[i]);
+
+        char keybuff[8];
+        const char* key;
+        bson_uint32_to_string(i, &key, keybuff, sizeof keybuff);
+        BSON_APPEND_ARRAY(&b_classes, key, &_classes);
+    }
+    bson_append_array_end(dst, &b_classes);
+
+    BSON_APPEND_ARRAY_BEGIN(dst, "layerSizes", &b_layerSizes);
+    for (int i = 0; i < layerSizes.size(); i++) {
+        bson_t _layerSizes;
+        bson_init(&_layerSizes);
+        fromTensor(&_layerSizes, layerSizes[i]);
+
+        char keybuff[8];
+        const char* key;
+        bson_uint32_to_string(i, &key, keybuff, sizeof keybuff);
+        BSON_APPEND_ARRAY(&b_layerSizes, key, &_layerSizes);
+    }
+    bson_append_array_end(dst, &b_layerSizes);
+}
+
+Model BSON::toModel(bson_iter_t &bson)
+{
+    bson_iter_t W1;
+    bson_iter_t b1;
+    bson_iter_t W;
+    bson_iter_t b;
+    bson_iter_t W2;
+    bson_iter_t b2;
+    bson_iter_t classes;
+    bson_iter_t layerSizes;
+
+    bson_iter_t inner;
+
+    bson_iter_find_descendant(&bson, "W1", &W1);
+    bson_iter_find_descendant(&bson, "b1", &b1);
+    bson_iter_find_descendant(&bson, "W", &W);
+    bson_iter_find_descendant(&bson, "b", &b);
+    bson_iter_find_descendant(&bson, "W2", &W2);
+    bson_iter_find_descendant(&bson, "b2", &b2);
+    bson_iter_find_descendant(&bson, "classes", &classes);
+    bson_iter_find_descendant(&bson, "layerSizes", &layerSizes);
+
+    std::vector<torch::Tensor> v_W1;
+    if (BSON_ITER_HOLDS_ARRAY(&W1) && bson_iter_recurse(&W1, &inner)) {
+        while (bson_iter_next(&inner)) {
+            v_W1.push_back(toTensor(inner));
+        }
+    }
+    std::vector<torch::Tensor> v_b1;
+    if (BSON_ITER_HOLDS_ARRAY(&b1) && bson_iter_recurse(&b1, &inner)) {
+        while (bson_iter_next(&inner)) {
+            v_b1.push_back(toTensor(inner));
+        }
+    }
+
+    std::vector<torch::Tensor> v_W;
+    if (BSON_ITER_HOLDS_ARRAY(&W) && bson_iter_recurse(&W, &inner)) {
+        while (bson_iter_next(&inner)) {
+            v_W.push_back(toTensor(inner));
+        }
+    }
+    std::vector<torch::Tensor> v_b;
+    if (BSON_ITER_HOLDS_ARRAY(&b) && bson_iter_recurse(&b, &inner)) {
+        while (bson_iter_next(&inner)) {
+            v_b.push_back(toTensor(inner));
+        }
+    }
+
+    std::vector<torch::Tensor> v_W2;
+    if (BSON_ITER_HOLDS_ARRAY(&W2) && bson_iter_recurse(&W2, &inner)) {
+        while (bson_iter_next(&inner)) {
+            v_W2.push_back(toTensor(inner));
+        }
+    }
+    std::vector<torch::Tensor> v_b2;
+    if (BSON_ITER_HOLDS_ARRAY(&b2) && bson_iter_recurse(&b2, &inner)) {
+        while (bson_iter_next(&inner)) {
+            v_b2.push_back(toTensor(inner));
+        }
+    }
+
+    std::vector<torch::Tensor> v_classes;
+    if (BSON_ITER_HOLDS_ARRAY(&classes) && bson_iter_recurse(&classes, &inner)) {
+        while (bson_iter_next(&inner)) {
+            torch::Tensor t = toTensor(inner);
+            v_classes.push_back(t);
+        }
+    }
+
+    std::vector<torch::Tensor> v_layerSizes;
+    if (BSON_ITER_HOLDS_ARRAY(&layerSizes) && bson_iter_recurse(&layerSizes, &inner)) {
+        while (bson_iter_next(&inner)) {
+            torch::Tensor t = toTensor(inner);
+            v_layerSizes.push_back(t);
+        }
+    }
+
+    return std::make_tuple(v_W1, v_b1, v_W, v_b, v_W2, v_b2, v_classes, v_layerSizes);
+}

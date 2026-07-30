@@ -114,6 +114,13 @@ void TopWidget::showUploadButton(bool show)
     ui->uploadLine->setVisible(show);
 }
 
+void TopWidget::setPlayMode(const Project::PlayMode mode)
+{
+    ui->patRadioButton->setChecked(mode == Project::PlayMode::PATTERN);
+    ui->songRadioButton->setChecked(mode == Project::PlayMode::SONG);
+    emit playModeChanged(mode);
+}
+
 void TopWidget::playPauseClicked()
 {
     _isPlaying = !_isPlaying;
