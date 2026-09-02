@@ -726,7 +726,7 @@ std::pair<torch::Tensor, torch::Tensor> SongMakerDialog::build_chords_dataset(co
                     duration = 0;
                 }
                 if (msg->isKeyOn()) {
-                    chord[note_idx++] = msg->data1();
+                    chord[note_idx++] = msg->data1() % 12;
                 }
                 if (msg->isKeyOff()) {
                     duration += mte.deltaTime();
@@ -755,7 +755,7 @@ std::pair<torch::Tensor, torch::Tensor> SongMakerDialog::build_chords_dataset(co
         for (int i = 0; i < chord_notes.size(0); i++) {
             for (auto& pair : letter_rems) {
                 if (std::find_if(pair.second.begin(), pair.second.end(), [&chord_notes, &i, &chord_notes_names](const int val) {
-                        return val == (chord_notes[i] % 12).item().toInt();
+                        return val == chord_notes[i].item().toInt();
                     }) != pair.second.end()) {
                     chord_notes_names.insert(std::make_pair(chord_notes[i].item().toInt(), pair.first));
                     break;
@@ -1318,12 +1318,8 @@ std::vector<torch::Tensor> ChordGenerationWorker::generate_chords(const Model &m
         for (int i = 0; i < Chord::ChordDuration+1; i++) {
             msg[i] = torch::multinomial(probs[i], 1).item().toInt();
             if (i == Chord::Root) {
-                while ((msg[i].item().toInt() / 12) > 5) {
-                    msg[i] -= 12;
-                }
-                while ((msg[i].item().toInt() / 12) < 3) {
-                    msg[i] += 12;
-                }
+                msg[i] += 60;
+
                 if (msg[i].item().toInt() < lowest_root) {
                     lowest_root = msg[i].item().toInt();
                 } else if (msg[i].item().toInt() > highest_root) {
