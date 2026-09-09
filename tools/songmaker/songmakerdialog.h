@@ -55,6 +55,12 @@ enum Phrase {
     HistDir
 };
 
+enum Backend {
+    CPU,
+    Vulkan,
+    CUDA
+};
+
 class SongMakerDialog : public QMainWindow
 {
     Q_OBJECT
@@ -67,6 +73,8 @@ public:
     explicit SongMakerDialog(QWidget *parent = nullptr);
     ~SongMakerDialog();
 
+    torch::Tensor moved_tensor(const torch::Tensor& t);
+
     MainWindow* _mainWindow;
 
 private slots:
@@ -77,6 +85,7 @@ private slots:
     void saveModels();
     void clearModels();
     void lossUpdated(std::vector<torch::Tensor> losses);
+    void backendButtonClicked();
 
 private:
     Ui::SongMakerDialog *ui;
@@ -87,6 +96,10 @@ private:
     Model _chordsModel;
     Model _phrasesModel;
     Model _durationsModel;
+
+    Backend _backend;
+    QList<Backend> _backends;
+    QList<QIcon> _backendIcons;
 
     std::pair<torch::Tensor, torch::Tensor> build_chords_dataset(const std::string& path);
     std::pair<torch::Tensor, torch::Tensor> build_phrases_dataset(const std::string& path);
@@ -106,6 +119,20 @@ private:
 protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
+};
+
+class GenerationWorker : public QObject
+{
+    Q_OBJECT
+public:
+    explicit GenerationWorker(QObject* parent = nullptr)
+    {
+        _dialog = dynamic_cast<SongMakerDialog*>(parent);
+    }
+
+    std::vector<torch::Tensor> forward(const Model &model, const torch::Tensor& x);
+protected:
+    SongMakerDialog* _dialog;
 };
 
 class TrainingWorker : public QObject {
@@ -139,16 +166,17 @@ signals:
 
 };
 
-class ChordGenerationWorker : public QObject {
+class ChordGenerationWorker : public GenerationWorker {
     Q_OBJECT
 
     friend class PhraseGenerationWorker;
     friend class TimeGenerationWorker;
 public:
+    ChordGenerationWorker(QObject* parent)
+        : GenerationWorker(parent)
+    { }
+
     typedef std::vector<torch::Tensor> Result;
-    explicit ChordGenerationWorker(QObject* parent = nullptr) {
-        _dialog = dynamic_cast<SongMakerDialog*>(parent);
-    }
 
     void doGenerateChords(const Model &model, const int bars) {
         _result = generate_chords(model, bars);
@@ -166,7 +194,6 @@ private:
     }
     int _progress = 0;
 
-    static std::vector<torch::Tensor> forward(const Model &model, const torch::Tensor& x);
     std::vector<torch::Tensor> generate_chords(const Model &model, const int bars);
     torch::Tensor clean_chord(const torch::Tensor& chord);
 
@@ -179,13 +206,14 @@ signals:
     void finished(Result result);
 };
 
-class PhraseGenerationWorker : public QObject {
+class PhraseGenerationWorker : public GenerationWorker {
     Q_OBJECT
 public:
+    PhraseGenerationWorker(QObject* parent)
+        : GenerationWorker(parent)
+    { }
+
     typedef torch::Tensor Result;
-    explicit PhraseGenerationWorker(QObject* parent = nullptr) {
-        _dialog = dynamic_cast<SongMakerDialog*>(parent);
-    }
 
     void doGeneratePhrases(const Model &model, const int bars) {
         _result = generate_phrases(model, bars);
@@ -214,13 +242,14 @@ signals:
     void finished(Result result);
 };
 
-class TimeGenerationWorker : public QObject {
+class TimeGenerationWorker : public GenerationWorker {
     Q_OBJECT
 public:
+    TimeGenerationWorker(QObject* parent)
+        : GenerationWorker(parent)
+    { }
+
     typedef torch::Tensor Result;
-    explicit TimeGenerationWorker(QObject* parent = nullptr) {
-        _dialog = dynamic_cast<SongMakerDialog*>(parent);
-    }
 
     void doGenerateTimes(const Model &model, const int bars) {
         _result = generate_times(model, bars);
@@ -249,13 +278,14 @@ signals:
     void finished(Result result);
 };
 
-class NoteGenerationWorker : public QObject {
+class NoteGenerationWorker : public GenerationWorker {
     Q_OBJECT
 public:
+    NoteGenerationWorker(QObject* parent)
+        : GenerationWorker(parent)
+    { }
+
     typedef torch::Tensor Result;
-    explicit NoteGenerationWorker(QObject* parent = nullptr) {
-        _dialog = dynamic_cast<SongMakerDialog*>(parent);
-    }
 
     void doGenerateNotes(const std::vector<std::pair<torch::Tensor, torch::Tensor>>& chords_phrases, const torch::Tensor& times) {
         _result = generate_notes(chords_phrases, times);

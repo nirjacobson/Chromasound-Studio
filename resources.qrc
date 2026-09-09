@@ -1182,5 +1182,8 @@
         <file>factory/dx100_3_2.opm</file>
         <file>factory/drums.lay</file>
         <file>factory/drums.rom</file>
+        <file>icons/cpu.png</file>
+        <file>icons/nvidia.svg</file>
+        <file>icons/vulkan.svg</file>
     </qresource>
 </RCC>

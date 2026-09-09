@@ -7,6 +7,7 @@
 SongMakerDialog::SongMakerDialog(QWidget *parent)
     : QMainWindow(parent)
     , _mainWindow(dynamic_cast<MainWindow*>(parent))
+    , _backend(Backend::CPU)
     , ui(new Ui::SongMakerDialog)
 {
     ui->setupUi(this);
@@ -22,6 +23,8 @@ SongMakerDialog::SongMakerDialog(QWidget *parent)
     ui->menubar->setNativeMenuBar(false);
 
     connect(ui->octavesComboBox, &QComboBox::currentIndexChanged, this, &SongMakerDialog::chordsSelectionChanged);
+
+    connect(ui->backendButton, &QPushButton::clicked, this, &SongMakerDialog::backendButtonClicked);
 
     QDirListing octavesDirList(":/unison/progressions/");
 
@@ -54,6 +57,20 @@ SongMakerDialog::SongMakerDialog(QWidget *parent)
     for(int i = 0; i < 5; i++) {
         lossWidgets[i]->display("-----");
     }
+
+    _backends.push_back(Backend::CPU);
+    _backendIcons.push_back(QIcon(":/icons/cpu.png"));
+    if (at::is_vulkan_available()) {
+        _backends.push_back(Backend::Vulkan);
+        _backendIcons.push_back(QIcon(":/icons/vulkan.svg"));
+    }
+    if (torch::cuda::is_available()) {
+        _backends.push_back(Backend::CUDA);
+        _backendIcons.push_back(QIcon(":/icons/cuda.svg"));
+    }
+
+    ui->backendButton->setIcon(QIcon(":/icons/cpu.png"));
+    ui->backendButton->setIconSize(QSize(48, 48));
 }
 
 SongMakerDialog::~SongMakerDialog()
@@ -111,7 +128,8 @@ void SongMakerDialog::okButtonClicked()
 
             QList<Track::Item*> items;
             int time = 0;
-            std::vector<torch::Tensor> last_cni = torch::unbind(torch::tensor({-1}), 0);
+            torch::Tensor negOne = torch::tensor({-1});
+            std::vector<torch::Tensor> last_cni = torch::unbind(moved_tensor(negOne), 0);
             for (const torch::Tensor chord : chords) {
                 std::vector<torch::Tensor> chord_notes;
                 chord_notes.push_back(chord[Chord::Root]);
@@ -386,7 +404,7 @@ void SongMakerDialog::okButtonClicked()
 
                 trainingWorkerChords->moveToThread(workerThread);
                 ui->statusbar->showMessage("Training chords...");
-                trainingWorkerChords->doTrain(torch::tensor({88, 2, 4, 1921}), torch::tensor(ui->chordsModelWidget->layerSizes()), trainingIters, XY.first, XY.second);
+                trainingWorkerChords->doTrain(torch::tensor({12, 2, 4, 1921}), torch::tensor(ui->chordsModelWidget->layerSizes()), trainingIters, XY.first, XY.second);
             } else {
                 lamb(_chordsModel, _phrasesModel, _durationsModel);
             }
@@ -402,6 +420,11 @@ void TrainingWorker::doTrain(const torch::Tensor& classes, const torch::Tensor& 
 
 Model TrainingWorker::train(const torch::Tensor classes, const torch::Tensor& ll_sizes, const int iters, const torch::Tensor &x, const at::Tensor &y)
 {
+    torch::Tensor Classes = _dialog->moved_tensor(classes);
+    torch::Tensor LlSizes = _dialog->moved_tensor(ll_sizes);
+    torch::Tensor X = _dialog->moved_tensor(x);
+    torch::Tensor Y = _dialog->moved_tensor(y);
+
     std::vector<std::vector<torch::Tensor>> W1;
     std::vector<std::vector<torch::Tensor>> b1;
     std::vector<std::vector<torch::Tensor>> W;
@@ -438,32 +461,37 @@ Model TrainingWorker::train(const torch::Tensor classes, const torch::Tensor& ll
                     b.push_back({});
                 }
             }
-            torch::Tensor xview = x.view({x.size(0), -1});
+            torch::Tensor xview = X.view({x.size(0), -1});
 
             for (int k = 0; k < classes.size(0); k++) {
                 // Forward pass
                 if (j == 0) {
                     if (W1[j].size() == k) {
                         torch::Tensor l_size = torch::tensor(x.sizes()[1] * x.sizes()[2]);
-                        W1[j].push_back(torch::randn({l_size.item().toInt(), ll_sizes[j].item().toInt()}));
+                        l_size = _dialog->moved_tensor(l_size);
+                        torch::Tensor mat = torch::randn({l_size.item().toInt(), ll_sizes[j].item().toInt()});
+                        W1[j].push_back(_dialog->moved_tensor(mat));
                         W1[j][k].set_requires_grad(true);
                     }
                 } else {
                     if (W[j-1].size() == k) {
                         torch::Tensor l_size = ll_sizes[j-1];
-                        W[j-1].push_back(torch::randn({l_size.item().toInt(), ll_sizes[j].item().toInt()}));
+                        torch::Tensor mat = torch::randn({l_size.item().toInt(), ll_sizes[j].item().toInt()});
+                        W[j-1].push_back(mat);
                         W[j-1][k].set_requires_grad(true);
                     }
                 }
 
                 if (j == 0) {
                     if (b1[j].size() == k) {
-                        b1[j].push_back(torch::randn({ll_sizes[j].item().toInt()}));
+                        torch::Tensor vec = torch::randn({ll_sizes[j].item().toInt()});
+                        b1[j].push_back(_dialog->moved_tensor(vec));
                         b1[j][k].set_requires_grad(true);
                     }
                 } else {
                     if (b[j-1].size() == k) {
-                        b[j-1].push_back(torch::randn({ll_sizes[j].item().toInt()}));
+                        torch::Tensor vec = torch::randn({ll_sizes[j].item().toInt()});
+                        b[j-1].push_back(_dialog->moved_tensor(vec));
                         b[j-1][k].set_requires_grad(true);
                     }
                 }
@@ -478,24 +506,26 @@ Model TrainingWorker::train(const torch::Tensor classes, const torch::Tensor& ll
 
                 if (j == ll_sizes.size(0)-1) {
                     if (W2[0].size() == k) {
-                        W2[0].push_back(torch::randn({ll_sizes[-1].item().toInt(), classes[k].item().toInt()}));
+                        torch::Tensor mat = torch::randn({ll_sizes[-1].item().toInt(), classes[k].item().toInt()});
+                        W2[0].push_back(mat);
                         W2[0][k].set_requires_grad(true);
                     }
                     if (b2[0].size() == k) {
-                        b2[0].push_back(torch::randn({classes[k].item().toInt()}));
+                        torch::Tensor vec = torch::randn({classes[k].item().toInt()});
+                        b2[0].push_back(_dialog->moved_tensor(vec));
                         b2[0][k].set_requires_grad(true);
                     }
 
                     torch::Tensor h2 = tanh(h[k].matmul(W2[0][k]) + b2[0][k]);
 
                     torch::Tensor counts = h2.exp();
-                    probs[k] = (counts / counts.sum(1, true)).view({-1, classes[k].item().toInt()});
+                    probs[k] = (counts / counts.sum(1, true)).view({-1, Classes[k].item().toInt()});
                 }
             }
         }
 
-        for (int k = 0; k < classes.size(0); k++) {
-            torch::Tensor y_int = y.to(torch::kInt64);
+        for (int k = 0; k < Classes.size(0); k++) {
+            torch::Tensor y_int = Y.to(torch::kInt64);
             torch::Tensor y_param = y_int.matmul(torch::nn::functional::one_hot(torch::tensor(k), classes.size(0)));
             std::vector<std::pair<int, int>> pairs;
             for (int l = 0; l < x.size(0); l++) {
@@ -504,7 +534,7 @@ Model TrainingWorker::train(const torch::Tensor classes, const torch::Tensor& ll
             std::vector<torch::Tensor> _losses;
             for (int l = 0; l < x.size(0); l++) {
                 torch::Tensor __loss = -probs[k][pairs[l].first][pairs[l].second].log();
-                _losses.push_back(__loss);
+                _losses.push_back(_dialog->moved_tensor(__loss));
             }
             torch::Tensor _loss = torch::stack(_losses).mean();
 
@@ -645,40 +675,46 @@ Model TrainingWorker::train(const torch::Tensor classes, const torch::Tensor& ll
         parameter_models_b2.push_back(b2[0][m]);
     }
 
-    std::vector<torch::Tensor> classes_vec = { classes };
-    std::vector<torch::Tensor> ll_sizes_vec = { ll_sizes };
+    std::vector<torch::Tensor> classes_vec = { Classes };
+    std::vector<torch::Tensor> ll_sizes_vec = { LlSizes };
 
     Model m = std::make_tuple(parameter_models_W1, parameter_models_b1, parameter_models_W, parameter_models_b, parameter_models_W2, parameter_models_b2, classes_vec, ll_sizes_vec);
 
     return m;
 }
 
-std::vector<torch::Tensor> ChordGenerationWorker::forward(const Model &model, const at::Tensor &x)
+std::vector<torch::Tensor> GenerationWorker::forward(const Model &model, const at::Tensor &x)
 {
-    const torch::Tensor& classes = std::get<6>(model)[0];
+    torch::Tensor _x = x;
+    const torch::Tensor X = _dialog->moved_tensor(_x);
+    const torch::Tensor& classes = std::get<6>(model)[0].cpu();
     int layers = std::get<2>(model).size() + 1;
 
-    torch::Tensor xview = x.view({x.size(0), -1});
+    torch::Tensor xview = X.view({X.size(0), -1});
     std::vector<torch::Tensor> probs;
     for (int i = 0; i < classes.size(0); i++) {
         torch::Tensor h1;
+        torch::Tensor _h1;
         for (int j = 0; j < layers; j++) {
             // Forward pass
             torch::Tensor logits = (j == 0) ? xview.to(torch::kFloat32) : h1;
             if (j == 0) {
-                h1 = torch::tanh(logits.matmul(std::get<0>(model)[j][i]) + std::get<1>(model)[j][i]);
+                _h1 = torch::tanh(logits.matmul(std::get<0>(model)[j][i]) + std::get<1>(model)[j][i]);
             } else {
-                h1 = torch::tanh(logits.matmul(std::get<2>(model)[j-1][i]) + std::get<3>(model)[j-1][i]);
+                _h1 = torch::tanh(logits.matmul(std::get<2>(model)[j-1][i]) + std::get<3>(model)[j-1][i]);
             }
+            h1 = _dialog->moved_tensor(_h1);
 
             if (j == layers-1) {
                 torch::Tensor h2 = tanh(h1.matmul(std::get<4>(model)[i]) + std::get<5>(model)[i]);
+                h2 = _dialog->moved_tensor(h2);
 
                 torch::Tensor counts = h2.exp();
                 if (probs.size() == i) {
                     probs.push_back({});
                 }
                 probs[i] = (counts / counts.sum(1, true)).view({-1, classes[i].item().toInt()});
+                probs[i] = _dialog->moved_tensor(probs[i]);
             }
         }
     }
@@ -730,7 +766,7 @@ std::pair<torch::Tensor, torch::Tensor> SongMakerDialog::build_chords_dataset(co
                 }
                 if (msg->isKeyOff()) {
                     duration += mte.deltaTime();
-                    chord[note_idx++] = msg->data1();
+                    // chord[note_idx++] = msg->data1() % 12;
                 }
             } catch (std::bad_cast& ex) {
 
@@ -776,11 +812,11 @@ std::pair<torch::Tensor, torch::Tensor> SongMakerDialog::build_chords_dataset(co
             }
         }
 
-        torch::Tensor beginning = chord.slice(0, 4 - inversion, 4);
-        torch::Tensor fixed_chord = torch::cat({beginning, chord.slice(0, 0, 4 - inversion)});
+        torch::Tensor beginning = chord.slice(0, inversion, 4);
+        torch::Tensor fixed_chord = torch::cat({beginning, chord.slice(0, 0, inversion)});
         fixed_chord = torch::cat({fixed_chord, torch::unsqueeze(chord[4], 0)});
 
-        for (int i = 0; i < 4 - inversion; i++) {
+        for (int i = beginning.size(0); i < 4; i++) {
             fixed_chord[i] += 12;
         }
         fixed_chord[3] = fixed_chord[0] + 12;
@@ -1188,6 +1224,21 @@ void SongMakerDialog::models_from_bson(bson_t merged_bson)
     }
 }
 
+torch::Tensor SongMakerDialog::moved_tensor(const torch::Tensor& t)
+{
+    switch (_backend)
+    {
+    case CPU:
+        return t.cpu();
+    case Vulkan:
+        return t.vulkan();
+    case CUDA:
+        return t.cuda();
+    default:
+        return t;
+    }
+}
+
 void SongMakerDialog::dragEnterEvent(QDragEnterEvent *event)
 {
     if (event->mimeData()->hasFormat("text/uri-list")) {
@@ -1270,6 +1321,14 @@ void SongMakerDialog::clearModels()
     _durationsModel = {};
 }
 
+void SongMakerDialog::backendButtonClicked()
+{
+    int index = (_backends.indexOf(_backend) + 1) % _backends.size();
+
+    _backend = _backends.at(index);
+    ui->backendButton->setIcon(_backendIcons.at(index));
+}
+
 void SongMakerDialog::lossUpdated(std::vector<at::Tensor> losses)
 {
     std::vector<QLCDNumber*> lossWidgets = {
@@ -1318,7 +1377,7 @@ std::vector<torch::Tensor> ChordGenerationWorker::generate_chords(const Model &m
         for (int i = 0; i < Chord::ChordDuration+1; i++) {
             msg[i] = torch::multinomial(probs[i], 1).item().toInt();
             if (i == Chord::Root) {
-                msg[i] += 60;
+                qDebug() << msg[i].item().toInt();
 
                 if (msg[i].item().toInt() < lowest_root) {
                     lowest_root = msg[i].item().toInt();
@@ -1331,6 +1390,7 @@ std::vector<torch::Tensor> ChordGenerationWorker::generate_chords(const Model &m
 
         msg[Chord::ChordDuration] = ((torch::rand({1}) * 2).item().toInt() * 2 + 2) * 480;
         context = torch::cat({context.slice(0, 1), torch::unsqueeze(msg, 0)});
+        msg[Chord::Root] += 36;
         out.push_back(msg);
     }
 
@@ -1376,7 +1436,7 @@ torch::Tensor PhraseGenerationWorker::generate_phrases(const Model &model, const
 
     while (sum() < bars * 1920) {
         msg = torch::zeros(Phrase::HistDir+1);
-        std::vector<torch::Tensor> probs = ChordGenerationWorker::forward(model, context.unsqueeze(0));
+        std::vector<torch::Tensor> probs = forward(model, context.unsqueeze(0));
         for (int i = 0; i < 4; i++) {
             int ix = torch::multinomial(probs[i], 1).item().toInt();
             if (i == Phrase::Direction || i == Phrase::HistDir) {
@@ -1426,7 +1486,7 @@ torch::Tensor TimeGenerationWorker::generate_times(const Model &model, const int
     };
 
     while (sum() < bars * 1920) {
-        std::vector<torch::Tensor> probs = ChordGenerationWorker::forward(model, context.unsqueeze(0));
+        std::vector<torch::Tensor> probs = forward(model, context.unsqueeze(0));
         torch::Tensor pprobs = probs[0];
         int ix = qMax(120, ((torch::multinomial(pprobs, 1) / 120).item().toInt() * 120));
 
