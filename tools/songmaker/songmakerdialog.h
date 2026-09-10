@@ -57,7 +57,6 @@ enum Phrase {
 
 enum Backend {
     CPU,
-    Vulkan,
     CUDA
 };
 
@@ -121,32 +120,44 @@ protected:
     void dropEvent(QDropEvent *event);
 };
 
-class GenerationWorker : public QObject
+class Worker : public QObject
 {
     Q_OBJECT
 public:
-    explicit GenerationWorker(QObject* parent = nullptr)
+    Worker(QObject* parent = nullptr)
+        : QObject(parent)
     {
-        _dialog = dynamic_cast<SongMakerDialog*>(parent);
+        if (parent)
+        {
+            _dialog = dynamic_cast<SongMakerDialog*>(parent);
+        }
     }
-
-    std::vector<torch::Tensor> forward(const Model &model, const torch::Tensor& x);
 protected:
     SongMakerDialog* _dialog;
 };
 
-class TrainingWorker : public QObject {
+class GenerationWorker : public Worker
+{
+    Q_OBJECT
+public:
+    GenerationWorker(QObject* parent = nullptr)
+        : Worker(parent)
+    { }
+
+    std::vector<torch::Tensor> forward(const Model &model, const torch::Tensor& x);
+};
+
+class TrainingWorker : public Worker {
     Q_OBJECT
 public:
     typedef Model Result;
-    explicit TrainingWorker(QObject* parent = nullptr) {
-        _dialog = dynamic_cast<SongMakerDialog*>(parent);
-    }
+    TrainingWorker(QObject* parent = nullptr)
+        : Worker(parent)
+    { }
 
     void doTrain(const torch::Tensor &classes, const at::Tensor &ll_sizes, const int iters, const torch::Tensor &X, const torch::Tensor &Y);
 
 private:
-    SongMakerDialog* _dialog;
     Result _result;
 
     void updateProgress(const int progress) {

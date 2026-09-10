@@ -60,10 +60,6 @@ SongMakerDialog::SongMakerDialog(QWidget *parent)
 
     _backends.push_back(Backend::CPU);
     _backendIcons.push_back(QIcon(":/icons/cpu.png"));
-    if (at::is_vulkan_available()) {
-        _backends.push_back(Backend::Vulkan);
-        _backendIcons.push_back(QIcon(":/icons/vulkan.svg"));
-    }
     if (torch::cuda::is_available()) {
         _backends.push_back(Backend::CUDA);
         _backendIcons.push_back(QIcon(":/icons/cuda.svg"));
@@ -477,7 +473,7 @@ Model TrainingWorker::train(const torch::Tensor classes, const torch::Tensor& ll
                     if (W[j-1].size() == k) {
                         torch::Tensor l_size = ll_sizes[j-1];
                         torch::Tensor mat = torch::randn({l_size.item().toInt(), ll_sizes[j].item().toInt()});
-                        W[j-1].push_back(mat);
+                        W[j-1].push_back(_dialog->moved_tensor(mat));
                         W[j-1][k].set_requires_grad(true);
                     }
                 }
@@ -507,7 +503,7 @@ Model TrainingWorker::train(const torch::Tensor classes, const torch::Tensor& ll
                 if (j == ll_sizes.size(0)-1) {
                     if (W2[0].size() == k) {
                         torch::Tensor mat = torch::randn({ll_sizes[-1].item().toInt(), classes[k].item().toInt()});
-                        W2[0].push_back(mat);
+                        W2[0].push_back(_dialog->moved_tensor(mat));
                         W2[0][k].set_requires_grad(true);
                     }
                     if (b2[0].size() == k) {
@@ -1230,8 +1226,6 @@ torch::Tensor SongMakerDialog::moved_tensor(const torch::Tensor& t)
     {
     case CPU:
         return t.cpu();
-    case Vulkan:
-        return t.vulkan();
     case CUDA:
         return t.cuda();
     default:
