@@ -1183,6 +1183,6 @@
         <file>factory/drums.lay</file>
         <file>factory/drums.rom</file>
         <file>icons/cpu.png</file>
-        <file>icons/nvidia.svg</file>
+        <file>icons/cuda.svg</file>
     </qresource>
 </RCC>

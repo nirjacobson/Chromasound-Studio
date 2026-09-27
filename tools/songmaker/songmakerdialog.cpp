@@ -1371,8 +1371,6 @@ std::vector<torch::Tensor> ChordGenerationWorker::generate_chords(const Model &m
         for (int i = 0; i < Chord::ChordDuration+1; i++) {
             msg[i] = torch::multinomial(probs[i], 1).item().toInt();
             if (i == Chord::Root) {
-                qDebug() << msg[i].item().toInt();
-
                 if (msg[i].item().toInt() < lowest_root) {
                     lowest_root = msg[i].item().toInt();
                 } else if (msg[i].item().toInt() > highest_root) {

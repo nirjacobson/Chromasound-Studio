@@ -625,6 +625,7 @@ else()
 endif()
 
 if (LINUX)
+    target_link_options(Chromasound-Studio PRIVATE -Wl,--no-as-needed)
     target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
                                                     bson-1.0
                                                     portaudio
