@@ -1728,8 +1728,6 @@ void MainWindow::loadTemplate(const QString& path)
 
 void MainWindow::postLoad()
 {
-    _app->setupChromasound();
-
     ui->topWidget->updateFromProject(_app->project());
 
     _channelsWidget->rebuild();
@@ -1881,6 +1879,8 @@ Application* MainWindow::app()
 void MainWindow::showEvent(QShowEvent*)
 {
     if (!_shownEver) {
+        _app->setupChromasound();
+
         showChannelsWindow();
         showPlaylistWindow();
 

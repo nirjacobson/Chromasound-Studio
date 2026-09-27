@@ -15,16 +15,12 @@ void SetProjectPCMFileCommand::undo()
 {
     _project.setPCMFile(_oldPath);
 
-    _mainWindow->app()->setupChromasound();
-
     _mainWindow->doUpdate();
 }
 
 void SetProjectPCMFileCommand::redo()
 {
     _project.setPCMFile(_newPath);
-
-    _mainWindow->app()->setupChromasound();
 
     _mainWindow->doUpdate();
 }

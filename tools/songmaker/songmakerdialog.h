@@ -72,8 +72,6 @@ public:
     explicit SongMakerDialog(QWidget *parent = nullptr);
     ~SongMakerDialog();
 
-    torch::Tensor moved_tensor(const torch::Tensor& t);
-
     MainWindow* _mainWindow;
 
 private slots:
@@ -84,7 +82,8 @@ private slots:
     void saveModels();
     void clearModels();
     void lossUpdated(std::vector<torch::Tensor> losses);
-    void backendButtonClicked();
+    void cpuSelected();
+    void cudaSelected();
 
 private:
     Ui::SongMakerDialog *ui;
@@ -99,6 +98,8 @@ private:
     Backend _backend;
     QList<Backend> _backends;
     QList<QIcon> _backendIcons;
+
+    bool _retrain;
 
     std::pair<torch::Tensor, torch::Tensor> build_chords_dataset(const std::string& path);
     std::pair<torch::Tensor, torch::Tensor> build_phrases_dataset(const std::string& path);
@@ -124,24 +125,22 @@ class Worker : public QObject
 {
     Q_OBJECT
 public:
-    Worker(QObject* parent = nullptr)
+    Worker(const Backend backend, QObject* parent = nullptr)
         : QObject(parent)
-    {
-        if (parent)
-        {
-            _dialog = dynamic_cast<SongMakerDialog*>(parent);
-        }
-    }
+        , _backend(backend)
+    { }
 protected:
-    SongMakerDialog* _dialog;
+    Backend _backend;
+
+    torch::Tensor moved_tensor(const torch::Tensor& t);
 };
 
 class GenerationWorker : public Worker
 {
     Q_OBJECT
 public:
-    GenerationWorker(QObject* parent = nullptr)
-        : Worker(parent)
+    GenerationWorker(const Backend backend, QObject* parent = nullptr)
+        : Worker(backend, parent)
     { }
 
     std::vector<torch::Tensor> forward(const Model &model, const torch::Tensor& x);
@@ -151,8 +150,8 @@ class TrainingWorker : public Worker {
     Q_OBJECT
 public:
     typedef Model Result;
-    TrainingWorker(QObject* parent = nullptr)
-        : Worker(parent)
+    TrainingWorker(const Backend backend, QObject* parent = nullptr)
+        : Worker(backend, parent)
     { }
 
     void doTrain(const torch::Tensor &classes, const at::Tensor &ll_sizes, const int iters, const torch::Tensor &X, const torch::Tensor &Y);
@@ -183,8 +182,8 @@ class ChordGenerationWorker : public GenerationWorker {
     friend class PhraseGenerationWorker;
     friend class TimeGenerationWorker;
 public:
-    ChordGenerationWorker(QObject* parent)
-        : GenerationWorker(parent)
+    ChordGenerationWorker(const Backend backend, QObject* parent = nullptr)
+        : GenerationWorker(backend, parent)
     { }
 
     typedef std::vector<torch::Tensor> Result;
@@ -196,7 +195,6 @@ public:
     }
 
 private:
-    SongMakerDialog* _dialog;
     void updateProgress(const int progress) {
         if (progress != _progress) {
             emit progressUpdated(progress);
@@ -220,8 +218,8 @@ signals:
 class PhraseGenerationWorker : public GenerationWorker {
     Q_OBJECT
 public:
-    PhraseGenerationWorker(QObject* parent)
-        : GenerationWorker(parent)
+    PhraseGenerationWorker(const Backend backend, QObject* parent = nullptr)
+        : GenerationWorker(backend, parent)
     { }
 
     typedef torch::Tensor Result;
@@ -233,7 +231,6 @@ public:
     }
 
 private:
-    SongMakerDialog* _dialog;
     void updateProgress(const int progress) {
         if (progress != _progress) {
             emit progressUpdated(progress);
@@ -256,8 +253,8 @@ signals:
 class TimeGenerationWorker : public GenerationWorker {
     Q_OBJECT
 public:
-    TimeGenerationWorker(QObject* parent)
-        : GenerationWorker(parent)
+    TimeGenerationWorker(const Backend backend, QObject* parent = nullptr)
+        : GenerationWorker(backend, parent)
     { }
 
     typedef torch::Tensor Result;
@@ -269,7 +266,6 @@ public:
     }
 
 private:
-    SongMakerDialog* _dialog;
     void updateProgress(const int progress) {
         if (progress != _progress) {
             emit progressUpdated(progress);
@@ -292,8 +288,8 @@ signals:
 class NoteGenerationWorker : public GenerationWorker {
     Q_OBJECT
 public:
-    NoteGenerationWorker(QObject* parent)
-        : GenerationWorker(parent)
+    NoteGenerationWorker(const Backend backend, QObject* parent = nullptr)
+        : GenerationWorker(backend, parent)
     { }
 
     typedef torch::Tensor Result;
@@ -305,7 +301,6 @@ public:
     }
 
 private:
-    SongMakerDialog* _dialog;
     void updateProgress(const int progress) {
         emit progressUpdated(progress);
     }
