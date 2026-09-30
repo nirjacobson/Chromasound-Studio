@@ -7,9 +7,8 @@
 SongMakerDialog::SongMakerDialog(QWidget *parent)
     : QMainWindow(parent)
     , _mainWindow(dynamic_cast<MainWindow*>(parent))
-    , _backend(Backend::CPU)
+    , _backend(MusicBrain::Backend::CPU)
     , ui(new Ui::SongMakerDialog)
-    , _retrain(false)
 {
     ui->setupUi(this);
 
@@ -61,9 +60,10 @@ SongMakerDialog::SongMakerDialog(QWidget *parent)
     }
 
     if (!torch::cuda::is_available()) {
-        ui->menu_Backend->removeAction(ui->actionCUDA);
+        ui->menuBackend->removeAction(ui->actionCUDA);
     }
     ui->actionCPU->trigger();
+    _retrain = false;
 }
 
 SongMakerDialog::~SongMakerDialog()
@@ -113,10 +113,10 @@ void SongMakerDialog::okButtonClicked()
         break;
     }
 
-    auto lamb = [this,workerThread](Model chordsModel, Model phrasesModel, Model timesModel) {
-        auto generatingWorkerChords = new ChordGenerationWorker(_backend);
-        connect(generatingWorkerChords, &ChordGenerationWorker::progressUpdated, ui->taskProgressBar, &QProgressBar::setValue);
-        connect(generatingWorkerChords, &ChordGenerationWorker::finished, this, [this, workerThread, generatingWorkerChords, phrasesModel, timesModel](std::vector<torch::Tensor> chords){
+    auto lamb = [this,workerThread](MusicBrain::Model chordsModel, MusicBrain::Model phrasesModel, MusicBrain::Model timesModel) {
+        auto generatingWorkerChords = new MusicBrain::ChordGenerationWorker(_backend);
+        connect(generatingWorkerChords, &MusicBrain::ChordGenerationWorker::progressUpdated, ui->taskProgressBar, &QProgressBar::setValue);
+        connect(generatingWorkerChords, &MusicBrain::ChordGenerationWorker::finished, this, [this, workerThread, generatingWorkerChords, phrasesModel, timesModel](std::vector<torch::Tensor> chords){
             delete generatingWorkerChords;
 
             QList<Track::Item*> items;
@@ -125,15 +125,15 @@ void SongMakerDialog::okButtonClicked()
             std::vector<torch::Tensor> last_cni = torch::unbind(negOne, 0);
             for (const torch::Tensor chord : chords) {
                 std::vector<torch::Tensor> chord_notes;
-                chord_notes.push_back(chord[Chord::Root]);
-                int add = (chord[Chord::MajorMinor].item().toBool() ? 4 : 3);
-                chord_notes.push_back(chord[Chord::Root] + add);
-                chord_notes.push_back(chord[Chord::Root] + add + (7 - add));
+                chord_notes.push_back(chord[MusicBrain::Chord::Root]);
+                int add = (chord[MusicBrain::Chord::MajorMinor].item().toBool() ? 4 : 3);
+                chord_notes.push_back(chord[MusicBrain::Chord::Root] + add);
+                chord_notes.push_back(chord[MusicBrain::Chord::Root] + add + (7 - add));
                 std::vector<torch::Tensor> chord_notes_inverted;
-                for (int i = chord[Chord::Inversion].item().toInt(); i < 3; i++) {
+                for (int i = chord[MusicBrain::Chord::Inversion].item().toInt(); i < 3; i++) {
                     chord_notes_inverted.push_back(chord_notes[i]);
                 }
-                for (int i = 0; i < chord[Chord::Inversion].item().toInt(); i++) {
+                for (int i = 0; i < chord[MusicBrain::Chord::Inversion].item().toInt(); i++) {
                     torch::Tensor note = chord_notes[i] + 12;
 
                     chord_notes_inverted.push_back(note);
@@ -156,10 +156,10 @@ void SongMakerDialog::okButtonClicked()
                 }
 
                 for (int i = 0; i < 4; i++) {
-                    Track::Item* item = new Track::Item(time, Note(chord_notes_inverted[i].item().toInt(), chord[Chord::ChordDuration].item().toFloat() / 480));
+                    Track::Item* item = new Track::Item(time, Note(chord_notes_inverted[i].item().toInt(), chord[MusicBrain::Chord::ChordDuration].item().toFloat() / 480));
                     items.append(item);
                 }
-                time += chord[Chord::ChordDuration].item().toFloat() / 480;
+                time += chord[MusicBrain::Chord::ChordDuration].item().toFloat() / 480;
 
                 last_cni = chord_notes_inverted;
             }
@@ -187,19 +187,19 @@ void SongMakerDialog::okButtonClicked()
 
             _mainWindow->_app->project().getPattern(0).getTrack(0).usePianoRoll();
 
-            auto generatingWorkerPhrases = new PhraseGenerationWorker(_backend);
-            connect(generatingWorkerPhrases, &PhraseGenerationWorker::progressUpdated, ui->taskProgressBar, &QProgressBar::setValue);
-            connect(generatingWorkerPhrases, &PhraseGenerationWorker::finished, this, [this, workerThread, generatingWorkerPhrases, chords, phrasesModel, timesModel](torch::Tensor phrases){
+            auto generatingWorkerPhrases = new MusicBrain::PhraseGenerationWorker(_backend);
+            connect(generatingWorkerPhrases, &MusicBrain::PhraseGenerationWorker::progressUpdated, ui->taskProgressBar, &QProgressBar::setValue);
+            connect(generatingWorkerPhrases, &MusicBrain::PhraseGenerationWorker::finished, this, [this, workerThread, generatingWorkerPhrases, chords, phrasesModel, timesModel](torch::Tensor phrases){
                 delete generatingWorkerPhrases;
-                auto generatingWorkerTimes = new TimeGenerationWorker(_backend);
+                auto generatingWorkerTimes = new MusicBrain::TimeGenerationWorker(_backend);
 
-                connect(generatingWorkerTimes, &TimeGenerationWorker::progressUpdated, ui->taskProgressBar, &QProgressBar::setValue);
-                connect(generatingWorkerTimes, &TimeGenerationWorker::finished, this, [this, workerThread, generatingWorkerTimes, chords, phrasesModel, phrases](torch::Tensor times) {
+                connect(generatingWorkerTimes, &MusicBrain::TimeGenerationWorker::progressUpdated, ui->taskProgressBar, &QProgressBar::setValue);
+                connect(generatingWorkerTimes, &MusicBrain::TimeGenerationWorker::finished, this, [this, workerThread, generatingWorkerTimes, chords, phrasesModel, phrases](torch::Tensor times) {
                     delete generatingWorkerTimes;
                     auto chords_phrases = phrases_by_chord(chords, phrases);
-                    auto generatingWorkerNotes = new NoteGenerationWorker(_backend);
-                    connect(generatingWorkerNotes, &NoteGenerationWorker::progressUpdated, ui->taskProgressBar, &QProgressBar::setValue);
-                    connect(generatingWorkerNotes, &NoteGenerationWorker::finished, this, [this, workerThread, generatingWorkerNotes, chords, phrasesModel](torch::Tensor melody) {
+                    auto generatingWorkerNotes = new MusicBrain::NoteGenerationWorker(_backend);
+                    connect(generatingWorkerNotes, &MusicBrain::NoteGenerationWorker::progressUpdated, ui->taskProgressBar, &QProgressBar::setValue);
+                    connect(generatingWorkerNotes, &MusicBrain::NoteGenerationWorker::finished, this, [this, workerThread, generatingWorkerNotes, chords, phrasesModel](torch::Tensor melody) {
                         delete generatingWorkerNotes;
                         delete workerThread;
                         ui->totalProgressBar->setValue(100);
@@ -354,13 +354,14 @@ void SongMakerDialog::okButtonClicked()
                 _retrain = false;
                 clearModels();
             }
+
             if (std::get<0>(_chordsModel).empty()) {
                 auto XY = build_chords_dataset(folderInfo.filePath().toStdString());
 
-                auto trainingWorkerChords = new TrainingWorker(_backend);
-                connect(trainingWorkerChords, &TrainingWorker::progressUpdated, ui->taskProgressBar, &QProgressBar::setValue);
-                connect(trainingWorkerChords, &TrainingWorker::lossUpdate, this, &SongMakerDialog::lossUpdated);
-                connect(trainingWorkerChords, &TrainingWorker::finished, this, [this, lamb, workerThread, trainingWorkerChords, trainingIters](Model chordsModel){
+                auto trainingWorkerChords = new MusicBrain::TrainingWorker(_backend);
+                connect(trainingWorkerChords, &MusicBrain::TrainingWorker::progressUpdated, ui->taskProgressBar, &QProgressBar::setValue);
+                connect(trainingWorkerChords, &MusicBrain::TrainingWorker::lossUpdate, this, &SongMakerDialog::lossUpdated);
+                connect(trainingWorkerChords, &MusicBrain::TrainingWorker::finished, this, [this, lamb, workerThread, trainingWorkerChords, trainingIters](MusicBrain::Model chordsModel){
                     _chordsModel = chordsModel;
                     delete trainingWorkerChords;
                     QString melodiesPath = QFile(ui->melodySetComboBox->currentText()).exists()
@@ -370,16 +371,16 @@ void SongMakerDialog::okButtonClicked()
                     QFileInfo melodiesFolderInfo = QFileInfo(melodiesFolder);
                     if (melodiesFolderInfo.isDir()) {
                         auto XY = build_phrases_dataset(melodiesFolderInfo.filePath().toStdString());
-                        auto trainingWorkerPhrases = new TrainingWorker(_backend);
-                        connect(trainingWorkerPhrases, &TrainingWorker::progressUpdated, ui->taskProgressBar, &QProgressBar::setValue);
-                        connect(trainingWorkerPhrases, &TrainingWorker::lossUpdate, this, &SongMakerDialog::lossUpdated);
-                        connect(trainingWorkerPhrases, &TrainingWorker::finished, this, [this, lamb, workerThread, chordsModel, trainingWorkerPhrases, melodiesFolderInfo, trainingIters](Model phrasesModel) {
+                        auto trainingWorkerPhrases = new MusicBrain::TrainingWorker(_backend);
+                        connect(trainingWorkerPhrases, &MusicBrain::TrainingWorker::progressUpdated, ui->taskProgressBar, &QProgressBar::setValue);
+                        connect(trainingWorkerPhrases, &MusicBrain::TrainingWorker::lossUpdate, this, &SongMakerDialog::lossUpdated);
+                        connect(trainingWorkerPhrases, &MusicBrain::TrainingWorker::finished, this, [this, lamb, workerThread, chordsModel, trainingWorkerPhrases, melodiesFolderInfo, trainingIters](MusicBrain::Model phrasesModel) {
                             _phrasesModel = phrasesModel;
                             auto XY = build_times_dataset(melodiesFolderInfo.filePath().toStdString());
-                            auto trainingWorkerTimes = new TrainingWorker(_backend);
-                            connect(trainingWorkerTimes, &TrainingWorker::progressUpdated, ui->taskProgressBar, &QProgressBar::setValue);
-                            connect(trainingWorkerTimes, &TrainingWorker::lossUpdate, this, &SongMakerDialog::lossUpdated);
-                            connect(trainingWorkerTimes, &TrainingWorker::finished, this, [this, lamb, workerThread, chordsModel, trainingWorkerPhrases, melodiesFolderInfo, phrasesModel](Model timesModel) {
+                            auto trainingWorkerTimes = new MusicBrain::TrainingWorker(_backend);
+                            connect(trainingWorkerTimes, &MusicBrain::TrainingWorker::progressUpdated, ui->taskProgressBar, &QProgressBar::setValue);
+                            connect(trainingWorkerTimes, &MusicBrain::TrainingWorker::lossUpdate, this, &SongMakerDialog::lossUpdated);
+                            connect(trainingWorkerTimes, &MusicBrain::TrainingWorker::finished, this, [this, lamb, workerThread, chordsModel, trainingWorkerPhrases, melodiesFolderInfo, phrasesModel](MusicBrain::Model timesModel) {
                                 _durationsModel = timesModel;
                                 lamb(chordsModel, phrasesModel, timesModel);
                             });
@@ -405,314 +406,6 @@ void SongMakerDialog::okButtonClicked()
 
         }
     }
-}
-
-void TrainingWorker::doTrain(const torch::Tensor& classes, const torch::Tensor& ll_sizes, const int iters, const torch::Tensor &X, const torch::Tensor &Y) {
-    _result = train(classes, ll_sizes, iters, X, Y);
-    emit finished(_result);
-}
-
-Model TrainingWorker::train(const torch::Tensor classes, const torch::Tensor& ll_sizes, const int iters, const torch::Tensor &x, const at::Tensor &y)
-{
-    torch::Tensor Classes = moved_tensor(classes);
-    torch::Tensor LlSizes = moved_tensor(ll_sizes);
-    torch::Tensor X = moved_tensor(x.to(torch::kFloat32));
-    torch::Tensor Y = moved_tensor(y.to(torch::kFloat32));
-
-    std::vector<std::vector<torch::Tensor>> W1;
-    std::vector<std::vector<torch::Tensor>> b1;
-    std::vector<std::vector<torch::Tensor>> W;
-    std::vector<std::vector<torch::Tensor>> b;
-    std::vector<std::vector<torch::Tensor>> W2;
-    std::vector<std::vector<torch::Tensor>> b2;
-    W2.push_back({});
-    b2.push_back({});
-
-    std::vector<torch::Tensor> probs = {};
-    for (int i = 0; i < classes.size(0); i++) {
-        probs.push_back({});
-    }
-
-    std::vector<torch::Tensor> loss;
-
-    for (int i = 0; i < iters; i++) {
-        std::vector<torch::Tensor> h;
-        torch::Tensor h1;
-        torch::Tensor h11;
-        for (int j = 0; j < ll_sizes.size(0); j++) {
-            if (j == 0) {
-                if (W1.size() == j) {
-                    W1.push_back({});
-                }
-                if (b1.size() == j) {
-                    b1.push_back({});
-                }
-            } else {
-                if (W.size() == j-1) {
-                    W.push_back({});
-                }
-                if (b.size() == j-1) {
-                    b.push_back({});
-                }
-            }
-            torch::Tensor xview = X.view({x.size(0), -1});
-
-            for (int k = 0; k < classes.size(0); k++) {
-                // Forward pass
-                if (j == 0) {
-                    if (W1[j].size() == k) {
-                        torch::Tensor l_size = torch::tensor(x.sizes()[1] * x.sizes()[2]);
-                        l_size = moved_tensor(l_size);
-                        torch::Tensor mat = torch::randn({l_size.item().toInt(), ll_sizes[j].item().toInt()});
-                        W1[j].push_back(moved_tensor(mat));
-                        W1[j][k].set_requires_grad(true);
-                    }
-                } else {
-                    if (W[j-1].size() == k) {
-                        torch::Tensor l_size = ll_sizes[j-1];
-                        torch::Tensor mat = torch::randn({l_size.item().toInt(), ll_sizes[j].item().toInt()});
-                        W[j-1].push_back(moved_tensor(mat));
-                        W[j-1][k].set_requires_grad(true);
-                    }
-                }
-
-                if (j == 0) {
-                    if (b1[j].size() == k) {
-                        torch::Tensor vec = torch::randn({ll_sizes[j].item().toInt()});
-                        b1[j].push_back(moved_tensor(vec));
-                        b1[j][k].set_requires_grad(true);
-                    }
-                } else {
-                    if (b[j-1].size() == k) {
-                        torch::Tensor vec = torch::randn({ll_sizes[j].item().toInt()});
-                        b[j-1].push_back(moved_tensor(vec));
-                        b[j-1][k].set_requires_grad(true);
-                    }
-                }
-
-                if (j == 0) {
-                    h1 = xview.matmul(W1[j][k]) + (b1[j][k]);
-                    h.push_back(h1);
-                } else if (j > 0) {
-                    h1 = h[k].matmul(W[j-1][k]) + (b[j-1][k]);
-                    h[k] = h1;
-                }
-
-                if (j == ll_sizes.size(0)-1) {
-                    if (W2[0].size() == k) {
-                        torch::Tensor mat = torch::randn({ll_sizes[-1].item().toInt(), classes[k].item().toInt()});
-                        W2[0].push_back(moved_tensor(mat));
-                        W2[0][k].set_requires_grad(true);
-                    }
-                    if (b2[0].size() == k) {
-                        torch::Tensor vec = torch::randn({classes[k].item().toInt()});
-                        b2[0].push_back(moved_tensor(vec));
-                        b2[0][k].set_requires_grad(true);
-                    }
-
-                    torch::Tensor h2 = tanh(h[k].matmul(W2[0][k]) + b2[0][k]);
-
-                    torch::Tensor counts = h2.exp();
-                    probs[k] = (counts / counts.sum(1, true)).view({-1, Classes[k].item().toInt()});
-                }
-            }
-        }
-
-        for (int k = 0; k < Classes.size(0); k++) {
-            torch::Tensor y_param = Y.matmul(moved_tensor(torch::nn::functional::one_hot(torch::tensor(k), classes.size(0)).to(torch::kFloat32)));
-            std::vector<std::pair<int, int>> pairs;
-            for (int l = 0; l < x.size(0); l++) {
-                pairs.push_back(std::make_pair(l, y_param.cpu()[l].item().toInt()));
-            }
-            std::vector<torch::Tensor> _losses;
-            for (int l = 0; l < x.size(0); l++) {
-                torch::Tensor __loss = -probs[k][pairs[l].first][pairs[l].second].log();
-                _losses.push_back(moved_tensor(__loss));
-            }
-            torch::Tensor _loss = torch::stack(_losses).mean();
-
-            if (loss.size() == k) {
-                loss.push_back(_loss);
-            } else {
-                loss[k] = _loss;
-            }
-        }
-        emit lossUpdate(loss);
-
-        // Backward pass
-        for (auto& v : {&(W1[0]), &(b1[0])}) {
-            for (int prm = 0; prm < classes.size(0); prm++) {
-                if ((*v)[prm].grad().defined()) {
-                    (*v)[prm].grad().zero_();
-                }
-            }
-        }
-        for (auto& v : {&W, &b}) {
-            for (int lyr = 0; lyr < ll_sizes.size(0) - 1; lyr++) {
-                for (int prm = 0; prm < classes.size(0); prm++) {
-                    if ((*v)[lyr][prm].grad().defined()) {
-                        (*v)[lyr][prm].grad().zero_();
-                    }
-                }
-            }
-        }
-        for (auto& v : {&(W2[0]), &(b2[0])}) {
-            for (int prm = 0; prm < classes.size(0); prm++) {
-                if ((*v)[prm].grad().defined()) {
-                    (*v)[prm].grad().zero_();
-                }
-            }
-        }
-
-        for (int prm = 0; prm < classes.size(0); prm++) {
-            loss[prm].backward({}, true);
-        }
-
-        for (auto& v : {&(W1[0]), &(b1[0])}) {
-            for (int prm = 0; prm < classes.size(0); prm++) {
-                if ((*v)[prm].grad().defined()) {
-                    (*v)[prm].data() += -0.25 * (*v)[prm].grad();
-                }
-            }
-        }
-        for (auto& v : {&W, &b}) {
-            for (int lyr = 0; lyr < ll_sizes.size(0) - 1; lyr++) {
-                for (int prm = 0; prm < classes.size(0); prm++) {
-                    if ((*v)[lyr][prm].grad().defined()) {
-                        (*v)[lyr][prm].data() += -0.25 * (*v)[lyr][prm].grad();
-                    }
-                }
-            }
-        }
-        for (auto& v : {&(W2[0]), &(b2[0])}) {
-            for (int prm = 0; prm < classes.size(0); prm++) {
-                if ((*v)[prm].grad().defined()) {
-                    (*v)[prm].data() += -0.25 * (*v)[prm].grad();
-                }
-            }
-        }
-        updateProgress((int)(((float)i/(float)iters) * 100));
-    }
-    updateProgress(100);
-    emit lossUpdate({torch::zeros(5).unbind()});
-
-    torch::Tensor layer_models;
-    Tensors parameter_models_W1;
-    for (int m = 0; m < classes.size(0); m++) {
-        if (layer_models.size(0) == 0) {
-            layer_models = torch::unsqueeze(W1[0][m], 0);
-        } else {
-            layer_models = torch::cat({layer_models, torch::unsqueeze(W1[0][m], 0)});
-        }
-    }
-    parameter_models_W1 = {layer_models};
-
-    layer_models = torch::tensor({});
-
-    Tensors parameter_models_b1;
-    for (int m = 0; m < classes.size(0); m++) {
-        if (layer_models.size(0) == 0) {
-            layer_models = torch::unsqueeze(b1[0][m], 0);
-        } else {
-            layer_models = torch::cat({layer_models, torch::unsqueeze(b1[0][m], 0)});
-        }
-    }
-    parameter_models_b1 = { layer_models };
-
-    Tensors parameter_models_W;
-    for (int l = 0; l < ll_sizes.size(0) - 1; l++) {
-        layer_models = torch::tensor({});
-        for (int m = 0; m < classes.size(0); m++) {
-            if (layer_models.size(0) == 0) {
-                layer_models = torch::unsqueeze(W[l][m], 0);
-            } else {
-                layer_models = torch::cat({layer_models, torch::unsqueeze(W[l][m], 0)});
-            }
-        }
-        if (parameter_models_W.size() == 0) {
-            parameter_models_W = { layer_models };
-        } else {
-            parameter_models_W.push_back(layer_models);
-        }
-    }
-
-    Tensors parameter_models_b;
-    for (int l = 0; l < ll_sizes.size(0) - 1; l++) {
-        layer_models = torch::tensor({});
-        for (int m = 0; m < classes.size(0); m++) {
-            if (layer_models.size(0) == 0) {
-                layer_models = torch::unsqueeze(b[l][m], 0);
-            } else {
-                layer_models = torch::cat({layer_models, torch::unsqueeze(b[l][m], 0)});
-            }
-        }
-
-        if (parameter_models_b.size() == 0) {
-            parameter_models_b = { layer_models };
-        } else {
-            parameter_models_b.push_back(layer_models);
-        }
-    }
-
-    layer_models = torch::tensor({});
-
-    Tensors parameter_models_W2;
-    for (int m = 0; m < classes.size(0); m++) {
-        parameter_models_W2.push_back(W2[0][m]);
-    }
-
-    layer_models = torch::tensor({});
-
-    Tensors parameter_models_b2;
-    for (int m = 0; m < classes.size(0); m++) {
-        parameter_models_b2.push_back(b2[0][m]);
-    }
-
-    std::vector<torch::Tensor> classes_vec = { Classes };
-    std::vector<torch::Tensor> ll_sizes_vec = { LlSizes };
-
-    Model m = std::make_tuple(parameter_models_W1, parameter_models_b1, parameter_models_W, parameter_models_b, parameter_models_W2, parameter_models_b2, classes_vec, ll_sizes_vec);
-
-    return m;
-}
-
-std::vector<torch::Tensor> GenerationWorker::forward(const Model &model, const at::Tensor &x)
-{
-    torch::Tensor _x = x.to(torch::kFloat32);
-    const torch::Tensor X = moved_tensor(_x);
-    const torch::Tensor& classes = std::get<6>(model)[0].cpu();
-    int layers = std::get<2>(model).size() + 1;
-
-    torch::Tensor xview = X.view({X.size(0), -1});
-    std::vector<torch::Tensor> probs;
-    for (int i = 0; i < classes.size(0); i++) {
-        torch::Tensor h1;
-        torch::Tensor _h1;
-        for (int j = 0; j < layers; j++) {
-            // Forward pass
-            torch::Tensor logits = (j == 0) ? xview : h1;
-            if (j == 0) {
-                _h1 = torch::tanh(logits.matmul(std::get<0>(model)[j][i]) + std::get<1>(model)[j][i]);
-            } else {
-                _h1 = torch::tanh(logits.matmul(std::get<2>(model)[j-1][i]) + std::get<3>(model)[j-1][i]);
-            }
-            h1 = moved_tensor(_h1);
-
-            if (j == layers-1) {
-                torch::Tensor h2 = tanh(h1.matmul(std::get<4>(model)[i]) + std::get<5>(model)[i]);
-                h2 = moved_tensor(h2);
-
-                torch::Tensor counts = h2.exp();
-                if (probs.size() == i) {
-                    probs.push_back({});
-                }
-                probs[i] = (counts / counts.sum(1, true)).view({-1, classes[i].item().toInt()});
-                probs[i] = moved_tensor(probs[i]);
-            }
-        }
-    }
-
-    return probs;
 }
 
 std::pair<torch::Tensor, torch::Tensor> SongMakerDialog::build_chords_dataset(const std::string &path) {
@@ -815,13 +508,13 @@ std::pair<torch::Tensor, torch::Tensor> SongMakerDialog::build_chords_dataset(co
         fixed_chord[3] = fixed_chord[0] + 12;
 
         bool major = (fixed_chord[1] - fixed_chord[0]).item().toInt() == 4;
-        torch::Tensor new_chord = torch::tensor({fixed_chord[0].item().toInt(), (int)major, inversion, chord[Chord::ChordDuration].item().toInt()});
+        torch::Tensor new_chord = torch::tensor({fixed_chord[0].item().toInt(), (int)major, inversion, chord[MusicBrain::Chord::ChordDuration].item().toInt()});
         new_chords.push_back(new_chord);
     }
 
     std::vector<torch::Tensor> elems;
     for (int i = 0; i < CONTEXT_LENGTH; i++) {
-        elems.push_back(torch::zeros(Chord::ChordDuration+1));
+        elems.push_back(torch::zeros(MusicBrain::Chord::ChordDuration+1));
     }
     torch::Tensor context = torch::stack(elems);
     std::vector<torch::Tensor> X, Y;
@@ -845,7 +538,7 @@ std::pair<torch::Tensor, torch::Tensor> SongMakerDialog::build_phrases_dataset(c
     auto clear_context = [&context]() {
         std::vector<torch::Tensor> elems;
         for (int i = 0; i < CONTEXT_LENGTH; i++) {
-            elems.push_back(torch::zeros(Phrase::HistDir+1));
+            elems.push_back(torch::zeros(MusicBrain::Phrase::HistDir+1));
         }
         context = torch::stack(elems);
     };
@@ -864,7 +557,7 @@ std::pair<torch::Tensor, torch::Tensor> SongMakerDialog::build_phrases_dataset(c
 
         const MIDITrack* track = dynamic_cast<const MIDITrack*>(*trackIt);
 
-        torch::Tensor phrase = torch::zeros(Phrase::HistDir+1);
+        torch::Tensor phrase = torch::zeros(MusicBrain::Phrase::HistDir+1);
         torch::Tensor melody;
         const MIDIEvent* msg;
         const MIDIEvent* last_msg = nullptr;
@@ -892,13 +585,13 @@ std::pair<torch::Tensor, torch::Tensor> SongMakerDialog::build_phrases_dataset(c
                         _direction = (diff == 0) ? 0 : (diff / abs(diff));
 
                         if (direction > -2 && _direction != direction) {
-                            phrase[Phrase::Direction] = direction;
-                            phrase[Phrase::Length] = count;
-                            phrase[Phrase::PhraseDuration] = duration;
-                            phrase[Phrase::FirstNote] = first_note;
+                            phrase[MusicBrain::Phrase::Direction] = direction;
+                            phrase[MusicBrain::Phrase::Length] = count;
+                            phrase[MusicBrain::Phrase::PhraseDuration] = duration;
+                            phrase[MusicBrain::Phrase::FirstNote] = first_note;
 
-                            diff = (melody.size(0) < 2) ? 0 : (first_note - melody[-PHRASE_HISTORY][Phrase::FirstNote].item().toInt());
-                            phrase[Phrase::HistDir] = (diff == 0) ? 0 : (diff / abs(diff));
+                            diff = (melody.size(0) < 2) ? 0 : (first_note - melody[-PHRASE_HISTORY][MusicBrain::Phrase::FirstNote].item().toInt());
+                            phrase[MusicBrain::Phrase::HistDir] = (diff == 0) ? 0 : (diff / abs(diff));
 
                             if (melody.size(0) == 0) {
                                 melody = torch::unsqueeze(phrase, 0);
@@ -910,7 +603,7 @@ std::pair<torch::Tensor, torch::Tensor> SongMakerDialog::build_phrases_dataset(c
                             duration = -1;
                             direction = -2;
                             first_note = -1;
-                            phrase = torch::zeros(Phrase::HistDir+1);
+                            phrase = torch::zeros(MusicBrain::Phrase::HistDir+1);
                         } else if (direction < 0) {
                             direction = _direction;
                         }
@@ -1049,17 +742,17 @@ std::vector<std::pair<torch::Tensor, torch::Tensor>> SongMakerDialog::phrases_by
         int rem = 0;
         while (true) {
             torch::Tensor ph = phrases_copy[phrase_i];
-            ph[Phrase::PhraseDuration] += rem;
+            ph[MusicBrain::Phrase::PhraseDuration] += rem;
             if (chord_phrases.size(0) == 0) {
                 chord_phrases = torch::unsqueeze(ph, 0);
             } else {
                 chord_phrases = torch::cat({chord_phrases, torch::unsqueeze(ph, 0)});
             }
-            chord_time += ph[Phrase::PhraseDuration].item().toInt();
+            chord_time += ph[MusicBrain::Phrase::PhraseDuration].item().toInt();
 
-            if (chord_time >= chord[Chord::ChordDuration].item().toInt()) {
-                rem = chord_time - chord[Chord::ChordDuration].item().toInt();
-                chord_phrases[-1][Phrase::PhraseDuration] -= rem;
+            if (chord_time >= chord[MusicBrain::Chord::ChordDuration].item().toInt()) {
+                rem = chord_time - chord[MusicBrain::Chord::ChordDuration].item().toInt();
+                chord_phrases[-1][MusicBrain::Phrase::PhraseDuration] -= rem;
 
                 break;
             }
@@ -1138,19 +831,19 @@ void SongMakerDialog::models_to_bson(bson_t* dst)
     bson_t b_chords;
     bson_init(&b_chords);
     BSON_APPEND_DOCUMENT_BEGIN(dst, "chords", &b_chords);
-    BSON::fromModel(&b_chords, _chordsModel);
+    BSON::fromModel(&b_chords, _chordsModel.cpu());
     bson_append_document_end(dst, &b_chords);
 
     bson_t b_phrases;
     bson_init(&b_phrases);
     BSON_APPEND_DOCUMENT_BEGIN(dst, "phrases", &b_phrases);
-    BSON::fromModel(&b_phrases, _phrasesModel);
+    BSON::fromModel(&b_phrases, _phrasesModel.cpu());
     bson_append_document_end(dst, &b_phrases);
 
     bson_t b_durations;
     bson_init(&b_durations);
     BSON_APPEND_DOCUMENT_BEGIN(dst, "durations", &b_durations);
-    BSON::fromModel(&b_durations, _durationsModel);
+    BSON::fromModel(&b_durations, _durationsModel.cpu());
     bson_append_document_end(dst, &b_durations);
 
     BSON_APPEND_DOCUMENT_BEGIN(dst, "fields", &b_fields);
@@ -1165,10 +858,6 @@ void SongMakerDialog::models_to_bson(bson_t* dst)
 
 void SongMakerDialog::models_from_bson(bson_t merged_bson)
 {
-    Model chordsModel;
-    Model phrasesModel;
-    Model durationsModel;
-
     bson_iter_t merged_bson_inner;
     bson_iter_t child;
     bson_iter_t child_inner;
@@ -1176,16 +865,32 @@ void SongMakerDialog::models_from_bson(bson_t merged_bson)
 
     if (bson_iter_find_descendant(&merged_bson_inner, "chords", &child) && BSON_ITER_HOLDS_DOCUMENT(&child) && bson_iter_recurse(&child, &child_inner)) {
         _chordsModel = BSON::toModel(child_inner);
+
+        if (_backend == MusicBrain::Backend::CUDA)
+        {
+            _chordsModel = _chordsModel.cuda();
+        }
+
         ui->chordsModelWidget->setLayerSizes(std::get<7>(_chordsModel)[0].unbind(0));
     }
 
     if (bson_iter_find_descendant(&merged_bson_inner, "phrases", &child) && BSON_ITER_HOLDS_DOCUMENT(&child) && bson_iter_recurse(&child, &child_inner)) {
         _phrasesModel = BSON::toModel(child_inner);
+        if (_backend == MusicBrain::Backend::CUDA)
+        {
+            _phrasesModel = _phrasesModel.cuda();
+        }
+
         ui->phrasesModelWidget->setLayerSizes(std::get<7>(_phrasesModel)[0].unbind(0));
     }
 
     if (bson_iter_find_descendant(&merged_bson_inner, "durations", &child) && BSON_ITER_HOLDS_DOCUMENT(&child) && bson_iter_recurse(&child, &child_inner)) {
         _durationsModel = BSON::toModel(child_inner);
+        if (_backend == MusicBrain::Backend::CUDA)
+        {
+            _durationsModel = _durationsModel.cuda();
+        }
+
         ui->durationsModelWidget->setLayerSizes(std::get<7>(_durationsModel)[0].unbind(0));
     }
 
@@ -1214,19 +919,6 @@ void SongMakerDialog::models_from_bson(bson_t merged_bson)
         if (bson_iter_find_descendant(&fields, "trainingLevel", &fieldsChild) && BSON_ITER_HOLDS_INT32(&fieldsChild)) {
             ui->trainingLevelSlider->setValue(bson_iter_int32(&fieldsChild));
         }
-    }
-}
-
-torch::Tensor Worker::moved_tensor(const torch::Tensor& t)
-{
-    switch (_backend)
-    {
-    case CPU:
-        return t.cpu();
-    case CUDA:
-        return t.cuda();
-    default:
-        return t;
     }
 }
 
@@ -1314,7 +1006,7 @@ void SongMakerDialog::clearModels()
 
 void SongMakerDialog::cpuSelected()
 {
-    _backend = Backend::CPU;
+    _backend = MusicBrain::Backend::CPU;
     _retrain = true;
 
     ui->actionCUDA->setChecked(false);
@@ -1322,7 +1014,7 @@ void SongMakerDialog::cpuSelected()
 
 void SongMakerDialog::cudaSelected()
 {
-    _backend = Backend::CUDA;
+    _backend = MusicBrain::Backend::CUDA;
     _retrain = true;
 
     ui->actionCPU->setChecked(false);
@@ -1354,272 +1046,4 @@ void SongMakerDialog::lossUpdated(std::vector<at::Tensor> losses)
             lossWidgets[i]->display("-----");
         }
     }
-}
-
-std::vector<torch::Tensor> ChordGenerationWorker::generate_chords(const Model &model, const int bars)
-{
-    int lowest_root = 100;
-    int highest_root = -1;
-    std::vector<torch::Tensor> out;
-    torch::Tensor context = torch::zeros(Chord::ChordDuration+1).unsqueeze(0);
-    for (int i = 0; i < CONTEXT_LENGTH-1; i++) {
-        context = torch::cat({context, torch::zeros(Chord::ChordDuration+1).unsqueeze(0)}, 0);
-    }
-    auto sum = [&out]() {
-        return (out.empty()
-         ? 0
-         : ((out.size() == 1)
-                ? out[0][Chord::ChordDuration].item().toInt()
-                : torch::stack(out).sum(0)[Chord::ChordDuration].item().toInt()));
-    };
-    int _sum;
-    while ((_sum = sum()) < bars * 1920) {
-        updateProgress((int)(((float)_sum/((float)bars * 1920)) * 100));
-        // Generate a message
-        torch::Tensor msg = torch::zeros(Chord::ChordDuration+1);
-        auto probs = forward(model, context.unsqueeze(0));
-        for (int i = 0; i < Chord::ChordDuration+1; i++) {
-            msg[i] = torch::multinomial(probs[i], 1).item().toInt();
-            if (i == Chord::Root) {
-                if (msg[i].item().toInt() < lowest_root) {
-                    lowest_root = msg[i].item().toInt();
-                } else if (msg[i].item().toInt() > highest_root) {
-                    highest_root = msg[i].item().toInt();
-                }
-            }
-        }
-
-
-        msg[Chord::ChordDuration] = ((torch::rand({1}) * 2).item().toInt() * 2 + 2) * 480;
-        context = torch::cat({context.slice(0, 1), torch::unsqueeze(msg, 0)});
-        msg[Chord::Root] += 36;
-        out.push_back(msg);
-    }
-
-    std::vector<int> deltas;
-    for (torch::Tensor& msg : out) {
-        deltas.push_back(msg[Chord::ChordDuration].item().toInt());
-    }
-    int length = torch::tensor(deltas).sum().item().toInt();
-    int rem = length % 1920;
-
-    (*(--out.end()))[Chord::ChordDuration] -= rem;
-
-    updateProgress(100);
-
-    return out;
-}
-
-torch::Tensor PhraseGenerationWorker::generate_phrases(const Model &model, const int bars)
-{
-    torch::Tensor out;
-    torch::Tensor msg;
-
-    int diff;
-
-    auto sum = [&out]() {
-        return ((out.size(0) == 0)
-                ? 0
-                : ((out.size(0) == 1)
-                       ? out[0][Phrase::PhraseDuration].item().toInt()
-                       : out.sum(0)[Phrase::PhraseDuration].item().toInt()));
-    };
-
-    torch::Tensor context;
-    auto clear_context = [&context]() {
-        std::vector<torch::Tensor> elems;
-        for (int i = 0; i < CONTEXT_LENGTH; i++) {
-            elems.push_back(torch::zeros(Phrase::HistDir+1));
-        }
-        context = torch::stack(elems, 0);
-    };
-
-    clear_context();
-
-    while (sum() < bars * 1920) {
-        msg = torch::zeros(Phrase::HistDir+1);
-        std::vector<torch::Tensor> probs = forward(model, context.unsqueeze(0));
-        for (int i = 0; i < 4; i++) {
-            int ix = torch::multinomial(probs[i], 1).item().toInt();
-            if (i == Phrase::Direction || i == Phrase::HistDir) {
-                ix -= 1;
-            }
-
-            msg[i] = ix;
-        }
-        diff = (out.size(0) < PHRASE_HISTORY) ? 0 : (msg[Phrase::FirstNote]  - out[-PHRASE_HISTORY][Phrase::FirstNote]).item().toInt();
-        msg[Phrase::HistDir] = (diff == 0) ? 0 : (diff / abs(diff));
-        context = torch::cat({context.slice(0, 1), torch::unsqueeze(msg, 0)}, 0);
-
-        if (out.size(0) == 0) {
-            out = torch::unsqueeze(msg, 0);
-        } else {
-            out = torch::cat({out, torch::unsqueeze(msg, 0)});
-        }
-    }
-
-    int rem = sum() % 1920;
-    out[-1][Phrase::PhraseDuration] -= rem;
-
-    return out;
-}
-
-torch::Tensor TimeGenerationWorker::generate_times(const Model &model, const int bars)
-{
-    torch::Tensor out;
-
-    torch::Tensor context;
-    auto clear_context = [&context]() {
-        std::vector<torch::Tensor> elems;
-        for (int i = 0; i < CONTEXT_LENGTH; i++) {
-            elems.push_back(torch::unsqueeze(torch::tensor(0), 0));
-        }
-        context = torch::stack(elems);
-    };
-    clear_context();
-
-
-    auto sum = [&out]() {
-        return ((out.size(0) == 0)
-                ? 0
-                : ((out.size(0) == 1)
-                       ? out[0].item().toInt()
-                       : out.sum(0).item().toInt()));
-    };
-
-    while (sum() < bars * 1920) {
-        std::vector<torch::Tensor> probs = forward(model, context.unsqueeze(0));
-        torch::Tensor pprobs = probs[0];
-        int ix = qMax(120, ((torch::multinomial(pprobs, 1) / 120).item().toInt() * 120));
-
-        context = torch::cat({context.slice(0, 1), torch::unsqueeze(torch::unsqueeze(torch::tensor(ix), 0), 0)}, 0);
-
-        if (out.size(0) == 0) {
-            out = torch::unsqueeze(torch::tensor(ix), 0);
-        } else {
-            out = torch::cat({out, torch::unsqueeze(torch::tensor(ix), 0)});
-        }
-    }
-
-    int rem = sum() % 1920;
-    out[-1] -= rem;
-
-    return out;
-}
-
-at::Tensor NoteGenerationWorker::generate_notes(const std::vector<std::pair<torch::Tensor, torch::Tensor>> &chords_phrases, const at::Tensor &times)
-{
-    torch::Tensor times_copy = times.clone();
-    torch::Tensor notes;
-    torch::Tensor melody_notes;
-
-    int chord_time = 0;
-
-    std::vector<int> last_names = {-1, -1, -1};
-    int name = chords_phrases[0].first[Chord::ChordDuration].item().toInt();
-    for (const auto& [chord, phrases] : chords_phrases) {
-        chord_time = 0;
-
-        std::vector<torch::Tensor> chord_notes;
-        chord_notes.push_back(chord[Chord::Root]);
-        int add = (chord[Chord::MajorMinor].item().toBool() ? 4 : 3);
-        chord_notes.push_back(chord[Chord::Root] + add);
-        chord_notes.push_back(chord[Chord::Root] + add + (7 - add));
-        std::vector<torch::Tensor> chord_notes_inverted;
-        for (int i = chord[Chord::Inversion].item().toInt(); i < 3; i++) {
-            chord_notes_inverted.push_back(chord_notes[i]);
-        }
-        for (int i = 0; i < chord[Chord::Inversion].item().toInt(); i++) {
-            torch::Tensor note = chord_notes[i] + 12;
-
-            chord_notes_inverted.push_back(note);
-        }
-        chord_notes_inverted.push_back(chord_notes_inverted[0] + 12);
-
-        while (chord_time < chord[Chord::ChordDuration].item().toInt()) {
-            // qDebug() << "chord_time = " << chord_time << ", chord_duration = " << chord[Chord::ChordDuration].item().toInt();
-            int p = 0;
-            for (p = 0; p < phrases.size(0); p++) {
-                torch::Tensor phrase = phrases[p];
-                int phrase_count = 0;
-                int direction = phrase[Phrase::Direction].item().toInt();
-                // qDebug() << "phrase_count = " << phrase_count << ", phrase[Phrase::Length] = " << phrase[Phrase::Length].item().toInt();
-                while (phrase_count < phrase[Phrase::Length].item().toInt()) {
-                    if (direction == 0) {
-                        direction = std::vector<int>{-1, 1}[(torch::rand(1).item().toInt() * 2)];
-                    }
-                    name += direction;
-                    torch::Tensor _notes = torch::stack(chord_notes_inverted, 0);
-                    while (!torch::eq(_notes, name).any().item().toBool() || name == 0 || std::find(last_names.begin(), last_names.end(), name) != last_names.end()) {
-                        if (direction == 0) {
-                            direction = std::vector<int>{-1, 1}[(torch::rand(1).item().toInt() * 2)];
-                        }
-                        if (name > _notes.max().item().toInt()) {
-                            direction = -1;
-                        }
-                        if (name < _notes.min().item().toInt()) {
-                            direction = 1;
-                        }
-                        name += direction;
-                    }
-                    if ((chord_time + times_copy[0].item().toInt()) > chord[Chord::ChordDuration].item().toInt()) {
-                        int rem = ((chord_time + times_copy[0]) - chord[Chord::ChordDuration]).item().toInt();
-                        if (times_copy.size(0) == 0) {
-                            times_copy = torch::unsqueeze(torch::tensor(rem), 0);
-                        } else {
-                            if (times_copy[0].item().toInt() == rem) {
-                                // exactly twice the length of the distance to the end of the chord
-                                // keep times_copy[0] as is
-                            } else {
-                                times_copy[0] -= rem;
-                                if (times_copy.size(0) > 1) {
-                                    times_copy[1] += rem;
-                                }
-                            }
-                        }
-                    }
-                    last_names = std::vector<int>(last_names.begin() + 1, last_names.end());
-                    last_names.push_back(name);
-                    int _name = name;
-                    if (melody_notes.size(0) > 0) {
-                        while (torch::abs(name - melody_notes[melody_notes.size(0)-1][0]).item().toInt() > 6) {
-                            if (_name > melody_notes[melody_notes.size(0)-1][0].item().toInt()) {
-                                name -= 12;
-                            } else {
-                                name += 12;
-                            }
-                        }
-                    }
-                    torch::Tensor note = torch::tensor({name, times_copy[0].item().toInt()});
-                    chord_time += times_copy[0].item().toInt();
-                    // qDebug() << "!!" << chord[Chord::ChordDuration].item().toInt() << ", times_copy[0] = " << times_copy[0].item().toInt();
-
-                    times_copy = times_copy.slice(0, 1);
-
-                    if (melody_notes.size(0) == 0) {
-                        melody_notes = torch::unsqueeze(note, 0);
-                    } else {
-                        melody_notes = torch::cat({melody_notes, torch::unsqueeze(note, 0)});
-                    }
-
-                    phrase_count++;
-
-                    if (chord_time >= chord[Chord::ChordDuration].item().toInt()) {
-                        break;
-                    }
-                }
-
-                if (chord_time >= chord[Chord::ChordDuration].item().toInt()) {
-                    break;
-                }
-            }
-
-            if (chord_time >= chord[Chord::ChordDuration].item().toInt()) {
-                // qDebug() << "breaking because chord_time = " << chord_time;
-                break;
-            }
-        }
-    }
-
-    return melody_notes;
 }

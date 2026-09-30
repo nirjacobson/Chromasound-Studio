@@ -15,13 +15,7 @@
 #include "project/pattern.h"
 #include "project/project.h"
 #include "project/playlist.h"
-
-#undef slots
-#include <torch/torch.h>
-#define slots Q_SLOTS
-
-typedef std::vector<torch::Tensor> Tensors;
-typedef std::tuple<Tensors, Tensors, Tensors, Tensors, Tensors, Tensors, Tensors, Tensors> Model;
+#include "tools/songmaker/musicbrain.h"
 
 class BSON
 {
@@ -46,8 +40,8 @@ class BSON
         static void fromTensor(bson_t* dst, const torch::Tensor& tensor);
         static torch::Tensor toTensor(bson_iter_t& b);
 
-        static void fromModel(bson_t* dst, const Model& model);
-        static Model toModel(bson_iter_t& bson);
+        static void fromModel(bson_t* dst, const MusicBrain::Model& model);
+        static MusicBrain::Model toModel(bson_iter_t& bson);
 
     private:
         static void fromTrackSettingsChange(bson_t* dst, const Track::SettingsChange* const change);

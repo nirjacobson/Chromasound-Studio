@@ -557,6 +557,8 @@ set(PROJECT_SOURCES
     commands/setprojectbeatsperbarcommand.cpp
     commands/setprojectmodecommand.h
     commands/setprojectmodecommand.cpp
+    tools/songmaker/musicbrain.cpp
+    tools/songmaker/musicbrain.h
 )
 
 if (LINUX)

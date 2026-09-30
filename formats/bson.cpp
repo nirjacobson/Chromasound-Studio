@@ -1138,7 +1138,7 @@ torch::Tensor BSON::toTensor(bson_iter_t &b)
     return tensor;
 }
 
-void BSON::fromModel(bson_t *dst, const Model &model)
+void BSON::fromModel(bson_t *dst, const MusicBrain::Model &model)
 {
     const Tensors& W1 = std::get<0>(model);
     const Tensors& b1 = std::get<1>(model);
@@ -1268,7 +1268,7 @@ void BSON::fromModel(bson_t *dst, const Model &model)
     bson_append_array_end(dst, &b_layerSizes);
 }
 
-Model BSON::toModel(bson_iter_t &bson)
+MusicBrain::Model BSON::toModel(bson_iter_t &bson)
 {
     bson_iter_t W1;
     bson_iter_t b1;
@@ -1345,5 +1345,5 @@ Model BSON::toModel(bson_iter_t &bson)
         }
     }
 
-    return std::make_tuple(v_W1, v_b1, v_W, v_b, v_W2, v_b2, v_classes, v_layerSizes);
+    return MusicBrain::Model(std::make_tuple(v_W1, v_b1, v_W, v_b, v_W2, v_b2, v_classes, v_layerSizes));
 }
