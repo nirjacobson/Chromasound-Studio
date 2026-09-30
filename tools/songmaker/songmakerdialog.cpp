@@ -903,6 +903,13 @@ void SongMakerDialog::models_from_bson(bson_t merged_bson)
         ui->durationsModelWidget->setLayerSizes(std::get<7>(_durationsModel)[0].unbind(0));
     }
 
+    const QSignalBlocker blocker1(ui->octavesComboBox);
+    const QSignalBlocker blocker2(ui->progressionSetComboBox);
+    const QSignalBlocker blocker3(ui->majorRadioButton);
+    const QSignalBlocker blocker4(ui->minorRadioButton);
+    const QSignalBlocker blocker5(ui->melodySetComboBox);
+    const QSignalBlocker blocker6(ui->trainingLevelSlider);
+
     bson_iter_t fields;
     bson_iter_t fieldsChild;
     if (bson_iter_find_descendant(&merged_bson_inner, "fields", &child) && BSON_ITER_HOLDS_DOCUMENT(&child) && bson_iter_recurse(&child, &fields)) {
