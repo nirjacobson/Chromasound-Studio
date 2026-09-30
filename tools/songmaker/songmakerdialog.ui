@@ -470,8 +470,6 @@
     <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
     <addaction name="separator"/>
-    <addaction name="actionClear"/>
-    <addaction name="separator"/>
     <addaction name="actionRandom"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>

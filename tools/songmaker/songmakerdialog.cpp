@@ -16,13 +16,12 @@ SongMakerDialog::SongMakerDialog(QWidget *parent)
 
     connect(ui->actionOpen, &QAction::triggered, this, &SongMakerDialog::openModels);
     connect(ui->actionSave, &QAction::triggered, this, &SongMakerDialog::saveModels);
-    connect(ui->actionClear, &QAction::triggered, this, &SongMakerDialog::clearModels);
     connect(ui->actionRandom, &QAction::triggered, this,  &SongMakerDialog::random);
     ui->actionRandom->setShortcut({QKeySequence("Alt+R")});
     connect(ui->actionClose, &QAction::triggered, this, &QMainWindow::close);
     ui->menubar->setNativeMenuBar(false);
 
-    connect(ui->octavesComboBox, &QComboBox::currentIndexChanged, this, &SongMakerDialog::chordsSelectionChanged);
+    connect(ui->octavesComboBox, &QComboBox::currentTextChanged, this, &SongMakerDialog::chordsSelectionChanged);
 
     connect(ui->actionCPU, &QAction::triggered, this, &SongMakerDialog::cpuSelected);
     connect(ui->actionCUDA, &QAction::triggered, this, &SongMakerDialog::cudaSelected);
@@ -63,7 +62,13 @@ SongMakerDialog::SongMakerDialog(QWidget *parent)
         ui->menuBackend->removeAction(ui->actionCUDA);
     }
     ui->actionCPU->trigger();
-    _retrain = false;
+
+    connect(ui->octavesComboBox, &QComboBox::currentTextChanged, this, &SongMakerDialog::requireRetrain);
+    connect(ui->progressionSetComboBox, &QComboBox::currentTextChanged, this, &SongMakerDialog::requireRetrain);
+    connect(ui->majorRadioButton, &QRadioButton::toggled, this, &SongMakerDialog::requireRetrain);
+    connect(ui->minorRadioButton, &QRadioButton::toggled, this, &SongMakerDialog::requireRetrain);
+    connect(ui->melodySetComboBox, &QComboBox::currentTextChanged, this, &SongMakerDialog::requireRetrain);
+    connect(ui->trainingLevelSlider, &QSlider::valueChanged, this, &SongMakerDialog::requireRetrain);
 }
 
 SongMakerDialog::~SongMakerDialog()
@@ -71,11 +76,10 @@ SongMakerDialog::~SongMakerDialog()
     delete ui;
 }
 
-void SongMakerDialog::chordsSelectionChanged(const int index)
+void SongMakerDialog::chordsSelectionChanged(const QString& chords)
 {
     ui->progressionSetComboBox->clear();
 
-    QString chords = ui->octavesComboBox->currentText();
     QDirListing octavesDirList(":/unison/progressions/", {QString("*%1").arg(chords)});
 
     QString progressionsDirPath = octavesDirList.begin()->filePath();
@@ -85,6 +89,12 @@ void SongMakerDialog::chordsSelectionChanged(const int index)
         QString name = entry.fileName().at(0).toUpper() + entry.fileName().mid(1);
         ui->progressionSetComboBox->addItem(name);
     }
+}
+
+void SongMakerDialog::requireRetrain()
+{
+    ui->retrainCheckBox->setChecked(true);
+    ui->retrainCheckBox->setDisabled(true);
 }
 
 void SongMakerDialog::okButtonClicked()
@@ -350,8 +360,7 @@ void SongMakerDialog::okButtonClicked()
         QFileInfo folderInfo = QFileInfo(folder);
         if (folderInfo.isDir()) {
             disable_fields();
-            if (_retrain || ui->retrainCheckBox->isChecked()) {
-                _retrain = false;
+            if (ui->retrainCheckBox->isChecked()) {
                 clearModels();
             }
 
@@ -957,7 +966,6 @@ void SongMakerDialog::random()
     }
     ui->drumTrackComboBox->setCurrentText(ui->drumTrackComboBox->itemText((torch::rand(1).item().toFloat() * ui->drumTrackComboBox->count())));
 
-    _retrain = true;
     ui->okPushButton->click();
 }
 
@@ -1007,7 +1015,10 @@ void SongMakerDialog::clearModels()
 void SongMakerDialog::cpuSelected()
 {
     _backend = MusicBrain::Backend::CPU;
-    _retrain = true;
+
+    _chordsModel = _chordsModel.cpu();
+    _phrasesModel = _phrasesModel.cpu();
+    _durationsModel = _durationsModel.cpu();
 
     ui->actionCUDA->setChecked(false);
 }
@@ -1015,7 +1026,10 @@ void SongMakerDialog::cpuSelected()
 void SongMakerDialog::cudaSelected()
 {
     _backend = MusicBrain::Backend::CUDA;
-    _retrain = true;
+
+    _chordsModel = _chordsModel.cuda();
+    _phrasesModel = _phrasesModel.cuda();
+    _durationsModel = _durationsModel.cuda();
 
     ui->actionCPU->setChecked(false);
 }

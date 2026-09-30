@@ -47,7 +47,9 @@ public:
     MainWindow* _mainWindow;
 
 private slots:
-    void chordsSelectionChanged(const int index);
+    void chordsSelectionChanged(const QString& chords);
+    void requireRetrain();
+
     void okButtonClicked();
     void random();
     void openModels();
@@ -69,8 +71,6 @@ private:
 
     MusicBrain::Backend _backend;
     QList<QIcon> _backendIcons;
-
-    bool _retrain;
 
     std::pair<torch::Tensor, torch::Tensor> build_chords_dataset(const std::string& path);
     std::pair<torch::Tensor, torch::Tensor> build_phrases_dataset(const std::string& path);
