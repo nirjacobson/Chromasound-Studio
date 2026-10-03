@@ -6,12 +6,27 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(CUDA_TOOLKIT_ROOT_DIR "/usr/local/cuda")
-set(CMAKE_CUDA_COMPILER "/usr/local/cuda/bin/nvcc")
-
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(WIN32_ARM OFF)
+
+if (LINUX)
+    set(CUDA_TOOLKIT_ROOT_DIR "/usr/local/cuda")
+    set(CMAKE_CUDA_COMPILER "/usr/local/cuda/bin/nvcc")
+elseif(WIN32 AND NOT WIN32_ARM)
+    set(CUDA_TOOLKIT_ROOT_DIR "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.3")
+    set(CMAKE_CUDA_COMPILER "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.3/bin/nvcc.exe")
+endif()
+
+if (WIN32)
+    set(CMAKE_PREFIX_PATH "C:/Qt-6.12.0" ${CMAKE_PREFIX_PATH})
+    if (WIN32_ARM)
+        set(CMAKE_PREFIX_PATH "C:/Users/nir/AppData/Local/Programs/Python/Python314-arm64/Lib/site-packages/torch/share/cmake" ${CMAKE_PREFIX_PATH})
+    else()
+        set(CMAKE_PREFIX_PATH "C:/Users/nirja/AppData/Local/Python/pythoncore-3.14-64/Lib/site-packages/torch/share/cmake" ${CMAKE_PREFIX_PATH})
+    endif()
+endif()
+
 
 find_package(CUDAToolkit REQUIRED)
 find_package(Torch REQUIRED)
@@ -25,12 +40,13 @@ if (WIN32)
         include_directories("C:/Program Files (Arm)/mongo-c-driver/include/libbson-1.0"
                             "C:/Program Files (Arm)/portaudio/include"
                             "C:/Program Files (Arm)/portmidi/include"
-                            "C:/Program Files (Arm)/zlib/include")
+                            "C:/Program Files (Arm)/zlib/include"
+                            "C:/zlib/build_arm64")
     else()
         include_directories("C:/Program Files/mongo-c-driver/include/libbson-1.0"
                             "C:/Program Files/portaudio/include"
                             "C:/Program Files/portmidi/include"
-                            "C:/Program Files/zlib/include")
+                            "C:/zlib")
     endif()
 elseif (APPLE)
     include_directories("/System/Volumes/Data/usr/local/include"
@@ -225,6 +241,8 @@ set(PROJECT_SOURCES
     formats/midi/util.h
     formats/midi/midi.h
     formats/midi/midi.cpp
+    formats/opm.h
+    formats/opm.cpp
     commands/setchanneltypecommand.h
     commands/setchanneltypecommand.cpp
     commands/setpcmchannelsettingscommand.h
@@ -557,6 +575,14 @@ set(PROJECT_SOURCES
     commands/setprojectbeatsperbarcommand.cpp
     commands/setprojectmodecommand.h
     commands/setprojectmodecommand.cpp
+    tools/songmaker/songmakerdialog.h
+    tools/songmaker/songmakerdialog.cpp
+    tools/songmaker/songmakerdialog.ui
+    tools/songmaker/modeldisplaywidget.h
+    tools/songmaker/modeldisplaywidget.cpp
+    tools/songmaker/modelwidget.h
+    tools/songmaker/modelwidget.cpp
+    tools/songmaker/modelwidget.ui
     tools/songmaker/musicbrain.cpp
     tools/songmaker/musicbrain.h
 )
@@ -589,12 +615,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
             MANUAL_FINALIZATION
             ${PROJECT_SOURCES}
             resources.qrc
-            tools/songmaker/songmakerdialog.h tools/songmaker/songmakerdialog.cpp tools/songmaker/songmakerdialog.ui
-            formats/opm.h formats/opm.cpp
-            tools/songmaker/modeldisplaywidget.h tools/songmaker/modeldisplaywidget.cpp
-            tools/songmaker/modelwidget.h tools/songmaker/modelwidget.cpp tools/songmaker/modelwidget.ui
-
-
         )
     elseif (APPLE)
         set(MACOSX_BUNDLE_ICON_FILE chromasound-studio.icns)
@@ -641,13 +661,16 @@ elseif (WIN32)
                                                     "C:/Program Files (Arm)/mongo-c-driver/lib/bson-1.0.lib"
                                                     "C:/Program Files (Arm)/portaudio/lib/portaudio_x64.lib"
                                                     "C:/Program Files (Arm)/portmidi/lib/portmidi.lib"
-                                                    "C:/Program Files (Arm)/zlib/lib/zlib.lib")
+                                                    ${TORCH_LIBRARIES}
+                                                    "C:/Program Files (Arm)/zlib/lib/z.lib")
     else()
         target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
                                                     "C:/Program Files/mongo-c-driver/lib/bson-1.0.lib"
                                                     "C:/Program Files/portaudio/lib/portaudio_x64.lib"
                                                     "C:/Program Files/portmidi/lib/portmidi.lib"
-                                                    "C:/Program Files/zlib/lib/zlib.lib")
+                                                    ${TORCH_LIBRARIES}
+                                                    CUDA::cudart
+                                                    "C:/zlib-1.3.2/build-x64/Release/z.lib")
     endif()
 elseif (APPLE)
     target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets

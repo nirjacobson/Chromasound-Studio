@@ -865,7 +865,7 @@ void SongMakerDialog::models_to_bson(bson_t* dst)
     bson_append_document_end(dst, &b_fields);
 }
 
-void SongMakerDialog::models_from_bson(bson_t merged_bson)
+void SongMakerDialog::models_from_bson(const bson_t& merged_bson)
 {
     bson_iter_t merged_bson_inner;
     bson_iter_t child;

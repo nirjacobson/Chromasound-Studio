@@ -84,7 +84,7 @@ private:
     void enable_fields();
 
     void models_to_bson(bson_t *dst);
-    void models_from_bson(bson_t merged_bson);
+    void models_from_bson(const bson_t& merged_bson);
 
     // QWidget interface
 protected:
