@@ -670,7 +670,7 @@ elseif (WIN32)
                                                     "C:/Program Files/portmidi/lib/portmidi.lib"
                                                     ${TORCH_LIBRARIES}
                                                     CUDA::cudart
-                                                    "C:/zlib-1.3.2/build-x64/Release/z.lib")
+                                                    "C:/zlib/build-x64/Release/z.lib")
     endif()
 elseif (APPLE)
     target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
