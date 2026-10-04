@@ -541,6 +541,9 @@
    </property>
   </action>
   <action name="actionMetal">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../../resources.qrc">
      <normaloff>:/icons/metal.png</normaloff>:/icons/metal.png</iconset>
