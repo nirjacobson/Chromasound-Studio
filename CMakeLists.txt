@@ -9,6 +9,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(WIN32_ARM OFF)
+set(WIN32_TORCH OFF)
 
 if (LINUX)
     set(CUDA_TOOLKIT_ROOT_DIR "/usr/local/cuda")
@@ -22,8 +23,10 @@ if (WIN32)
     set(CMAKE_PREFIX_PATH "C:/Qt-6.12.0" ${CMAKE_PREFIX_PATH})
     if (WIN32_ARM)
         set(CMAKE_PREFIX_PATH "C:/Users/nir/AppData/Local/Programs/Python/Python314-arm64/Lib/site-packages/torch/share/cmake" ${CMAKE_PREFIX_PATH})
-    else()
+    elseif(WIN32_TORCH)
         set(CMAKE_PREFIX_PATH "C:/Users/nirja/AppData/Local/Python/pythoncore-3.14-64/Lib/site-packages/torch/share/cmake" ${CMAKE_PREFIX_PATH})
+    else()
+        set(CMAKE_PREFIX_PATH "C:/torch-nocuda-env/Lib/site-packages/torch/share/cmake" ${CMAKE_PREFIX_PATH})
     endif()
 endif()
 
@@ -663,7 +666,7 @@ elseif (WIN32)
                                                     "C:/Program Files (Arm)/portmidi/lib/portmidi.lib"
                                                     ${TORCH_LIBRARIES}
                                                     "C:/Program Files (Arm)/zlib/lib/z.lib")
-    else()
+    elseif(WIN32_TORCH)
         target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
                                                     "C:/Program Files/mongo-c-driver/lib/bson-1.0.lib"
                                                     "C:/Program Files/portaudio/lib/portaudio_x64.lib"
@@ -671,6 +674,13 @@ elseif (WIN32)
                                                     ${TORCH_LIBRARIES}
                                                     CUDA::cudart
                                                     "C:/zlib/build-x64/Release/z.lib")
+    else()
+        target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
+                "C:/Program Files/mongo-c-driver/lib/bson-1.0.lib"
+                "C:/Program Files/portaudio/lib/portaudio_x64.lib"
+                "C:/Program Files/portmidi/lib/portmidi.lib"
+                ${TORCH_LIBRARIES}
+                "C:/zlib/build-x64/Release/z.lib")
     endif()
 elseif (APPLE)
     target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
