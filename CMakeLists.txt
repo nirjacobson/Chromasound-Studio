@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(Chromasound-Studio VERSION 0.1 LANGUAGES CXX CUDA)
+if (APPLE)
+    project(Chromasound-Studio VERSION 0.1 LANGUAGES CXX)
+else()
+    project(Chromasound-Studio VERSION 0.1 LANGUAGES CXX CUDA)
+endif()
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -9,7 +13,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(WIN32_ARM OFF)
-set(WIN32_TORCH OFF)
+set(WIN32_CUDA OFF)
 
 if (LINUX)
     set(CUDA_TOOLKIT_ROOT_DIR "/usr/local/cuda")
@@ -23,15 +27,20 @@ if (WIN32)
     set(CMAKE_PREFIX_PATH "C:/Qt-6.12.0" ${CMAKE_PREFIX_PATH})
     if (WIN32_ARM)
         set(CMAKE_PREFIX_PATH "C:/Users/nir/AppData/Local/Programs/Python/Python314-arm64/Lib/site-packages/torch/share/cmake" ${CMAKE_PREFIX_PATH})
-    elseif(WIN32_TORCH)
+    elseif(WIN32_CUDA)
         set(CMAKE_PREFIX_PATH "C:/Users/nirja/AppData/Local/Python/pythoncore-3.14-64/Lib/site-packages/torch/share/cmake" ${CMAKE_PREFIX_PATH})
     else()
         set(CMAKE_PREFIX_PATH "C:/torch-nocuda-env/Lib/site-packages/torch/share/cmake" ${CMAKE_PREFIX_PATH})
     endif()
+elseif (APPLE)
+    set(CMAKE_PREFIX_PATH "/usr/local/Qt-6.12.0" ${CMAKE_PREFIX_PATH})
+    set(CMAKE_PREFIX_PATH "/Users/nir/GitHub/pytorch-venv/lib/python3.14/site-packages/torch/share/cmake" ${CMAKE_PREFIX_PATH})
 endif()
 
+if (NOT APPLE)
+    find_package(CUDAToolkit REQUIRED)
+endif()
 
-find_package(CUDAToolkit REQUIRED)
 find_package(Torch REQUIRED)
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
@@ -53,7 +62,9 @@ if (WIN32)
     endif()
 elseif (APPLE)
     include_directories("/System/Volumes/Data/usr/local/include"
-                        "/System/Volumes/Data/usr/local/include/libbson-1.0")
+                        "/System/Volumes/Data/usr/local/include/libbson-1.0"
+                        "/Users/nir/GitHub/pytorch-venv/lib/python3.14/site-packages/torch/include/"
+                        "/Users/nir/GitHub/pytorch-venv/lib/python3.14/site-packages/torch/include/torch/csrc/api/include")
 endif()
 
 
@@ -666,7 +677,7 @@ elseif (WIN32)
                                                     "C:/Program Files (Arm)/portmidi/lib/portmidi.lib"
                                                     ${TORCH_LIBRARIES}
                                                     "C:/Program Files (Arm)/zlib/lib/z.lib")
-    elseif(WIN32_TORCH)
+    elseif(WIN32_CUDA)
         target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
                                                     "C:/Program Files/mongo-c-driver/lib/bson-1.0.lib"
                                                     "C:/Program Files/portaudio/lib/portaudio_x64.lib"
@@ -687,7 +698,12 @@ elseif (APPLE)
                                                 "/System/Volumes/Data/usr/local/lib/libbson-1.0.dylib"
                                                 "/System/Volumes/Data/usr/local/lib/libportaudio.dylib"
                                                 "/System/Volumes/Data/usr/local/lib/libportmidi.dylib"
-                                                "/System/Volumes/Data/usr/local/lib/libz.dylib")
+                                                "/System/Volumes/Data/usr/local/lib/libz.dylib"
+                                                "/Users/nir/GitHub/pytorch-merged/libtorch.dylib"
+                                                "/Users/nir/GitHub/pytorch-merged/libtorch_cpu.dylib"
+                                                "/Users/nir/GitHub/pytorch-merged/libc10.dylib"
+                                                "/Users/nir/GitHub/pytorch-merged/libshm.dylib"
+                                                "/Users/nir/GitHub/pytorch-merged/libtorch_global_deps.dylib")
 endif()
 
 

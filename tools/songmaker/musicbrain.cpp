@@ -128,6 +128,68 @@ MusicBrain::Model MusicBrain::Model::cuda() const
     return MusicBrain::Model(std::make_tuple(W1, b1, W, b, W2, b2, classes, layerSizes));
 }
 
+MusicBrain::Model MusicBrain::Model::mps() const
+{
+    const Tensors& _W1 = std::get<0>(*this);
+    const Tensors& _b1 = std::get<1>(*this);
+    const Tensors& _W = std::get<2>(*this);
+    const Tensors& _b = std::get<3>(*this);
+    const Tensors& _W2 = std::get<4>(*this);
+    const Tensors& _b2 = std::get<5>(*this);
+    const Tensors& _classes = std::get<6>(*this);
+    const Tensors& _layerSizes = std::get<7>(*this);
+
+    Tensors W1;
+    for (const torch::Tensor& t : _W1)
+    {
+        W1.push_back(t.to("mps"));
+    }
+
+    Tensors b1;
+    for (const torch::Tensor& t : _b1)
+    {
+        b1.push_back(t.to("mps"));
+    }
+
+    Tensors W;
+    for (const torch::Tensor& t : _W)
+    {
+        W.push_back(t.to("mps"));
+    }
+
+    Tensors b;
+    for (const torch::Tensor& t : _b)
+    {
+        b.push_back(t.to("mps"));
+    }
+
+    Tensors W2;
+    for (const torch::Tensor& t : _W2)
+    {
+        W2.push_back(t.to("mps"));
+    }
+
+    Tensors b2;
+    for (const torch::Tensor& t : _b2)
+    {
+        b2.push_back(t.to("mps"));
+    }
+
+    Tensors classes;
+    for (const torch::Tensor& t : _classes)
+    {
+        classes.push_back(t.to("mps"));
+    }
+
+    Tensors layerSizes;
+    for (const torch::Tensor& t : _layerSizes)
+    {
+        layerSizes.push_back(t.to("mps"));
+    }
+
+    return MusicBrain::Model(std::make_tuple(W1, b1, W, b, W2, b2, classes, layerSizes));
+}
+
 torch::Tensor MusicBrain::Worker::moved_tensor(const torch::Tensor& t)
 {
     switch (_backend)
@@ -136,6 +198,8 @@ torch::Tensor MusicBrain::Worker::moved_tensor(const torch::Tensor& t)
         return t.cpu();
     case CUDA:
         return t.cuda();
+    case MPS:
+        return t.to("mps");
     default:
         return t;
     }

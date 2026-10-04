@@ -25,6 +25,7 @@ SongMakerDialog::SongMakerDialog(QWidget *parent)
 
     connect(ui->actionCPU, &QAction::triggered, this, &SongMakerDialog::cpuSelected);
     connect(ui->actionCUDA, &QAction::triggered, this, &SongMakerDialog::cudaSelected);
+    connect(ui->actionMetal, &QAction::triggered, this, &SongMakerDialog::metalSelected);
 
     QDirListing octavesDirList(":/unison/progressions/");
 
@@ -60,6 +61,10 @@ SongMakerDialog::SongMakerDialog(QWidget *parent)
 
     if (!torch::cuda::is_available()) {
         ui->menuBackend->removeAction(ui->actionCUDA);
+    }
+    if (!torch::mps::is_available())
+    {
+        ui->menuBackend->removeAction(ui->actionMetal);
     }
     ui->actionCPU->trigger();
 
@@ -878,6 +883,9 @@ void SongMakerDialog::models_from_bson(const bson_t& merged_bson)
         if (_backend == MusicBrain::Backend::CUDA)
         {
             _chordsModel = _chordsModel.cuda();
+        } else if (_backend == MusicBrain::Backend::MPS)
+        {
+            _chordsModel = _chordsModel.mps();
         }
 
         ui->chordsModelWidget->setLayerSizes(std::get<7>(_chordsModel)[0].unbind(0));
@@ -888,6 +896,9 @@ void SongMakerDialog::models_from_bson(const bson_t& merged_bson)
         if (_backend == MusicBrain::Backend::CUDA)
         {
             _phrasesModel = _phrasesModel.cuda();
+        } else if (_backend == MusicBrain::Backend::MPS)
+        {
+            _phrasesModel = _phrasesModel.mps();
         }
 
         ui->phrasesModelWidget->setLayerSizes(std::get<7>(_phrasesModel)[0].unbind(0));
@@ -898,6 +909,9 @@ void SongMakerDialog::models_from_bson(const bson_t& merged_bson)
         if (_backend == MusicBrain::Backend::CUDA)
         {
             _durationsModel = _durationsModel.cuda();
+        } else if (_backend == MusicBrain::Backend::MPS)
+        {
+            _durationsModel = _durationsModel.mps();
         }
 
         ui->durationsModelWidget->setLayerSizes(std::get<7>(_durationsModel)[0].unbind(0));
@@ -1028,6 +1042,7 @@ void SongMakerDialog::cpuSelected()
     _durationsModel = _durationsModel.cpu();
 
     ui->actionCUDA->setChecked(false);
+    ui->actionMetal->setChecked(false);
 }
 
 void SongMakerDialog::cudaSelected()
@@ -1039,6 +1054,19 @@ void SongMakerDialog::cudaSelected()
     _durationsModel = _durationsModel.cuda();
 
     ui->actionCPU->setChecked(false);
+    ui->actionMetal->setChecked(false);
+}
+
+void SongMakerDialog::metalSelected()
+{
+    _backend = MusicBrain::Backend::MPS;
+
+    _chordsModel = _chordsModel.mps();
+    _phrasesModel = _phrasesModel.mps();
+    _durationsModel = _durationsModel.mps();
+
+    ui->actionCPU->setChecked(false);
+    ui->actionCUDA->setChecked(false);
 }
 
 void SongMakerDialog::lossUpdated(std::vector<at::Tensor> losses)

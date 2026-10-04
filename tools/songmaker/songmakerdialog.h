@@ -58,6 +58,7 @@ private slots:
     void lossUpdated(std::vector<torch::Tensor> losses);
     void cpuSelected();
     void cudaSelected();
+    void metalSelected();
 
 private:
     Ui::SongMakerDialog *ui;

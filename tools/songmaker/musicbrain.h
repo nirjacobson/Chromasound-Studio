@@ -18,7 +18,8 @@ namespace MusicBrain
 
     enum Backend {
         CPU,
-        CUDA
+        CUDA,
+        MPS
     };
 
     enum Chord {
@@ -41,6 +42,7 @@ namespace MusicBrain
     public:
         Model cpu() const;
         Model cuda() const;
+        Model mps() const;
 
         bool operator==(const Model& b) const
         {

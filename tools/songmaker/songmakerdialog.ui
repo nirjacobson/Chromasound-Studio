@@ -480,6 +480,7 @@
     </property>
     <addaction name="actionCPU"/>
     <addaction name="actionCUDA"/>
+    <addaction name="actionMetal"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuBackend"/>
@@ -537,6 +538,15 @@
    </property>
    <property name="text">
     <string>CUDA</string>
+   </property>
+  </action>
+  <action name="actionMetal">
+   <property name="icon">
+    <iconset resource="../../resources.qrc">
+     <normaloff>:/icons/metal.png</normaloff>:/icons/metal.png</iconset>
+   </property>
+   <property name="text">
+    <string>Metal</string>
    </property>
   </action>
  </widget>
