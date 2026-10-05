@@ -1,7 +1,7 @@
 #ifndef MUSICBRAIN_H
 #define MUSICBRAIN_H
 
-#include <QObject>
+#include <QThread>
 
 #undef slots
 #include <torch/torch.h>
@@ -50,12 +50,33 @@ namespace MusicBrain
         }
     };
 
-    class Worker : public QObject
+    struct TrainingArgs
+    {
+        torch::Tensor classes;
+        torch::Tensor ll_sizes;
+        int trainingIters;
+        torch::Tensor X;
+        torch::Tensor Y;
+    };
+
+    struct GeneratingArgs
+    {
+        Model* model;
+        int bars;
+    };
+
+    struct GeneratingNotesArgs
+    {
+        std::vector<std::pair<torch::Tensor, torch::Tensor>> chords_phrases;
+        torch::Tensor times;
+    };
+
+    class Worker : public QThread
     {
         Q_OBJECT
     public:
         Worker(const Backend backend, QObject* parent = nullptr)
-            : QObject(parent)
+            : QThread(parent)
             , _backend(backend)
         { }
     protected:
@@ -83,9 +104,31 @@ namespace MusicBrain
             : Worker(backend, parent)
         { }
 
-        void doTrain(const torch::Tensor &classes, const at::Tensor &ll_sizes, const int iters, const torch::Tensor &X, const torch::Tensor &Y);
+        void doTrain(const TrainingArgs& args)
+        {
+            _classes = &args.classes;
+            _ll_sizes = &args.ll_sizes;
+            _iters = args.trainingIters;
+            _X = &args.X;
+            _Y = &args.Y;
+
+            start();
+        }
+
+    protected:
+        void run() override
+        {
+            MusicBrain::Model result = train(*_classes, *_ll_sizes, _iters, *_X, *_Y);
+            emit finished(result);
+        }
 
     private:
+        const torch::Tensor* _classes;
+        const torch::Tensor* _ll_sizes;
+        int _iters;
+        const torch::Tensor* _X;
+        const torch::Tensor* _Y;
+
         void updateProgress(const int progress) {
             emit progressUpdated(progress);
         }
@@ -94,13 +137,8 @@ namespace MusicBrain
 
     signals:
         void lossUpdate(const std::vector<torch::Tensor> losses);
-
-    public:
-
-    signals:
         void progressUpdated(const int progress);
         void finished(Result result);
-
     };
 
     class ChordGenerationWorker : public GenerationWorker {
@@ -115,13 +153,25 @@ namespace MusicBrain
 
         typedef std::vector<torch::Tensor> Result;
 
-        void doGenerateChords(const Model &model, const int bars) {
-            Result result = generate_chords(model, bars);
+        void doGenerateChords(const GeneratingArgs& args) {
+            _model = args.model;
+            _bars = args.bars;
+
+            start();
+        }
+
+    protected:
+        void run() override
+        {
+            Result result = generate_chords(*_model, _bars);
 
             emit finished(result);
         }
 
     private:
+        const Model* _model;
+        int _bars;
+
         void updateProgress(const int progress) {
             if (progress != _progress) {
                 emit progressUpdated(progress);
@@ -149,13 +199,25 @@ namespace MusicBrain
 
         typedef torch::Tensor Result;
 
-        void doGeneratePhrases(const Model &model, const int bars) {
-            Result result = generate_phrases(model, bars);
+        void doGeneratePhrases(const GeneratingArgs& args) {
+            _model = args.model;
+            _bars = args.bars;
+
+            start();
+        }
+
+    protected:
+        void run() override
+        {
+            Result result = generate_phrases(*_model, _bars);
 
             emit finished(result);
         }
 
     private:
+        const Model* _model;
+        int _bars;
+
         void updateProgress(const int progress) {
             if (progress != _progress) {
                 emit progressUpdated(progress);
@@ -182,13 +244,25 @@ namespace MusicBrain
 
         typedef torch::Tensor Result;
 
-        void doGenerateTimes(const Model &model, const int bars) {
-            Result result = generate_times(model, bars);
+        void doGenerateTimes(const GeneratingArgs& args) {
+            _model = args.model;
+            _bars = args.bars;
+
+            start();
+        }
+
+    protected:
+        void run() override
+        {
+            Result result = generate_times(*_model, _bars);
 
             emit finished(result);
         }
 
     private:
+        const Model* _model;
+        int _bars;
+
         void updateProgress(const int progress) {
             if (progress != _progress) {
                 emit progressUpdated(progress);
@@ -215,13 +289,25 @@ namespace MusicBrain
 
         typedef torch::Tensor Result;
 
-        void doGenerateNotes(const std::vector<std::pair<torch::Tensor, torch::Tensor>>& chords_phrases, const torch::Tensor& times) {
-            Result result = generate_notes(chords_phrases, times);
+        void doGenerateNotes(const GeneratingNotesArgs& args) {
+            _chords_phrases = &args.chords_phrases;
+            _times = &args.times;
+
+            start();
+        }
+
+    protected:
+        void run() override
+        {
+            Result result = generate_notes(*_chords_phrases, *_times);
 
             emit finished(result);
         }
 
     private:
+        const std::vector<std::pair<torch::Tensor, torch::Tensor>>* _chords_phrases;
+        const torch::Tensor* _times;
+
         void updateProgress(const int progress) {
             emit progressUpdated(progress);
         }

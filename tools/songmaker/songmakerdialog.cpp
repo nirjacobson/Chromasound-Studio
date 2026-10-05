@@ -107,8 +107,6 @@ void SongMakerDialog::okButtonClicked()
     ui->taskProgressBar->setValue(0);
     ui->totalProgressBar->setValue(0);
 
-    QThread* workerThread = new QThread(this);
-
     int trainingIters = 0;
     switch (ui->trainingLevelSlider->value()) {
     case 0:
@@ -128,10 +126,10 @@ void SongMakerDialog::okButtonClicked()
         break;
     }
 
-    auto lamb = [this,workerThread](MusicBrain::Model chordsModel, MusicBrain::Model phrasesModel, MusicBrain::Model timesModel) {
+    auto lamb = [this](MusicBrain::Model chordsModel, MusicBrain::Model phrasesModel, MusicBrain::Model timesModel) {
         auto generatingWorkerChords = new MusicBrain::ChordGenerationWorker(_backend);
         connect(generatingWorkerChords, &MusicBrain::ChordGenerationWorker::progressUpdated, ui->taskProgressBar, &QProgressBar::setValue);
-        connect(generatingWorkerChords, &MusicBrain::ChordGenerationWorker::finished, this, [this, workerThread, generatingWorkerChords, phrasesModel, timesModel](std::vector<torch::Tensor> chords){
+        connect(generatingWorkerChords, &MusicBrain::ChordGenerationWorker::finished, this, [this, generatingWorkerChords, phrasesModel, timesModel](std::vector<torch::Tensor> chords){
             delete generatingWorkerChords;
 
             QList<Track::Item*> items;
@@ -204,19 +202,18 @@ void SongMakerDialog::okButtonClicked()
 
             auto generatingWorkerPhrases = new MusicBrain::PhraseGenerationWorker(_backend);
             connect(generatingWorkerPhrases, &MusicBrain::PhraseGenerationWorker::progressUpdated, ui->taskProgressBar, &QProgressBar::setValue);
-            connect(generatingWorkerPhrases, &MusicBrain::PhraseGenerationWorker::finished, this, [this, workerThread, generatingWorkerPhrases, chords, phrasesModel, timesModel](torch::Tensor phrases){
+            connect(generatingWorkerPhrases, &MusicBrain::PhraseGenerationWorker::finished, this, [this, generatingWorkerPhrases, chords, phrasesModel, timesModel](torch::Tensor phrases){
                 delete generatingWorkerPhrases;
                 auto generatingWorkerTimes = new MusicBrain::TimeGenerationWorker(_backend);
 
                 connect(generatingWorkerTimes, &MusicBrain::TimeGenerationWorker::progressUpdated, ui->taskProgressBar, &QProgressBar::setValue);
-                connect(generatingWorkerTimes, &MusicBrain::TimeGenerationWorker::finished, this, [this, workerThread, generatingWorkerTimes, chords, phrasesModel, phrases](torch::Tensor times) {
+                connect(generatingWorkerTimes, &MusicBrain::TimeGenerationWorker::finished, this, [this, generatingWorkerTimes, chords, phrasesModel, phrases](torch::Tensor times) {
                     delete generatingWorkerTimes;
                     auto chords_phrases = phrases_by_chord(chords, phrases);
                     auto generatingWorkerNotes = new MusicBrain::NoteGenerationWorker(_backend);
                     connect(generatingWorkerNotes, &MusicBrain::NoteGenerationWorker::progressUpdated, ui->taskProgressBar, &QProgressBar::setValue);
-                    connect(generatingWorkerNotes, &MusicBrain::NoteGenerationWorker::finished, this, [this, workerThread, generatingWorkerNotes, chords, phrasesModel](torch::Tensor melody) {
+                    connect(generatingWorkerNotes, &MusicBrain::NoteGenerationWorker::finished, this, [this, generatingWorkerNotes, chords, phrasesModel](torch::Tensor melody) {
                         delete generatingWorkerNotes;
-                        delete workerThread;
                         ui->totalProgressBar->setValue(100);
 
                         QList<Track::Item*> items;
@@ -335,24 +332,36 @@ void SongMakerDialog::okButtonClicked()
                     });
 
                     ui->totalProgressBar->setValue(84);
-                    generatingWorkerNotes->moveToThread(workerThread);
                     ui->statusbar->showMessage("Generating melody...");
-                    generatingWorkerNotes->doGenerateNotes(chords_phrases, times);
+                    _generatingNotesArgs = {
+                        chords_phrases,
+                        times
+                    };
+                    generatingWorkerNotes->doGenerateNotes(_generatingNotesArgs);
                 });
                 ui->totalProgressBar->setValue(70);
-                generatingWorkerTimes->moveToThread(workerThread);
                 ui->statusbar->showMessage("Generating durations...");
-                generatingWorkerTimes->doGenerateTimes(timesModel, ui->barsSpinBox->value());
+                _generatingArgs = {
+                    &_durationsModel,
+                    ui->barsSpinBox->value()
+                };
+                generatingWorkerTimes->doGenerateTimes(_generatingArgs);
             });
             ui->totalProgressBar->setValue(56);
-            generatingWorkerPhrases->moveToThread(workerThread);
             ui->statusbar->showMessage("Generating phrases...");
-            generatingWorkerPhrases->doGeneratePhrases(phrasesModel, ui->barsSpinBox->value());
+            _generatingArgs = {
+                &_phrasesModel,
+                ui->barsSpinBox->value()
+            };
+            generatingWorkerPhrases->doGeneratePhrases(_generatingArgs);
         });
         ui->totalProgressBar->setValue(42);
-        generatingWorkerChords->moveToThread(workerThread);
         ui->statusbar->showMessage("Generating chords...");
-        generatingWorkerChords->doGenerateChords(chordsModel, ui->barsSpinBox->value());
+        _generatingArgs = {
+            &_chordsModel,
+            ui->barsSpinBox->value()
+        };
+        generatingWorkerChords->doGenerateChords(_generatingArgs);
     };
 
     QString path = QFile(ui->octavesComboBox->currentText()).exists()
@@ -375,7 +384,7 @@ void SongMakerDialog::okButtonClicked()
                 auto trainingWorkerChords = new MusicBrain::TrainingWorker(_backend);
                 connect(trainingWorkerChords, &MusicBrain::TrainingWorker::progressUpdated, ui->taskProgressBar, &QProgressBar::setValue);
                 connect(trainingWorkerChords, &MusicBrain::TrainingWorker::lossUpdate, this, &SongMakerDialog::lossUpdated);
-                connect(trainingWorkerChords, &MusicBrain::TrainingWorker::finished, this, [this, lamb, workerThread, trainingWorkerChords, trainingIters](MusicBrain::Model chordsModel){
+                connect(trainingWorkerChords, &MusicBrain::TrainingWorker::finished, this, [this, lamb, trainingWorkerChords, trainingIters](MusicBrain::Model chordsModel){
                     _chordsModel = chordsModel;
                     delete trainingWorkerChords;
                     QString melodiesPath = QFile(ui->melodySetComboBox->currentText()).exists()
@@ -388,32 +397,50 @@ void SongMakerDialog::okButtonClicked()
                         auto trainingWorkerPhrases = new MusicBrain::TrainingWorker(_backend);
                         connect(trainingWorkerPhrases, &MusicBrain::TrainingWorker::progressUpdated, ui->taskProgressBar, &QProgressBar::setValue);
                         connect(trainingWorkerPhrases, &MusicBrain::TrainingWorker::lossUpdate, this, &SongMakerDialog::lossUpdated);
-                        connect(trainingWorkerPhrases, &MusicBrain::TrainingWorker::finished, this, [this, lamb, workerThread, chordsModel, trainingWorkerPhrases, melodiesFolderInfo, trainingIters](MusicBrain::Model phrasesModel) {
+                        connect(trainingWorkerPhrases, &MusicBrain::TrainingWorker::finished, this, [this, lamb, chordsModel, trainingWorkerPhrases, melodiesFolderInfo, trainingIters](MusicBrain::Model phrasesModel) {
                             _phrasesModel = phrasesModel;
                             auto XY = build_times_dataset(melodiesFolderInfo.filePath().toStdString());
                             auto trainingWorkerTimes = new MusicBrain::TrainingWorker(_backend);
                             connect(trainingWorkerTimes, &MusicBrain::TrainingWorker::progressUpdated, ui->taskProgressBar, &QProgressBar::setValue);
                             connect(trainingWorkerTimes, &MusicBrain::TrainingWorker::lossUpdate, this, &SongMakerDialog::lossUpdated);
-                            connect(trainingWorkerTimes, &MusicBrain::TrainingWorker::finished, this, [this, lamb, workerThread, chordsModel, trainingWorkerPhrases, melodiesFolderInfo, phrasesModel](MusicBrain::Model timesModel) {
+                            connect(trainingWorkerTimes, &MusicBrain::TrainingWorker::finished, this, [this, lamb, chordsModel, trainingWorkerPhrases, melodiesFolderInfo, phrasesModel](MusicBrain::Model timesModel) {
                                 _durationsModel = timesModel;
                                 lamb(chordsModel, phrasesModel, timesModel);
                             });
 
                             ui->totalProgressBar->setValue(28);
-                            trainingWorkerTimes->moveToThread(workerThread);
                             ui->statusbar->showMessage("Training note durations...");
-                            trainingWorkerTimes->doTrain(torch::tensor({721}), torch::tensor(ui->durationsModelWidget->layerSizes()), trainingIters, XY.first, XY.second);
+                            _trainingArgs = {
+                                torch::tensor({721}),
+                                torch::tensor(ui->durationsModelWidget->layerSizes()),
+                                trainingIters,
+                                XY.first,
+                                XY.second
+                            };
+                            trainingWorkerTimes->doTrain(_trainingArgs);
                         });
                         ui->totalProgressBar->setValue(14);
-                        trainingWorkerPhrases->moveToThread(workerThread);
                         ui->statusbar->showMessage("Training phrases...");
-                        trainingWorkerPhrases->doTrain(torch::tensor({3, 8, 961, 88, 3}), torch::tensor(ui->phrasesModelWidget->layerSizes()), trainingIters, XY.first, XY.second);
+                        _trainingArgs = {
+                            torch::tensor({3, 8, 961, 88, 3}),
+                            torch::tensor(ui->phrasesModelWidget->layerSizes()),
+                            trainingIters,
+                            XY.first,
+                            XY.second
+                        };
+                        trainingWorkerPhrases->doTrain(_trainingArgs);
                     }
                 });
 
-                trainingWorkerChords->moveToThread(workerThread);
                 ui->statusbar->showMessage("Training chords...");
-                trainingWorkerChords->doTrain(torch::tensor({12, 2, 4, 1921}), torch::tensor(ui->chordsModelWidget->layerSizes()), trainingIters, XY.first, XY.second);
+                _trainingArgs = {
+                    torch::tensor({12, 2, 4, 1921}),
+                    torch::tensor(ui->chordsModelWidget->layerSizes()),
+                    trainingIters,
+                    XY.first,
+                    XY.second
+                };
+                trainingWorkerChords->doTrain(_trainingArgs);
             } else {
                 lamb(_chordsModel, _phrasesModel, _durationsModel);
             }
@@ -806,6 +833,10 @@ void SongMakerDialog::disable_fields()
     ui->actionRandom->setDisabled(true);
     ui->actionClose->setDisabled(true);
 
+    ui->actionCPU->setDisabled(true);
+    ui->actionCUDA->setDisabled(true);
+    ui->actionMetal->setDisabled(true);
+
     ui->octavesComboBox->setDisabled(true);
     ui->progressionSetComboBox->setDisabled(true);
     ui->majorRadioButton->setDisabled(true);
@@ -824,6 +855,10 @@ void SongMakerDialog::enable_fields()
     ui->actionSave->setEnabled(true);
     ui->actionRandom->setEnabled(true);
     ui->actionClose->setEnabled(true);
+
+    ui->actionCPU->setEnabled(true);
+    ui->actionCUDA->setEnabled(true);
+    ui->actionMetal->setEnabled(true);
 
     ui->octavesComboBox->setEnabled(true);
     ui->progressionSetComboBox->setEnabled(true);

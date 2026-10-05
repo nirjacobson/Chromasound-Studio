@@ -70,6 +70,10 @@ private:
     MusicBrain::Model _phrasesModel;
     MusicBrain::Model _durationsModel;
 
+    MusicBrain::TrainingArgs _trainingArgs;
+    MusicBrain::GeneratingArgs _generatingArgs;
+    MusicBrain::GeneratingNotesArgs _generatingNotesArgs;
+
     MusicBrain::Backend _backend;
     QList<QIcon> _backendIcons;
 

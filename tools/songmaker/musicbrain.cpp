@@ -205,11 +205,6 @@ torch::Tensor MusicBrain::Worker::moved_tensor(const torch::Tensor& t)
     }
 }
 
-void MusicBrain::TrainingWorker::doTrain(const torch::Tensor& classes, const torch::Tensor& ll_sizes, const int iters, const torch::Tensor &X, const torch::Tensor &Y) {
-    MusicBrain::Model result = train(classes, ll_sizes, iters, X, Y);
-    emit finished(result);
-}
-
 MusicBrain::Model MusicBrain::TrainingWorker::train(const torch::Tensor classes, const torch::Tensor& ll_sizes, const int iters, const torch::Tensor &x, const at::Tensor &y)
 {
     torch::Tensor Classes = moved_tensor(classes);
