@@ -1,10 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-if (APPLE)
-    project(Chromasound-Studio VERSION 0.1 LANGUAGES CXX)
-else()
-    project(Chromasound-Studio VERSION 0.1 LANGUAGES CXX CUDA)
-endif()
+project(Chromasound-Studio VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
