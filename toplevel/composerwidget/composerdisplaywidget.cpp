@@ -2,5 +2,5 @@
 
 ComposerDisplayWidget::~ComposerDisplayWidget()
 {
-    delete ui;
+
 }
