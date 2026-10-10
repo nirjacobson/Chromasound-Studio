@@ -1,0 +1,26 @@
+Notes & rests vertical placement
+
+Notes
+Whole - 0.500
+Half - 0.853
+Quarter - 0.842
+Eighth - 0.841
+Sixteenth - 0.832
+
+Rests
+Whole - 0.094
+Half - 0.911
+Quarter - 0.5
+Eighth - 0.5
+Sixteenth - 0.5
+
+Symbols
+Sharp - 0.5
+Flat - 0.731
+
+Notes head relative sizes
+Whole - 1.000
+Half - 0.269
+Quarter - 0.247
+Eighth - 0.249
+Sixteenth - 0.255

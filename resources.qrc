@@ -1185,5 +1185,24 @@
         <file>icons/cpu.png</file>
         <file>icons/cuda.svg</file>
         <file>icons/metal.png</file>
+        <file>icons/notation/clefs/bass.svg</file>
+        <file>icons/notation/clefs/treble.svg</file>
+        <file>icons/notation/notes/eigth.svg</file>
+        <file>icons/notation/notes/eigth_head.svg</file>
+        <file>icons/notation/notes/half.svg</file>
+        <file>icons/notation/notes/half_head.svg</file>
+        <file>icons/notation/notes/quarter.svg</file>
+        <file>icons/notation/notes/quarter_head.svg</file>
+        <file>icons/notation/notes/sixteenth.svg</file>
+        <file>icons/notation/notes/sixteenth_head.svg</file>
+        <file>icons/notation/notes/whole.svg</file>
+        <file>icons/notation/rests/eighth.svg</file>
+        <file>icons/notation/rests/half.svg</file>
+        <file>icons/notation/rests/quarter.svg</file>
+        <file>icons/notation/rests/sixteenth.svg</file>
+        <file>icons/notation/rests/whole.svg</file>
+        <file>icons/notation/accidentals/flat.svg</file>
+        <file>icons/notation/accidentals/sharp.svg</file>
+        <file>fonts/FiguredBassMHGPL.otf</file>
     </qresource>
 </RCC>

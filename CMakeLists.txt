@@ -595,6 +595,20 @@ set(PROJECT_SOURCES
     tools/songmaker/modelwidget.ui
     tools/songmaker/musicbrain.cpp
     tools/songmaker/musicbrain.h
+    toplevel/composerwidget/composerdisplaywidget.h
+    toplevel/composerwidget/composerdisplaywidget.cpp
+    toplevel/composerwidget/composerackdialog.h
+    toplevel/composerwidget/composerackdialog.cpp
+    toplevel/composerwidget/composerackdialog.ui
+    toplevel/composerwidget/composerchannelselector.h
+    toplevel/composerwidget/composerchannelselector.cpp
+    toplevel/composerwidget/composerchannelselector.ui
+    toplevel/composerwidget/composerinstrumentsdialog.h
+    toplevel/composerwidget/composerinstrumentsdialog.cpp
+    toplevel/composerwidget/composerinstrumentsdialog.ui
+    toplevel/composerwidget/composerwidget.h
+    toplevel/composerwidget/composerwidget.cpp
+    toplevel/composerwidget/composerwidget.ui
 )
 
 if (LINUX)
