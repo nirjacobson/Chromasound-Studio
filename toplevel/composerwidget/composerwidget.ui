@@ -118,56 +118,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QSpinBox" name="timeSigTopSpinBox">
-         <property name="minimumSize">
-          <size>
-           <width>56</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>56</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="timeDivisionLabel">
-         <property name="font">
-          <font>
-           <pointsize>16</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>/</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSpinBox" name="timeSigBotSpinBox">
-         <property name="minimumSize">
-          <size>
-           <width>56</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>56</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QToolButton" name="mezzoToolButton">
          <property name="minimumSize">
           <size>
@@ -213,8 +163,8 @@
          </property>
          <property name="iconSize">
           <size>
-           <width>8</width>
-           <height>8</height>
+           <width>20</width>
+           <height>20</height>
           </size>
          </property>
          <property name="checkable">
