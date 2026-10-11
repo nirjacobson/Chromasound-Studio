@@ -1208,5 +1208,8 @@
         <file>icons/notation/notes/eighth_noflag.svg</file>
         <file>icons/notation/notes/sixteenth_noflag.svg</file>
         <file>icons/notation/notes/sixteenths_beamed.svg</file>
+        <file>icons/notation/dynamics/forte.svg</file>
+        <file>icons/notation/dynamics/mezzo.svg</file>
+        <file>icons/notation/dynamics/piano.svg</file>
     </qresource>
 </RCC>
