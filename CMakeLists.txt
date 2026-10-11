@@ -73,12 +73,8 @@ set(PROJECT_SOURCES
     toplevel/channelswidget/channelwidget/channelwidget.cpp
     toplevel/channelswidget/channelwidget/channelwidget.h
     toplevel/channelswidget/channelwidget/channelwidget.ui
-    common/led/led.cpp
-    common/led/led.h
     toplevel/channelswidget/channelwidget/prdisplaywidget.cpp
     toplevel/channelswidget/channelwidget/prdisplaywidget.h
-    common/led/rectled.cpp
-    common/led/rectled.h
     toplevel/channelswidget/stepcursorwidget.cpp
     toplevel/channelswidget/stepcursorwidget.h
     toplevel/channelswidget/channelwidget/stepkeyswidget.cpp
@@ -102,23 +98,6 @@ set(PROJECT_SOURCES
     opn/opnoperatorwidget.cpp
     opn/opnoperatorwidget.h
     opn/opnoperatorwidget.ui
-    common/pianowidget.cpp
-    common/pianowidget.h
-    common/ganttwidget/ganttbottomwidget.cpp
-    common/ganttwidget/ganttbottomwidget.h
-    common/ganttwidget/gantteditorwidget.cpp
-    common/ganttwidget/gantteditorwidget.h
-    common/ganttwidget/ganttheaderwidget.cpp
-    common/ganttwidget/ganttheaderwidget.h
-    common/ganttwidget/ganttitem.cpp
-    common/ganttwidget/ganttitem.h
-    common/ganttwidget/ganttleftwidget.cpp
-    common/ganttwidget/ganttleftwidget.h
-    common/ganttwidget/ganttwidget.cpp
-    common/ganttwidget/ganttwidget.h
-    common/ganttwidget/ganttwidget.ui
-    common/ganttwidget/scrollablewidget.cpp
-    common/ganttwidget/scrollablewidget.h
     psg/noisewidget.cpp
     psg/noisewidget.h
     psg/noisewidget.ui
@@ -208,10 +187,6 @@ set(PROJECT_SOURCES
     dialogs/style/styledialog.h
     dialogs/style/styledialog.cpp
     dialogs/style/styledialog.ui
-    common/mdiarea/mdiarea.h
-    common/mdiarea/mdiarea.cpp
-    common/mdiarea/mdisubwindow.h
-    common/mdiarea/mdisubwindow.cpp
     commands/setfmchannelsettingscommand.h
     commands/setfmchannelsettingscommand.cpp
     dialogs/pianorollwidget/pianorollwidget.h
@@ -278,8 +253,41 @@ set(PROJECT_SOURCES
     commands/composite/addpcmchannelcommand.cpp
     commands/composite/addtrackcommand.h
     commands/composite/addtrackcommand.cpp
+    common/led/led.cpp
+    common/led/led.h
+    common/led/rectled.cpp
+    common/led/rectled.h
+    common/mdiarea/mdiarea.h
+    common/mdiarea/mdiarea.cpp
+    common/mdiarea/mdisubwindow.h
+    common/mdiarea/mdisubwindow.cpp
     common/ganttwidget/ganttmarker.h
     common/ganttwidget/ganttmarker.cpp
+    common/ganttwidget/ganttscalewidget.h
+    common/ganttwidget/ganttscalewidget.cpp
+    common/pianowidget.cpp
+    common/pianowidget.h
+    common/ganttwidget/ganttbottomwidget.cpp
+    common/ganttwidget/ganttbottomwidget.h
+    common/ganttwidget/gantteditorwidget.cpp
+    common/ganttwidget/gantteditorwidget.h
+    common/ganttwidget/ganttheaderwidget.cpp
+    common/ganttwidget/ganttheaderwidget.h
+    common/ganttwidget/ganttitem.cpp
+    common/ganttwidget/ganttitem.h
+    common/ganttwidget/ganttleftwidget.cpp
+    common/ganttwidget/ganttleftwidget.h
+    common/ganttwidget/ganttwidget.cpp
+    common/ganttwidget/ganttwidget.h
+    common/ganttwidget/ganttwidget.ui
+    common/ganttwidget/scrollablewidget.cpp
+    common/ganttwidget/scrollablewidget.h
+    common/damagewidget/damagewidget.h
+    common/damagewidget/damagewidget.cpp
+    common/recordiconengine.h
+    common/recordiconengine.cpp
+    common/scalewidget.h
+    common/scalewidget.cpp
     opn/opnwidget.h
     opn/opnwidget.cpp
     opn/opnwidget.ui
@@ -304,8 +312,6 @@ set(PROJECT_SOURCES
     opn/fmlfowidget.ui
     commands/editlfosettingscommand.h
     commands/editlfosettingscommand.cpp
-    common/ganttwidget/ganttscalewidget.h
-    common/ganttwidget/ganttscalewidget.cpp
     dialogs/pianorollwidget/settingschangefooterwidget.h
     dialogs/pianorollwidget/settingschangefooterwidget.cpp
     dialogs/pianorollwidget/settingschangefooterwidget.ui
@@ -549,16 +555,12 @@ set(PROJECT_SOURCES
     pcm/pcmwidgetwindow.ui
     commands/setchannelenabledcommand.h
     commands/setchannelenabledcommand.cpp
-    common/damagewidget/damagewidget.h
-    common/damagewidget/damagewidget.cpp
     dialogs/settings/emulatoroutputdevicesettingswidget.h
     dialogs/settings/emulatoroutputdevicesettingswidget.cpp
     dialogs/settings/emulatoroutputdevicesettingswidget.ui
     dialogs/settings/profilesettingswidget.h
     dialogs/settings/profilesettingswidget.cpp
     dialogs/settings/profilesettingswidget.ui
-    common/recordiconengine.h
-    common/recordiconengine.cpp
     dialogs/pianorollwidget/pianorollquantizationdivisiondialog.h
     dialogs/pianorollwidget/pianorollquantizationdivisiondialog.cpp
     dialogs/pianorollwidget/pianorollquantizationdivisiondialog.ui

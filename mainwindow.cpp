@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     , _midiInput(MIDIInput::instance())
     , _channelsWindow(nullptr)
     , _playlistWindow(nullptr)
+    , _composerWindow(nullptr)
     , _settingsDialogWindow(nullptr)
     , _styleDialogWindow(nullptr)
     , _opnImportDialogWindow(nullptr)
@@ -148,6 +149,7 @@ MainWindow::MainWindow(QWidget *parent, Application* app)
     connect(ui->actionStyles, &QAction::triggered, this, &MainWindow::stylesTriggered);
     connect(ui->actionChannels, &QAction::triggered, this, &MainWindow::showChannelsWindow);
     connect(ui->actionPlaylist, &QAction::triggered, this, &MainWindow::showPlaylistWindow);
+    connect(ui->actionComposer, &QAction::triggered, this, &MainWindow::showComposerWindow);
     connect(ui->actionOPN, &QAction::triggered, this, &MainWindow::opnImportTriggered);
     connect(ui->actionOPL, &QAction::triggered, this, &MainWindow::oplImportTriggered);
     connect(ui->actionMediaPlayer, &QAction::triggered, this, &MainWindow::playerTriggered);
@@ -1398,6 +1400,55 @@ void MainWindow::showPlaylistWindow()
         _playlistWindow = playlistWindow;
     } else {
         _mdiArea->setActiveSubWindow(_playlistWindow);
+    }
+}
+
+void MainWindow::showComposerWindow() {
+    if (_composerWindow == nullptr) {
+        _composerWidget = new ComposerWidget(this, _app);
+
+        MdiSubWindow* composerWindow = new MdiSubWindow(_mdiArea);
+        connect(composerWindow, &MdiSubWindow::closed, this, [&]() {
+            _composerWindow = nullptr;
+        });
+        composerWindow->setAttribute(Qt::WA_DeleteOnClose);
+        composerWindow->setWidget(_composerWidget);
+
+        _mdiArea->addSubWindow(composerWindow);
+        composerWindow->show();
+        _composerWindow = composerWindow;
+    } else {
+        _mdiArea->setActiveSubWindow(_composerWindow);
+    }
+}
+
+void MainWindow::showWindow(QWidget *widget, bool resizable) {
+    auto it = std::ranges::find_if(_otherWindows.begin(), _otherWindows.end(), [widget](MdiSubWindow* w) {
+        return w->widget() == widget;
+    });
+
+    if (it == _otherWindows.end()) {
+        MdiSubWindow* window = new MdiSubWindow(_mdiArea);
+        connect(window, &MdiSubWindow::closed, this, [this,window]() {
+            _otherWindows.removeIf([window](auto w) {
+                return w == window;
+            });
+            window->setWidget(nullptr);
+        });
+        window->setAttribute(Qt::WA_DeleteOnClose);
+        window->setWidget(widget);
+
+        _mdiArea->addSubWindow(window);
+        window->show();
+        _otherWindows.push_back(window);
+
+        if (!resizable) {
+            window->setMinimumSize(window->size());
+            window->setMaximumSize(window->size());
+            window->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint | Qt::WindowSystemMenuHint);
+        }
+    } else {
+        _mdiArea->setActiveSubWindow(*it);
     }
 }
 

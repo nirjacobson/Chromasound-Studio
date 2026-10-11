@@ -2,6 +2,7 @@
 #define COMPOSERDISPLAYWIDGET_H
 
 #include <QWidget>
+#include <QPainter>
 
 class ComposerDisplayWidget : public QWidget
 {
@@ -10,6 +11,8 @@ class ComposerDisplayWidget : public QWidget
 public:
     explicit ComposerDisplayWidget(QWidget *parent = nullptr);
     ~ComposerDisplayWidget();
+protected:
+    void paintEvent(QPaintEvent *event) override;
 
 };
 

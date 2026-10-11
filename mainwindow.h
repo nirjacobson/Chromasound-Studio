@@ -14,6 +14,7 @@
 
 #include "application.h"
 #include "formats/bson.h"
+#include "toplevel/composerwidget/composerwidget.h"
 #include "toplevel/channelswidget/channelswidget.h"
 #include "psg/noisewidget.h"
 #include "toplevel/playlistwidget/playlistwidget.h"
@@ -68,6 +69,7 @@ class MainWindow : public QMainWindow
         Q_OBJECT
 
     friend class SongMakerDialog;
+    friend class ComposerWidget;
 
     public:
         MainWindow(QWidget *parent = nullptr, Application* app = nullptr);
@@ -144,6 +146,10 @@ class MainWindow : public QMainWindow
         void showChannelsWindow();
         void showPlaylistWindow();
 
+        void showComposerWindow();
+
+        void showWindow(QWidget* widget, bool resizable = true);
+
         void mdiViewModeChanged(const QString& viewMode);
 
         void pcmUploadStarted();
@@ -184,11 +190,15 @@ class MainWindow : public QMainWindow
 
         ChannelsWidget* _channelsWidget;
         PlaylistWidget* _playlistWidget;
+        ComposerWidget* _composerWidget;
 
         MdiSubWindow* _channelsWindow;
         MdiSubWindow* _playlistWindow;
+        MdiSubWindow* _composerWindow;
 
         QMap<int, QList<MdiSubWindow*>> _channelWindows;
+
+        QList<MdiSubWindow*> _otherWindows;
 
         SettingsDialog* _settingsDialog;
         ProjectInfoDialog* _infoDialog;
