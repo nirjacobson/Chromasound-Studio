@@ -46,7 +46,7 @@
          </property>
          <property name="iconSize">
           <size>
-           <width>24</width>
+           <width>32</width>
            <height>32</height>
           </size>
          </property>
@@ -67,12 +67,12 @@
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>:/icons/notation/symbols/sharp.svg</normaloff>:/icons/notation/symbols/sharp.svg</iconset>
+          <iconset resource="../../resources.qrc">
+           <normaloff>:/icons/notation/accidentals/sharp.svg</normaloff>:/icons/notation/accidentals/sharp.svg</iconset>
          </property>
          <property name="iconSize">
           <size>
-           <width>24</width>
+           <width>32</width>
            <height>32</height>
           </size>
          </property>
@@ -91,7 +91,13 @@
         <widget class="QSpinBox" name="timeSigTopSpinBox">
          <property name="minimumSize">
           <size>
-           <width>40</width>
+           <width>56</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>56</width>
            <height>40</height>
           </size>
          </property>
@@ -116,7 +122,13 @@
         <widget class="QSpinBox" name="timeSigBotSpinBox">
          <property name="minimumSize">
           <size>
-           <width>40</width>
+           <width>56</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>56</width>
            <height>40</height>
           </size>
          </property>
@@ -137,12 +149,12 @@
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>:/icons/notation/symbols/sharp.svg</normaloff>:/icons/notation/symbols/sharp.svg</iconset>
+          <iconset resource="../../resources.qrc">
+           <normaloff>:/icons/notation/accidentals/sharp.svg</normaloff>:/icons/notation/accidentals/sharp.svg</iconset>
          </property>
          <property name="iconSize">
           <size>
-           <width>24</width>
+           <width>32</width>
            <height>32</height>
           </size>
          </property>
