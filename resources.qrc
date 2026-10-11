@@ -1204,5 +1204,9 @@
         <file>icons/notation/accidentals/flat.svg</file>
         <file>icons/notation/accidentals/sharp.svg</file>
         <file>fonts/FiguredBassMHGPL.otf</file>
+        <file>icons/notation/notes/eighths_beamed.svg</file>
+        <file>icons/notation/notes/eighth_noflag.svg</file>
+        <file>icons/notation/notes/sixteenth_noflag.svg</file>
+        <file>icons/notation/notes/sixteenths_beamed.svg</file>
     </qresource>
 </RCC>
