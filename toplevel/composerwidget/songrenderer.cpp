@@ -36,7 +36,7 @@ void SongRenderer::RenderWorker::doRender(const Project *song, const int width, 
 void SongRenderer::RenderWorker::renderTracks(const Project *song, const int width, const float scale,
     const float startPos) {
     int origSize = _trackRendererWorkers.size();
-    int newSize = song->getPattern(0).tracks().values().size();
+    int newSize = song->getFrontPattern().tracks().values().size();
 
     for (int i = origSize-1; i >= newSize; i--) {
         delete _trackRendererWorkers.last();
@@ -52,7 +52,7 @@ void SongRenderer::RenderWorker::renderTracks(const Project *song, const int wid
 
     _tracksDone = 0;
     for (int i = 0; i < _trackRendererWorkers.size(); i++) {
-        _trackRendererWorkers.at(i)->doRender(song->getPattern(0).tracks().values().at(i), width, false, scale, startPos);
+        _trackRendererWorkers.at(i)->doRender(song->getFrontPattern().tracks().values().at(i), width, false, scale, startPos);
     }
 }
 
