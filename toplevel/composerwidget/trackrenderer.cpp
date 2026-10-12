@@ -2,7 +2,6 @@
 
 void TrackRenderer::RenderWorker::doRender(const Track *track, const int width, const bool wrap,
                                            const float scale, const float startPos) {
-    qDebug() << "trackDoRender";
     _track = track;
     _width = width;
     _wrap = wrap;
@@ -14,7 +13,6 @@ void TrackRenderer::RenderWorker::doRender(const Track *track, const int width, 
 
 QPixmap TrackRenderer::RenderWorker::render(const Track *track, const int width, const bool wrap, const float scale,
     const float startPos) {
-    qDebug() << "trackRender";
     QPixmap pixmap(width, 128);
     QPainter painter(&pixmap);
 

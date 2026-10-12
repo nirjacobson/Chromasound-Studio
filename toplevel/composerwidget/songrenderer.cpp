@@ -57,8 +57,6 @@ void SongRenderer::RenderWorker::renderTracks(const Project *song, const int wid
 }
 
 void SongRenderer::RenderWorker::render(const Project* song, const int width, const float scale, const float startPos, const float vertScroll) {
-    qDebug() << "songRender1";
-
     int height = 0;
     for (int i = 0; i < _trackRenders.size(); i++) {
         height += _trackRenders.at(i).height();
@@ -67,12 +65,9 @@ void SongRenderer::RenderWorker::render(const Project* song, const int width, co
     QPixmap result(width, height);
     QPainter painter(&result);
 
-    qDebug() << "width=" << width << " height=" << height;
-    qDebug() << "trackRendersSize=" << _trackRenders.size();
     height = _trackRenders[0].height();
     for (int i = 0; i < _trackRenders.size(); i++) {
         if (i == 0) {
-            qDebug() << "paintTrack0";
             painter.drawPixmap(0, 0, _trackRenders.at(i));
         } else {
             painter.drawPixmap(0, height, _trackRenders.at(i));
@@ -81,16 +76,13 @@ void SongRenderer::RenderWorker::render(const Project* song, const int width, co
     }
 
     painter.end();
-    qDebug() << "songRender2";
 
     emit finished(result);
 }
 
 void SongRenderer::RenderWorker::onTrackFinished(TrackRenderer::RenderWorker *worker, QPixmap result) {
-    qDebug() << "here1";
     for (int i = 0; i < _trackRendererWorkers.size(); i++) {
         if (_trackRendererWorkers.at(i) == worker) {
-            qDebug() << "saveTrackRender";
             _trackRenders[i] = result;
             break;
         }
@@ -98,8 +90,6 @@ void SongRenderer::RenderWorker::onTrackFinished(TrackRenderer::RenderWorker *wo
     _tracksDone++;
 
     if (_tracksDone == _trackRendererWorkers.size()) {
-        qDebug() << "here2";
-
         emit tracksDone();
     }
 }

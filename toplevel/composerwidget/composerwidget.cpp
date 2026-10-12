@@ -522,8 +522,6 @@ void ComposerWidget::dotToolButtonClicked() {
 }
 
 void ComposerWidget::songRendered(QPixmap render) {
-    qDebug() << "songRendered";
-
     QPixmap pixmap(ui->composerDisplayWidget->size());
     QPainter painter(&pixmap);
     painter.fillRect(pixmap.rect(), Qt::white);
