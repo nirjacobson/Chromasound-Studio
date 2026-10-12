@@ -1,10 +1,14 @@
 #ifndef COMPOSERWIDGET_H
 #define COMPOSERWIDGET_H
 
+#include <QPointer>
 #include <QMainWindow>
 #include "application.h"
+#include "songrenderer.h"
+#include "trackrenderer.h"
 #include "toplevel/composerwidget/composerinstrumentsdialog.h"
 #include "toplevel/composerwidget/composerackdialog.h"
+#include "toplevel/composerwidget/songrenderer.h"
 
 namespace Ui {
 class ComposerWidget;
@@ -21,6 +25,9 @@ public:
 private:
     Ui::ComposerWidget *ui;
     Application* _app;
+
+    SongRenderer::SongRenderer* _songRenderer;
+    QPixmap _songPixmap;
 
     enum Mode {
         None,
@@ -66,6 +73,9 @@ private:
 
     QIcon createTextIcon(const QString& text, int size=16);
     void createMenus();
+protected:
+    void showEvent(QShowEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
 
 private slots:
     void showInstruments();
@@ -81,6 +91,8 @@ private slots:
     void beamToolButtonClicked();
     void restToolButtonClicked();
     void dotToolButtonClicked();
+
+    void songRendered(QPixmap render);
 };
 
 #endif // COMPOSERWIDGET_H

@@ -11,8 +11,12 @@ class ComposerDisplayWidget : public QWidget
 public:
     explicit ComposerDisplayWidget(QWidget *parent = nullptr);
     ~ComposerDisplayWidget();
+
+    void show(QPixmap* pixmap);
 protected:
     void paintEvent(QPaintEvent *event) override;
+private:
+    QPixmap* _pixmap;
 
 };
 

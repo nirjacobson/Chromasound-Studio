@@ -611,6 +611,10 @@ set(PROJECT_SOURCES
     toplevel/composerwidget/composerwidget.h
     toplevel/composerwidget/composerwidget.cpp
     toplevel/composerwidget/composerwidget.ui
+    toplevel/composerwidget/trackrenderer.cpp
+    toplevel/composerwidget/trackrenderer.h
+    toplevel/composerwidget/songrenderer.cpp
+    toplevel/composerwidget/songrenderer.h
 )
 
 if (LINUX)

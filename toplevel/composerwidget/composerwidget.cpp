@@ -7,6 +7,7 @@ ComposerWidget::ComposerWidget(QWidget *parent, Application* app) :
     QMainWindow(parent),
     ui(new Ui::ComposerWidget),
     _app(app),
+    _songRenderer(new SongRenderer::SongRenderer()),
     _ackDialog(nullptr),
     _instrumentsDialog(nullptr),
     _clefMenu(nullptr),
@@ -33,6 +34,8 @@ ComposerWidget::ComposerWidget(QWidget *parent, Application* app) :
     ui->setupUi(this);
 
     createMenus();
+
+    connect(_songRenderer, &SongRenderer::SongRenderer::finished, this, &ComposerWidget::songRendered);
 
     connect(ui->clefToolButton, &QToolButton::clicked, this, &ComposerWidget::clefToolButtonClicked);
     connect(ui->keySigToolButton, &QToolButton::clicked, this, &ComposerWidget::keySigToolButtonClicked);
@@ -265,6 +268,22 @@ void ComposerWidget::createMenus() {
     });
     _restMenu->addAction(sixtnthRestAction);
     ui->restToolButton->setMenu(_restMenu);
+}
+
+void ComposerWidget::showEvent(QShowEvent *event) {
+    QMainWindow::showEvent(event);
+
+    QTimer::singleShot(0, this, [this]() {
+        _songRenderer->render(&_app->project(), ui->composerDisplayWidget->width(), ui->composerDisplayWidget->height());
+    });
+}
+
+void ComposerWidget::resizeEvent(QResizeEvent *event) {
+    QMainWindow::resizeEvent(event);
+
+    QTimer::singleShot(0, this, [this]() {
+        _songRenderer->render(&_app->project(), ui->composerDisplayWidget->width(), ui->composerDisplayWidget->height());
+    });
 }
 
 void ComposerWidget::showInstruments() {
@@ -500,5 +519,19 @@ void ComposerWidget::restToolButtonClicked() {
 
 void ComposerWidget::dotToolButtonClicked() {
     _dotActive = ui->dotToolButton->isChecked();
+}
+
+void ComposerWidget::songRendered(QPixmap render) {
+    qDebug() << "songRendered";
+
+    QPixmap pixmap(ui->composerDisplayWidget->size());
+    QPainter painter(&pixmap);
+    painter.fillRect(pixmap.rect(), Qt::white);
+    painter.drawPixmap(0, 0, render);
+    painter.end();
+
+    _songPixmap = pixmap;
+
+    ui->composerDisplayWidget->show(&_songPixmap);
 }
 
