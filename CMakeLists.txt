@@ -38,8 +38,8 @@ if (NOT APPLE)
 endif()
 
 find_package(Torch REQUIRED)
-find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets Svg)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Svg)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -679,6 +679,7 @@ endif()
 if (LINUX)
     target_link_options(Chromasound-Studio PRIVATE -Wl,--no-as-needed)
     target_link_libraries(Chromasound-Studio PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
+                                                    Qt${QT_VERSION_MAJOR}::Svg
                                                     bson-1.0
                                                     portaudio
                                                     portmidi

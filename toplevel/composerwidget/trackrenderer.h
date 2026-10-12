@@ -2,6 +2,7 @@
 #define TRACKRENDERER_H
 
 #include <QPainter>
+#include <QtSvg/QSvgRenderer>
 #include <QPixmap>
 #include <QRandomGenerator>
 #include <QThread>

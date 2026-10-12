@@ -14,12 +14,41 @@ void TrackRenderer::RenderWorker::doRender(const Track *track, const int width, 
 QPixmap TrackRenderer::RenderWorker::render(const Track *track, const int width, const bool wrap, const float scale,
     const float startPos) {
     QPixmap pixmap(width, 128);
-    QPainter painter(&pixmap);
+    pixmap.fill(Qt::transparent);
 
-    Qt::GlobalColor color = static_cast<Qt::GlobalColor>(QRandomGenerator::global()->generateDouble() * Qt::transparent);
+    QSvgRenderer svgRenderer(QStringLiteral(":/icons/notation/notes/sixteenth.svg"));
 
-    painter.fillRect(pixmap.rect(), color);
-    painter.end();
+    QRandomGenerator random;
+    random.seed((long)this * QRandomGenerator::global()->generate());
+    for (int i = 0; i < 1000; i++) {
+
+        QRect rect = QRect(QPoint(0, 0), QSize(random.generateDouble() * 200, random.generateDouble() * 200));
+        QPixmap notePixmap(rect.size());
+        notePixmap.fill(Qt::transparent);
+        QPainter painter(&notePixmap);
+
+        svgRenderer.render(&painter, rect);
+        painter.end();
+
+        Qt::GlobalColor color = Qt::white;
+        while (color == Qt::white) {
+            color = static_cast<Qt::GlobalColor>(random.generateDouble() * Qt::transparent);
+        }
+
+        QPainter painter2(&notePixmap);
+        painter2.setCompositionMode(QPainter::CompositionMode_SourceIn);
+        painter2.fillRect(notePixmap.rect(), color);
+        painter2.end();
+
+        QPainter painter3(&pixmap);
+        if (i == 0) {
+            painter3.fillRect(QRect(QPoint(0,0), QSize(width, 128)), Qt::white);
+        }
+        rect.translate(random.generateDouble() * width, random.generateDouble() * 128);
+        painter3.drawPixmap(rect, notePixmap);
+        painter3.end();
+    }
+
 
     return pixmap;
 }
